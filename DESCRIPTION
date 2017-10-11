@@ -1,0 +1,19 @@
+Package: NetworkToolbox
+Title: A Network Analysis Toolbox with Various Network Tools
+Version: 0.0.0.9000
+Authors: person(c("Alexander Christensen <alexpaulchristensen@gmail.com> aut, cre"))
+Description: This package implements a network filtering method called the Triangulated Maximally Filtered Graph (TMFG), several network measures, and a prototype linguistic network cleaner.
+Depends: R (>= 3.4.1)
+License: GPL (>= 3.0)
+Encoding: UTF-8
+LazyData: true
+Imports:
+    Matrix,
+    qdap,
+    devtools
+Suggests:
+   Matrix,
+   qdap,
+   devtools,
+   qgraph
+RoxygenNote: 6.0.1.9000
