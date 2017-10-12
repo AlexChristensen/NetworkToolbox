@@ -1,9 +1,30 @@
 #Network Toolbox Functions
+
+#' Triangulated Maximally Filtered Graph
+#' @description Applies the Triangulated Maximally Filtered Graph (TMFG) filtering method.
+#' @param data A dataset of continuous data
+#' @param binary Is data dichotomous? Defaults to FALSE. Set TRUE if data is dichotomous but could be on a continuous, normal distribution.
+#' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produced an unweighted (binary) network.
+#' @return A sparse association matrix
+#' @examples
+#' weighted_TMFGnetwork<-TMFG(data)
+#' weighted_binarydata_TMFGnetwork<-TMFG(data,binary=TRUE)
+#' unweighted_TMFGnetwork<-TMFG(data,weighted=FALSE)
+#' unweighted_binarydata_TMFGnetwork<-TMFG(data,binary=TRUE,weighted=FALSE)
+#' @references 
+#' Massara, G. P., Di Matteo, T., & Aste, T. (2016).
+#' Network filtering for big data: Triangulated maximally filtered graph.
+#' Journal of Complex Networks, 5(2), 161-178.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #TMFG Filtering Method----
 
-TMFG <-function (data=data)
+TMFG <-function (data=data,binary=FALSE,weighted=TRUE)
 {
+  if(binary)
+  {
+    cormat<-psych::tetrachoric(data)
+  }
   cormat<-cor(data)
   n<-ncol(cormat)
   if(n<9){print("Matrix is too small")}
@@ -99,22 +120,35 @@ TMFG <-function (data=data)
   K<-rbind(S,L)
   x<-as.matrix(Matrix::sparseMatrix(i=K[,1],j=K[,2],x=K[,3]))
   diag(x)<-0
-  for(r in 1:nrow(x))
-    for(z in 1:ncol(x))
-    {
-      if(x[r,z]==1)
+  if(weighted)
+  {
+    for(r in 1:nrow(x))
+      for(z in 1:ncol(x))
       {
-        x[r,z]<-cormat[r,z]
+        if(x[r,z]==1)
+        {
+          x[r,z]<-cormat[r,z]
+        }
       }
-    }
-  x<-as.data.frame(x)
+  }else
+    x<-as.data.frame(x)
   colnames(x)<-colnames(cormat)
-  x
+  round(x,3)
 }
 #----
+#' Semantic Network Cleaner
+#' @description An automated cleaning function for semantic network data (still in the alpha stage).
+#' @param data A dataset of verbal fluency or linguistic data.
+#' @return A binary matrix of responses (rows = participants, cols = responses)
+#' @examples
+#' responsematrix<-semnetcleaner(data)
+#' @references 
+#' qdap package: Hornik, K., & Murdoch, D. (2010).
+#' Watch Your Spelling!.
+#' The R Journal, 3(2), 22-28.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Semantic Network Cleaner----
-
 semnetcleaner<-function(data=data)
 {
   #install/load packages
@@ -145,15 +179,7 @@ semnetcleaner<-function(data=data)
     {
       uni<-uni[-i]
     }
-  uni
-  
-  badToken<-c(""," ")
-  for (i in badToken)
-  {
-    uni[uni==i]<-NA
-  }
-  
-  
+
   #attach unique responses to response matrix
   resp<-t(w) #transpose response
   z<-matrix(nrow=nrow(resp),ncol=ncol(uni)) #initialize matrix
@@ -184,13 +210,26 @@ semnetcleaner<-function(data=data)
   write.table(bin,file="filtered.csv",quote=TRUE,row.names=FALSE,col.names=TRUE,sep=",")
 }
 #----
+#' Betwenness Centrality
+#' @description Computes betweenness centrlaity of each node in a network (Weighted not coded).
+#' @param A An adjacency matrix of network data.
+#' @param weighted Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of betwenness centrality.
+#' @return A vector of betweenness centrality values for each node in the network.
+#' @examples
+#' weighted_BC<-Betweenness(A)
+#' unweighted_BC<-Betweenness(A,weighted=FALSE)
+#' @references 
+#' Rubinov, M., & Sporns, O. (2010). 
+#' Complex network measures of brain connectivity: Uses and interpretations. 
+#' Neuroimage, 52(3), 1059-1069.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#Betweenness Centrality: Binary----
-
-Betweenness <- function (A=A)
+#Betweenness Centrality----
+Betweenness <- function (A=A,weighted=TRUE)
 {
-  B<-ifelse(A[]!=0,1,0)
-  n<-ncol(B)
+  if(!weighted)
+  {A<-ifelse(A[]!=0,1,0)
+  n<-ncol(A)
   I<-diag(60)
   d<-1
   NPd<-A
@@ -199,12 +238,10 @@ Betweenness <- function (A=A)
   diag(NSP)<-1
   L<-NSPd
   diag(L)<-1
-  
-  
   while (!is.na(which(NSPd!=0)[1]))
   {
     d<-d+1
-    NPd<-as.matrix(NPd)%*%as.matrix(B)
+    NPd<-as.matrix(NPd)%*%as.matrix(A)
     NSPd<-NPd*(L==0)
     NSP<-NSP+NSPd
     L<-L+d*(NSPd!=0)
@@ -212,27 +249,40 @@ Betweenness <- function (A=A)
   L[!L]<-Inf
   diag(L)<-0
   NSP[!NSP]<-1
-  Bt<-t(B)
-  DP<-matrix(0,nrow=nrow(B),ncol=ncol(B))
+  At<-t(A)
+  DP<-matrix(0,nrow=nrow(A),ncol=ncol(A))
   diam<-d-1
   
   for(d in diam:2)
   {
-    DPd1<- (as.matrix(((L==d)*(1+DP)/NSP))%*%as.matrix(Bt))*((L==(d-1))*NSP)
+    DPd1<- (as.matrix(((L==d)*(1+DP)/NSP))%*%as.matrix(At))*((L==(d-1))*NSP)
     DP<-DP+DPd1
   }
-  
   BC<-round(as.data.frame(colSums(DP)),0)
-  colnames(BC)<-c("BC")
-  BC
+  colnames(BC)<-c("BCu")
+  BC}
+ else{print("Weighted not coded.")}
 }
 #----
+#' Closeness Centrality
+#' @description Computes closeness centrlaity of each node in a network (weighted not coded).
+#' @param A An adjacency matrix of network data.
+#' @param weighted Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of closeness centrality.
+#' @return A vector of closeness centrality values for each node in the network.
+#' @examples
+#' weighted_CC<-Closeness(A)
+#' unweighted_CC<-Closeness(A,weighted=FALSE)
+#' @references 
+#' Rubinov, M., & Sporns, O. (2010). 
+#' Complex network measures of brain connectivity: Uses and interpretations. 
+#' Neuroimage, 52(3), 1059-1069.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export 
-#Closeness Centrality: Binary----
-
-Closeness <- function (A=A)
+#Closeness Centrality----
+Closeness <- function (A=A,weighted=TRUE)
 {
-  D<-distance_bin(A)
+  if (!weighted)
+  {D<-distance(A,weighted=FALSE)
   C<-matrix(0,ncol=ncol(D))
   for(i in 1:ncol(D))
   {
@@ -240,25 +290,45 @@ Closeness <- function (A=A)
   }
   CC<-t(as.data.frame(C)*100)
   rownames(CC)<-colnames(A)
-  colnames(CC)<-c("CC")
+  colnames(CC)<-c("CCu")
   CC<-round(as.data.frame(CC),3)
-  CC
+  CC}else{print("Weighted not coded.")}
 }
 #----
+#' Degree
+#' @description Computes degree of each node in a network.
+#' @param A An adjacency matrix of network data.
+#' @return A vector of degree values for each node in the network.
+#' @examples
+#' Deg<-Degree(A)
+#' @references 
+#' Rubinov, M., & Sporns, O. (2010). 
+#' Complex network measures of brain connectivity: Uses and interpretations. 
+#' Neuroimage, 52(3), 1059-1069.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Degree----
-
 Degree <- function (A=A)
 {
-  B<-ifelse(A[]!=0,1,0)
-  Deg<-as.data.frame(colSums(B))
+  A<-ifelse(A[]!=0,1,0)
+  Deg<-as.data.frame(colSums(A))
   colnames(Deg)<-c("Degree")
   Deg
 }
 #----
+#' Node Strength
+#' @description Computes strength of each node in a network.
+#' @param A An adjacency matrix of network data.
+#' @return A vector of strength values for each node in the network.
+#' @examples
+#' Str<-Strength(A)
+#' @references 
+#' Rubinov, M., & Sporns, O. (2010). 
+#' Complex network measures of brain connectivity: Uses and interpretations. 
+#' Neuroimage, 52(3), 1059-1069.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Node Strength----
-
 Strength <- function (A=A)
 {
   strength<-round(as.data.frame(colSums(A)),2)
@@ -266,93 +336,97 @@ Strength <- function (A=A)
   strength
 }
 #----
+#' Eigenvector Centrality
+#' @description Computes eigenvector centrality of each node in a network.
+#' @param A An adjacency matrix of network data.
+#' @param weighted Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of eigenvector centrality.
+#' @return A vector of eigenvector centrality values for each node in the network.
+#' @examples
+#' weighted_EC<-Eigenvector(A)
+#' unweighted_EC<-Eigenvector(A,weighted=FALSE)
+#' @references 
+#' Rubinov, M., & Sporns, O. (2010). 
+#' Complex network measures of brain connectivity: Uses and interpretations. 
+#' Neuroimage, 52(3), 1059-1069.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#Eigenvector: Binary----
+#Eigenvector
 
-EigenU <- function (A=A)
+Eigenvector <- function (A=A,weighted=TRUE)
 {
-  B<-ifelse(A[]!=0,1,0)
-  eigenvectoru<-eigen(B)
-  eigenvectoru<-round(as.data.frame(abs(eigenvectoru$vectors[,1])),3)
-  colnames(eigenvectoru)<-c("EigenU")
-  rownames(eigenvectoru)<-colnames(A)
-  eigenvectoru
+  if (!weighted){A<-ifelse(A[]!=0,1,0)
+  eigenvector<-eigen(A)
+  eigenvector<-round(as.data.frame(abs(eigenvector$vectors[,1])),3)
+  colnames(eigenvector)<-c("ECu")}
+  else{eigenvector<-eigen(A)
+  eigenvector<-round(as.data.frame(abs(eigenvector$vectors[,1])),3)
+  colnames(eigenvector)<-c("ECw")}
+  rownames(eigenvector)<-colnames(A)
+  eigenvector
 }
 #----
-#' @export
-#Eigenvector: Weighted----
-
-EigenW <- function (A=A)
-{
-  eigenvectorw<-eigen(A)
-  eigenvectorw<-round(as.data.frame(abs(eigenvectorw$vectors[,1])),3)
-  colnames(eigenvectorw)<-c("EigenW")
-  rownames(eigenvectorw)<-colnames(A)
-  eigenvectorw
-}
-#----
+#' Hybrid Centrality
+#' @description Computes hybrid centrality of each node in a network (Weigted not coded).
+#' @param A An adjacency matrix of network data.
+#' @return A vector of hybrid centrality values for each node in the network (lower values are more central, higher values are more peripheral).
+#' @examples
+#' HC<-Hybrid(A)
+#' @references 
+#' Pozzi, F., Di Matteo, T., & Aste, T. (2013).
+#' Spread of risk across financial markets: Better to invest in the peripheries. 
+#' Scientific Reports, 3(1655), 1-7.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Hybrid Centality----
-
 Hybrid <- function (A=A)
 {
+  BCu<-Betweenness(A,weighted=FALSE)
   BCu<-Betweenness(A)
+  CCu<-Closeness(A,weighted=FALSE)
   CCu<-Closeness(A)
   Deg<-Degree(A)
   Str<-Strength(A)
-  ECu<-EigenU(A)
-  ECw<-EigenW(A)
+  ECu<-Eigenvector(A,weighted=FALSE)
+  ECw<-Eigenvector(A)
+  Eu<-PathLengths(A,weighted=FALSE)$ecc
+  Ew<-PathLengths(A)$ecc
   
   hybrid<-((rank(BCu,ties.method="max")+
-              rank(CCu,ties.method="max")+
-              rank(Deg,ties.method="max")+
-              rank(Str,ties.method="max")+
-              rank(ECw,ties.method="max")+
-              rank(ECu,ties.method="max")+
-              -6)/(6*((ncol(A))-6)))
+            rank(BCw,ties.method="max")+
+            rank(CCu,ties.method="max")+
+            rank(CCw,ties.method="max")+
+            rank(Deg,ties.method="max")+
+            rank(Str,ties.method="max")+
+            rank(ECu,ties.method="max")+
+            rank(ECw,ties.method="max")+
+            rev(rank(Eu,ties.method="max"))+
+            rev(rank(Ew,ties.method="max"))-
+            10)/(10*((ncol(A))-10)))
   hybrid<-round(as.data.frame(hybrid),3)
   colnames(hybrid)<-c("HC")
   rownames(hybrid)<-colnames(A)
   hybrid
 }
 #----
+#' Distaance
+#' @description Computes distance matrix of the network (Weighted not coded).
+#' @param A An adjacency matrix of network data.
+#' @param weighted Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measure of distance.
+#' @return A distance matrix of the network.
+#' @examples
+#' unweighted_D<-Distance(A)
+#' weighted_D<-Distance(A,weighted=TRUE)
+#' @references 
+#' Rubinov, M., & Sporns, O. (2010). 
+#' Complex network measures of brain connectivity: Uses and interpretations. 
+#' Neuroimage, 52(3), 1059-1069.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#Centrality Table----
-
-CentTable <- function (A)
+#Distnace:
+Distance<-function (A=A,weighted=FALSE)
 {
-  BCu<-Betweenness(A)
-  CCu<-Closeness(A)
-  Deg<-Degree(A)
-  Str<-Strength(A)
-  ECu<-EigenU(A)
-  ECw<-EigenW(A)
-  HC<-Hybrid(A)
-  cent<-cbind(BCu,CCu,Deg,Str,ECu,ECw,HC)
-  list(CentrailtyTable=cent)
-}
-#----
-#' @export
-#List of Centralities----
-
-AllCents <- function (A)
-{
-  BCu<-Betweenness(A)
-  CCu<-Closeness(A)
-  Deg<-Degree(A)
-  Str<-Strength(A)
-  ECu<-EigenU(A)
-  ECw<-EigenW(A)
-  HC<-Hybrid(A)
-  list(BCu=BCu,CCu=CCu,Deg=Deg,Str=Str,ECu=ECu,ECw=ECw,HC=HC)
-}
-#----
-#' @export
-#Distnace: Binary----
-
-distance_bin<-function (A=A)
-{
-  B<-ifelse(A[]!=0,1,0)
+  if(!weighted)
+  {B<-ifelse(A[]!=0,1,0)
   l<-1
   Lpath<-B
   D<-B
@@ -369,16 +443,29 @@ distance_bin<-function (A=A)
   
   D[!D]<-Inf
   diag(D)<-0
-  D
+  D}else{print("Weighted not coded.")}
 }
 #----
+#' Path Lengths
+#' @description Computes average shortest path length (ASPL), eccentricity (E), and diameter (D) of a network (Weighted not coded).
+#' @param A An adjacency matrix of network data.
+#' @param weighted Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measures of ASPL, E, and D.
+#' @return A list of ASPL, E, and D of a network.
+#' @examples
+#' unweighted_PL<-PathLengths(A)
+#' weighted_PL<-PathLengths(A,weighted=TRUE)
+#' @references 
+#' Rubinov, M., & Sporns, O. (2010). 
+#' Complex network measures of brain connectivity: Uses and interpretations. 
+#' Neuroimage, 52(3), 1059-1069.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#Average Shortest Path Length: Binary----
-
-PathLengths <- function (A=A)
+#Path Lengths
+PathLengths <- function (A=A, weighted=FALSE)
 {
+  if(!weighted)
+  {D<-distance(A,weighted=FALSE)
   n<-nrow(D)
-  D<-distance_bin(A)
   aspl<-sum(sum(D*(D!=Inf))/(length(which((D!=Inf)!=0))))
   Emat<-(D*(D!=Inf))
   ecc<-matrix(nrow=nrow(Emat),ncol=1)
@@ -391,5 +478,6 @@ PathLengths <- function (A=A)
   ecc<-as.data.frame(ecc)
   rownames(ecc)<-colnames(A)
   
-  list(ASPL=aspl,Eccentricity=ecc,Diameter=d)
+  list(ASPL=aspl,Eccentricity=ecc,Diameter=d)}
+  else{print("Weighted not coded.")}
 }

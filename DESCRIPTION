@@ -10,10 +10,12 @@ LazyData: true
 Imports:
     Matrix,
     qdap,
-    devtools
+    devtools,
+    psych
 Suggests:
    Matrix,
    qdap,
    devtools,
+   psych,
    qgraph
 RoxygenNote: 6.0.1.9000
