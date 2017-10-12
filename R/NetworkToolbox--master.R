@@ -22,10 +22,8 @@
 TMFG <-function (data=data,binary=FALSE,weighted=TRUE)
 {
   if(binary)
-  {
-    cormat<-psych::tetrachoric(data)
-  }
-  cormat<-cor(data)
+  {cormat<-psych::tetrachoric(data)
+  }else {cormat<-cor(data)}
   n<-ncol(cormat)
   if(n<9){print("Matrix is too small")}
   if(any(cormat<0)){print("Matrix has negative elements!")}
@@ -260,8 +258,7 @@ Betweenness <- function (A=A,weighted=TRUE)
   }
   BC<-round(as.data.frame(colSums(DP)),0)
   colnames(BC)<-c("BCu")
-  BC}
- else{print("Weighted not coded.")}
+  BC}else{print("Weighted not coded.")}
 }
 #----
 #' Closeness Centrality
@@ -357,8 +354,7 @@ Eigenvector <- function (A=A,weighted=TRUE)
   if (!weighted){A<-ifelse(A[]!=0,1,0)
   eigenvector<-eigen(A)
   eigenvector<-round(as.data.frame(abs(eigenvector$vectors[,1])),3)
-  colnames(eigenvector)<-c("ECu")}
-  else{eigenvector<-eigen(A)
+  colnames(eigenvector)<-c("ECu")}else{eigenvector<-eigen(A)
   eigenvector<-round(as.data.frame(abs(eigenvector$vectors[,1])),3)
   colnames(eigenvector)<-c("ECw")}
   rownames(eigenvector)<-colnames(A)
@@ -381,9 +377,9 @@ Eigenvector <- function (A=A,weighted=TRUE)
 Hybrid <- function (A=A)
 {
   BCu<-Betweenness(A,weighted=FALSE)
-  BCu<-Betweenness(A)
+  BCw<-Betweenness(A)
   CCu<-Closeness(A,weighted=FALSE)
-  CCu<-Closeness(A)
+  CCw<-Closeness(A)
   Deg<-Degree(A)
   Str<-Strength(A)
   ECu<-Eigenvector(A,weighted=FALSE)
@@ -408,7 +404,30 @@ Hybrid <- function (A=A)
   hybrid
 }
 #----
-#' Distaance
+#' List of Centrality Measures
+#' @description Computes centrality measures of the network (Weighted not coded).
+#' @param A An adjacency matrix of network data.
+#' @param weighted Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted list of centrality measures.
+#' @return Returns a list of betweenness, closeness, degree (weighted = strength), and eigenvector centralities.
+#' @examples
+#' weighted_centralitylist<-CentList(A)
+#' unweighted_centralitylist<-CentList(A,weighted=FALSE)
+#' @references 
+#' Rubinov, M., & Sporns, O. (2010). 
+#' Complex network measures of brain connectivity: Uses and interpretations. 
+#' Neuroimage, 52(3), 1059-1069.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+CentList <- function (A=A, weighted=TRUE)
+{
+  if(!weighted){BCu<-Betweenness(A,weighted=FALSE)
+  CCu<-Closeness(A,weighted=FALSE)
+  Deg<-Degree(A)
+  ECu<-Eigenvector(A,weighted=FALSE)}else{print("Weighted not coded.")}
+  
+  list(Betweenness=BCu,Closeness=CCu,Degree=Deg,Eigenvector=ECu)
+}
+#' Distance
 #' @description Computes distance matrix of the network (Weighted not coded).
 #' @param A An adjacency matrix of network data.
 #' @param weighted Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measure of distance.
@@ -422,7 +441,7 @@ Hybrid <- function (A=A)
 #' Neuroimage, 52(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#Distnace:
+#Distance:
 Distance<-function (A=A,weighted=FALSE)
 {
   if(!weighted)
