@@ -279,7 +279,7 @@ Betweenness <- function (A=A,weighted=TRUE)
 Closeness <- function (A=A,weighted=TRUE)
 {
   if (!weighted)
-  {D<-distance(A,weighted=FALSE)
+  {D<-Distance(A,weighted=FALSE)
   C<-matrix(0,ncol=ncol(D))
   for(i in 1:ncol(D))
   {
@@ -483,7 +483,7 @@ Distance<-function (A=A,weighted=FALSE)
 PathLengths <- function (A=A, weighted=FALSE)
 {
   if(!weighted)
-  {D<-distance(A,weighted=FALSE)
+  {D<-Distance(A,weighted=FALSE)
   n<-nrow(D)
   aspl<-sum(sum(D*(D!=Inf))/(length(which((D!=Inf)!=0))))
   Emat<-(D*(D!=Inf))
