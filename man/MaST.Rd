@@ -21,9 +21,9 @@ Applies the Maximum Spanning Tree (MaST) filtering method.
 }
 \examples{
 weighted_MaSTnetwork<-MaST(data)
-weighted_binarydata_MaSTnetwork<-MaST(data,binary=TRUE)
+weighted_binary_MaSTnetwork<-MaST(data,binary=TRUE)
 unweighted_MaSTnetwork<-MaST(data,weighted=FALSE)
-unweighted_binarydata_MaSTnetwork<-MaST(data,binary=TRUE,weighted=FALSE)
+unweighted_binary_MaSTnetwork<-MaST(data,binary=TRUE,weighted=FALSE)
 }
 \references{
 Adapted from: <https://www.mathworks.com/matlabcentral/fileexchange/23276-maximum-weight-spanning-tree--undirected>

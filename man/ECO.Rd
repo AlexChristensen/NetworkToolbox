@@ -11,6 +11,8 @@ ECO(data = data, weighted = TRUE, binary = FALSE, directed = FALSE)
 
 \item{weighted}{Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network.}
 
+\item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous but could be on a continuous, normal distribution.}
+
 \item{directed}{Is the network directed? Defaults to FALSE. Set TRUE if the network is directed.}
 }
 \value{

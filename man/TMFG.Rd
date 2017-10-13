@@ -21,9 +21,9 @@ Applies the Triangulated Maximally Filtered Graph (TMFG) filtering method.
 }
 \examples{
 weighted_TMFGnetwork<-TMFG(data)
-weighted_binarydata_TMFGnetwork<-TMFG(data,binary=TRUE)
+weighted_binary_TMFGnetwork<-TMFG(data,binary=TRUE)
 unweighted_TMFGnetwork<-TMFG(data,weighted=FALSE)
-unweighted_binarydata_TMFGnetwork<-TMFG(data,binary=TRUE,weighted=FALSE)
+unweighted_binary_TMFGnetwork<-TMFG(data,binary=TRUE,weighted=FALSE)
 }
 \references{
 Massara, G. P., Di Matteo, T., & Aste, T. (2016).

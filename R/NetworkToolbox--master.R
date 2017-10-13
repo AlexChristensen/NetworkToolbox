@@ -8,9 +8,9 @@
 #' @return A sparse association matrix
 #' @examples
 #' weighted_TMFGnetwork<-TMFG(data)
-#' weighted_binarydata_TMFGnetwork<-TMFG(data,binary=TRUE)
+#' weighted_binary_TMFGnetwork<-TMFG(data,binary=TRUE)
 #' unweighted_TMFGnetwork<-TMFG(data,weighted=FALSE)
-#' unweighted_binarydata_TMFGnetwork<-TMFG(data,binary=TRUE,weighted=FALSE)
+#' unweighted_binary_TMFGnetwork<-TMFG(data,binary=TRUE,weighted=FALSE)
 #' @references 
 #' Massara, G. P., Di Matteo, T., & Aste, T. (2016).
 #' Network filtering for big data: Triangulated maximally filtered graph.
@@ -140,9 +140,9 @@ TMFG <-function (data=data,binary=FALSE,weighted=TRUE)
 #' @return A sparse association matrix
 #' @examples
 #' weighted_MaSTnetwork<-MaST(data)
-#' weighted_binarydata_MaSTnetwork<-MaST(data,binary=TRUE)
+#' weighted_binary_MaSTnetwork<-MaST(data,binary=TRUE)
 #' unweighted_MaSTnetwork<-MaST(data,weighted=FALSE)
-#' unweighted_binarydata_MaSTnetwork<-MaST(data,binary=TRUE,weighted=FALSE)
+#' unweighted_binary_MaSTnetwork<-MaST(data,binary=TRUE,weighted=FALSE)
 #' @references 
 #' Adapted from: <https://www.mathworks.com/matlabcentral/fileexchange/23276-maximum-weight-spanning-tree--undirected>
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
@@ -233,6 +233,7 @@ round(as.matrix(x),3)
 #' @description Applies the ECO neural network filtering method.
 #' @param data Can be a dataset or a correlation matrix
 #' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network.
+#' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous but could be on a continuous, normal distribution.
 #' @param directed Is the network directed? Defaults to FALSE. Set TRUE if the network is directed.
 #' @return A sparse association matrix
 #' @examples
@@ -297,11 +298,14 @@ ECO <- function (data=data, weighted=TRUE, binary=FALSE, directed=FALSE)
 #' ECO+MaST Network Filter
 #' @description Applies the ECO neural network filtering method combined with the MaST filtering method.
 #' @param data Can be a dataset or a correlation matrix
+#' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous but could be on a continuous, normal distribution.
 #' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network.
 #' @return A sparse association matrix
 #' @examples
-#' weighted_ECOplusMaSTnetwork<-ECO(data)
-#' unweighted_ECOplusMaSTnetwork<-ECO(data,weighted=FALSE)
+#' weighted_ECOplusMaSTnetwork<-ECOplusMaST(data)
+#' weighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(data,binary=TRUE)
+#' unweighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(data,weighted=FALSE)
+#' unweighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(data,binary=TRUE,weighted=FALSE)
 #' @references 
 #' Fallani, F. D. V., Latora, V., & Chavez, M. (2017).
 #' A topological criterion for filtering information in complex brain networks.
@@ -440,11 +444,11 @@ semnetcleaner<-function(data=data)
 Betweenness <- function (A=A,weighted=TRUE)
 {
   if(!weighted)
-  {A<-ifelse(A!=0,1,0)
-  n<-ncol(A)
+  {B<-ifelse(A!=0,1,0)
+  n<-ncol(B)
   I<-diag(60)
   d<-1
-  NPd<-A
+  NPd<-B
   NSPd<-NPd
   NSP<-NSPd
   diag(NSP)<-1
@@ -453,7 +457,7 @@ Betweenness <- function (A=A,weighted=TRUE)
   while (!is.na(which(NSPd!=0)[1]))
   {
     d<-d+1
-    NPd<-as.matrix(NPd)%*%as.matrix(A)
+    NPd<-as.matrix(NPd)%*%as.matrix(B)
     NSPd<-NPd*(L==0)
     NSP<-NSP+NSPd
     L<-L+d*(NSPd!=0)
@@ -461,13 +465,13 @@ Betweenness <- function (A=A,weighted=TRUE)
   L[!L]<-Inf
   diag(L)<-0
   NSP[!NSP]<-1
-  At<-t(A)
-  DP<-matrix(0,nrow=nrow(A),ncol=ncol(A))
+  Bt<-t(B)
+  DP<-matrix(0,nrow=nrow(B),ncol=ncol(B))
   diam<-d-1
   
   for(d in diam:2)
   {
-    DPd1<- (as.matrix(((L==d)*(1+DP)/NSP))%*%as.matrix(At))*((L==(d-1))*NSP)
+    DPd1<- (as.matrix(((L==d)*(1+DP)/NSP))%*%as.matrix(Bt))*((L==(d-1))*NSP)
     DP<-DP+DPd1
   }
   BC<-round(as.data.frame(colSums(DP)),0)
