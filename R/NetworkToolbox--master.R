@@ -289,6 +289,8 @@ ECO <- function (data=data, weighted=TRUE, binary=FALSE, directed=FALSE)
   {
     W<-ifelse(W!=0,J,0)
   }
+  W<-as.data.frame(W)
+  colnames(W)<-colnames(data)
   round(W,3)
 }
 #----
@@ -342,7 +344,9 @@ ECOplusMaST <- function (data=data, weighted=TRUE, binary=FALSE)
     for(j in 1:ncol(a))
       if(a[i,j]==b[i,j])
       {k[i,j]<-a[i,j]}else k[i,j]<-a[i,j]+b[i,j]
- }
+}
+  k<-as.data.frame(k)
+  colnames(k)<-colnames(data)
   k
 }
 #----
