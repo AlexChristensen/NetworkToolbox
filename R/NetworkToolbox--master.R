@@ -250,8 +250,6 @@ semnetcleaner<-function(data=data)
     install.packages("devtools")
     devtools::install_github("hrbrmstr/pluralize")
   }else library(pluralize)
-  #read in file
-  data<-read.csv("trial.csv",header=FALSE,sep=",",as.is=TRUE)
   
   #perform spell check
   v<-apply(data,c(2),qdap::check_spelling_interactive)
@@ -321,7 +319,7 @@ semnetcleaner<-function(data=data)
 Betweenness <- function (A=A,weighted=TRUE)
 {
   if(!weighted)
-  {A<-ifelse(A[]!=0,1,0)
+  {A<-ifelse(A!=0,1,0)
   n<-ncol(A)
   I<-diag(60)
   d<-1
