@@ -2,8 +2,8 @@
 
 #' Triangulated Maximally Filtered Graph
 #' @description Applies the Triangulated Maximally Filtered Graph (TMFG) filtering method.
-#' @param data A dataset of continuous data
-#' @param binary Is data dichotomous? Defaults to FALSE. Set TRUE if data is dichotomous but could be on a continuous, normal distribution.
+#' @param data Can be a dataset or a correlation matrix
+#' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous but could be on a continuous, normal distribution.
 #' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produced an unweighted (binary) network.
 #' @return A sparse association matrix
 #' @examples
@@ -18,12 +18,10 @@
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #TMFG Filtering Method----
-
 TMFG <-function (data=data,binary=FALSE,weighted=TRUE)
 {
-  if(binary)
-  {cormat<-psych::tetrachoric(data)
-  }else {cormat<-cor(data)}
+  if(nrow(data)==ncol(data)){cormat<-data}else
+    if(binary){cormat<-psych::tetrachoric(data)$rho}else{cormat<-cor(data)}
   n<-ncol(cormat)
   if(n<9){print("Matrix is too small")}
   if(any(cormat<0)){print("Matrix has negative elements!")}
@@ -132,6 +130,103 @@ TMFG <-function (data=data,binary=FALSE,weighted=TRUE)
     x<-as.data.frame(x)
   colnames(x)<-colnames(cormat)
   round(x,3)
+}
+#----
+#' Maximum Spanning Tree
+#' @description Applies the Maximum Spanning Tree (MaST) filtering method.
+#' @param data Can be a dataset or a correlation matrix
+#' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous but could be on a continuous, normal distribution.
+#' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produced an unweighted (binary) network.
+#' @return A sparse association matrix
+#' @examples
+#' weighted_MaSTnetwork<-MaST(data)
+#' weighted_binarydata_MaSTnetwork<-MaST(data,binary=TRUE)
+#' unweighted_MaSTnetwork<-MaST(data,weighted=FALSE)
+#' unweighted_binarydata_MaSTnetwork<-MaST(data,binary=TRUE,weighted=FALSE)
+#' @references 
+#' Adapted from: <https://www.mathworks.com/matlabcentral/fileexchange/23276-maximum-weight-spanning-tree--undirected>
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Maximum Spanning Tree----
+MaST <- function (data=data,binary=FALSE,weighted=TRUE)
+{FIND_PathCompression <- function (temproot=temproot)
+{
+  ParentPointer[temproot]
+  if(ParentPointer[temproot]!=temproot)
+  {ParentPointer[temproot]<-FIND_PathCompression(ParentPointer[temproot])}
+  parent<-ParentPointer[temproot]
+}
+if(nrow(data)==ncol(data)){cormat<-data}else
+  if(binary){cormat<-psych::tetrachoric(data)$rho}else{cormat<-cor(data)}
+nodeT<-0
+nodeF<-0
+weights<-0
+wc<-0
+n<-ncol(cormat)
+for (i in 1:n)
+  for (j in 1:n)
+    if (cormat[i,j]!=0) #Figure out how to remove warning
+    {
+      wc<- wc+1
+      nodeT[wc] <- i
+      nodeF[wc] <- j
+      weights[wc] <- cormat[i,j]
+    }
+edgelist<-cbind(weights,nodeT,nodeF)
+edgelist<-edgelist[order(edgelist[,1]),]
+#Number of edges
+e <- nrow(edgelist)
+#Assign ParentPointer to each vertex
+assign("ParentPointer",1:n)
+#Assign a tree rank to each vertex
+TreeRank<-matrix(0,nrow=1,ncol=n)
+#MSTreeEdges and counter
+MSTreeEdges<-matrix(0,nrow=n-1,ncol=3)
+MSTcounter<-0
+i<-e
+
+while((MSTcounter<(n-1))&&(e>=1))
+{
+  #Find roots of the tree that the selected edge's two
+  #vertices belong to. Also perform path compression.
+  root1<-0
+  root2<-0
+  temproot<-0
+  temproot<-as.numeric(edgelist[i,2])
+  root1<-FIND_PathCompression(temproot)
+  
+  temproot<-as.numeric(edgelist[i,3])
+  root2<-FIND_PathCompression(temproot)
+  
+  if(root1!=root2)
+  {
+    MSTcounter<-MSTcounter+1
+    MSTreeEdges[MSTcounter,1:3]<-edgelist[i,]
+    if(TreeRank[root1]>TreeRank[root2])
+    {ParentPointer[root2]<-root1}else 
+      if(TreeRank[root1]==TreeRank[root2])
+      {TreeRank[root2]<-TreeRank[root2]+1
+      ParentPointer[root1]<-root2}else if(TreeRank[root1]<TreeRank[root2])
+      {ParentPointer[root1]<-root2}
+  }
+  i<-i-1
+}
+S<-MSTreeEdges
+L<-S
+L[,2]<-S[,3]
+L[,3]<-S[,2]
+K<-rbind(S,L)
+K<-cbind(K,K[,1])
+K<-K[,-1]
+x<-as.matrix(Matrix::sparseMatrix(i=K[,1],j=K[,2],x=K[,3]))
+diag(x)<-0
+x<-as.data.frame(x)
+ifelse(x!=0,cormat,0)
+colnames(x)<-colnames(cormat)
+round(x,3)
+if(!weighted)
+{ifelse(x!=0,1,0)}
+x
 }
 #----
 #' Semantic Network Cleaner
