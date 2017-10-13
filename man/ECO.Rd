@@ -4,7 +4,7 @@
 \alias{ECO}
 \title{ECO Neural Network Filter}
 \usage{
-ECO(data = data, weighted = TRUE, directed = FALSE)
+ECO(data = data, weighted = TRUE, binary = FALSE, directed = FALSE)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
@@ -24,6 +24,10 @@ weighted_undirected_ECOnetwork<-ECO(data)
 unweighted_undirected_ECOnetwork<-ECO(data,weighted=FALSE)
 weighted_directed_ECOnetwork<-ECO(data,directed=TRUE)
 unweighted_directed_ECOnetwork<-ECO(data,weighted=FALSE,directed=TRUE)
+weighted_undirected_binary_ECOnetwork<-ECO(data,binary=TRUE)
+unweighted_undirected_binary_ECOnetwork<-ECO(data,weighted=FALSE,binary=TRUE)
+weighted_directed_binary_ECOnetwork<-ECO(data,directed=TRUE,binary=TRUE)
+unweighted_directed_binary_ECOnetwork<-ECO(data,weighted=FALSE,directed=TRUE,binary=TRUE)
 }
 \references{
 Fallani, F. D. V., Latora, V., & Chavez, M. (2017).

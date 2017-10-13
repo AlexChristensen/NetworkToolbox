@@ -240,6 +240,10 @@ round(as.matrix(x),3)
 #' unweighted_undirected_ECOnetwork<-ECO(data,weighted=FALSE)
 #' weighted_directed_ECOnetwork<-ECO(data,directed=TRUE)
 #' unweighted_directed_ECOnetwork<-ECO(data,weighted=FALSE,directed=TRUE)
+#' weighted_undirected_binary_ECOnetwork<-ECO(data,binary=TRUE)
+#' unweighted_undirected_binary_ECOnetwork<-ECO(data,weighted=FALSE,binary=TRUE)
+#' weighted_directed_binary_ECOnetwork<-ECO(data,directed=TRUE,binary=TRUE)
+#' unweighted_directed_binary_ECOnetwork<-ECO(data,weighted=FALSE,directed=TRUE,binary=TRUE)
 #' @references 
 #' Fallani, F. D. V., Latora, V., & Chavez, M. (2017).
 #' A topological criterion for filtering information in complex brain networks.
@@ -247,9 +251,10 @@ round(as.matrix(x),3)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #ECO Neural Network Filter
-ECO <- function (data=data, weighted=TRUE, directed=FALSE)
+ECO <- function (data=data, weighted=TRUE, binary=FALSE, directed=FALSE)
 {
-  if(nrow(data)==ncol(data)){C<-data}else{C<-cor(data)}
+  if(nrow(data)==ncol(data)){C<-data}else
+    if(binary){C<-psych::tetrachoric(data)$rho}else{C<-cor(data)}
   n<-ncol(C)
   S<-C
   if(directed)
@@ -288,7 +293,7 @@ ECO <- function (data=data, weighted=TRUE, directed=FALSE)
 }
 #----
 #' ECO+MaST Network Filter
-#' @description Applies the ECO neural network filtering combined with the MaST filtering method.
+#' @description Applies the ECO neural network filtering method combined with the MaST filtering method.
 #' @param data Can be a dataset or a correlation matrix
 #' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network.
 #' @return A sparse association matrix
@@ -302,23 +307,42 @@ ECO <- function (data=data, weighted=TRUE, directed=FALSE)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #ECO Filter + MaST
-ECOplusMaST <- function (data=data, weighted=TRUE)
-{if(weighted)
+ECOplusMaST <- function (data=data, weighted=TRUE, binary=FALSE)
 {
-  a<-MaST(data)
-  b<-ECO(data)
-  k<-matrix(NA,nrow=nrow(a),ncol(a))
+  if(weighted&&!binary)
+{
+  a<-MaST(data,weighted=TRUE)
+  b<-ECO(data,weighted=TRUE)
+  k<-matrix(NA,nrow=nrow(a),ncol=ncol(a))
   for(i in 1:nrow(a))
     for(j in 1:ncol(a))
-      if(a[i,j]==b[i,j]){k[i,j]<-a[i,j]}else k[i,j]<-b[i,j]
-}else{
-  a<-MaST(data,weighted=FALSE)
-  b<-ECO(data,weighted=FALSE)
-  k<-matrix(NA,nrow=nrow(a),ncol(a))
+      if(a[i,j]==b[i,j]){k[i,j]<-a[i,j]}else k[i,j]<-a[i,j]+b[i,j]
+}else if(weighted&&binary)
+{
+  a<-MaST(data,weighted=TRUE,binary=TRUE)
+  b<-ECO(data,weighted=TRUE,binary=TRUE)
+  k<-matrix(NA,nrow=nrow(a),ncol=ncol(a))
+  for(i in 1:nrow(a))
+    for(j in 1:ncol(a))
+      if(a[i,j]==b[i,j]){k[i,j]<-a[i,j]}else k[i,j]<-a[i,j]+b[i,j]
+}else if(!weighted&&binary)
+{
+  a<-MaST(data,weighted=FALSE,binary=TRUE)
+  b<-ECO(data,weighted=FALSE,binary=TRUE)
+  k<-matrix(NA,nrow=nrow(a),ncol=ncol(a))
+  for(i in 1:nrow(a))
+    for(j in 1:ncol(a))
+      if(a[i,j]==b[i,j]){k[i,j]<-a[i,j]}else k[i,j]<-a[i,j]+b[i,j]         
+}else if(!weighted&&!binary)
+{
+  a<-MaST(data,weighted=FALSE,binary=FALSE)
+  b<-ECO(data,weighted=FALSE,binary=FALSE)
+  k<-matrix(NA,nrow=nrow(a),ncol=ncol(a))
   for(i in 1:nrow(a))
     for(j in 1:ncol(a))
       if(a[i,j]==b[i,j])
-      {k[i,j]<-a[i,j]}else k[i,j]<-b[i,j]}
+      {k[i,j]<-a[i,j]}else k[i,j]<-a[i,j]+b[i,j]
+ }
   k
 }
 #----

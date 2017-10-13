@@ -4,7 +4,7 @@
 \alias{ECOplusMaST}
 \title{ECO+MaST Network Filter}
 \usage{
-ECOplusMaST(data = data, weighted = TRUE)
+ECOplusMaST(data = data, weighted = TRUE, binary = FALSE)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
@@ -15,7 +15,7 @@ ECOplusMaST(data = data, weighted = TRUE)
 A sparse association matrix
 }
 \description{
-Applies the ECO neural network filtering combined with the MaST filtering method.
+Applies the ECO neural network filtering method combined with the MaST filtering method.
 }
 \examples{
 weighted_ECOplusMaSTnetwork<-ECO(data)
