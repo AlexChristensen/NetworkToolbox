@@ -4,7 +4,7 @@
 #' @description Applies the Triangulated Maximally Filtered Graph (TMFG) filtering method.
 #' @param data Can be a dataset or a correlation matrix
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous but could be on a continuous, normal distribution.
-#' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produced an unweighted (binary) network.
+#' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network.
 #' @return A sparse association matrix
 #' @examples
 #' weighted_TMFGnetwork<-TMFG(data)
@@ -136,7 +136,7 @@ TMFG <-function (data=data,binary=FALSE,weighted=TRUE)
 #' @description Applies the Maximum Spanning Tree (MaST) filtering method.
 #' @param data Can be a dataset or a correlation matrix
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous but could be on a continuous, normal distribution.
-#' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produced an unweighted (binary) network.
+#' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network.
 #' @return A sparse association matrix
 #' @examples
 #' weighted_MaSTnetwork<-MaST(data)
@@ -225,8 +225,101 @@ ifelse(x!=0,cormat,0)
 colnames(x)<-colnames(cormat)
 round(x,3)
 if(!weighted)
-{ifelse(x!=0,1,0)}
-x
+{x<-ifelse(x!=0,1,0)}
+round(as.matrix(x),3)
+}
+#----
+#' ECO Neural Network Filter
+#' @description Applies the ECO neural network filtering method.
+#' @param data Can be a dataset or a correlation matrix
+#' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network.
+#' @param directed Is the network directed? Defaults to FALSE. Set TRUE if the network is directed.
+#' @return A sparse association matrix
+#' @examples
+#' weighted_undirected_ECOnetwork<-ECO(data)
+#' unweighted_undirected_ECOnetwork<-ECO(data,weighted=FALSE)
+#' weighted_directed_ECOnetwork<-ECO(data,directed=TRUE)
+#' unweighted_directed_ECOnetwork<-ECO(data,weighted=FALSE,directed=TRUE)
+#' @references 
+#' Fallani, F. D. V., Latora, V., & Chavez, M. (2017).
+#' A topological criterion for filtering information in complex brain networks.
+#' PLoS Computational Biology, 13(1), e1005305.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#ECO Neural Network Filter
+ECO <- function (data=data, weighted=TRUE, directed=FALSE)
+{
+  if(nrow(data)==ncol(data)){C<-data}else{C<-cor(data)}
+  n<-ncol(C)
+  S<-C
+  if(directed)
+  {
+    numcon<-3*n
+    ind<-which(C!=0)
+  }else{C<-upper.tri(C,diag=TRUE)
+  numcon<-1.5*n
+  ind<-which(upper.tri(C,diag=TRUE)!=0)}
+  
+  S<-ifelse(C==1,S,0)
+  
+  if(numcon>length(ind))
+  {
+    stop("Input matrix is too sparse")
+  }
+  
+  sorind<-matrix(0,nrow=length(ind),ncol=2)
+  
+  x<-S[ind]
+  y<-ind
+  h<-cbind(ind,S[ind])
+  sorind<-h[order(-h[,2]),]
+  C[sorind[(numcon+1):nrow(sorind),1]]<-0
+  
+  if(directed)
+  {W}else{W<-C+t(C)
+  diag(W)<-1}
+  J<-S+t(S)
+  diag(J)<-1
+  if(weighted)
+  {
+    W<-ifelse(W!=0,J,0)
+  }
+  round(W,3)
+}
+#----
+#' ECO+MaST Network Filter
+#' @description Applies the ECO neural network filtering combined with the MaST filtering method.
+#' @param data Can be a dataset or a correlation matrix
+#' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network.
+#' @return A sparse association matrix
+#' @examples
+#' weighted_ECOplusMaSTnetwork<-ECO(data)
+#' unweighted_ECOplusMaSTnetwork<-ECO(data,weighted=FALSE)
+#' @references 
+#' Fallani, F. D. V., Latora, V., & Chavez, M. (2017).
+#' A topological criterion for filtering information in complex brain networks.
+#' PLoS Computational Biology, 13(1), e1005305.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#ECO Filter + MaST
+ECOplusMaST <- function (data=data, weighted=TRUE)
+{if(weighted)
+{
+  a<-MaST(data)
+  b<-ECO(data)
+  k<-matrix(NA,nrow=nrow(a),ncol(a))
+  for(i in 1:nrow(a))
+    for(j in 1:ncol(a))
+      if(a[i,j]==b[i,j]){k[i,j]<-a[i,j]}else k[i,j]<-b[i,j]
+}else{
+  a<-MaST(data,weighted=FALSE)
+  b<-ECO(data,weighted=FALSE)
+  k<-matrix(NA,nrow=nrow(a),ncol(a))
+  for(i in 1:nrow(a))
+    for(j in 1:ncol(a))
+      if(a[i,j]==b[i,j])
+      {k[i,j]<-a[i,j]}else k[i,j]<-b[i,j]}
+  k
 }
 #----
 #' Semantic Network Cleaner
@@ -351,7 +444,7 @@ Betweenness <- function (A=A,weighted=TRUE)
   }
   BC<-round(as.data.frame(colSums(DP)),0)
   colnames(BC)<-c("BCu")
-  BC}else{print("Weighted not coded.")}
+  BC}else{print("Weighted not coded--use qgraph")}
 }
 #----
 #' Closeness Centrality
@@ -360,8 +453,8 @@ Betweenness <- function (A=A,weighted=TRUE)
 #' @param weighted Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of closeness centrality.
 #' @return A vector of closeness centrality values for each node in the network.
 #' @examples
-#' weighted_CC<-Closeness(A)
-#' unweighted_CC<-Closeness(A,weighted=FALSE)
+#' weighted_LC<-Closeness(A)
+#' unweighted_LC<-Closeness(A,weighted=FALSE)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
@@ -378,11 +471,11 @@ Closeness <- function (A=A,weighted=TRUE)
   {
     C[i]<-1/sum(D[,i])
   }
-  CC<-t(as.data.frame(C)*100)
-  rownames(CC)<-colnames(A)
-  colnames(CC)<-c("CCu")
-  CC<-round(as.data.frame(CC),3)
-  CC}else{print("Weighted not coded.")}
+  LC<-t(as.data.frame(C)*100)
+  rownames(LC)<-colnames(A)
+  colnames(LC)<-c("LCu")
+  LC<-round(as.data.frame(LC),3)
+  LC}else{print("Weighted not coded--use qgraph")}
 }
 #----
 #' Degree
@@ -559,10 +652,10 @@ Distance<-function (A=A,weighted=FALSE)
 }
 #----
 #' Path Lengths
-#' @description Computes average shortest path length (ASPL), eccentricity (E), and diameter (D) of a network (Weighted not coded).
+#' @description Computes global average shortest path length (ASPL), local average shortest path length (ASPLi), eccentricity (E), and diameter (D) of a network (Weighted not coded).
 #' @param A An adjacency matrix of network data.
-#' @param weighted Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measures of ASPL, E, and D.
-#' @return A list of ASPL, E, and D of a network.
+#' @param weighted Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measures of ASPL, ASPLi, E, and D.
+#' @return A list of ASPL, ASPLi, E, and D of a network.
 #' @examples
 #' unweighted_PL<-PathLengths(A)
 #' weighted_PL<-PathLengths(A,weighted=TRUE)
@@ -578,6 +671,7 @@ PathLengths <- function (A=A, weighted=FALSE)
   if(!weighted)
   {D<-Distance(A,weighted=FALSE)
   n<-nrow(D)
+  aspli<-sum(D*(D!=Inf))/(length(which((D!=Inf)!=0)))
   aspl<-sum(sum(D*(D!=Inf))/(length(which((D!=Inf)!=0))))
   Emat<-(D*(D!=Inf))
   ecc<-matrix(nrow=nrow(Emat),ncol=1)
@@ -590,6 +684,50 @@ PathLengths <- function (A=A, weighted=FALSE)
   ecc<-as.data.frame(ecc)
   rownames(ecc)<-colnames(A)
   
-  list(ASPL=aspl,Eccentricity=ecc,Diameter=d)}
+  list(ASPL=aspl,ASPLi=aspli,Eccentricity=ecc,Diameter=d)}
   else{print("Weighted not coded.")}
+}
+#----
+#' Clustering Coefficient
+#' @description Computes global clustering coefficient (CC) and local clustering coefficient (CCi).
+#' @param A An adjacency matrix of network data.
+#' @param weighted Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measures of CC and CCi.
+#' @return A list of CC and CCi.
+#' @examples
+#' unweighted_CC<-ClustCoeff(A)
+#' weighted_CC<-ClustCoeff(A,weighted=TRUE)
+#' @references 
+#' Rubinov, M., & Sporns, O. (2010). 
+#' Complex network measures of brain connectivity: Uses and interpretations. 
+#' Neuroimage, 52(3), 1059-1069.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Clustering Coefficient
+ClustCoeff <- function (A=A, weighted=FALSE)
+{
+  if(!weighted)
+  {n<-ncol(A)
+  A<-ifelse(A!=0,1,0)
+  C<-matrix(0,nrow=n,ncol=1)
+  
+  for(i in 1:n)
+  {
+    v<-which(A[i,]!=0)
+    k<-length(v)
+    if(k >= 2)
+    {
+      S<-A[v,v]
+      C[i]<-sum(S)/(k^2-k)
+    }}
+  C<-round(t(as.data.frame(C)),3)
+  colnames(C)<-colnames(A)
+  rownames(C)<-"[,1]"
+  CC<-mean(C)
+  }else{K<-colSums(A!=0)
+  m<-A^(1/3)
+  cyc<-diag(m%*%m%*%m)
+  K[cyc==0]<-Inf
+  C<-round(cyc/(K*(K-1)),3)
+  CC<-mean(C)}
+  list(CC=CC, CCi=C)
 }

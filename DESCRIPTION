@@ -12,7 +12,6 @@ Imports:
     Matrix,
     qdap,
     devtools,
-    psych
-Suggests:
-   qgraph
+    psych,
+    qgraph
 RoxygenNote: 6.0.1.9000

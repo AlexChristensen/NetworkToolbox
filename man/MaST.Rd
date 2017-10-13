@@ -11,7 +11,7 @@ MaST(data = data, binary = FALSE, weighted = TRUE)
 
 \item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous but could be on a continuous, normal distribution.}
 
-\item{weighted}{Should network be weighted? Defaults to TRUE. Set FALSE to produced an unweighted (binary) network.}
+\item{weighted}{Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network.}
 }
 \value{
 A sparse association matrix
