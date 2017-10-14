@@ -13,7 +13,7 @@ Hybrid(A = A)
 A vector of hybrid centrality values for each node in the network (lower values are more central, higher values are more peripheral).
 }
 \description{
-Computes hybrid centrality of each node in a network (Weigted not coded).
+Computes hybrid centrality of each node in a network.
 }
 \examples{
 HC<-Hybrid(A)

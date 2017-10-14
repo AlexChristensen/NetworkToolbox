@@ -15,7 +15,7 @@ Betweenness(A = A, weighted = TRUE)
 A vector of betweenness centrality values for each node in the network.
 }
 \description{
-Computes betweenness centrlaity of each node in a network (Weighted not coded).
+Computes betweenness centrlaity of each node in a network.
 }
 \examples{
 weighted_BC<-Betweenness(A)

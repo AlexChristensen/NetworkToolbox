@@ -427,7 +427,7 @@ semnetcleaner<-function(data=data)
 }
 #----
 #' Betwenness Centrality
-#' @description Computes betweenness centrlaity of each node in a network (Weighted not coded).
+#' @description Computes betweenness centrlaity of each node in a network.
 #' @param A An adjacency matrix of network data.
 #' @param weighted Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of betwenness centrality.
 #' @return A vector of betweenness centrality values for each node in the network.
@@ -476,11 +476,11 @@ Betweenness <- function (A=A,weighted=TRUE)
   }
   BC<-round(as.data.frame(colSums(DP)),0)
   colnames(BC)<-c("BCu")
-  BC}else{print("Weighted not coded--use qgraph")}
+  BC}else{qgraph::centrality(A)$Betweenness}
 }
 #----
 #' Closeness Centrality
-#' @description Computes closeness centrlaity of each node in a network (weighted not coded).
+#' @description Computes closeness centrlaity of each node in a network.
 #' @param A An adjacency matrix of network data.
 #' @param weighted Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of closeness centrality.
 #' @return A vector of closeness centrality values for each node in the network.
@@ -507,7 +507,7 @@ Closeness <- function (A=A,weighted=TRUE)
   rownames(LC)<-colnames(A)
   colnames(LC)<-c("LCu")
   LC<-round(as.data.frame(LC),3)
-  LC}else{print("Weighted not coded--use qgraph")}
+  LC}else{((qgraph::centrality(A)$Closeness)*100)}
 }
 #----
 #' Degree
@@ -580,7 +580,7 @@ Eigenvector <- function (A=A,weighted=TRUE)
 }
 #----
 #' Hybrid Centrality
-#' @description Computes hybrid centrality of each node in a network (Weigted not coded).
+#' @description Computes hybrid centrality of each node in a network.
 #' @param A An adjacency matrix of network data.
 #' @return A vector of hybrid centrality values for each node in the network (lower values are more central, higher values are more peripheral).
 #' @examples

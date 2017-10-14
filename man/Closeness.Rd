@@ -15,7 +15,7 @@ Closeness(A = A, weighted = TRUE)
 A vector of closeness centrality values for each node in the network.
 }
 \description{
-Computes closeness centrlaity of each node in a network (weighted not coded).
+Computes closeness centrlaity of each node in a network.
 }
 \examples{
 weighted_LC<-Closeness(A)
