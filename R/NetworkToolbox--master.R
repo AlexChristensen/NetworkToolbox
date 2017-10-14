@@ -482,15 +482,16 @@ Betweenness <- function (A=A,weighted=TRUE)
   BC}else{qgraph::centrality(A)$Betweenness}
 }
 #----
-#' Randomized Shortest Paths Betwenness Centrality
+#' Randomized Shortest Paths BC
 #' @description Computes betweenness centrlaity based on randomized shortest paths of each node in a network.
 #' @param A An adjacency matrix of network data.
-#' @param beta Sets beta parameter. Defaults to 0.01 (recommended). Beta > 0.01 the RSPBC gets closer to weighted betweenness centrality (1) and beta < 0.01 RSPBC gets closer to degree (.0001).
+#' @param beta Sets beta parameter. Defaults to 0.01 (recommended). 
+#' Beta > 0.01 the RSPBC gets closer to weighted betweenness centrality (1) and beta < 0.01 RSPBC gets closer to degree (.0001).
 #' @return A vector of randomized shortest paths betweenness centrality values for each node in the network.
 #' @examples
 #' RSPBC<-RSPBC(A, beta=0.01)
 #' @references 
-#' Kivimäki, I., Lebichot, B., Saramäki, J., & Saerens, M. (2016).
+#' Kivimaki, I., Lebichot, B., Saramaki, J., & Saerens, M. (2016).
 #' Two betweenness centrality measures based on Randomized Shortest Paths.
 #' Scientific Reports, 6 (19668), 1-15.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
