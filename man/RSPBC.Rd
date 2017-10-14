@@ -2,7 +2,7 @@
 % Please edit documentation in R/NetworkToolbox--master.R
 \name{RSPBC}
 \alias{RSPBC}
-\title{Randomized Shortest Paths BC}
+\title{Randomized Shortest Paths Betweenness Centrality}
 \usage{
 RSPBC(A = A, beta = 0.01)
 }

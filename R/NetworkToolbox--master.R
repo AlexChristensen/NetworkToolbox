@@ -482,7 +482,7 @@ Betweenness <- function (A=A,weighted=TRUE)
   BC}else{qgraph::centrality(A)$Betweenness}
 }
 #----
-#' Randomized Shortest Paths BC
+#' Randomized Shortest Paths Betweenness Centrality
 #' @description Computes betweenness centrlaity based on randomized shortest paths of each node in a network.
 #' @param A An adjacency matrix of network data.
 #' @param beta Sets beta parameter. Defaults to 0.01 (recommended). 
