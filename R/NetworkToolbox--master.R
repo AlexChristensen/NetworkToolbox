@@ -127,9 +127,10 @@ TMFG <-function (data=data,binary=FALSE,weighted=TRUE)
         }
       }
   }else
-    x<-as.data.frame(x)
+  x<-as.data.frame(x)
   colnames(x)<-colnames(cormat)
   round(x,3)
+  x
 }
 #----
 #' Maximum Spanning Tree
@@ -227,6 +228,7 @@ round(x,3)
 if(!weighted)
 {x<-ifelse(x!=0,1,0)}
 round(as.matrix(x),3)
+x
 }
 #----
 #' ECO Neural Network Filter
@@ -251,7 +253,7 @@ round(as.matrix(x),3)
 #' PLoS Computational Biology, 13(1), e1005305.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#ECO Neural Network Filter
+#ECO Neural Network Filter----
 ECO <- function (data=data, weighted=TRUE, binary=FALSE, directed=FALSE)
 {
   if(nrow(data)==ncol(data)){C<-data}else
@@ -293,6 +295,7 @@ ECO <- function (data=data, weighted=TRUE, binary=FALSE, directed=FALSE)
   W<-as.data.frame(W)
   colnames(W)<-colnames(data)
   round(W,3)
+  W
 }
 #----
 #' ECO+MaST Network Filter
@@ -312,7 +315,7 @@ ECO <- function (data=data, weighted=TRUE, binary=FALSE, directed=FALSE)
 #' PLoS Computational Biology, 13(1), e1005305.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#ECO Filter + MaST
+#ECO Filter + MaST----
 ECOplusMaST <- function (data=data, weighted=TRUE, binary=FALSE)
 {
   if(weighted&&!binary)
@@ -479,6 +482,58 @@ Betweenness <- function (A=A,weighted=TRUE)
   BC}else{qgraph::centrality(A)$Betweenness}
 }
 #----
+#' Randomized Shortest Paths Betwenness Centrality
+#' @description Computes betweenness centrlaity based on randomized shortest paths of each node in a network.
+#' @param A An adjacency matrix of network data.
+#' @param beta Sets beta parameter. Defaults to 0.01 (recommended). Beta > 0.01 the RSPBC gets closer to weighted betweenness centrality (1) and beta < 0.01 RSPBC gets closer to degree (.0001).
+#' @return A vector of randomized shortest paths betweenness centrality values for each node in the network.
+#' @examples
+#' RSPBC<-RSPBC(A, beta=0.01)
+#' @references 
+#' Kivimäki, I., Lebichot, B., Saramäki, J., & Saerens, M. (2016).
+#' Two betweenness centrality measures based on Randomized Shortest Paths.
+#' Scientific Reports, 6 (19668), 1-15.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Randomized Shortest Paths Betweennesss Centrality----
+RSPBC <- function (A=A, beta=0.01)
+{
+  n<-ncol(A)
+  e<-matrix(1,nrow=n,ncol=1)
+  I<-diag(1,nrow=nrow(A),ncol=ncol(A))
+  degs<-A%*%e
+  
+  if(any(degs==0))
+  {stop("Graph contains unconnected nodes")}
+  
+  D1<-matrix(0,nrow=nrow(I),ncol=ncol(I))
+  for(i in 1:nrow(I))
+    for(j in 1:ncol(I))
+      if(I[i,j]==1)
+      {D1[i,j]<-I[i,j]/degs[i]}
+  
+  Pref<-D1%*%A
+  
+  bets<-matrix(0,nrow=n,ncol=1)
+  C<-1/A
+  C[is.infinite(C)]<-0
+  W<-Pref*exp(-(beta)*C)
+  rsums<-rowSums(W)
+  
+  
+  Y<-I-W
+  Z<-solve(Y,I)
+  Zdiv<-1/Z
+  Zdiv[Zdiv==Inf]<-0
+  DZdiv<-matrix(0,nrow=nrow(Zdiv),ncol=ncol(Zdiv))
+  diag(DZdiv)<-diag(Zdiv)
+  
+  bet<-diag(Z%*%t(Zdiv-n*DZdiv)%*%Z)
+  bet<-round(as.data.frame(bet),2)
+  rownames(bet)<-colnames(A)
+  bet
+}
+#----
 #' Closeness Centrality
 #' @description Computes closeness centrlaity of each node in a network.
 #' @param A An adjacency matrix of network data.
@@ -565,8 +620,7 @@ Strength <- function (A=A)
 #' Neuroimage, 52(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#Eigenvector
-
+#Eigenvector----
 Eigenvector <- function (A=A,weighted=TRUE)
 {
   if (!weighted){A<-ifelse(A[]!=0,1,0)
@@ -636,6 +690,7 @@ Hybrid <- function (A=A)
 #' Neuroimage, 52(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
+#Centrality List----
 CentList <- function (A=A, weighted=TRUE)
 {
   if(!weighted){BCu<-Betweenness(A,weighted=FALSE)
@@ -659,7 +714,7 @@ CentList <- function (A=A, weighted=TRUE)
 #' Neuroimage, 52(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#Distance:
+#Distance----
 Distance<-function (A=A,weighted=FALSE)
 {
   if(!weighted)
@@ -697,7 +752,7 @@ Distance<-function (A=A,weighted=FALSE)
 #' Neuroimage, 52(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#Path Lengths
+#Path Lengths----
 PathLengths <- function (A=A, weighted=FALSE)
 {
   if(!weighted)
@@ -734,7 +789,7 @@ PathLengths <- function (A=A, weighted=FALSE)
 #' Neuroimage, 52(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#Clustering Coefficient
+#Clustering Coefficient----
 ClustCoeff <- function (A=A, weighted=FALSE)
 {
   if(!weighted)
