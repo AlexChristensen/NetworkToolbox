@@ -4,20 +4,20 @@
 \alias{ECOplusMaST}
 \title{ECO+MaST Network Filter}
 \usage{
-ECOplusMaST(data = data, weighted = TRUE, binary = FALSE)
+ECOplusMaST(data, weighted = TRUE, binary = FALSE)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
 
-\item{weighted}{Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network.}
+\item{weighted}{Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network}
 
-\item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous but could be on a continuous, normal distribution.}
+\item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 }
 \value{
 A sparse association matrix
 }
 \description{
-Applies the ECO neural network filtering method combined with the MaST filtering method.
+Applies the ECO neural network filtering method combined with the MaST filtering method
 }
 \examples{
 weighted_ECOplusMaSTnetwork<-ECOplusMaST(data)

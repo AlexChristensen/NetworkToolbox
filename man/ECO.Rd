@@ -4,22 +4,22 @@
 \alias{ECO}
 \title{ECO Neural Network Filter}
 \usage{
-ECO(data = data, weighted = TRUE, binary = FALSE, directed = FALSE)
+ECO(data, weighted = TRUE, binary = FALSE, directed = FALSE)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
 
-\item{weighted}{Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network.}
+\item{weighted}{Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network}
 
-\item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous but could be on a continuous, normal distribution.}
+\item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 
-\item{directed}{Is the network directed? Defaults to FALSE. Set TRUE if the network is directed.}
+\item{directed}{Is the network directed? Defaults to FALSE. Set TRUE if the network is directed}
 }
 \value{
 A sparse association matrix
 }
 \description{
-Applies the ECO neural network filtering method.
+Applies the ECO neural network filtering method
 }
 \examples{
 weighted_undirected_ECOnetwork<-ECO(data)

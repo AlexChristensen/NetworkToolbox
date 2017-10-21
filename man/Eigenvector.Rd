@@ -4,18 +4,18 @@
 \alias{Eigenvector}
 \title{Eigenvector Centrality}
 \usage{
-Eigenvector(A = A, weighted = TRUE)
+Eigenvector(A, weighted = TRUE)
 }
 \arguments{
-\item{A}{An adjacency matrix of network data.}
+\item{A}{An adjacency matrix of network data}
 
-\item{weighted}{Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of eigenvector centrality.}
+\item{weighted}{Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of eigenvector centrality}
 }
 \value{
-A vector of eigenvector centrality values for each node in the network.
+A vector of eigenvector centrality values for each node in the network
 }
 \description{
-Computes eigenvector centrality of each node in a network.
+Computes eigenvector centrality of each node in a network
 }
 \examples{
 weighted_EC<-Eigenvector(A)

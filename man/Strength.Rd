@@ -4,16 +4,16 @@
 \alias{Strength}
 \title{Node Strength}
 \usage{
-Strength(A = A)
+Strength(A)
 }
 \arguments{
-\item{A}{An adjacency matrix of network data.}
+\item{A}{An adjacency matrix of network data}
 }
 \value{
-A vector of strength values for each node in the network.
+A vector of strength values for each node in the network
 }
 \description{
-Computes strength of each node in a network.
+Computes strength of each node in a network
 }
 \examples{
 Str<-Strength(A)

@@ -4,20 +4,20 @@
 \alias{TMFG}
 \title{Triangulated Maximally Filtered Graph}
 \usage{
-TMFG(data = data, binary = FALSE, weighted = TRUE)
+TMFG(data, binary = FALSE, weighted = TRUE)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
 
-\item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous but could be on a continuous, normal distribution.}
+\item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 
-\item{weighted}{Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network.}
+\item{weighted}{Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network}
 }
 \value{
 A sparse association matrix
 }
 \description{
-Applies the Triangulated Maximally Filtered Graph (TMFG) filtering method.
+Applies the Triangulated Maximally Filtered Graph (TMFG) filtering method
 }
 \examples{
 weighted_TMFGnetwork<-TMFG(data)

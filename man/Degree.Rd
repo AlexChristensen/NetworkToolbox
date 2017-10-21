@@ -4,16 +4,16 @@
 \alias{Degree}
 \title{Degree}
 \usage{
-Degree(A = A)
+Degree(A)
 }
 \arguments{
-\item{A}{An adjacency matrix of network data.}
+\item{A}{An adjacency matrix of network data}
 }
 \value{
-A vector of degree values for each node in the network.
+A vector of degree values for each node in the network
 }
 \description{
-Computes degree of each node in a network.
+Computes degree of each node in a network
 }
 \examples{
 Deg<-Degree(A)

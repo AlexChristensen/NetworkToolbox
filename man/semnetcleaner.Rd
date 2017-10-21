@@ -4,22 +4,23 @@
 \alias{semnetcleaner}
 \title{Semantic Network Cleaner}
 \usage{
-semnetcleaner(data = data)
+semnetcleaner(data)
 }
 \arguments{
-\item{data}{A dataset of verbal fluency or linguistic data.}
+\item{data}{A dataset of verbal fluency or linguistic data (read in data "as.is")}
 }
 \value{
 A binary matrix of responses (rows = participants, cols = responses)
 }
 \description{
-An automated cleaning function for semantic network data (still in the alpha stage).
+An automated cleaning function for semantic network data (still in the alpha stage)
 }
 \examples{
+data<-read.csv(file.choose(),header=FALSE,sep=",",as.is=TRUE)
 responsematrix<-semnetcleaner(data)
 }
 \references{
-qdap package: Hornik, K., & Murdoch, D. (2010).
+Hornik, K., & Murdoch, D. (2010).
 Watch Your Spelling!.
 The R Journal, 3(2), 22-28.
 }

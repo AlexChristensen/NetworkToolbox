@@ -4,18 +4,18 @@
 \alias{Closeness}
 \title{Closeness Centrality}
 \usage{
-Closeness(A = A, weighted = TRUE)
+Closeness(A, weighted = TRUE)
 }
 \arguments{
-\item{A}{An adjacency matrix of network data.}
+\item{A}{An adjacency matrix of network data}
 
-\item{weighted}{Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of closeness centrality.}
+\item{weighted}{Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of closeness centrality}
 }
 \value{
-A vector of closeness centrality values for each node in the network.
+A vector of closeness centrality values for each node in the network
 }
 \description{
-Computes closeness centrlaity of each node in a network.
+Computes closeness centrlaity of each node in a network
 }
 \examples{
 weighted_LC<-Closeness(A)

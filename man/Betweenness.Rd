@@ -4,18 +4,18 @@
 \alias{Betweenness}
 \title{Betwenness Centrality}
 \usage{
-Betweenness(A = A, weighted = TRUE)
+Betweenness(A, weighted = TRUE)
 }
 \arguments{
-\item{A}{An adjacency matrix of network data.}
+\item{A}{An adjacency matrix of network data}
 
-\item{weighted}{Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of betwenness centrality.}
+\item{weighted}{Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of betwenness centrality}
 }
 \value{
-A vector of betweenness centrality values for each node in the network.
+A vector of betweenness centrality values for each node in the network
 }
 \description{
-Computes betweenness centrlaity of each node in a network.
+Computes betweenness centrlaity of each node in a network
 }
 \examples{
 weighted_BC<-Betweenness(A)

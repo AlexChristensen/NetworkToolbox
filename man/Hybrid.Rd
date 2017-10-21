@@ -4,16 +4,16 @@
 \alias{Hybrid}
 \title{Hybrid Centrality}
 \usage{
-Hybrid(A = A)
+Hybrid(A)
 }
 \arguments{
-\item{A}{An adjacency matrix of network data.}
+\item{A}{An adjacency matrix of network data}
 }
 \value{
-A vector of hybrid centrality values for each node in the network (lower values are more central, higher values are more peripheral).
+A vector of hybrid centrality values for each node in the network (higher values are more central, lower values are more peripheral)
 }
 \description{
-Computes hybrid centrality of each node in a network.
+Computes hybrid centrality of each node in a network
 }
 \examples{
 HC<-Hybrid(A)

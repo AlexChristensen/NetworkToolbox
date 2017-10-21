@@ -2,20 +2,20 @@
 % Please edit documentation in R/NetworkToolbox--master.R
 \name{PathLengths}
 \alias{PathLengths}
-\title{Path Lengths}
+\title{Characteristic Path Lengths}
 \usage{
-PathLengths(A = A, weighted = FALSE)
+PathLengths(A, weighted = FALSE)
 }
 \arguments{
-\item{A}{An adjacency matrix of network data.}
+\item{A}{An adjacency matrix of network data}
 
-\item{weighted}{Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measures of ASPL, ASPLi, E, and D.}
+\item{weighted}{Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measures of ASPL, ASPLi, ecc, and D}
 }
 \value{
-A list of ASPL, ASPLi, E, and D of a network.
+Returns a list of ASPL, ASPLi, ecc, and D of a network
 }
 \description{
-Computes global average shortest path length (ASPL), local average shortest path length (ASPLi), eccentricity (E), and diameter (D) of a network (Weighted not coded).
+Computes global average shortest path length (ASPL), local average shortest path length (ASPLi), eccentricity (ecc), and diameter (D) of a network (Weighted not coded)
 }
 \examples{
 unweighted_PL<-PathLengths(A)

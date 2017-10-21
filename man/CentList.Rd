@@ -4,18 +4,18 @@
 \alias{CentList}
 \title{List of Centrality Measures}
 \usage{
-CentList(A = A, weighted = TRUE)
+CentList(A, weighted = TRUE)
 }
 \arguments{
-\item{A}{An adjacency matrix of network data.}
+\item{A}{An adjacency matrix of network data}
 
-\item{weighted}{Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted list of centrality measures.}
+\item{weighted}{Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted list of centrality measures}
 }
 \value{
-Returns a list of betweenness, closeness, degree (weighted = strength), and eigenvector centralities.
+Returns a list of betweenness, closeness, degree (weighted = strength), and eigenvector centralities
 }
 \description{
-Computes centrality measures of the network (Weighted not coded).
+Computes centrality measures of the network
 }
 \examples{
 weighted_centralitylist<-CentList(A)

@@ -4,18 +4,18 @@
 \alias{ClustCoeff}
 \title{Clustering Coefficient}
 \usage{
-ClustCoeff(A = A, weighted = FALSE)
+ClustCoeff(A, weighted = FALSE)
 }
 \arguments{
-\item{A}{An adjacency matrix of network data.}
+\item{A}{An adjacency matrix of network data}
 
-\item{weighted}{Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measures of CC and CCi.}
+\item{weighted}{Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measures of CC and CCi}
 }
 \value{
-A list of CC and CCi.
+Returns a list of CC and CCi
 }
 \description{
-Computes global clustering coefficient (CC) and local clustering coefficient (CCi).
+Computes global clustering coefficient (CC) and local clustering coefficient (CCi)
 }
 \examples{
 unweighted_CC<-ClustCoeff(A)
