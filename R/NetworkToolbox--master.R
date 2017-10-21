@@ -425,7 +425,8 @@ semnetcleaner<-function(data)
 #' Bootstrapped Network Preprocessing
 #' @description Bootstraps the sample to identify the most stable correlations
 #' @param data A set of data
-#' @param n Number of bootstrap iterations. Defaults to 100 iterations
+#' @param iter Number of bootstrap iterations. Defaults to 100 iterations
+#' @param n Number of people in each bootstrapped sample. Defaults to 100
 #' @param network Should the matrix be filtered? Defaults to "none" (no filter)
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @return If no filter is selected, then a matrix of the correlation standard deviations (larger values are smaller standard deviations; i.e., 1-sd).
@@ -437,28 +438,30 @@ semnetcleaner<-function(data)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Network Preprocessing Bootstrap----
-prepboot <- function (data, n = 100, network = "none", binary = FALSE)
+prepboot <- function (data, iter = 100, n = 100, network = "none", binary = FALSE)
 {
   if(nrow(data)==ncol(data)){stop("Input must be a dataset")}else
     if(binary){realmat<-psych::tetrachoric(data)$rho}else{realmat<-cor(data)}
   mat<-matrix(0,nrow=nrow(data),ncol=ncol(data)) #Initialize bootstrap matrix
   samps<-array(0,c(nrow=nrow(realmat),ncol=ncol(realmat),n)) #Initialize sample matrix
-  for(i in 1:n) #Generate array of bootstrapped samples
+  for(i in 1:iter) #Generate array of bootstrapped samples
   {
-    f<-round(runif(n,min=1,max=1000),0)
-    set.seed(f[round(runif(1,min=1,max=n),0)])
-    mat<-data[round(runif(nrow(data),min=1,max=nrow(data)),0),]
-    samps[,,i]<-cor(mat)
+    f<-round(runif(i,min=1,max=1000),0)
+    set.seed(f[round(runif(i,min=1,max=length(f)),0)])
+    mat<-data[round(runif(n,min=1,max=nrow(data)),0),]
+    if(any(colSums(mat)<=1))
+    {stop("Increase bootstapped sample size: not enough observations")}
+    samps[,,i]<-abs(realmat-cor(mat))
     samps
   }
   
-  #SD matrix
-  sdmat<-matrix(0,nrow=nrow(realmat),ncol=ncol(realmat)) #Initialize SD matrix
+  #Mean matrix
+  meanmat<-matrix(0,nrow=nrow(realmat),ncol=ncol(realmat)) #Initialize Mean matrix
   for(j in 1:nrow(realmat))
     for(k in 1:ncol(realmat))
-    {sdmat[j,k]<-sd(samps[j,k,]) #Compute SD matrix
-    diag(sdmat)<-1}
-  invmat<-1-sdmat #Inverse matrix to make small values large
+    {meanmat[j,k]<-mean(samps[j,k,]) #Compute Mean matrix
+    diag(meanmat)<-1
+    invmat<-1-meanmat} #Inverse matrix to make small values large
   
   if(network=="TMFG"){j<-TMFG(invmat)
   for(r in 1:nrow(j)) #Replace with values from real matrix
@@ -477,9 +480,6 @@ prepboot <- function (data, n = 100, network = "none", binary = FALSE)
     for(z in 1:ncol(j))
       if(j[r,z]!=0){j[r,z]<-realmat[r,z]}
   }else if(network=="none"){j<-invmat}
-  for(r in 1:nrow(j)) #Replace with values from real matrix
-    for(z in 1:ncol(j))
-      if(j[r,z]!=0){j[r,z]<-realmat[r,z]}
   j<-as.data.frame(j)
   colnames(j)<-colnames(data)
   as.matrix(j)

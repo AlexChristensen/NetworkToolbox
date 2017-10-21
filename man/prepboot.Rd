@@ -4,12 +4,14 @@
 \alias{prepboot}
 \title{Bootstrapped Network Preprocessing}
 \usage{
-prepboot(data, n = 100, network = "none", binary = FALSE)
+prepboot(data, iter = 100, n = 100, network = "none", binary = FALSE)
 }
 \arguments{
 \item{data}{A set of data}
 
-\item{n}{Number of bootstrap iterations. Defaults to 100 iterations}
+\item{iter}{Number of bootstrap iterations. Defaults to 100 iterations}
+
+\item{n}{Number of people in each bootstrapped sample. Defaults to 100}
 
 \item{network}{Should the matrix be filtered? Defaults to "none" (no filter)}
 
