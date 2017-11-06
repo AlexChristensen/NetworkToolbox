@@ -12,14 +12,18 @@ CentList(A, weighted = TRUE)
 \item{weighted}{Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted list of centrality measures}
 }
 \value{
-Returns a list of betweenness, closeness, degree (weighted = strength), and eigenvector centralities
+Returns a list of betweenness, closeness, degree (weighted = strength), eigenvector, and leverage centralities
 }
 \description{
 Computes centrality measures of the network
 }
 \examples{
+\dontrun{
+
 weighted_centralitylist<-CentList(A)
+
 unweighted_centralitylist<-CentList(A,weighted=FALSE)
+}
 }
 \references{
 Rubinov, M., & Sporns, O. (2010). 

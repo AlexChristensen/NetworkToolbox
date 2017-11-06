@@ -19,6 +19,7 @@ Computes global clustering coefficient (CC) and local clustering coefficient (CC
 }
 \examples{
 unweighted_CC<-ClustCoeff(A)
+
 weighted_CC<-ClustCoeff(A,weighted=TRUE)
 }
 \references{

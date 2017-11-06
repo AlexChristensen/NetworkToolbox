@@ -19,6 +19,7 @@ Computes distance matrix of the network (Weighted not coded)
 }
 \examples{
 unweighted_D<-Distance(A)
+
 weighted_D<-Distance(A,weighted=TRUE)
 }
 \references{

@@ -21,8 +21,11 @@ Applies the ECO neural network filtering method combined with the MaST filtering
 }
 \examples{
 weighted_ECOplusMaSTnetwork<-ECOplusMaST(data)
+
 weighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(data,binary=TRUE)
+
 unweighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(data,weighted=FALSE)
+
 unweighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(data,binary=TRUE,weighted=FALSE)
 }
 \references{

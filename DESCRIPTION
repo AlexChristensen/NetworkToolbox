@@ -1,9 +1,9 @@
 Package: NetworkToolbox
-Title: A Network Analysis Toolbox with Various Network Tools
-Version: 0.0.1.0
+Title: Network Filtering Methods and Measures
+Version: 0.0.1.1
 Author: Alexander Christensen
 Maintainer: Alexander Christensen <alexpaulchristensen@gmail.com>
-Description: This package implements numerous network filtering methods, several network measures, a prototype linguistic network cleaner, and a prototype bootstrapped network preprocessing function.
+Description: Implements numerous network filtering methods (TMFG; Massara, Di Matteo, & Aste (2016) <doi:10.1093/comnet/cnw015>, MaST; Chu & Liu (1965) and Edmonds (1967) <doi:10.6028/jres.071B.032>, ECO; Fallani, Latora, & Chavez (2017) <doi:10.1371/journal.pcbi.1005305>, and ECO+MaST; Fallani, Latora, & Chavez (2017) <doi:10.1371/journal.pcbi.1005305>), and several network measures (centrality, characteristic path length, clustering coefficient, and edge replication; Rubinov and Sporns (2010) <doi:10.1016/j.neuroimage.2009.10.003>). This package also includes a prototype bootstrap preprocessing technique for networks.
 Depends: R (>= 3.3.0)
 License: GPL (>= 3.0)
 Encoding: UTF-8

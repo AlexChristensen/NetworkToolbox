@@ -19,6 +19,7 @@ Computes global average shortest path length (ASPL), local average shortest path
 }
 \examples{
 unweighted_PL<-PathLengths(A)
+
 weighted_PL<-PathLengths(A,weighted=TRUE)
 }
 \references{

@@ -21,8 +21,11 @@ Applies the Maximum Spanning Tree (MaST) filtering method
 }
 \examples{
 weighted_MaSTnetwork<-MaST(data)
+
 weighted_binary_MaSTnetwork<-MaST(data,binary=TRUE)
+
 unweighted_MaSTnetwork<-MaST(data,weighted=FALSE)
+
 unweighted_binary_MaSTnetwork<-MaST(data,binary=TRUE,weighted=FALSE)
 }
 \references{

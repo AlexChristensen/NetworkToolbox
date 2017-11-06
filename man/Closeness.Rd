@@ -18,8 +18,12 @@ A vector of closeness centrality values for each node in the network
 Computes closeness centrlaity of each node in a network
 }
 \examples{
+\dontrun{
+
 weighted_LC<-Closeness(A)
+
 unweighted_LC<-Closeness(A,weighted=FALSE)
+}
 }
 \references{
 Rubinov, M., & Sporns, O. (2010). 

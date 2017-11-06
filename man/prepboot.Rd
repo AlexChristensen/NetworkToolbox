@@ -4,30 +4,30 @@
 \alias{prepboot}
 \title{Bootstrapped Network Preprocessing}
 \usage{
-prepboot(data, iter = 100, n = 100, network = "none", binary = FALSE)
+prepboot(data, method, binary = FALSE, iter = 1000, a = 0.05)
 }
 \arguments{
 \item{data}{A set of data}
 
-\item{iter}{Number of bootstrap iterations. Defaults to 100 iterations}
-
-\item{n}{Number of people in each bootstrapped sample. Defaults to 100}
-
-\item{network}{Should the matrix be filtered? Defaults to "none" (no filter)}
+\item{method}{A network filtering method}
 
 \item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
+
+\item{iter}{Number of bootstrap iterations. Defaults to 1000 iterations}
+
+\item{a}{Alpha to be used for determining the critical value of correlation coefficients}
 }
 \value{
-If no filter is selected, then a matrix of the correlation standard deviations (larger values are smaller standard deviations; i.e., 1-sd).
-If filter is selected, then a weighted adjacency matrix is produced with the correlations of the most stable connections in the network (i.e., smallest standard deviations)
+A correlation matrix of the mean bootstrapped network
 }
 \description{
 Bootstraps the sample to identify the most stable correlations
 }
 \examples{
-sdmat<-prepboot(data)
-tmfgfilteredmat<-prepboot(data, network = "TMFG")
-dichtomoussdmat<-prepboot(data, binary = TRUE)
+\dontrun{
+
+prepTMFG<-prepboot(data,method="TMFG")
+}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

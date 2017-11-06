@@ -19,6 +19,7 @@ Computes eigenvector centrality of each node in a network
 }
 \examples{
 weighted_EC<-Eigenvector(A)
+
 unweighted_EC<-Eigenvector(A,weighted=FALSE)
 }
 \references{

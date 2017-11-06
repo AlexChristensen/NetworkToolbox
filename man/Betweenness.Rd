@@ -19,6 +19,7 @@ Computes betweenness centrlaity of each node in a network
 }
 \examples{
 weighted_BC<-Betweenness(A)
+
 unweighted_BC<-Betweenness(A,weighted=FALSE)
 }
 \references{
