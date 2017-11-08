@@ -14,7 +14,7 @@ TMFG(data, binary = FALSE, weighted = TRUE)
 \item{weighted}{Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network}
 }
 \value{
-A sparse association matrix
+Returns a list of the adjacency matrix (A) and separators (sep)
 }
 \description{
 Applies the Triangulated Maximally Filtered Graph (TMFG) filtering method

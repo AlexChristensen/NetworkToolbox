@@ -9,13 +9,13 @@ prepboot(data, method, binary = FALSE, iter = 1000, a = 0.05)
 \arguments{
 \item{data}{A set of data}
 
-\item{method}{A network filtering method}
+\item{method}{A network filtering method (e.g, "TMFG", "MaST", "ECO", "ECOplusMaST")}
 
 \item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 
 \item{iter}{Number of bootstrap iterations. Defaults to 1000 iterations}
 
-\item{a}{Alpha to be used for determining the critical value of correlation coefficients}
+\item{a}{Alpha to be used for determining the critical value of correlation coefficients. Defaults to .05}
 }
 \value{
 A correlation matrix of the mean bootstrapped network
