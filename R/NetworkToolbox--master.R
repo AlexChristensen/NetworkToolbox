@@ -47,7 +47,7 @@ TMFG <-function (data,binary=FALSE,weighted=TRUE)
   tri<-matrix(nrow=((2*n)-4),ncol=3) #initializaes triangles
   separators<-matrix(nrow=n-4,ncol=3)#initialize list of 3-cliques (non-face triangles)
   #find 3 vertices with largest strength
-  #s<-colSums(cormat*(cormat>mean(matrix(cormat,nrow=1)))*1)
+  #s<-colSums(cormat*(cormat>mean(matrix(cormat,nrow=1)))*1) ##old s
   s<-colSums(cormat*(cormat>mean(matrix(unlist(cormat),nrow=1)))*1)
   in_v[1:4]<-order(s,decreasing=TRUE)[1:4]
   ou_v<-setdiff(1:nrow(in_v),in_v)
@@ -793,9 +793,9 @@ pathlengths <- function (A, weighted=FALSE)
   if(!weighted)
   {D<-distance(A,weighted=FALSE)
   n<-nrow(D)
-  aspli<-colSums(D*(D!=Inf))/(ncol(D))
-  aspl<-sum(sum(D*(D!=Inf))/(length(which((D!=Inf)!=0))))
-  Emat<-(D*(D!=Inf))
+  aspli<-colSums(D*(D!=0))/(ncol(D)-1)
+  aspl<-mean(aspli)
+  Emat<-(D*(D!=0))
   ecc<-matrix(nrow=nrow(Emat),ncol=1)
   for(i in 1:nrow(Emat))
   {
