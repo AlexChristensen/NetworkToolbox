@@ -41,7 +41,7 @@ unweighted_directed_binary_ECOnetwork<-ECO(data,weighted=FALSE,directed=TRUE,bin
 \references{
 Fallani, F. D. V., Latora, V., & Chavez, M. (2017).
 A topological criterion for filtering information in complex brain networks.
-PLoS Computational Biology, 13(1), e1005305.
+\emph{PLoS Computational Biology}, 13(1), e1005305.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

@@ -23,7 +23,7 @@ rspbc<-rspbc(A, beta=0.01)
 \references{
 Kivimaki, I., Lebichot, B., Saramaki, J., & Saerens, M. (2016).
 Two betweenness centrality measures based on Randomized Shortest Paths.
-Scientific Reports, 6 (19668), 1-15.
+\emph{Scientific Reports}, 6 (19668), 1-15.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

@@ -25,7 +25,7 @@ unweighted_lev<-leverage(A, weighted=FALSE)
 \references{
 Joyce, K. E., Laurienti, P. J., Burdette, J. H., & Hayasaka, S. (2010).
 A new measure of centrality for brain networks. 
-PLoS One, 5(8), e12200.
+\emph{PLoS One}, 5(8), e12200.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

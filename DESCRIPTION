@@ -13,5 +13,6 @@ Imports:
     qdap,
     devtools,
     psych,
-    qgraph
+    qgraph,
+    corrplot
 RoxygenNote: 6.0.1.9000

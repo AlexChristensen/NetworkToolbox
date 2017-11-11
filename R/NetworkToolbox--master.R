@@ -17,7 +17,7 @@
 #' @references 
 #' Massara, G. P., Di Matteo, T., & Aste, T. (2016).
 #' Network filtering for big data: Triangulated maximally filtered graph.
-#' Journal of Complex Networks, 5(2), 161-178.
+#' \emph{Journal of Complex Networks}, 5(2), 161-178.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @importFrom stats cor sd runif qt
 #' @export
@@ -265,7 +265,7 @@ return(x)
 #' @references 
 #' Fallani, F. D. V., Latora, V., & Chavez, M. (2017).
 #' A topological criterion for filtering information in complex brain networks.
-#' PLoS Computational Biology, 13(1), e1005305.
+#' \emph{PLoS Computational Biology}, 13(1), e1005305.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #ECO Neural Network Filter----
@@ -330,7 +330,7 @@ ECO <- function (data, weighted=TRUE, binary=FALSE, directed=FALSE)
 #' @references 
 #' Fallani, F. D. V., Latora, V., & Chavez, M. (2017).
 #' A topological criterion for filtering information in complex brain networks.
-#' PLoS Computational Biology, 13(1), e1005305.
+#' \emph{PLoS Computational Biology}, 13(1), e1005305.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #ECO Filter + MaST----
@@ -388,15 +388,15 @@ ECOplusMaST <- function (data, weighted=TRUE, binary=FALSE)
 #' @references 
 #' Epskamp, S., Cramer, A. O., Waldorp, L. J., Schmittmann, V. D., & Borsboom, D. (2012).
 #' qgraph: Network visualizations of relationships in psychometric data.
-#' Journal of Statistical Software, 48(4), 1-18.
+#' \emph{Journal of Statistical Software}, 48(4), 1-18.
 #' 
 #' Opsahl, T., Agneessens, F., & Skvoretz, J. (2010).
 #' Node centrality in weighted networks: Generalizing degree and shortest paths.
-#' Social networks, 32(3), 245-251.
+#' \emph{Social Networks}, 32(3), 245-251.
 #' 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' Neuroimage, 52(3), 1059-1069.
+#' \emph{Neuroimage}, 52(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Betweenness Centrality----
@@ -451,7 +451,7 @@ betweenness <- function (A,weighted=TRUE)
 #' @references 
 #' Kivimaki, I., Lebichot, B., Saramaki, J., & Saerens, M. (2016).
 #' Two betweenness centrality measures based on Randomized Shortest Paths.
-#' Scientific Reports, 6 (19668), 1-15.
+#' \emph{Scientific Reports}, 6 (19668), 1-15.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Randomized Shortest Paths Betweennesss Centrality----
@@ -520,7 +520,7 @@ rspbc <- function (A, beta=0.01)
 #' 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' Neuroimage, 52(3), 1059-1069.
+#' \emph{Neuroimage}, 52(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export 
 #Closeness Centrality----
@@ -552,7 +552,7 @@ closeness <- function (A,weighted=TRUE)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' Neuroimage, 52(3), 1059-1069.
+#' \emph{Neuroimage}, 52(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Degree----
@@ -576,7 +576,7 @@ degree <- function (A)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' Neuroimage, 52(3), 1059-1069.
+#' \emph{Neuroimage}, 52(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Node Strength----
@@ -602,7 +602,7 @@ strength <- function (A)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' Neuroimage, 52(3), 1059-1069.
+#' \emph{Neuroimage}, 52(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Eigenvector----
@@ -633,8 +633,7 @@ eigenvector <- function (A,weighted=TRUE)
 #' @references 
 #' Joyce, K. E., Laurienti, P. J., Burdette, J. H., & Hayasaka, S. (2010).
 #' A new measure of centrality for brain networks. 
-#' PLoS One, 5(8), e12200.
-#' 
+#' \emph{PLoS One}, 5(8), e12200.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export 
 #Leverage Centrality
@@ -667,7 +666,7 @@ leverage <- function (A, weighted=TRUE)
 #' @references 
 #' Pozzi, F., Di Matteo, T., & Aste, T. (2013).
 #' Spread of risk across financial markets: Better to invest in the peripheries. 
-#' Scientific Reports, 3(1655), 1-7.
+#' \emph{Scientific Reports}, 3(1655), 1-7.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Hybrid Centality----
@@ -723,7 +722,7 @@ hybrid <- function (A)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' Neuroimage, 52(3), 1059-1069.
+#' \emph{Neuroimage}, 52(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Centrality List----
@@ -757,7 +756,7 @@ centlist <- function (A, weighted=TRUE)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' Neuroimage, 52(3), 1059-1069.
+#' \emph{Neuroimage, 52(3)}, 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Distance----
@@ -798,7 +797,7 @@ distance<-function (A,weighted=FALSE)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' Neuroimage, 52(3), 1059-1069.
+#' \emph{Neuroimage}, 52(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Path Lengths----
@@ -839,7 +838,7 @@ pathlengths <- function (A, weighted=FALSE)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' Neuroimage, 52(3), 1059-1069.
+#' \emph{Neuroimage}, 52(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Clustering Coefficient----
@@ -966,12 +965,20 @@ conn <- function (A)
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param iter Number of bootstrap iterations. Defaults to 1000 iterations
 #' @param a Alpha to be used for determining the critical value of correlation coefficients. Defaults to .05
-#' @return A correlation matrix of the mean bootstrapped network
+#' @return Returns a list that includes a correlation matrix of the mean bootstrapped network (bootmat) and reliabilities of the connections in the network (bootrel)
 #' @examples
 #' \dontrun{
 #' 
 #' prepTMFG<-prepboot(data,method="TMFG")
 #' }
+#' @references
+#' Tumminello, M., Coronnello, C., Lillo, F., Micciche, S., & Mantegna, R. N. (2007).
+#' Spanning trees and bootstrap reliability estimation in correlation-based networks.
+#' \emph{International Journal of Bifurcation and Chaos}, 17(7), 2319-2329.
+#' 
+#' Wei, T. & Simko, V.(2017).
+#' R package "corrplot": Visualization of a correlation matrix (Version 0.84).
+#' Available from <https://github.com/taiyun/corrplot>
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Network Preprocessing Bootstrap----
@@ -986,11 +993,10 @@ prepboot <- function (data, method, binary = FALSE, iter = 1000, a = .05)
         f<-round(runif(i,min=1,max=1000),0)
         set.seed(f[round(runif(i,min=1,max=length(f)),0)])
         mat<-data[round(runif(nrow(data),min=1,max=nrow(data)),0),]
-        if(any(colSums(mat)<=1))
-        {stop("Increase bootstrapped sample size: not enough observations")}
+        if(any(colSums(mat)<=1)){stop("Increase bootstrapped sample size: not enough observations")}
         cormat<-cor(mat)
         if(method=="TMFG")
-        {samps[,,i]<-TMFG(cormat)
+        {samps[,,i]<-TMFG(cormat)$A
         }else if(method=="MaST")
         {samps[,,i]<-MaST(cormat)
         }else if(method=="ECOplusMaST")
@@ -1005,6 +1011,23 @@ prepboot <- function (data, method, binary = FALSE, iter = 1000, a = .05)
     for(j in 1:nrow(realmat))
         for(k in 1:ncol(realmat))
         {meanmat[j,k]<-mean(samps[j,k,])}
+    
+    #Reliability matrix
+    samp<-array(0,c(nrow=nrow(realmat),ncol=ncol(realmat),iter))
+    rel<-matrix(0,nrow=nrow(realmat),ncol=ncol(realmat))
+    for(j in 1:nrow(realmat))
+        for(k in 1:ncol(realmat))
+            for(l in 1:iter)
+            if(samps[j,k,l]!=0)
+            {samp[j,k,l]<-1}
+    for(j in 1:nrow(realmat))
+        for(k in 1:ncol(realmat))
+            rel[j,k]<-sum(samp[j,k,])/iter
+            colnames(rel)<-colnames(data)
+            plt<-corrplot::corrplot(rel,method=c("square"),
+            title="Bootstrapped Correlation Reliabilities",
+            mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
+            cl.lim = c(0,1))
     
     j<-meanmat
     critical.r <- function(iter, a = .05){
@@ -1024,6 +1047,8 @@ prepboot <- function (data, method, binary = FALSE, iter = 1000, a = .05)
     j<-as.data.frame(j)
     colnames(j)<-colnames(data)
     as.matrix(j)
+    
+    return(list(bootmat=j,bootrel=rel,relplot=plt))
 }
 #----
 #HEXACO Openness data----

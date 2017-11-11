@@ -25,7 +25,7 @@ weighted_PL<-pathlengths(A,weighted=TRUE)
 \references{
 Rubinov, M., & Sporns, O. (2010). 
 Complex network measures of brain connectivity: Uses and interpretations. 
-Neuroimage, 52(3), 1059-1069.
+\emph{Neuroimage}, 52(3), 1059-1069.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

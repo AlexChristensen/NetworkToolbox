@@ -18,7 +18,7 @@ prepboot(data, method, binary = FALSE, iter = 1000, a = 0.05)
 \item{a}{Alpha to be used for determining the critical value of correlation coefficients. Defaults to .05}
 }
 \value{
-A correlation matrix of the mean bootstrapped network
+Returns a list that includes a correlation matrix of the mean bootstrapped network (bootmat) and reliabilities of the connections in the network (bootrel)
 }
 \description{
 Bootstraps the sample to identify the most stable correlations
@@ -28,6 +28,15 @@ Bootstraps the sample to identify the most stable correlations
 
 prepTMFG<-prepboot(data,method="TMFG")
 }
+}
+\references{
+Tumminello, M., Coronnello, C., Lillo, F., Micciche, S., & Mantegna, R. N. (2007).
+Spanning trees and bootstrap reliability estimation in correlation-based networks.
+\emph{International Journal of Bifurcation and Chaos}, 17(7), 2319-2329.
+
+Wei, T. & Simko, V.(2017).
+R package "corrplot": Visualization of a correlation matrix (Version 0.84).
+Available from <https://github.com/taiyun/corrplot>
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>
