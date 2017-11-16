@@ -121,15 +121,11 @@ TMFG <-function (data,binary=FALSE,weighted=TRUE)
   x<-as.matrix(Matrix::sparseMatrix(i=K[,1],j=K[,2],x=K[,3]))
   diag(x)<-0
   if(weighted)
-  {
+   {
     for(r in 1:nrow(x))
       for(z in 1:ncol(x))
-      {
-        if(x[r,z]==1)
-        {
-          x[r,z]<-cormat[r,z]
-        }
-      }
+      {if(x[r,z]==1){x[r,z]<-cormat[r,z]}
+   }
   }else
 
   x<-as.matrix(x)
@@ -152,7 +148,7 @@ TMFG <-function (data,binary=FALSE,weighted=TRUE)
 #' 
 #' unweighted_binary_MaSTnetwork<-MaST(data,binary=TRUE,weighted=FALSE)
 #' @references 
-#' Adapted from: <https://www.mathworks.com/matlabcentral/fileexchange/23276-maximum-weight-spanning-tree--undirected>
+#' Adapted from: \url{https://www.mathworks.com/matlabcentral/fileexchange/23276-maximum-weight-spanning-tree--undirected}
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Maximum Spanning Tree----
@@ -963,9 +959,10 @@ conn <- function (A)
 #' @param data A set of data
 #' @param method A network filtering method (e.g, "TMFG", "MaST", "ECO", "ECOplusMaST")
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
+#' @param n Number of people to use in the bootstrap. Defaults to full sample size
 #' @param iter Number of bootstrap iterations. Defaults to 1000 iterations
 #' @param a Alpha to be used for determining the critical value of correlation coefficients. Defaults to .05
-#' @return Returns a list that includes a correlation matrix of the mean bootstrapped network (bootmat) and reliabilities of the connections in the network (bootrel)
+#' @return Returns a list that includes a correlation matrix of the mean bootstrapped network (bootmat), reliabilities of the connections in the network (bootrel), and a plot of the bootrel reliability matrix (plotrel)
 #' @examples
 #' \dontrun{
 #' 
@@ -978,22 +975,22 @@ conn <- function (A)
 #' 
 #' Wei, T. & Simko, V.(2017).
 #' R package "corrplot": Visualization of a correlation matrix (Version 0.84).
-#' Available from <https://github.com/taiyun/corrplot>
+#' Available from \url{https://github.com/taiyun/corrplot}
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Network Preprocessing Bootstrap----
-prepboot <- function (data, method, binary = FALSE, iter = 1000, a = .05)
+prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000, a = .05)
 {
     if(nrow(data)==ncol(data)){stop("Input must be a dataset")}else
         if(binary){realmat<-psych::tetrachoric(data)$rho}else{realmat<-cor(data)}
-    mat<-matrix(0,nrow=nrow(data),ncol=ncol(data)) #Initialize bootstrap matrix
+    mat<-matrix(0,nrow=n,ncol=ncol(data)) #Initialize bootstrap matrix
     samps<-array(0,c(nrow=nrow(realmat),ncol=ncol(realmat),iter)) #Initialize sample matrix
     for(i in 1:iter) #Generate array of bootstrapped samples
     {
         f<-round(runif(i,min=1,max=1000),0)
         set.seed(f[round(runif(i,min=1,max=length(f)),0)])
-        mat<-data[round(runif(nrow(data),min=1,max=nrow(data)),0),]
-        if(any(colSums(mat)<=1)){stop("Increase bootstrapped sample size: not enough observations")}
+        mat<-data[round(runif(n,min=1,max=n),0),]
+        if(any(colSums(mat)<=1)){stop("Increase sample size: not enough observations")}
         cormat<-cor(mat)
         if(method=="TMFG")
         {samps[,,i]<-TMFG(cormat)$A
@@ -1048,7 +1045,7 @@ prepboot <- function (data, method, binary = FALSE, iter = 1000, a = .05)
     colnames(j)<-colnames(data)
     as.matrix(j)
     
-    return(list(bootmat=j,bootrel=rel,relplot=plt))
+    return(list(bootmat=j,bootrel=rel,plotrel=plt))
 }
 #----
 #HEXACO Openness data----

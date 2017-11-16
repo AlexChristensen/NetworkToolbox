@@ -29,7 +29,7 @@ unweighted_MaSTnetwork<-MaST(data,weighted=FALSE)
 unweighted_binary_MaSTnetwork<-MaST(data,binary=TRUE,weighted=FALSE)
 }
 \references{
-Adapted from: <https://www.mathworks.com/matlabcentral/fileexchange/23276-maximum-weight-spanning-tree--undirected>
+Adapted from: \url{https://www.mathworks.com/matlabcentral/fileexchange/23276-maximum-weight-spanning-tree--undirected}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

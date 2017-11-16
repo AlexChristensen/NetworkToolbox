@@ -4,7 +4,8 @@
 \alias{prepboot}
 \title{Bootstrapped Network Preprocessing}
 \usage{
-prepboot(data, method, binary = FALSE, iter = 1000, a = 0.05)
+prepboot(data, method, binary = FALSE, n = nrow(data), iter = 1000,
+  a = 0.05)
 }
 \arguments{
 \item{data}{A set of data}
@@ -13,12 +14,14 @@ prepboot(data, method, binary = FALSE, iter = 1000, a = 0.05)
 
 \item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 
+\item{n}{Number of people to use in the bootstrap. Defaults to full sample size}
+
 \item{iter}{Number of bootstrap iterations. Defaults to 1000 iterations}
 
 \item{a}{Alpha to be used for determining the critical value of correlation coefficients. Defaults to .05}
 }
 \value{
-Returns a list that includes a correlation matrix of the mean bootstrapped network (bootmat) and reliabilities of the connections in the network (bootrel)
+Returns a list that includes a correlation matrix of the mean bootstrapped network (bootmat), reliabilities of the connections in the network (bootrel), and a plot of the bootrel reliability matrix (plotrel)
 }
 \description{
 Bootstraps the sample to identify the most stable correlations
@@ -36,7 +39,7 @@ Spanning trees and bootstrap reliability estimation in correlation-based network
 
 Wei, T. & Simko, V.(2017).
 R package "corrplot": Visualization of a correlation matrix (Version 0.84).
-Available from <https://github.com/taiyun/corrplot>
+Available from \url{https://github.com/taiyun/corrplot}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>
