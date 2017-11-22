@@ -962,7 +962,7 @@ conn <- function (A)
 #' @param n Number of people to use in the bootstrap. Defaults to full sample size
 #' @param iter Number of bootstrap iterations. Defaults to 1000 iterations
 #' @param a Alpha to be used for determining the critical value of correlation coefficients. Defaults to .05
-#' @return Returns a list that includes a correlation matrix of the mean bootstrapped network (bootmat), reliabilities of the connections in the network (bootrel), and a plot of the bootrel reliability matrix (plotrel)
+#' @return Returns a list that includes a correlation matrix of the mean bootstrapped network (bootmat), reliabilities of the connections in the network (bootrel), and a plot of the bootrel reliability matrix (plotrel; upper triangle = actual network reliabilites, lower triangle = overall network reliablities)
 #' @examples
 #' \dontrun{
 #' 
@@ -994,12 +994,16 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
         cormat<-cor(mat)
         if(method=="TMFG")
         {samps[,,i]<-TMFG(cormat)$A
+        tru<-TMFG(data)$A
         }else if(method=="MaST")
         {samps[,,i]<-MaST(cormat)
+        tru<-MaST(data)
         }else if(method=="ECOplusMaST")
         {samps[,,i]<-ECOplusMaST(cormat)
+        tru<-ECOplusMaST(data)
         }else if(method=="ECO")
         {samps[,,i]<-ECO(cormat)
+        tru<-ECO(data)
         }else stop("Method not available")
     }
     
@@ -1021,10 +1025,17 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
         for(k in 1:ncol(realmat))
             rel[j,k]<-sum(samp[j,k,])/iter
             colnames(rel)<-colnames(data)
+            upp<-matrix(0,nrow=nrow(rel),ncol=ncol(rel))
+            for(i in 1:nrow(rel))
+                for(j in 1:ncol(rel))
+                    if(rel[i,j]!=0&&tru[i,j]!=0)
+                    {upp[i,j]<-rel[i,j]}
+            rel[upper.tri(rel)]<-upp[upper.tri(upp)]
+            row.names(rel)<-colnames(rel)
             plt<-corrplot::corrplot(rel,method=c("square"),
             title="Bootstrapped Correlation Reliabilities",
             mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
-            cl.lim = c(0,1))
+            cl.lim = c(0,1),col = RColorBrewer::brewer.pal(n = 8, name = "Blues"))
     
     j<-meanmat
     critical.r <- function(iter, a = .05){
@@ -1043,7 +1054,7 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
     j<-meanmat
     j<-as.data.frame(j)
     colnames(j)<-colnames(data)
-    as.matrix(j)
+    j<-as.matrix(j)
     
     return(list(bootmat=j,bootrel=rel,plotrel=plt))
 }

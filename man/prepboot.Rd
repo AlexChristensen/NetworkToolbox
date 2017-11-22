@@ -21,7 +21,7 @@ prepboot(data, method, binary = FALSE, n = nrow(data), iter = 1000,
 \item{a}{Alpha to be used for determining the critical value of correlation coefficients. Defaults to .05}
 }
 \value{
-Returns a list that includes a correlation matrix of the mean bootstrapped network (bootmat), reliabilities of the connections in the network (bootrel), and a plot of the bootrel reliability matrix (plotrel)
+Returns a list that includes a correlation matrix of the mean bootstrapped network (bootmat), reliabilities of the connections in the network (bootrel), and a plot of the bootrel reliability matrix (plotrel; upper triangle = actual network reliabilites, lower triangle = overall network reliablities)
 }
 \description{
 Bootstraps the sample to identify the most stable correlations
