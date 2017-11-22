@@ -1025,17 +1025,38 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
         for(k in 1:ncol(realmat))
             rel[j,k]<-sum(samp[j,k,])/iter
             colnames(rel)<-colnames(data)
+            #reliablity plot
             upp<-matrix(0,nrow=nrow(rel),ncol=ncol(rel))
             for(i in 1:nrow(rel))
                 for(j in 1:ncol(rel))
                     if(rel[i,j]!=0&&tru[i,j]!=0)
                     {upp[i,j]<-rel[i,j]}
+            reprel<-rel
+            colnames(upp)<-colnames(rel)
             rel[upper.tri(rel)]<-upp[upper.tri(upp)]
             row.names(rel)<-colnames(rel)
-            plt<-corrplot::corrplot(rel,method=c("square"),
+            plt<-corrplot::corrplot(rel,method="color",
             title="Bootstrapped Correlation Reliabilities",
             mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
-            cl.lim = c(0,1),col = RColorBrewer::brewer.pal(n = 8, name = "Blues"))
+            cl.lim = c(0,1),addgrid.col = "grey")
+            #reliablity on correlation plot
+            x<-matrix(nrow=length(upp))
+            y<-matrix(nrow=length(tru))
+            wc<-0
+            for(i in 1:60)
+                for(j in 1:60)
+                    if((upp[i,j]&&tru[i,j])!=0)
+                    {wc<-wc+1
+                    x[wc]<-upp[i,j]
+                    y[wc]<-tru[i,j]}
+            
+            xo<-na.omit(x)
+            yo<-na.omit(y)
+            
+            cpo<-{plot(xo,yo,pch=16,ylab="Correlation Strength",xlab="Reliability",
+                 main="Reliability on Correlation Strength",xlim=c(0,1),ylim=range(yo))
+            abline(lm(yo~xo))
+            text(x=.2,y=(min(yo)+(max(range(yo))/2)),labels = paste("r = ",round(cor(yo,xo),3)))}
     
     j<-meanmat
     critical.r <- function(iter, a = .05){
@@ -1056,7 +1077,7 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
     colnames(j)<-colnames(data)
     j<-as.matrix(j)
     
-    return(list(bootmat=j,bootrel=rel,plotrel=plt))
+    return(list(bootmat=j,bootrel=reprel,plotrel=plt,netrel=upp))
 }
 #----
 #HEXACO Openness data----
