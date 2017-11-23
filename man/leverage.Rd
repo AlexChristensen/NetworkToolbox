@@ -18,6 +18,8 @@ A vector of leverage centrality values for each node in the network
 Computes leverage centrlaity of each node in a network
 }
 \examples{
+A<-TMFG(hex)$A
+
 weighted_lev<-leverage(A)
 
 unweighted_lev<-leverage(A, weighted=FALSE)

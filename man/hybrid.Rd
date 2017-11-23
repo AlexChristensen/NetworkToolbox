@@ -16,10 +16,9 @@ A vector of hybrid centrality values for each node in the network (higher values
 Computes hybrid centrality of each node in a network
 }
 \examples{
-\dontrun{
+A<-TMFG(hex)$A
 
 HC<-hybrid(A)
-}
 }
 \references{
 Pozzi, F., Di Matteo, T., & Aste, T. (2013).

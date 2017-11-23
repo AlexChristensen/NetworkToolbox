@@ -18,6 +18,10 @@ Returns a list of the number of edges that replicate (Replicated), total number 
 Computes the number of edges that replicate between two cross-sectional networks
 }
 \examples{
+A<-TMFG(hex)$A
+
+B<-MaST(hex)
+
 edges<-edgerep(A,B)
 }
 \author{

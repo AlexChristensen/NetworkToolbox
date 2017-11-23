@@ -18,6 +18,8 @@ A vector of eigenvector centrality values for each node in the network
 Computes eigenvector centrality of each node in a network
 }
 \examples{
+A<-TMFG(hex)$A
+
 weighted_EC<-eigenvector(A)
 
 unweighted_EC<-eigenvector(A,weighted=FALSE)

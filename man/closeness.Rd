@@ -19,6 +19,7 @@ Computes closeness centrlaity of each node in a network
 }
 \examples{
 \dontrun{
+A<-TMFG(hex)$A
 
 weighted_LC<-closeness(A)
 

@@ -18,12 +18,11 @@ Returns a list of betweenness, closeness, degree (weighted = strength), eigenvec
 Computes centrality measures of the network
 }
 \examples{
-\dontrun{
+A<-TMFG(hex)$A
 
 weighted_centralitylist<-centlist(A)
 
 unweighted_centralitylist<-centlist(A,weighted=FALSE)
-}
 }
 \references{
 Rubinov, M., & Sporns, O. (2010). 

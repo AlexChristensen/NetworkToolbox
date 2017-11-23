@@ -20,13 +20,13 @@ A sparse association matrix
 Applies the ECO neural network filtering method combined with the MaST filtering method
 }
 \examples{
-weighted_ECOplusMaSTnetwork<-ECOplusMaST(data)
+weighted_ECOplusMaSTnetwork<-ECOplusMaST(hex)
 
-weighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(data,binary=TRUE)
+weighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(hexb,binary=TRUE)
 
-unweighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(data,weighted=FALSE)
+unweighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(hex,weighted=FALSE)
 
-unweighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(data,binary=TRUE,weighted=FALSE)
+unweighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(hexb,binary=TRUE,weighted=FALSE)
 }
 \references{
 Fallani, F. D. V., Latora, V., & Chavez, M. (2017).

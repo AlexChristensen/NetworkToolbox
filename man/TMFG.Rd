@@ -20,13 +20,13 @@ Returns a list of the adjacency matrix (A) and separators (sep)
 Applies the Triangulated Maximally Filtered Graph (TMFG) filtering method
 }
 \examples{
-weighted_TMFGnetwork<-TMFG(data)
+weighted_TMFGnetwork<-TMFG(hex)
 
-weighted_binary_TMFGnetwork<-TMFG(data,binary=TRUE)
+weighted_binary_TMFGnetwork<-TMFG(hexb,binary=TRUE)
 
-unweighted_TMFGnetwork<-TMFG(data,weighted=FALSE)
+unweighted_TMFGnetwork<-TMFG(hex,weighted=FALSE)
 
-unweighted_binary_TMFGnetwork<-TMFG(data,binary=TRUE,weighted=FALSE)
+unweighted_binary_TMFGnetwork<-TMFG(hexb,binary=TRUE,weighted=FALSE)
 }
 \references{
 Massara, G. P., Di Matteo, T., & Aste, T. (2016).

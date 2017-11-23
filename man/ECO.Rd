@@ -22,21 +22,21 @@ A sparse association matrix
 Applies the ECO neural network filtering method
 }
 \examples{
-weighted_undirected_ECOnetwork<-ECO(data)
+weighted_undirected_ECOnetwork<-ECO(hex)
 
-unweighted_undirected_ECOnetwork<-ECO(data,weighted=FALSE)
+unweighted_undirected_ECOnetwork<-ECO(hex,weighted=FALSE)
 
-weighted_directed_ECOnetwork<-ECO(data,directed=TRUE)
+weighted_directed_ECOnetwork<-ECO(hex,directed=TRUE)
 
-unweighted_directed_ECOnetwork<-ECO(data,weighted=FALSE,directed=TRUE)
+unweighted_directed_ECOnetwork<-ECO(hex,weighted=FALSE,directed=TRUE)
 
-weighted_undirected_binary_ECOnetwork<-ECO(data,binary=TRUE)
+weighted_undirected_binary_ECOnetwork<-ECO(hexb,binary=TRUE)
 
-unweighted_undirected_binary_ECOnetwork<-ECO(data,weighted=FALSE,binary=TRUE)
+unweighted_undirected_binary_ECOnetwork<-ECO(hexb,weighted=FALSE,binary=TRUE)
 
-weighted_directed_binary_ECOnetwork<-ECO(data,directed=TRUE,binary=TRUE)
+weighted_directed_binary_ECOnetwork<-ECO(hexb,directed=TRUE,binary=TRUE)
 
-unweighted_directed_binary_ECOnetwork<-ECO(data,weighted=FALSE,directed=TRUE,binary=TRUE)
+unweighted_directed_binary_ECOnetwork<-ECO(hexb,weighted=FALSE,directed=TRUE,binary=TRUE)
 }
 \references{
 Fallani, F. D. V., Latora, V., & Chavez, M. (2017).

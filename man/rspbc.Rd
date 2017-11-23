@@ -18,6 +18,8 @@ A vector of randomized shortest paths betweenness centrality values for each nod
 Computes betweenness centrlaity based on randomized shortest paths of each node in a network
 }
 \examples{
+A<-TMFG(hex)$A
+
 rspbc<-rspbc(A, beta=0.01)
 }
 \references{

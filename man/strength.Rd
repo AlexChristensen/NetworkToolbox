@@ -16,6 +16,8 @@ A vector of strength values for each node in the network
 Computes strength of each node in a network
 }
 \examples{
+A<-TMFG(hex)$A
+
 str<-strength(A)
 }
 \references{

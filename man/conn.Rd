@@ -16,6 +16,8 @@ Returns a list of the edge weights (Weights), the mean (Mean), the standard devi
 Computes the average and standard deviation of the
 }
 \examples{
+A<-TMFG(hex)$A
+
 connectivity<-conn(A)
 }
 \author{

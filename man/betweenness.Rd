@@ -18,6 +18,8 @@ A vector of betweenness centrality values for each node in the network
 Computes betweenness centrlaity of each node in a network
 }
 \examples{
+A<-TMFG(hex)$A
+
 weighted_BC<-betweenness(A)
 
 unweighted_BC<-betweenness(A,weighted=FALSE)

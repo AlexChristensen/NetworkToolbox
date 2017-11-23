@@ -16,6 +16,8 @@ A vector of degree values for each node in the network
 Computes degree of each node in a network
 }
 \examples{
+A<-TMFG(hex)$A
+
 deg<-degree(A)
 }
 \references{

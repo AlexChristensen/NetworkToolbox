@@ -29,7 +29,7 @@ Bootstraps the sample to identify the most stable correlations
 \examples{
 \dontrun{
 
-prepTMFG<-prepboot(data,method="TMFG")
+prepTMFG<-prepboot(hex,method="TMFG")
 }
 }
 \references{

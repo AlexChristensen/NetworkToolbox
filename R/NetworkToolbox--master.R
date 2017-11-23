@@ -7,13 +7,13 @@
 #' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network
 #' @return Returns a list of the adjacency matrix (A) and separators (sep)
 #' @examples
-#' weighted_TMFGnetwork<-TMFG(data)
+#' weighted_TMFGnetwork<-TMFG(hex)
 #' 
-#' weighted_binary_TMFGnetwork<-TMFG(data,binary=TRUE)
+#' weighted_binary_TMFGnetwork<-TMFG(hexb,binary=TRUE)
 #' 
-#' unweighted_TMFGnetwork<-TMFG(data,weighted=FALSE)
+#' unweighted_TMFGnetwork<-TMFG(hex,weighted=FALSE)
 #' 
-#' unweighted_binary_TMFGnetwork<-TMFG(data,binary=TRUE,weighted=FALSE)
+#' unweighted_binary_TMFGnetwork<-TMFG(hexb,binary=TRUE,weighted=FALSE)
 #' @references 
 #' Massara, G. P., Di Matteo, T., & Aste, T. (2016).
 #' Network filtering for big data: Triangulated maximally filtered graph.
@@ -140,13 +140,13 @@ TMFG <-function (data,binary=FALSE,weighted=TRUE)
 #' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network
 #' @return A sparse association matrix
 #' @examples
-#' weighted_MaSTnetwork<-MaST(data)
+#' weighted_MaSTnetwork<-MaST(hex)
 #' 
-#' weighted_binary_MaSTnetwork<-MaST(data,binary=TRUE)
+#' weighted_binary_MaSTnetwork<-MaST(hexb,binary=TRUE)
 #' 
-#' unweighted_MaSTnetwork<-MaST(data,weighted=FALSE)
+#' unweighted_MaSTnetwork<-MaST(hex,weighted=FALSE)
 #' 
-#' unweighted_binary_MaSTnetwork<-MaST(data,binary=TRUE,weighted=FALSE)
+#' unweighted_binary_MaSTnetwork<-MaST(hexb,binary=TRUE,weighted=FALSE)
 #' @references 
 #' Adapted from: \url{https://www.mathworks.com/matlabcentral/fileexchange/23276-maximum-weight-spanning-tree--undirected}
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
@@ -243,21 +243,21 @@ return(x)
 #' @param directed Is the network directed? Defaults to FALSE. Set TRUE if the network is directed
 #' @return A sparse association matrix
 #' @examples
-#' weighted_undirected_ECOnetwork<-ECO(data)
+#' weighted_undirected_ECOnetwork<-ECO(hex)
 #' 
-#' unweighted_undirected_ECOnetwork<-ECO(data,weighted=FALSE)
+#' unweighted_undirected_ECOnetwork<-ECO(hex,weighted=FALSE)
 #' 
-#' weighted_directed_ECOnetwork<-ECO(data,directed=TRUE)
+#' weighted_directed_ECOnetwork<-ECO(hex,directed=TRUE)
 #' 
-#' unweighted_directed_ECOnetwork<-ECO(data,weighted=FALSE,directed=TRUE)
+#' unweighted_directed_ECOnetwork<-ECO(hex,weighted=FALSE,directed=TRUE)
 #' 
-#' weighted_undirected_binary_ECOnetwork<-ECO(data,binary=TRUE)
+#' weighted_undirected_binary_ECOnetwork<-ECO(hexb,binary=TRUE)
 #' 
-#' unweighted_undirected_binary_ECOnetwork<-ECO(data,weighted=FALSE,binary=TRUE)
+#' unweighted_undirected_binary_ECOnetwork<-ECO(hexb,weighted=FALSE,binary=TRUE)
 #' 
-#' weighted_directed_binary_ECOnetwork<-ECO(data,directed=TRUE,binary=TRUE)
+#' weighted_directed_binary_ECOnetwork<-ECO(hexb,directed=TRUE,binary=TRUE)
 #' 
-#' unweighted_directed_binary_ECOnetwork<-ECO(data,weighted=FALSE,directed=TRUE,binary=TRUE)
+#' unweighted_directed_binary_ECOnetwork<-ECO(hexb,weighted=FALSE,directed=TRUE,binary=TRUE)
 #' @references 
 #' Fallani, F. D. V., Latora, V., & Chavez, M. (2017).
 #' A topological criterion for filtering information in complex brain networks.
@@ -316,13 +316,13 @@ ECO <- function (data, weighted=TRUE, binary=FALSE, directed=FALSE)
 #' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network
 #' @return A sparse association matrix
 #' @examples
-#' weighted_ECOplusMaSTnetwork<-ECOplusMaST(data)
+#' weighted_ECOplusMaSTnetwork<-ECOplusMaST(hex)
 #' 
-#' weighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(data,binary=TRUE)
+#' weighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(hexb,binary=TRUE)
 #' 
-#' unweighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(data,weighted=FALSE)
+#' unweighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(hex,weighted=FALSE)
 #' 
-#' unweighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(data,binary=TRUE,weighted=FALSE)
+#' unweighted_binary_ECOplusMaSTnetwork<-ECOplusMaST(hexb,binary=TRUE,weighted=FALSE)
 #' @references 
 #' Fallani, F. D. V., Latora, V., & Chavez, M. (2017).
 #' A topological criterion for filtering information in complex brain networks.
@@ -378,6 +378,8 @@ ECOplusMaST <- function (data, weighted=TRUE, binary=FALSE)
 #' @param weighted Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of betwenness centrality
 #' @return A vector of betweenness centrality values for each node in the network
 #' @examples
+#' A<-TMFG(hex)$A
+#' 
 #' weighted_BC<-betweenness(A)
 #' 
 #' unweighted_BC<-betweenness(A,weighted=FALSE)
@@ -443,6 +445,8 @@ betweenness <- function (A,weighted=TRUE)
 #' @param beta Sets the beta parameter. Defaults to 0.01 (recommended). Beta > 0.01 measure gets closer to weighted betweenness centrality (10) and beta < 0.01 measure gets closer to degree (.0001)
 #' @return A vector of randomized shortest paths betweenness centrality values for each node in the network
 #' @examples
+#' A<-TMFG(hex)$A
+#' 
 #' rspbc<-rspbc(A, beta=0.01)
 #' @references 
 #' Kivimaki, I., Lebichot, B., Saramaki, J., & Saerens, M. (2016).
@@ -500,6 +504,7 @@ rspbc <- function (A, beta=0.01)
 #' @return A vector of closeness centrality values for each node in the network
 #' @examples
 #' \dontrun{
+#' A<-TMFG(hex)$A
 #'
 #' weighted_LC<-closeness(A)
 #' 
@@ -544,6 +549,8 @@ closeness <- function (A,weighted=TRUE)
 #' @param A An adjacency matrix of network data
 #' @return A vector of degree values for each node in the network
 #' @examples
+#' A<-TMFG(hex)$A
+#' 
 #' deg<-degree(A)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
@@ -568,6 +575,8 @@ degree <- function (A)
 #' @param A An adjacency matrix of network data
 #' @return A vector of strength values for each node in the network
 #' @examples
+#' A<-TMFG(hex)$A
+#' 
 #' str<-strength(A)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
@@ -592,6 +601,8 @@ strength <- function (A)
 #' @param weighted Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of eigenvector centrality
 #' @return A vector of eigenvector centrality values for each node in the network
 #' @examples
+#' A<-TMFG(hex)$A
+#' 
 #' weighted_EC<-eigenvector(A)
 #' 
 #' unweighted_EC<-eigenvector(A,weighted=FALSE)
@@ -623,6 +634,8 @@ eigenvector <- function (A,weighted=TRUE)
 #' @param weighted Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of leverage centrality
 #' @return A vector of leverage centrality values for each node in the network
 #' @examples
+#' A<-TMFG(hex)$A
+#' 
 #' weighted_lev<-leverage(A)
 #'
 #' unweighted_lev<-leverage(A, weighted=FALSE)
@@ -655,10 +668,9 @@ leverage <- function (A, weighted=TRUE)
 #' @param A An adjacency matrix of network data
 #' @return A vector of hybrid centrality values for each node in the network (higher values are more central, lower values are more peripheral)
 #' @examples
-#' \dontrun{
+#' A<-TMFG(hex)$A
 #' 
 #' HC<-hybrid(A)
-#' }
 #' @references 
 #' Pozzi, F., Di Matteo, T., & Aste, T. (2013).
 #' Spread of risk across financial markets: Better to invest in the peripheries. 
@@ -709,12 +721,11 @@ hybrid <- function (A)
 #' @param weighted Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted list of centrality measures
 #' @return Returns a list of betweenness, closeness, degree (weighted = strength), eigenvector, and leverage centralities
 #' @examples
-#' \dontrun{
+#' A<-TMFG(hex)$A
 #' 
 #' weighted_centralitylist<-centlist(A)
 #' 
 #' unweighted_centralitylist<-centlist(A,weighted=FALSE)
-#' }
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
@@ -746,6 +757,8 @@ centlist <- function (A, weighted=TRUE)
 #' @param weighted Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measure of distance
 #' @return A distance matrix of the network
 #' @examples
+#' A<-TMFG(hex)$A
+#' 
 #' unweighted_D<-distance(A)
 #' 
 #' weighted_D<-distance(A,weighted=TRUE)
@@ -787,6 +800,8 @@ distance<-function (A,weighted=FALSE)
 #' @param weighted Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measures of ASPL, ASPLi, ecc, and D
 #' @return Returns a list of ASPL, ASPLi, ecc, and D of a network
 #' @examples
+#' A<-TMFG(hex)$A
+#' 
 #' unweighted_PL<-pathlengths(A)
 #' 
 #' weighted_PL<-pathlengths(A,weighted=TRUE)
@@ -828,6 +843,8 @@ pathlengths <- function (A, weighted=FALSE)
 #' @param weighted Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measures of CC and CCi
 #' @return Returns a list of CC and CCi
 #' @examples
+#' A<-TMFG(hex)$A
+#' 
 #' unweighted_CC<-clustcoeff(A)
 #' 
 #' weighted_CC<-clustcoeff(A,weighted=TRUE)
@@ -877,6 +894,10 @@ clustcoeff <- function (A, weighted=FALSE)
 #' @param B An adjacency matrix of network B
 #' @return Returns a list of the number of edges that replicate (Replicated), total number of edges (Possible), the percentage of edges that replicate (Percentage), the density of edges (Density), the mean difference between edges that replicate (MeanDifference), the sd of the difference between edges that replicate (SdDifference), and the correlation between the edges that replicate for both networks (Correlation)
 #' @examples
+#' A<-TMFG(hex)$A
+#' 
+#' B<-MaST(hex)
+#' 
 #' edges<-edgerep(A,B)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
@@ -932,6 +953,8 @@ edgerep <- function (A, B)
 #' @param A An adjacency matrix of network A
 #' @return Returns a list of the edge weights (Weights), the mean (Mean), the standard deviation (SD), and the sum of the edge weights (Total) in the network
 #' @examples
+#' A<-TMFG(hex)$A
+#' 
 #' connectivity<-conn(A)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
@@ -966,7 +989,7 @@ conn <- function (A)
 #' @examples
 #' \dontrun{
 #' 
-#' prepTMFG<-prepboot(data,method="TMFG")
+#' prepTMFG<-prepboot(hex,method="TMFG")
 #' }
 #' @references
 #' Tumminello, M., Coronnello, C., Lillo, F., Micciche, S., & Mantegna, R. N. (2007).
@@ -977,6 +1000,8 @@ conn <- function (A)
 #' R package "corrplot": Visualization of a correlation matrix (Version 0.84).
 #' Available from \url{https://github.com/taiyun/corrplot}
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @importFrom graphics abline plot text
+#' @importFrom stats lm na.omit
 #' @export
 #Network Preprocessing Bootstrap----
 prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000, a = .05)
@@ -1081,17 +1106,17 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
 }
 #----
 #HEXACO Openness data----
-#' HEXACO Openness to Experience Correlation Matrix
+#' HEXACO Openness to Experience Response Matrix
 #' 
-#' Correlation matrix (n = 802) of HEXACO's Openness to Experience
+#' A response matrix (n = 802) of HEXACO's Openness to Experience
 #' from Christensen, Cotter, & Silvia (in preparation).
 #' Nomological Network of Openness to Experience.
 #' 
 #' @docType data
 #' 
-#' @usage data(data)
+#' @usage data(hex)
 #' 
-#' @format A 16x16 correlation matrix
+#' @format A 802x16 response matrix
 #' 
 #' @keywords datasets
 #' 
@@ -1103,21 +1128,21 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
 #' 
 #' @examples 
 #' 
-#' data(data)
-"data"
+#' data(hex)
+"hex"
 #----
-#HECACO Openness to Experience TMFG Adjacency matrix----
-#' HEXACO Openness to Experience TMFG Adjacency Matrix
+#HEXACO Openness data----
+#' HEXACO Openness to Experience Response Matrix (Binarized)
 #' 
-#' TMFG filtered association matrix (n = 802) of HEXACO's Openness to Experience
+#' A response matrix (n = 802) of HEXACO's Openness to Experience
 #' from Christensen, Cotter, & Silvia (in preparation).
 #' Nomological Network of Openness to Experience.
 #' 
 #' @docType data
 #' 
-#' @usage data(A)
+#' @usage data(hexb)
 #' 
-#' @format A 16x16 TMFG filtered adjacency matrix
+#' @format A 802x16 response matrix
 #' 
 #' @keywords datasets
 #' 
@@ -1129,32 +1154,5 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
 #' 
 #' @examples 
 #' 
-#' data(A)
-"A"
-#----
-#HECACO Openness to Experience MaST Adjacency matrix----
-#' HEXACO Openness to Experience MaST Adjacency Matrix
-#' 
-#' MaST filtered association matrix (n = 802) of HEXACO's Openness to Experience
-#' from Christensen, Cotter, & Silvia (in preparation).
-#' Nomological Network of Openness to Experience.
-#' 
-#' @docType data
-#' 
-#' @usage data(B)
-#' 
-#' @format A 16x16 TMFG filtered adjacency matrix
-#' 
-#' @keywords datasets
-#' 
-#' @references
-#' 
-#' Christensen, A.P., Cotter, K.N., Silvia, P.J. (in preparation).
-#' Nomological network of openness to experience:
-#' A network analysis of four openness to experience inventories.
-#' 
-#' @examples 
-#' 
-#' data(B)
-"B"
-#----
+#' data(hexb)
+"hexb"

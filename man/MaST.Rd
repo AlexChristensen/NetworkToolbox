@@ -20,13 +20,13 @@ A sparse association matrix
 Applies the Maximum Spanning Tree (MaST) filtering method
 }
 \examples{
-weighted_MaSTnetwork<-MaST(data)
+weighted_MaSTnetwork<-MaST(hex)
 
-weighted_binary_MaSTnetwork<-MaST(data,binary=TRUE)
+weighted_binary_MaSTnetwork<-MaST(hexb,binary=TRUE)
 
-unweighted_MaSTnetwork<-MaST(data,weighted=FALSE)
+unweighted_MaSTnetwork<-MaST(hex,weighted=FALSE)
 
-unweighted_binary_MaSTnetwork<-MaST(data,binary=TRUE,weighted=FALSE)
+unweighted_binary_MaSTnetwork<-MaST(hexb,binary=TRUE,weighted=FALSE)
 }
 \references{
 Adapted from: \url{https://www.mathworks.com/matlabcentral/fileexchange/23276-maximum-weight-spanning-tree--undirected}

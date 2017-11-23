@@ -18,6 +18,8 @@ A distance matrix of the network
 Computes distance matrix of the network (Weighted not coded)
 }
 \examples{
+A<-TMFG(hex)$A
+
 unweighted_D<-distance(A)
 
 weighted_D<-distance(A,weighted=TRUE)
