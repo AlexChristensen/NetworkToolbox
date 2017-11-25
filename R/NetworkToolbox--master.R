@@ -118,18 +118,21 @@ TMFG <-function (data,binary=FALSE,weighted=TRUE)
   L[,1]<-S[,2]
   L[,2]<-S[,1]
   K<-rbind(S,L)
+ 
   x<-as.matrix(Matrix::sparseMatrix(i=K[,1],j=K[,2],x=K[,3]))
   diag(x)<-0
+  
   if(weighted)
    {
     for(r in 1:nrow(x))
       for(z in 1:ncol(x))
       {if(x[r,z]==1){x[r,z]<-cormat[r,z]}
    }
-  }else
+  }
 
   x<-as.matrix(x)
   colnames(x)<-colnames(cormat)
+  rownames(x)<-colnames(cormat)
   return(list(A=x, sep=separators))
 }
 #----
@@ -563,11 +566,24 @@ degree <- function (A)
 {
   if(nrow(A)!=ncol(A))
   {stop("Input not an adjacency matrix")}
-  A<-ifelse(A!=0,1,0)
+  if(isSymmetric(A)==TRUE)
+  {A<-ifelse(A!=0,1,0)
   Deg<-as.data.frame(colSums(A))
   colnames(Deg)<-c("Degree")
   Deg<-as.matrix(Deg)
   return(Deg)
+  }else
+  {A<-ifelse(A!=0,1,0)
+  row.names(A)<-colnames(A)
+  Ai<-A
+  Ao<-A
+  Ao[lower.tri(Ao)]<-0
+  Ai[upper.tri(Ai)]<-0
+  inDeg<-colSums(Ai)+rowSums(Ai)
+  outDeg<-rowSums(Ao)+colSums(Ao)
+  relinf<-(outDeg-inDeg)/(outDeg+inDeg)
+  return(list(InDegree=inDeg,OutDegree=outDeg,RelativeInfluence=relinf))
+  }
 }
 #----
 #' Node Strength
@@ -905,10 +921,12 @@ clustcoeff <- function (A, weighted=FALSE)
 edgerep <- function (A, B)
 {
   count<-0
+
   for(i in 1:ncol(A))
     for(j in 1:nrow(A))
       if(A[i,j]&&B[i,j]!=0){count<-count+1}
-  count<-count/2
+      count<-count/2
+  
   possibleA<-sum(ifelse(A!=0,1,0)/2)
   possibleB<-sum(ifelse(B!=0,1,0)/2)
   percentA<-count/possibleA
@@ -1103,6 +1121,47 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
     j<-as.matrix(j)
     
     return(list(bootmat=j,bootrel=reprel,plotrel=plt,netrel=upp))
+}
+#----
+#' Dependency Matrix
+#' @description Generates a dependency matrix of the data
+#' @param data A set of data
+#' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
+#' @return Returns an adjacency matrix of dependencies
+#' @examples
+#' 
+#' depmatrix<-depend(hex,binary=FALSE)
+#' 
+#' @references
+#' Kenett, D. Y., Tumminello, M., Madi, A., Gur-Gershgoren, G., Mantegna, R. N., & Ben-Jacob, E. (2010).
+#' Dominating clasp of the financial sector revealed by partial correlation analysis of the stock market.
+#' \emph{PloS one}, 5(12), e15032.
+#' 
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Dependency
+depend <- function (data, binary=FALSE)
+{
+    if(nrow(data)==ncol(data)){cormat<-data}else
+        if(binary){cormat<-psych::tetrachoric(data)$rho}else{cormat<-cor(data)}
+    
+    parmat<-array(0,dim=c(nrow=ncol(cormat),ncol=ncol(cormat),ncol(cormat)))
+    for(i in 1:ncol(cormat))
+        for(k in 1:ncol(cormat))
+            for(j in 1:ncol(cormat))
+                if(i!=k&&i!=j&&k!=j)
+                {parmat[i,k,j]<-(cormat[i,k])-(psych::partial.r(cormat,c(i,k),c(j))[1,2])}
+    
+    
+    depmat<-matrix(0,nrow=nrow(cormat),ncol=ncol(cormat))
+    n<-(ncol(data)-1)
+    for(i in 1:ncol(parmat))
+        for(k in 1:ncol(parmat))
+            for(j in 1:ncol(parmat))
+                if(k!=j)
+                {depmat[i,j]<-mean(parmat[i,k,j])}
+    colnames(depmat)<-colnames(data)
+    return(depmat)
 }
 #----
 #HEXACO Openness data----
