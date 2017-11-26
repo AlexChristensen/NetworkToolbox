@@ -4,7 +4,7 @@
 \alias{TMFG}
 \title{Triangulated Maximally Filtered Graph}
 \usage{
-TMFG(data, binary = FALSE, weighted = TRUE)
+TMFG(data, binary = FALSE, weighted = TRUE, depend = FALSE)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
@@ -12,6 +12,8 @@ TMFG(data, binary = FALSE, weighted = TRUE)
 \item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 
 \item{weighted}{Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network}
+
+\item{depend}{Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a TMFG-filtered dependency network}
 }
 \value{
 Returns a list of the adjacency matrix (A) and separators (sep)

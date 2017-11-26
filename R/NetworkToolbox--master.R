@@ -5,6 +5,7 @@
 #' @param data Can be a dataset or a correlation matrix
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network
+#' @param depend Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a TMFG-filtered dependency network
 #' @return Returns a list of the adjacency matrix (A) and separators (sep)
 #' @examples
 #' weighted_TMFGnetwork<-TMFG(hex)
@@ -22,7 +23,7 @@
 #' @importFrom stats cor sd runif qt
 #' @export
 #TMFG Filtering Method----
-TMFG <-function (data,binary=FALSE,weighted=TRUE)
+TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
 {
   if(nrow(data)==ncol(data)){cormat<-data}else
     if(binary){cormat<-psych::tetrachoric(data)$rho}else{cormat<-cor(data)}
@@ -115,9 +116,17 @@ TMFG <-function (data,binary=FALSE,weighted=TRUE)
     ntri<-ntri+2
   }
   L<-S
+  if(depend)
+  {W<-matrix(1:nrow(cormat),nrow=nrow(cormat),ncol=1)
+  X<-matrix(1:nrow(cormat),nrow=nrow(cormat),ncol=1)
+  Y<-matrix(0,nrow=nrow(cormat),ncol=1)
+  Z<-cbind(W,X,Y)
+  K<-rbind(L,Z)
+  }else{
   L[,1]<-S[,2]
   L[,2]<-S[,1]
   K<-rbind(S,L)
+  }
  
   x<-as.matrix(Matrix::sparseMatrix(i=K[,1],j=K[,2],x=K[,3]))
   diag(x)<-0
@@ -155,7 +164,7 @@ TMFG <-function (data,binary=FALSE,weighted=TRUE)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Maximum Spanning Tree----
-MaST <- function (data,binary=FALSE,weighted=TRUE)
+MaST <- function (data, binary = FALSE, weighted = TRUE)
 {FIND_PathCompression <- function (temproot=temproot)
 {
   ParentPointer[temproot]
@@ -268,7 +277,7 @@ return(x)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #ECO Neural Network Filter----
-ECO <- function (data, weighted=TRUE, binary=FALSE, directed=FALSE)
+ECO <- function (data, weighted = TRUE, binary = FALSE, directed = FALSE)
 {
   if(nrow(data)==ncol(data)){C<-data}else
     if(binary){C<-psych::tetrachoric(data)$rho}else{C<-cor(data)}
@@ -333,7 +342,7 @@ ECO <- function (data, weighted=TRUE, binary=FALSE, directed=FALSE)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #ECO Filter + MaST----
-ECOplusMaST <- function (data, weighted=TRUE, binary=FALSE)
+ECOplusMaST <- function (data, weighted = TRUE, binary = FALSE)
 {
   if(weighted&&!binary)
 {
@@ -401,7 +410,7 @@ ECOplusMaST <- function (data, weighted=TRUE, binary=FALSE)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Betweenness Centrality----
-betweenness <- function (A,weighted=TRUE)
+betweenness <- function (A, weighted = TRUE)
 {
   if(nrow(A)!=ncol(A))
   {stop("Input not an adjacency matrix")}
@@ -437,7 +446,6 @@ betweenness <- function (A,weighted=TRUE)
     DP<-DP+DPd1
   }
   BC<-round(as.matrix(colSums(DP),ncol=60),0)}else{BC<-qgraph::centrality_auto(A)$node.centrality[,1]
-  BC<-BC-(ncol(A)-1)
   BC<-round(as.matrix(BC,ncol=60),0)}
   return(BC)
 }
@@ -458,7 +466,7 @@ betweenness <- function (A,weighted=TRUE)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Randomized Shortest Paths Betweennesss Centrality----
-rspbc <- function (A, beta=0.01)
+rspbc <- function (A, beta = 0.01)
 {
   if(nrow(A)!=ncol(A))
   {stop("Input not an adjacency matrix")}
@@ -528,7 +536,7 @@ rspbc <- function (A, beta=0.01)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export 
 #Closeness Centrality----
-closeness <- function (A,weighted=TRUE)
+closeness <- function (A, weighted = TRUE)
 {
   if(nrow(A)!=ncol(A))
   {stop("Input not an adjacency matrix")}
@@ -541,7 +549,7 @@ closeness <- function (A,weighted=TRUE)
   }
   LC<-t(as.data.frame(C)*100)
   rownames(LC)<-colnames(A)
-  colnames(LC)<-c("LCu")}else{LC<-qgraph::centrality_auto(A)$node.centrality[,2]*100}
+  colnames(LC)<-c("LCu")}else{LC<-qgraph::centrality_auto(A)$node.centrality[,2]*10}
   LC<-round(as.data.frame(LC),3)
   LC<-as.matrix(LC)
   return(LC)
@@ -575,14 +583,10 @@ degree <- function (A)
   }else
   {A<-ifelse(A!=0,1,0)
   row.names(A)<-colnames(A)
-  Ai<-A
-  Ao<-A
-  Ao[lower.tri(Ao)]<-0
-  Ai[upper.tri(Ai)]<-0
-  inDeg<-colSums(Ai)+rowSums(Ai)
-  outDeg<-rowSums(Ao)+colSums(Ao)
+  inDeg<-colSums(A)
+  outDeg<-rowSums(A)
   relinf<-(outDeg-inDeg)/(outDeg+inDeg)
-  return(list(InDegree=inDeg,OutDegree=outDeg,RelativeInfluence=relinf))
+  return(list(InDegree=inDeg,OutDegree=outDeg,DegRelativeInfluence=relinf))
   }
 }
 #----
@@ -605,10 +609,19 @@ strength <- function (A)
 {
   if(nrow(A)!=ncol(A))
   {stop("Input not an adjacency matrix")}
+  if(isSymmetric(A)==TRUE)
+  {
   strength<-round(as.data.frame(colSums(A)),2)
   colnames(strength)<-c("Strength")
   strength<-as.matrix(strength)
-  return(strength)
+  return(strength)}else{
+      row.names(A)<-colnames(A)
+      inStr<-colSums(A)
+      outStr<-rowSums(A)
+      relinf<-(outStr-inStr)/(outStr+inStr)
+      return(list(InStrength=inStr,OutStrength=outStr,StrRelativeInfluence=relinf))    
+      
+  }
 }
 #----
 #' Eigenvector Centrality
@@ -629,7 +642,7 @@ strength <- function (A)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Eigenvector----
-eigenvector <- function (A,weighted=TRUE)
+eigenvector <- function (A, weighted = TRUE)
 {
   if(nrow(A)!=ncol(A))
   {stop("Input not an adjacency matrix")}
@@ -661,8 +674,8 @@ eigenvector <- function (A,weighted=TRUE)
 #' \emph{PLoS One}, 5(8), e12200.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export 
-#Leverage Centrality
-leverage <- function (A, weighted=TRUE)
+#Leverage Centrality----
+leverage <- function (A, weighted = TRUE)
 {
   if(nrow(A)!=ncol(A))
   {stop("Input not an adjacency matrix")}
@@ -677,6 +690,35 @@ leverage <- function (A, weighted=TRUE)
   }
   row.names(lev)<-colnames(A)
   return(lev)
+}
+#----
+#' Node Impact
+#' @description Computes impact measure of each node in a network
+#' @param A An adjacency matrix of network data
+#' @return A vector of node impact values for each node in the network
+#' @examples
+#' A<-TMFG(hex)$A
+#' 
+#' nodeimp<-impact(A)
+#'
+#' @references 
+#' Kenett, Y. N., Kenett, D. Y., Ben-Jacob, E., & Faust, M. (2011).
+#' Global and local features of semantic networks: Evidence from the Hebrew mental lexicon.
+#' \emph{PloS one}, 6(8), e23912.
+#' 
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Node Impact----
+impact <- function (A)
+{
+    allP<-pathlengths(A)$ASPL
+    remove<-matrix(0,nrow=nrow(A),ncol=1)
+    for(j in 1:ncol(A))
+    {remove[j,]<-(pathlengths(A[-j,-j])$ASPL)-allP}
+    remove<-round(remove,3)
+    colnames(remove)<-"Impact"
+    row.names(remove)<-colnames(A)
+    return(remove)
 }
 #----
 #' Hybrid Centrality
@@ -749,7 +791,7 @@ hybrid <- function (A)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Centrality List----
-centlist <- function (A, weighted=TRUE)
+centlist <- function (A, weighted = TRUE)
 {
   if(nrow(A)!=ncol(A))
   {stop("Input not an adjacency matrix")}
@@ -764,7 +806,7 @@ centlist <- function (A, weighted=TRUE)
     Str<-strength(A)
     EC<-eigenvector(A)
     lev<-leverage(A)
-    return(list(Betweenness=BC,Closeness=CC,Strength=Str,Eigenvector=EC,Leverage=lev))}
+    return(list(Betweenness=BC,Closeness=CC,Strength=Str,Degree=Deg,Eigenvector=EC,Leverage=lev))}
 }
 #----
 #' Distance
@@ -785,7 +827,7 @@ centlist <- function (A, weighted=TRUE)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Distance----
-distance<-function (A,weighted=FALSE)
+distance<-function (A, weighted = FALSE)
 {
   if(nrow(A)!=ncol(A))
   {stop("Input not an adjacency matrix")}
@@ -828,7 +870,7 @@ distance<-function (A,weighted=FALSE)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Path Lengths----
-pathlengths <- function (A, weighted=FALSE)
+pathlengths <- function (A, weighted = FALSE)
 {
   if(nrow(A)!=ncol(A))
   {stop("Input not an adjacency matrix")}
@@ -849,7 +891,7 @@ pathlengths <- function (A, weighted=FALSE)
   colnames(ecc)<-c("ecc")
   rownames(ecc)<-colnames(A)
   
-  return(list(ASPL=aspl,ASPLi=aspli,Eccentricity=ecc,Diameter=d))}
+  return(list(ASPL=aspl,ASPLi=aspli,ecc=ecc,Diameter=d))}
   else{print("Weighted not coded.")}
 }
 #----
@@ -871,7 +913,7 @@ pathlengths <- function (A, weighted=FALSE)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Clustering Coefficient----
-clustcoeff <- function (A, weighted=FALSE)
+clustcoeff <- function (A, weighted = FALSE)
 {
   if(nrow(A)!=ncol(A))
   {stop("Input not an adjacency matrix")}
@@ -1003,7 +1045,12 @@ conn <- function (A)
 #' @param n Number of people to use in the bootstrap. Defaults to full sample size
 #' @param iter Number of bootstrap iterations. Defaults to 1000 iterations
 #' @param a Alpha to be used for determining the critical value of correlation coefficients. Defaults to .05
-#' @return Returns a list that includes a correlation matrix of the mean bootstrapped network (bootmat), reliabilities of the connections in the network (bootrel), and a plot of the bootrel reliability matrix (plotrel; upper triangle = actual network reliabilites, lower triangle = overall network reliablities)
+#' @param depend Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a TMFG-filtered dependency network
+#' @return Returns a list that includes a correlation matrix of the mean bootstrapped network (bootmat),
+#' reliabilities of the connections in the original network (netrel),
+#' reliabilities of the connections in the bootstrapped network (bootrel),
+#' a plot of the bootrel reliability matrix (netrel; upper triangle = actual network reliabilites, bootrel; lower triangle = overall network reliablities),
+#' a plot of included correlations on their reliability (ConR)
 #' @examples
 #' \dontrun{
 #' 
@@ -1022,12 +1069,13 @@ conn <- function (A)
 #' @importFrom stats lm na.omit
 #' @export
 #Network Preprocessing Bootstrap----
-prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000, a = .05)
+prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000, a = .05, depend = FALSE)
 {
     if(nrow(data)==ncol(data)){stop("Input must be a dataset")}else
         if(binary){realmat<-psych::tetrachoric(data)$rho}else{realmat<-cor(data)}
     mat<-matrix(0,nrow=n,ncol=ncol(data)) #Initialize bootstrap matrix
     samps<-array(0,c(nrow=nrow(realmat),ncol=ncol(realmat),iter)) #Initialize sample matrix
+    pb <- txtProgressBar(max=iter, style = 3)
     for(i in 1:iter) #Generate array of bootstrapped samples
     {
         f<-round(runif(i,min=1,max=1000),0)
@@ -1035,6 +1083,7 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
         mat<-data[round(runif(n,min=1,max=n),0),]
         if(any(colSums(mat)<=1)){stop("Increase sample size: not enough observations")}
         cormat<-cor(mat)
+        if(!depend){
         if(method=="TMFG")
         {samps[,,i]<-TMFG(cormat)$A
         tru<-TMFG(data)$A
@@ -1048,13 +1097,46 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
         {samps[,,i]<-ECO(cormat)
         tru<-ECO(data)
         }else stop("Method not available")
+        }else {depmat<-depend(cormat)
+        if(method=="TMFG")
+        {samps[,,i]<-TMFG(depmat,depend=TRUE)$A
+        tru<-TMFG(data,depend=TRUE)$A
+        }else stop("Method not available")
+        }
+        setTxtProgressBar(pb, i)
     }
-    
+    close(pb)
     #Mean matrix
     meanmat<-matrix(0,nrow=nrow(realmat),ncol=ncol(realmat)) #Initialize Mean matrix
     for(j in 1:nrow(realmat))
         for(k in 1:ncol(realmat))
         {meanmat[j,k]<-mean(samps[j,k,])}
+    #Remove non-significant edges
+    if(!depend)
+    {
+        critical.r <- function(iter, a = .05){
+            df <- iter - 2
+            critical.t <- qt( a/2, df, lower.tail = F )
+            cvr <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
+            return(cvr)}
+    }else{
+        critical.r <- function(iter, a = .05){
+            df <- iter - (3 + (v-1))
+            critical.t <- qt( a/2, df, lower.tail = F )
+            cvr <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
+            return(cvr)}
+    }
+    
+    for(x in 1:nrow(meanmat))
+        for(y in 1:ncol(meanmat))
+            if(meanmat[x,y]<=critical.r(iter))
+            {meanmat[x,y]<-0}
+    
+    #return meanmat to bootmat
+    bootmat<-meanmat
+    bootmat<-as.data.frame(bootmat)
+    colnames(bootmat)<-colnames(bootmat)
+    bootmat<-as.matrix(bootmat)
     
     #Reliability matrix
     samp<-array(0,c(nrow=nrow(realmat),ncol=ncol(realmat),iter))
@@ -1069,26 +1151,26 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
             rel[j,k]<-sum(samp[j,k,])/iter
             colnames(rel)<-colnames(data)
             #reliablity plot
+            reprel<-rel
+            row.names(rel)<-colnames(rel)
+            diag(rel)<-1
+            if(!depend)
+            {
             upp<-matrix(0,nrow=nrow(rel),ncol=ncol(rel))
             for(i in 1:nrow(rel))
                 for(j in 1:ncol(rel))
                     if(rel[i,j]!=0&&tru[i,j]!=0)
                     {upp[i,j]<-rel[i,j]}
-            reprel<-rel
             colnames(upp)<-colnames(rel)
             rel[upper.tri(rel)]<-upp[upper.tri(upp)]
-            row.names(rel)<-colnames(rel)
-            plt<-corrplot::corrplot(rel,method="color",
-            title="Bootstrapped Correlation Reliabilities",
-            mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
-            cl.lim = c(0,1),addgrid.col = "grey")
+            
             #reliablity on correlation plot
             x<-matrix(nrow=length(upp))
             y<-matrix(nrow=length(tru))
             wc<-0
-            for(i in 1:60)
-                for(j in 1:60)
-                    if((upp[i,j]&&tru[i,j])!=0)
+            for(i in 1:nrow(cormat))
+                for(j in 1:ncol(cormat))
+                    if((upp[i,j]!=0&&tru[i,j])!=0)
                     {wc<-wc+1
                     x[wc]<-upp[i,j]
                     y[wc]<-tru[i,j]}
@@ -1096,72 +1178,29 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
             xo<-na.omit(x)
             yo<-na.omit(y)
             
-            cpo<-{plot(xo,yo,pch=16,ylab="Correlation Strength",xlab="Reliability",
-                 main="Reliability on Correlation Strength",xlim=c(0,1),ylim=range(yo))
+            mar=c(2,2,2,2)
+            cpo<-{plot(xo,yo,pch=16,ylab="Correlation Strength\n(original network)",xlab="Reliability",
+                 main="Correlation Strength on Reliability",xlim=c(0,1),ylim=range(yo))
             abline(lm(yo~xo))
             text(x=.2,y=(min(yo)+(max(range(yo))/2)),labels = paste("r = ",round(cor(yo,xo),3)))}
-    
-    j<-meanmat
-    critical.r <- function(iter, a = .05){
-        df <- iter - 2
-        critical.t <- qt( a/2, df, lower.tail = F )
-        cvr <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
-        return(cvr)
-    }
-    
-    for(x in 1:nrow(meanmat))
-        for(y in 1:ncol(meanmat))
-            if(meanmat[x,y]<=critical.r(iter))
-            {
-                meanmat[x,y]<-0
             }
-    j<-meanmat
-    j<-as.data.frame(j)
-    colnames(j)<-colnames(data)
-    j<-as.matrix(j)
+
+            v<-ncol(realmat)
+            #plot reliability matrix
+            if(v<=20)
+            {plt<-corrplot::corrplot(rel,method="color",
+             title="Bootstrapped Correlation Reliabilities\n(original network)",
+             mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
+             cl.lim = c(0,1),addgrid.col = "grey",addCoef.col = "black")
+             }else if(v>20){
+                    plt<-corrplot::corrplot(rel,method="color",
+                    title="Bootstrapped Correlation Reliabilities",
+                    mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
+                    cl.lim = c(0,1),addgrid.col = "grey")}
     
-    return(list(bootmat=j,bootrel=reprel,plotrel=plt,netrel=upp))
-}
-#----
-#' Dependency Matrix
-#' @description Generates a dependency matrix of the data
-#' @param data A set of data
-#' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
-#' @return Returns an adjacency matrix of dependencies
-#' @examples
-#' 
-#' depmatrix<-depend(hex,binary=FALSE)
-#' 
-#' @references
-#' Kenett, D. Y., Tumminello, M., Madi, A., Gur-Gershgoren, G., Mantegna, R. N., & Ben-Jacob, E. (2010).
-#' Dominating clasp of the financial sector revealed by partial correlation analysis of the stock market.
-#' \emph{PloS one}, 5(12), e15032.
-#' 
-#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
-#' @export
-#Dependency
-depend <- function (data, binary=FALSE)
-{
-    if(nrow(data)==ncol(data)){cormat<-data}else
-        if(binary){cormat<-psych::tetrachoric(data)$rho}else{cormat<-cor(data)}
-    
-    parmat<-array(0,dim=c(nrow=ncol(cormat),ncol=ncol(cormat),ncol(cormat)))
-    for(i in 1:ncol(cormat))
-        for(k in 1:ncol(cormat))
-            for(j in 1:ncol(cormat))
-                if(i!=k&&i!=j&&k!=j)
-                {parmat[i,k,j]<-(cormat[i,k])-(psych::partial.r(cormat,c(i,k),c(j))[1,2])}
-    
-    
-    depmat<-matrix(0,nrow=nrow(cormat),ncol=ncol(cormat))
-    n<-(ncol(data)-1)
-    for(i in 1:ncol(parmat))
-        for(k in 1:ncol(parmat))
-            for(j in 1:ncol(parmat))
-                if(k!=j)
-                {depmat[i,j]<-mean(parmat[i,k,j])}
-    colnames(depmat)<-colnames(data)
-    return(depmat)
+    if(!depend)
+    {return(list(bootmat=bootmat,netrel=upp,bootrel=reprel,ConR=cpo))
+        }else{return(list(bootmat=bootmat,bootrel=reprel,plotrel=plt))}
 }
 #----
 #HEXACO Openness data----

@@ -5,7 +5,7 @@
 \title{Bootstrapped Network Preprocessing}
 \usage{
 prepboot(data, method, binary = FALSE, n = nrow(data), iter = 1000,
-  a = 0.05)
+  a = 0.05, depend = FALSE)
 }
 \arguments{
 \item{data}{A set of data}
@@ -19,9 +19,15 @@ prepboot(data, method, binary = FALSE, n = nrow(data), iter = 1000,
 \item{iter}{Number of bootstrap iterations. Defaults to 1000 iterations}
 
 \item{a}{Alpha to be used for determining the critical value of correlation coefficients. Defaults to .05}
+
+\item{depend}{Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a TMFG-filtered dependency network}
 }
 \value{
-Returns a list that includes a correlation matrix of the mean bootstrapped network (bootmat), reliabilities of the connections in the network (bootrel), and a plot of the bootrel reliability matrix (plotrel; upper triangle = actual network reliabilites, lower triangle = overall network reliablities)
+Returns a list that includes a correlation matrix of the mean bootstrapped network (bootmat),
+reliabilities of the connections in the original network (netrel),
+reliabilities of the connections in the bootstrapped network (bootrel),
+a plot of the bootrel reliability matrix (netrel; upper triangle = actual network reliabilites, bootrel; lower triangle = overall network reliablities),
+a plot of included correlations on their reliability (ConR)
 }
 \description{
 Bootstraps the sample to identify the most stable correlations
