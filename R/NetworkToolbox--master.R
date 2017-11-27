@@ -49,7 +49,9 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
   separators<-matrix(nrow=n-4,ncol=3)#initialize list of 3-cliques (non-face triangles)
   #find 3 vertices with largest strength
   #s<-colSums(cormat*(cormat>mean(matrix(cormat,nrow=1)))*1) ##old s
-  s<-colSums(cormat*(cormat>mean(matrix(unlist(cormat),nrow=1)))*1)
+  if(!depend){s<-colSums(cormat*(cormat>mean(matrix(unlist(cormat),nrow=1)))*1)
+  }else{s<-(colSums(cormat*(cormat>mean(matrix(unlist(cormat),nrow=1)))*1)
+            +rowSums(cormat*(cormat>mean(matrix(unlist(cormat),nrow=1)))*1))}
   in_v[1:4]<-order(s,decreasing=TRUE)[1:4]
   ou_v<-setdiff(1:nrow(in_v),in_v)
   #build tetrahedron with the largest strength
@@ -58,18 +60,43 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
   tri[3,]<-in_v[c(1,2,4),]
   tri[4,]<-in_v[c(1,3,4),]
   S<-matrix(nrow=(3*nrow(cormat)-6),ncol=3) #initialize sparse matrix
-  S[1,]<-c(in_v[1],in_v[2],1)
+  if(!depend){S[1,]<-c(in_v[1],in_v[2],1)
   S[2,]<-c(in_v[1],in_v[3],1)
   S[3,]<-c(in_v[1],in_v[4],1)
   S[4,]<-c(in_v[2],in_v[3],1)
   S[5,]<-c(in_v[2],in_v[4],1)
   S[6,]<-c(in_v[3],in_v[4],1)
+  }else{if(cormat[in_v[1],in_v[2]]>cormat[in_v[2],in_v[1]])
+      {S[1,]<-c(in_v[1],in_v[2],1)
+      }else{S[1,]<-c(in_v[2],in_v[1],1)}
+      if(cormat[in_v[1],in_v[3]]>cormat[in_v[3],in_v[1]])
+      {S[2,]<-c(in_v[1],in_v[3],1)
+      }else{S[2,]<-c(in_v[3],in_v[1],1)}
+      if(cormat[in_v[1],in_v[4]]>cormat[in_v[4],in_v[1]])
+      {S[3,]<-c(in_v[1],in_v[4],1)
+      }else{S[3,]<-c(in_v[4],in_v[1],1)}
+      if(cormat[in_v[2],in_v[3]]>cormat[in_v[3],in_v[2]])
+      {S[4,]<-c(in_v[2],in_v[3],1)
+      }else{S[4,]<-c(in_v[3],in_v[2],1)}
+      if(cormat[in_v[2],in_v[4]]>cormat[in_v[4],in_v[2]])
+      {S[5,]<-c(in_v[2],in_v[4],1)
+      }else{S[5,]<-c(in_v[4],in_v[2],1)}
+      if(cormat[in_v[3],in_v[4]]>cormat[in_v[4],in_v[3]])
+      {S[6,]<-c(in_v[3],in_v[4],1)
+      }else{S[6,]<-c(in_v[4],in_v[3],1)}
+  }
   #build initial gain table
   gain<-matrix(-Inf,nrow=n,ncol=(2*(n-2)))
-  gain[ou_v,1]<-rowSums(cormat[ou_v,(tri[1,])])
+  if(!depend){gain[ou_v,1]<-rowSums(cormat[ou_v,(tri[1,])])
   gain[ou_v,2]<-rowSums(cormat[ou_v,(tri[2,])])
   gain[ou_v,3]<-rowSums(cormat[ou_v,(tri[3,])])
   gain[ou_v,4]<-rowSums(cormat[ou_v,(tri[4,])])
+  }else{
+      gain[ou_v,1]<-rowSums(cormat[ou_v,(tri[1,])])+colSums(cormat[(tri[1,]),ou_v])
+      gain[ou_v,2]<-rowSums(cormat[ou_v,(tri[2,])])+colSums(cormat[(tri[2,]),ou_v])
+      gain[ou_v,3]<-rowSums(cormat[ou_v,(tri[3,])])+colSums(cormat[(tri[3,]),ou_v])
+      gain[ou_v,4]<-rowSums(cormat[ou_v,(tri[4,])])+colSums(cormat[(tri[4,]),ou_v])
+  }
   ntri<-4 #number of triangles
   gij<-matrix(nrow=1,ncol=272)
   v<-matrix(nrow=1,ncol=272)
@@ -99,6 +126,10 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
     for(u in 1:length(tri[tr,]))
     {
       cou<-6+((3*(e-5))+u)
+      if(depend){
+      if(cormat[ve,tri[tr,u]]>cormat[tri[tr,u],ve]){
+          S[cou,]<-cbind(ve,tri[tr,u],1)   
+      }else{S[cou,]<-cbind(tri[tr,u],ve,1)}}else
       S[cou,]<-cbind(ve,tri[tr,u],1)
     }
     #update 3-clique list
@@ -109,9 +140,15 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
     tri[tr,]<-cbind(rbind(tri[tr,c(1,2)]),ve)
     #update gain table
     gain[ve,]<-0
+    if(!depend){
     gain[ou_v,tr]<-rowSums(cormat[ou_v,tri[tr,],drop=FALSE])
     gain[ou_v,ntri+1]<-rowSums(cormat[ou_v,tri[ntri+1,],drop=FALSE])
     gain[ou_v,ntri+2]<-rowSums(cormat[ou_v,tri[ntri+2,],drop=FALSE])
+    }else{
+        gain[ou_v,tr]<-rowSums(cormat[ou_v,tri[tr,],drop=FALSE])+colSums(cormat[tri[tr,],ou_v,drop=FALSE])
+        gain[ou_v,ntri+1]<-rowSums(cormat[ou_v,tri[ntri+1,],drop=FALSE])+colSums(cormat[tri[ntri+1,],ou_v,drop=FALSE])
+        gain[ou_v,ntri+2]<-rowSums(cormat[ou_v,tri[ntri+2,],drop=FALSE])+colSums(cormat[tri[ntri+1,],ou_v,drop=FALSE])
+    }
     #update triangles
     ntri<-ntri+2
   }
@@ -806,7 +843,7 @@ centlist <- function (A, weighted = TRUE)
     Str<-strength(A)
     EC<-eigenvector(A)
     lev<-leverage(A)
-    return(list(Betweenness=BC,Closeness=CC,Strength=Str,Degree=Deg,Eigenvector=EC,Leverage=lev))}
+    return(list(Betweenness=BC,Closeness=CC,Strength=Str,Eigenvector=EC,Leverage=lev))}
 }
 #----
 #' Distance
@@ -1067,6 +1104,7 @@ conn <- function (A)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @importFrom graphics abline plot text
 #' @importFrom stats lm na.omit
+#' @importFrom utils txtProgressBar setTxtProgressBar
 #' @export
 #Network Preprocessing Bootstrap----
 prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000, a = .05, depend = FALSE)
@@ -1179,17 +1217,17 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
             yo<-na.omit(y)
             
             mar=c(2,2,2,2)
-            cpo<-{plot(xo,yo,pch=16,ylab="Correlation Strength\n(original network)",xlab="Reliability",
+            cpo<-{plot(xo,yo,pch=16,ylab="Correlation Strength",xlab="Reliability",
                  main="Correlation Strength on Reliability",xlim=c(0,1),ylim=range(yo))
             abline(lm(yo~xo))
-            text(x=.2,y=(min(yo)+(max(range(yo))/2)),labels = paste("r = ",round(cor(yo,xo),3)))}
+            text(x=.05,y=max(yo-.05),labels = paste("r = ",round(cor(yo,xo),3)))}
             }
 
             v<-ncol(realmat)
             #plot reliability matrix
             if(v<=20)
             {plt<-corrplot::corrplot(rel,method="color",
-             title="Bootstrapped Correlation Reliabilities\n(original network)",
+             title="Bootstrapped Correlation Reliabilities",
              mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
              cl.lim = c(0,1),addgrid.col = "grey",addCoef.col = "black")
              }else if(v>20){
