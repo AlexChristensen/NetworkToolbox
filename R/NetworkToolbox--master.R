@@ -1135,7 +1135,7 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
         {samps[,,i]<-ECO(cormat)
         tru<-ECO(data)
         }else stop("Method not available")
-        }else {depmat<-depend(cormat)
+        }else {depmat<-depend(cormat,progBar=FALSE)
         if(method=="TMFG")
         {samps[,,i]<-TMFG(depmat,depend=TRUE)$A
         tru<-TMFG(data,depend=TRUE)$A
@@ -1159,7 +1159,7 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
             return(cvr)}
     }else{
         critical.r <- function(iter, a = .05){
-            df <- iter - (3 + (v-1))
+            df <- iter - (3 + (ncol(realmat)-1))
             critical.t <- qt( a/2, df, lower.tail = F )
             cvr <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
             return(cvr)}
@@ -1223,28 +1223,29 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
             text(x=.05,y=max(yo-.05),labels = paste("r = ",round(cor(yo,xo),3)))}
             }
 
-            v<-ncol(realmat)
+            
             #plot reliability matrix
-            if(v<=20)
+            if(ncol(realmat)<=20)
             {plt<-corrplot::corrplot(rel,method="color",
              title="Bootstrapped Correlation Reliabilities",
              mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
              cl.lim = c(0,1),addgrid.col = "grey",addCoef.col = "black")
-             }else if(v>20){
+             }else if(ncol(realmat)>20){
                     plt<-corrplot::corrplot(rel,method="color",
                     title="Bootstrapped Correlation Reliabilities",
                     mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
                     cl.lim = c(0,1),addgrid.col = "grey")}
     
     if(!depend)
-    {return(list(bootmat=bootmat,netrel=upp,bootrel=reprel,ConR=cpo))
-        }else{return(list(bootmat=bootmat,bootrel=reprel,plotrel=plt))}
+    {return(list(orignet=tru,bootmat=bootmat,netrel=upp,bootrel=reprel,plotrel=plt,ConR=cpo))
+        }else{return(list(orignet=tru,bootmat=bootmat,bootrel=reprel,plotrel=plt))}
 }
 #----
 #' Dependency Matrix
 #' @description Generates a dependency matrix of the data
 #' @param data A set of data
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
+#' @param progBar Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar.
 #' @return Returns an adjacency matrix of dependencies
 #' @examples
 #' D<-depend(hex)
@@ -1259,14 +1260,14 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Dependency----
-depend <- function (data, binary = FALSE)
+depend <- function (data, binary = FALSE, progBar = TRUE)
 {
     if(nrow(data)==ncol(data)){cormat<-data}else
         if(binary){cormat<-psych::tetrachoric(data)$rho}else{cormat<-cor(data)}
     
     inter<-((ncol(cormat)*(ncol(cormat)-1)*(ncol(cormat)-2)))
     
-    pb <- txtProgressBar(max=inter, style = 3)
+    if(progBar){pb <- txtProgressBar(max=inter, style = 3)}
     count<-0
     
     parmat<-array(0,dim=c(nrow=ncol(cormat),ncol=ncol(cormat),ncol(cormat)))
@@ -1276,8 +1277,8 @@ depend <- function (data, binary = FALSE)
                 if(i!=j&&k!=j&&i!=k)
                 {count<-count+1
                 parmat[i,k,j]<-(cormat[i,k]-psych::partial.r(cormat,c(i,k),c(j))[1,2])
-                setTxtProgressBar(pb, count)}
-    close(pb)
+                if(progBar){setTxtProgressBar(pb, count)}}
+    if(progBar){close(pb)}
     
     for(h in 1:j)
     diag(parmat[,,h])<-1

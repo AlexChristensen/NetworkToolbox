@@ -4,12 +4,14 @@
 \alias{depend}
 \title{Dependency Matrix}
 \usage{
-depend(data, binary = FALSE)
+depend(data, binary = FALSE, progBar = TRUE)
 }
 \arguments{
 \item{data}{A set of data}
 
 \item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
+
+\item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar.}
 }
 \value{
 Returns an adjacency matrix of dependencies
