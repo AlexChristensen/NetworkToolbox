@@ -23,7 +23,8 @@ prepboot(data, method, binary = FALSE, n = nrow(data), iter = 1000,
 \item{depend}{Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a TMFG-filtered dependency network}
 }
 \value{
-Returns a list that includes a correlation matrix of the mean bootstrapped network (bootmat),
+Returns a list that includes the original filtered network (orignet),
+correlation matrix of the mean bootstrapped network (bootmat),
 reliabilities of the connections in the original network (netrel),
 reliabilities of the connections in the bootstrapped network (bootrel),
 a plot of the bootrel reliability matrix (netrel; upper triangle = actual network reliabilites, bootrel; lower triangle = overall network reliablities),

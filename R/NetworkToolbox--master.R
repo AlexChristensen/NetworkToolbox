@@ -1083,7 +1083,8 @@ conn <- function (A)
 #' @param iter Number of bootstrap iterations. Defaults to 1000 iterations
 #' @param a Alpha to be used for determining the critical value of correlation coefficients. Defaults to .05
 #' @param depend Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a TMFG-filtered dependency network
-#' @return Returns a list that includes a correlation matrix of the mean bootstrapped network (bootmat),
+#' @return Returns a list that includes the original filtered network (orignet),
+#' correlation matrix of the mean bootstrapped network (bootmat),
 #' reliabilities of the connections in the original network (netrel),
 #' reliabilities of the connections in the bootstrapped network (bootrel),
 #' a plot of the bootrel reliability matrix (netrel; upper triangle = actual network reliabilites, bootrel; lower triangle = overall network reliablities),
