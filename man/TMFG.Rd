@@ -33,7 +33,7 @@ unweighted_binary_TMFGnetwork<-TMFG(hexb,binary=TRUE,weighted=FALSE)
 \references{
 Massara, G. P., Di Matteo, T., & Aste, T. (2016).
 Network filtering for big data: Triangulated maximally filtered graph.
-\emph{Journal of Complex Networks}, 5(2), 161-178.
+\emph{Journal of Complex Networks}, \emph{5}(2), 161-178.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

@@ -24,7 +24,7 @@ nodeimp<-impact(A)
 \references{
 Kenett, Y. N., Kenett, D. Y., Ben-Jacob, E., & Faust, M. (2011).
 Global and local features of semantic networks: Evidence from the Hebrew mental lexicon.
-\emph{PloS one}, 6(8), e23912.
+\emph{PloS one}, \emph{6}(8), e23912.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

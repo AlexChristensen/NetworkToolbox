@@ -37,7 +37,7 @@ Social networks, 32(3), 245-251.
 
 Rubinov, M., & Sporns, O. (2010). 
 Complex network measures of brain connectivity: Uses and interpretations. 
-\emph{Neuroimage}, 52(3), 1059-1069.
+\emph{Neuroimage}, \emph{52}(3), 1059-1069.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

@@ -42,7 +42,7 @@ prepTMFG<-prepboot(hex,method="TMFG")
 \references{
 Tumminello, M., Coronnello, C., Lillo, F., Micciche, S., & Mantegna, R. N. (2007).
 Spanning trees and bootstrap reliability estimation in correlation-based networks.
-\emph{International Journal of Bifurcation and Chaos}, 17(7), 2319-2329.
+\emph{International Journal of Bifurcation and Chaos}, \emph{17}(7), 2319-2329.
 
 Wei, T. & Simko, V.(2017).
 R package "corrplot": Visualization of a correlation matrix (Version 0.84).

@@ -18,7 +18,7 @@
 #' @references 
 #' Massara, G. P., Di Matteo, T., & Aste, T. (2016).
 #' Network filtering for big data: Triangulated maximally filtered graph.
-#' \emph{Journal of Complex Networks}, 5(2), 161-178.
+#' \emph{Journal of Complex Networks}, \emph{5}(2), 161-178.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @importFrom stats cor sd runif qt
 #' @export
@@ -310,7 +310,7 @@ return(x)
 #' @references 
 #' Fallani, F. D. V., Latora, V., & Chavez, M. (2017).
 #' A topological criterion for filtering information in complex brain networks.
-#' \emph{PLoS Computational Biology}, 13(1), e1005305.
+#' \emph{PLoS Computational Biology}, \emph{13}(1), e1005305.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #ECO Neural Network Filter----
@@ -375,7 +375,7 @@ ECO <- function (data, weighted = TRUE, binary = FALSE, directed = FALSE)
 #' @references 
 #' Fallani, F. D. V., Latora, V., & Chavez, M. (2017).
 #' A topological criterion for filtering information in complex brain networks.
-#' \emph{PLoS Computational Biology}, 13(1), e1005305.
+#' \emph{PLoS Computational Biology}, \emph{13}(1), e1005305.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #ECO Filter + MaST----
@@ -435,15 +435,15 @@ ECOplusMaST <- function (data, weighted = TRUE, binary = FALSE)
 #' @references 
 #' Epskamp, S., Cramer, A. O., Waldorp, L. J., Schmittmann, V. D., & Borsboom, D. (2012).
 #' qgraph: Network visualizations of relationships in psychometric data.
-#' \emph{Journal of Statistical Software}, 48(4), 1-18.
+#' \emph{Journal of Statistical Software}, \emph{48}(4), 1-18.
 #' 
 #' Opsahl, T., Agneessens, F., & Skvoretz, J. (2010).
 #' Node centrality in weighted networks: Generalizing degree and shortest paths.
-#' \emph{Social Networks}, 32(3), 245-251.
+#' \emph{Social Networks}, \emph{32}(3), 245-251.
 #' 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' \emph{Neuroimage}, 52(3), 1059-1069.
+#' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Betweenness Centrality----
@@ -499,7 +499,7 @@ betweenness <- function (A, weighted = TRUE)
 #' @references 
 #' Kivimaki, I., Lebichot, B., Saramaki, J., & Saerens, M. (2016).
 #' Two betweenness centrality measures based on Randomized Shortest Paths.
-#' \emph{Scientific Reports}, 6 (19668), 1-15.
+#' \emph{Scientific Reports}, \emph{6}(19668), 1-15.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Randomized Shortest Paths Betweennesss Centrality----
@@ -569,7 +569,7 @@ rspbc <- function (A, beta = 0.01)
 #' 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' \emph{Neuroimage}, 52(3), 1059-1069.
+#' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export 
 #Closeness Centrality----
@@ -603,7 +603,7 @@ closeness <- function (A, weighted = TRUE)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' \emph{Neuroimage}, 52(3), 1059-1069.
+#' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Degree----
@@ -638,7 +638,7 @@ degree <- function (A)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' \emph{Neuroimage}, 52(3), 1059-1069.
+#' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Node Strength----
@@ -675,7 +675,7 @@ strength <- function (A)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' \emph{Neuroimage}, 52(3), 1059-1069.
+#' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Eigenvector----
@@ -708,7 +708,7 @@ eigenvector <- function (A, weighted = TRUE)
 #' @references 
 #' Joyce, K. E., Laurienti, P. J., Burdette, J. H., & Hayasaka, S. (2010).
 #' A new measure of centrality for brain networks. 
-#' \emph{PLoS One}, 5(8), e12200.
+#' \emph{PLoS One}, \emph{5}(8), e12200.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export 
 #Leverage Centrality----
@@ -741,7 +741,7 @@ leverage <- function (A, weighted = TRUE)
 #' @references 
 #' Kenett, Y. N., Kenett, D. Y., Ben-Jacob, E., & Faust, M. (2011).
 #' Global and local features of semantic networks: Evidence from the Hebrew mental lexicon.
-#' \emph{PloS one}, 6(8), e23912.
+#' \emph{PloS one}, \emph{6}(8), e23912.
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
@@ -769,7 +769,7 @@ impact <- function (A)
 #' @references 
 #' Pozzi, F., Di Matteo, T., & Aste, T. (2013).
 #' Spread of risk across financial markets: Better to invest in the peripheries. 
-#' \emph{Scientific Reports}, 3(1655), 1-7.
+#' \emph{Scientific Reports}, \emph{3}(1655), 1-7.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Hybrid Centality----
@@ -824,7 +824,7 @@ hybrid <- function (A)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' \emph{Neuroimage}, 52(3), 1059-1069.
+#' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Centrality List----
@@ -860,7 +860,7 @@ centlist <- function (A, weighted = TRUE)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' \emph{Neuroimage, 52(3)}, 1059-1069.
+#' \emph{Neuroimage, \emph{52}(3)}, 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Distance----
@@ -903,7 +903,7 @@ distance<-function (A, weighted = FALSE)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' \emph{Neuroimage}, 52(3), 1059-1069.
+#' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Path Lengths----
@@ -946,7 +946,7 @@ pathlengths <- function (A, weighted = FALSE)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' \emph{Neuroimage}, 52(3), 1059-1069.
+#' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Clustering Coefficient----
@@ -1097,7 +1097,7 @@ conn <- function (A)
 #' @references
 #' Tumminello, M., Coronnello, C., Lillo, F., Micciche, S., & Mantegna, R. N. (2007).
 #' Spanning trees and bootstrap reliability estimation in correlation-based networks.
-#' \emph{International Journal of Bifurcation and Chaos}, 17(7), 2319-2329.
+#' \emph{International Journal of Bifurcation and Chaos}, \emph{17}(7), 2319-2329.
 #' 
 #' Wei, T. & Simko, V.(2017).
 #' R package "corrplot": Visualization of a correlation matrix (Version 0.84).
@@ -1242,6 +1242,63 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
         }else{return(list(orignet=tru,bootmat=bootmat,bootrel=reprel,plotrel=plt))}
 }
 #----
+#' Bootstrapped Walktrap Reliability
+#' @description Bootstraps the sample with replace to compute walktrap reliability (TMFG-filtered networks only)
+#' @param data A set of data
+#' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
+#' @param n Number of people to use in the bootstrap. Defaults to full sample size
+#' @param iter Number of bootstrap iterations. Defaults to 1000 iterations
+#' @return Returns a list that includes a vector of the number of communities in each bootstrapped
+#' sample (communityvector) and proportion of number of factors found across bootstrapped samples
+#' (reliabilities)
+#' @examples
+#' \dontrun{
+#' 
+#' walkTMFG<-walkboot(hex)
+#' }
+#' @references
+#' Csardi, G., & Nepusz, T. (2006).
+#' The igraph software package for complex network research.
+#' \emph{InterJournal, Complex Systems}, \emph{1695}(5), 1-9.
+#'
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Bootstrapped Walktrap Reliability----
+walkboot <- function (data, binary = FALSE, n = nrow(data), iter = 1000)
+{
+    if(nrow(data)==ncol(data)){stop("Input must be a dataset")}else
+        if(binary){realmat<-psych::tetrachoric(data)$rho}else{realmat<-cor(data)}
+    mat<-matrix(0,nrow=n,ncol=ncol(data)) #Initialize bootstrap matrix
+    walk<-matrix(0,nrow=iter,ncol=1) #Initialize walktrap matrix
+    pb <- txtProgressBar(max=iter, style = 3)
+    for(i in 1:iter) #Generate array of bootstrapped samples
+    {
+        f<-round(runif(i,min=1,max=1000),0)
+        set.seed(f[round(runif(i,min=1,max=length(f)),0)])
+        mat<-data[round(runif(n,min=1,max=n),0),]
+        if(any(colSums(mat)<=1)){stop("Increase sample size: not enough observations")}
+        cormat<-cor(mat)
+        walk[i,]<-max(igraph::walktrap.community(igraph::as.igraph(qgraph::qgraph(TMFG(cormat)$A,DoNotPlot=TRUE)))$membership)
+        
+        setTxtProgressBar(pb, i)
+    }
+    close(pb)
+    
+    count<-0
+    prop<-matrix(0,nrow=length(seq(from=min(walk),to=max(walk))),ncol=1)
+    for(i in min(walk):max(walk))
+    {
+        count<-count+1
+        prop[count,]<-length(which(walk==i))
+    }
+    
+    prop<-round(prop/iter,3)
+    row.names(prop)<-seq(from=min(walk),to=max(walk))
+    colnames(prop)<-"Reliability of Factors"
+    
+    return(list(communityvector=walk,reliabilities=prop))
+}
+#----
 #' Dependency Matrix
 #' @description Generates a dependency matrix of the data
 #' @param data A set of data
@@ -1256,7 +1313,7 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
 #' @references
 #' Kenett, D. Y., Tumminello, M., Madi, A., Gur-Gershgoren, G., Mantegna, R. N., & Ben-Jacob, E. (2010).
 #' Dominating clasp of the financial sector revealed by partial correlation analysis of the stock market.
-#' \emph{PloS one}, 5(12), e15032.
+#' \emph{PloS one}, \emph{5}(12), e15032.
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export

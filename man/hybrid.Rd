@@ -23,7 +23,7 @@ HC<-hybrid(A)
 \references{
 Pozzi, F., Di Matteo, T., & Aste, T. (2013).
 Spread of risk across financial markets: Better to invest in the peripheries. 
-\emph{Scientific Reports}, 3(1655), 1-7.
+\emph{Scientific Reports}, \emph{3}(1655), 1-7.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

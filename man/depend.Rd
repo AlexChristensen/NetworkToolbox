@@ -28,7 +28,7 @@ binaryD<-depend(hexb,binary=TRUE)
 \references{
 Kenett, D. Y., Tumminello, M., Madi, A., Gur-Gershgoren, G., Mantegna, R. N., & Ben-Jacob, E. (2010).
 Dominating clasp of the financial sector revealed by partial correlation analysis of the stock market.
-\emph{PloS one}, 5(12), e15032.
+\emph{PloS one}, \emph{5}(12), e15032.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

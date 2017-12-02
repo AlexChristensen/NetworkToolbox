@@ -14,5 +14,6 @@ Imports:
     psych,
     qgraph,
     corrplot,
-    RColorBrewer
+    RColorBrewer,
+    igraph
 RoxygenNote: 6.0.1.9000
