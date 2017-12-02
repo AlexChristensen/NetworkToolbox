@@ -1248,7 +1248,7 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param n Number of people to use in the bootstrap. Defaults to full sample size
 #' @param iter Number of bootstrap iterations. Defaults to 1000 iterations
-#' @return The proportion of number of factors found across bootstrapped samples (i.e., their likelihood)
+#' @return The factors and their proportion found across bootstrapped samples (i.e., their likelihood)
 #' @examples
 #' \dontrun{
 #' 
@@ -1291,8 +1291,8 @@ walkboot <- function (data, binary = FALSE, n = nrow(data), iter = 1000)
     }
     
     prop<-round(prop/iter,3)
-    row.names(prop)<-seq(from=min(walk),to=max(walk))
-    colnames(prop)<-"Likelihood of Factors"
+    prop<-cbind(seq(from=min(walk),to=max(walk)),prop)
+    colnames(prop)<-c("Factors","Likelihood")
     
     return(prop)
 }

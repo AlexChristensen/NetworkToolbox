@@ -16,7 +16,7 @@ walkboot(data, binary = FALSE, n = nrow(data), iter = 1000)
 \item{iter}{Number of bootstrap iterations. Defaults to 1000 iterations}
 }
 \value{
-The proportion of number of factors found across bootstrapped samples (i.e., their likelihood)
+The factors and their proportion found across bootstrapped samples (i.e., their likelihood)
 }
 \description{
 Bootstraps the sample with replace to compute walktrap reliability (TMFG-filtered networks only)
