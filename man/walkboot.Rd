@@ -2,7 +2,7 @@
 % Please edit documentation in R/NetworkToolbox--master.R
 \name{walkboot}
 \alias{walkboot}
-\title{Bootstrapped Walktrap Reliability}
+\title{Bootstrapped Walktrap Likelihood}
 \usage{
 walkboot(data, binary = FALSE, n = nrow(data), iter = 1000)
 }
@@ -16,9 +16,7 @@ walkboot(data, binary = FALSE, n = nrow(data), iter = 1000)
 \item{iter}{Number of bootstrap iterations. Defaults to 1000 iterations}
 }
 \value{
-Returns a list that includes a vector of the number of communities in each bootstrapped
-sample (communityvector) and proportion of number of factors found across bootstrapped samples
-(reliabilities)
+The proportion of number of factors found across bootstrapped samples (i.e., their likelihood)
 }
 \description{
 Bootstraps the sample with replace to compute walktrap reliability (TMFG-filtered networks only)

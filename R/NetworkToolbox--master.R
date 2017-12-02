@@ -1242,15 +1242,13 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
         }else{return(list(orignet=tru,bootmat=bootmat,bootrel=reprel,plotrel=plt))}
 }
 #----
-#' Bootstrapped Walktrap Reliability
+#' Bootstrapped Walktrap Likelihood
 #' @description Bootstraps the sample with replace to compute walktrap reliability (TMFG-filtered networks only)
 #' @param data A set of data
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param n Number of people to use in the bootstrap. Defaults to full sample size
 #' @param iter Number of bootstrap iterations. Defaults to 1000 iterations
-#' @return Returns a list that includes a vector of the number of communities in each bootstrapped
-#' sample (communityvector) and proportion of number of factors found across bootstrapped samples
-#' (reliabilities)
+#' @return The proportion of number of factors found across bootstrapped samples (i.e., their likelihood)
 #' @examples
 #' \dontrun{
 #' 
@@ -1266,9 +1264,10 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
 #Bootstrapped Walktrap Reliability----
 walkboot <- function (data, binary = FALSE, n = nrow(data), iter = 1000)
 {
+    col<-ncol(data)
     if(nrow(data)==ncol(data)){stop("Input must be a dataset")}else
         if(binary){realmat<-psych::tetrachoric(data)$rho}else{realmat<-cor(data)}
-    mat<-matrix(0,nrow=n,ncol=ncol(data)) #Initialize bootstrap matrix
+    mat<-matrix(0,nrow=n,ncol=col) #Initialize bootstrap matrix
     walk<-matrix(0,nrow=iter,ncol=1) #Initialize walktrap matrix
     pb <- txtProgressBar(max=iter, style = 3)
     for(i in 1:iter) #Generate array of bootstrapped samples
@@ -1279,7 +1278,6 @@ walkboot <- function (data, binary = FALSE, n = nrow(data), iter = 1000)
         if(any(colSums(mat)<=1)){stop("Increase sample size: not enough observations")}
         cormat<-cor(mat)
         walk[i,]<-max(igraph::walktrap.community(igraph::as.igraph(qgraph::qgraph(TMFG(cormat)$A,DoNotPlot=TRUE)))$membership)
-        
         setTxtProgressBar(pb, i)
     }
     close(pb)
@@ -1294,9 +1292,9 @@ walkboot <- function (data, binary = FALSE, n = nrow(data), iter = 1000)
     
     prop<-round(prop/iter,3)
     row.names(prop)<-seq(from=min(walk),to=max(walk))
-    colnames(prop)<-"Reliability of Factors"
+    colnames(prop)<-"Likelihood of Factors"
     
-    return(list(communityvector=walk,reliabilities=prop))
+    return(prop)
 }
 #----
 #' Dependency Matrix
