@@ -2,9 +2,9 @@
 % Please edit documentation in R/NetworkToolbox--master.R
 \name{walkboot}
 \alias{walkboot}
-\title{Bootstrapped Walktrap Likelihood}
+\title{Bootstrapped Walktrap Communities Likelihood}
 \usage{
-walkboot(data, binary = FALSE, n = nrow(data), iter = 1000)
+walkboot(data, binary = FALSE, n = nrow(data), iter = 1000, steps = 4)
 }
 \arguments{
 \item{data}{A set of data}
@@ -14,6 +14,8 @@ walkboot(data, binary = FALSE, n = nrow(data), iter = 1000)
 \item{n}{Number of people to use in the bootstrap. Defaults to full sample size}
 
 \item{iter}{Number of bootstrap iterations. Defaults to 1000 iterations}
+
+\item{steps}{Number of steps to use in the walktrap algorithm. Defaults to 4. Use a larger number of steps for smaller networks}
 }
 \value{
 The factors and their proportion found across bootstrapped samples (i.e., their likelihood)

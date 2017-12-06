@@ -1230,12 +1230,13 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
         }else{return(list(orignet=tru,bootmat=bootmat,bootrel=reprel,plotrel=plt))}
 }
 #----
-#' Bootstrapped Walktrap Likelihood
+#' Bootstrapped Walktrap Communities Likelihood
 #' @description Bootstraps the sample with replace to compute walktrap reliability (TMFG-filtered networks only)
 #' @param data A set of data
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param n Number of people to use in the bootstrap. Defaults to full sample size
 #' @param iter Number of bootstrap iterations. Defaults to 1000 iterations
+#' @param steps Number of steps to use in the walktrap algorithm. Defaults to 4. Use a larger number of steps for smaller networks
 #' @return The factors and their proportion found across bootstrapped samples (i.e., their likelihood)
 #' @examples
 #' \dontrun{
@@ -1250,7 +1251,7 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Bootstrapped Walktrap Reliability----
-walkboot <- function (data, binary = FALSE, n = nrow(data), iter = 1000)
+walkboot <- function (data, binary = FALSE, n = nrow(data), iter = 1000, steps = 4)
 {
     col<-ncol(data)
     if(nrow(data)==ncol(data)){stop("Input must be a dataset")}else
@@ -1265,7 +1266,7 @@ walkboot <- function (data, binary = FALSE, n = nrow(data), iter = 1000)
         mat<-data[round(runif(n,min=1,max=n),0),]
         if(any(colSums(mat)<=1)){stop("Increase sample size: not enough observations")}
         cormat<-cor(mat)
-        walk[i,]<-max(igraph::walktrap.community(igraph::as.igraph(qgraph::qgraph(TMFG(cormat)$A,DoNotPlot=TRUE)))$membership)
+        walk[i,]<-max(igraph::walktrap.community(igraph::as.igraph(qgraph::qgraph(TMFG(cormat)$A,DoNotPlot=TRUE)),steps=steps)$membership)
         setTxtProgressBar(pb, i)
     }
     close(pb)
