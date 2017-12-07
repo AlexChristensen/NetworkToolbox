@@ -988,7 +988,13 @@ clustcoeff <- function (A, weighted = FALSE)
 edgerep <- function (A, B)
 {
   count<-0
-
+if(!isSymmetric(A))
+{A<-A+t(A)
+warning("Adjacency matrix A was made to be symmetric")}
+if(!isSymmetric(B))
+{B<-B+t(B)
+warning("Adjacency matrix B was made to be symmetric")}
+  
   for(i in 1:ncol(A))
     for(j in 1:nrow(A))
       if(A[i,j]&&B[i,j]!=0){count<-count+1}
@@ -1102,6 +1108,7 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
         if(binary){realmat<-psych::tetrachoric(data)$rho}else{realmat<-cor(data)}
     mat<-matrix(0,nrow=n,ncol=ncol(data)) #Initialize bootstrap matrix
     samps<-array(0,c(nrow=nrow(realmat),ncol=ncol(realmat),iter)) #Initialize sample matrix
+    dsamps<-array(0,c(nrow=nrow(realmat),ncol=ncol(realmat),iter)) #Initialize dsample matrix
     pb <- txtProgressBar(max=iter, style = 3)
     for(i in 1:iter) #Generate array of bootstrapped samples
     {
@@ -1126,8 +1133,10 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
         }else stop("Method not available")
         }else {depmat<-depend(cormat,progBar=FALSE)
         if(method=="TMFG")
-        {samps[,,i]<-TMFG(depmat,depend=TRUE)$A
-        tru<-TMFG(data,depend=TRUE)$A
+        {samps[,,i]<-TMFG(cormat)$A
+        dsamps[,,i]<-TMFG(depmat,depend=TRUE)$A
+        tru<-TMFG(data)$A
+        dtru<-TMFG(data,depend=TRUE)$A
         }else stop("Method not available")
         }
         setTxtProgressBar(pb, i)
@@ -1167,6 +1176,7 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
     
     #Reliability matrix
     samp<-array(0,c(nrow=nrow(realmat),ncol=ncol(realmat),iter))
+    dsamp<-array(0,c(nrow=nrow(realmat),ncol=ncol(realmat),iter))
     rel<-matrix(0,nrow=nrow(realmat),ncol=ncol(realmat))
     for(j in 1:nrow(realmat))
         for(k in 1:ncol(realmat))
@@ -1175,14 +1185,18 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
             {samp[j,k,l]<-1}
     for(j in 1:nrow(realmat))
         for(k in 1:ncol(realmat))
+            for(l in 1:iter)
+                if(dsamps[j,k,l]!=0)
+                {dsamp[j,k,l]<-1}
+    for(j in 1:nrow(realmat))
+        for(k in 1:ncol(realmat))
             rel[j,k]<-sum(samp[j,k,])/iter
             colnames(rel)<-colnames(data)
             #reliablity plot
             reprel<-rel
             row.names(rel)<-colnames(rel)
             diag(rel)<-1
-            if(!depend)
-            {
+            
             upp<-matrix(0,nrow=nrow(rel),ncol=ncol(rel))
             for(i in 1:nrow(rel))
                 for(j in 1:ncol(rel))
@@ -1210,7 +1224,7 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
                  main="Correlation Strength on Reliability",xlim=c(0,1),ylim=range(yo))
             abline(lm(yo~xo))
             text(x=.05,y=max(yo-.05),labels = paste("r = ",round(cor(yo,xo),3)))}
-            }
+            
 
             
             #plot reliability matrix
