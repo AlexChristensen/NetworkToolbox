@@ -1131,37 +1131,30 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
         {samps[,,i]<-ECO(cormat)
         tru<-ECO(data)
         }else stop("Method not available")
-        }else {depmat<-depend(cormat,progBar=FALSE)
-        if(method=="TMFG")
+        }else{if(method=="TMFG")
         {samps[,,i]<-TMFG(cormat)$A
-        dsamps[,,i]<-TMFG(depmat,depend=TRUE)$A
-        tru<-TMFG(data)$A
-        dtru<-TMFG(data,depend=TRUE)$A
+        dsamps[,,i]<-TMFG(depend(cormat,progBar=FALSE),depend=TRUE)$A
         }else stop("Method not available")
         }
         setTxtProgressBar(pb, i)
     }
     close(pb)
+    
+    
+    tru<-TMFG(data)$A
+    
     #Mean matrix
     meanmat<-matrix(0,nrow=nrow(realmat),ncol=ncol(realmat)) #Initialize Mean matrix
     for(j in 1:nrow(realmat))
         for(k in 1:ncol(realmat))
         {meanmat[j,k]<-mean(samps[j,k,])}
+
     #Remove non-significant edges
-    if(!depend)
-    {
         critical.r <- function(iter, a = .05){
             df <- iter - 2
             critical.t <- qt( a/2, df, lower.tail = F )
             cvr <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
             return(cvr)}
-    }else{
-        critical.r <- function(iter, a = .05){
-            df <- iter - (3 + (ncol(realmat)-1))
-            critical.t <- qt( a/2, df, lower.tail = F )
-            cvr <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
-            return(cvr)}
-    }
     
     for(x in 1:nrow(meanmat))
         for(y in 1:ncol(meanmat))
@@ -1170,33 +1163,27 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
     
     #return meanmat to bootmat
     bootmat<-meanmat
-    bootmat<-as.data.frame(bootmat)
     colnames(bootmat)<-colnames(bootmat)
-    bootmat<-as.matrix(bootmat)
     
     #Reliability matrix
     samp<-array(0,c(nrow=nrow(realmat),ncol=ncol(realmat),iter))
-    dsamp<-array(0,c(nrow=nrow(realmat),ncol=ncol(realmat),iter))
+    
     rel<-matrix(0,nrow=nrow(realmat),ncol=ncol(realmat))
     for(j in 1:nrow(realmat))
         for(k in 1:ncol(realmat))
             for(l in 1:iter)
             if(samps[j,k,l]!=0)
             {samp[j,k,l]<-1}
-    for(j in 1:nrow(realmat))
-        for(k in 1:ncol(realmat))
-            for(l in 1:iter)
-                if(dsamps[j,k,l]!=0)
-                {dsamp[j,k,l]<-1}
-    for(j in 1:nrow(realmat))
-        for(k in 1:ncol(realmat))
+            
+            #reliablity plot
+            for(j in 1:nrow(realmat))
+            for(k in 1:ncol(realmat))
             rel[j,k]<-sum(samp[j,k,])/iter
             colnames(rel)<-colnames(data)
-            #reliablity plot
+            
             reprel<-rel
             row.names(rel)<-colnames(rel)
             diag(rel)<-1
-            
             upp<-matrix(0,nrow=nrow(rel),ncol=ncol(rel))
             for(i in 1:nrow(rel))
                 for(j in 1:ncol(rel))
@@ -1204,7 +1191,6 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
                     {upp[i,j]<-rel[i,j]}
             colnames(upp)<-colnames(rel)
             rel[upper.tri(rel)]<-upp[upper.tri(upp)]
-            
             #reliablity on correlation plot
             x<-matrix(nrow=length(upp))
             y<-matrix(nrow=length(tru))
@@ -1215,33 +1201,106 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
                     {wc<-wc+1
                     x[wc]<-upp[i,j]
                     y[wc]<-tru[i,j]}
-            
             xo<-na.omit(x)
             yo<-na.omit(y)
             
             mar=c(2,2,2,2)
             cpo<-{plot(xo,yo,pch=16,ylab="Correlation Strength",xlab="Reliability",
-                 main="Correlation Strength on Reliability",xlim=c(0,1),ylim=range(yo))
-            abline(lm(yo~xo))
-            text(x=.05,y=max(yo-.05),labels = paste("r = ",round(cor(yo,xo),3)))}
+                       main="Correlation Strength on Reliability",xlim=c(0,1),ylim=range(yo))
+                abline(lm(yo~xo))
+                text(x=.05,y=max(yo-.05),labels = paste("r = ",round(cor(yo,xo),3)))}
             
-
             
             #plot reliability matrix
             if(ncol(realmat)<=20)
             {plt<-corrplot::corrplot(rel,method="color",
-             title="Bootstrapped Correlation Reliabilities",
-             mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
-             cl.lim = c(0,1),addgrid.col = "grey",addCoef.col = "black")
-             }else if(ncol(realmat)>20){
-                    plt<-corrplot::corrplot(rel,method="color",
-                    title="Bootstrapped Correlation Reliabilities",
-                    mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
-                    cl.lim = c(0,1),addgrid.col = "grey")}
+                                     title="Bootstrapped Correlation Reliabilities",
+                                     mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
+                                     cl.lim = c(0,1),addgrid.col = "grey",addCoef.col = "black")
+            }else if(ncol(realmat)>20){
+                plt<-corrplot::corrplot(rel,method="color",
+                                        title="Bootstrapped Correlation Reliabilities",
+                                        mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
+                                        cl.lim = c(0,1),addgrid.col = "grey")}
+            
+            if(depend)
+            {   dtru<-TMFG(depend(data,progBar=FALSE),depend=TRUE)$A
+                
+                #mean matrix
+                dmeanmat<-matrix(0,nrow=nrow(realmat),ncol=ncol(realmat)) #Initialize Mean matrix
+                for(j in 1:nrow(realmat))
+                    for(k in 1:ncol(realmat))
+                    {dmeanmat[j,k]<-mean(dsamps[j,k,])}
+                
+                #critical value
+                dcritical.r <- function(iter, a = .05){
+                    df <- iter - (3 + (ncol(realmat)-1))
+                    critical.t <- qt( a/2, df, lower.tail = F )
+                    cvr <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
+                    return(cvr)}
+                    
+                    for(x in 1:nrow(dmeanmat))
+                        for(y in 1:ncol(dmeanmat))
+                            if(dmeanmat[x,y]<=dcritical.r(iter))
+                            {dmeanmat[x,y]<-0}
+                #bootmat
+                dbootmat<-dmeanmat
+                colnames(dbootmat)<-colnames(dbootmat)
+                #reliability count
+                dsamp<-array(0,c(nrow=nrow(realmat),ncol=ncol(realmat),iter))
+                drel<-matrix(0,nrow=nrow(realmat),ncol=ncol(realmat))
+                
+                for(j in 1:nrow(realmat))
+                for(k in 1:ncol(realmat))
+                    for(l in 1:iter)
+                        if(dsamps[j,k,l]!=0)
+                        {dsamp[j,k,l]<-1}
+                #reliability
+                for(j in 1:nrow(realmat))
+                    for(k in 1:ncol(realmat))
+                        drel[j,k]<-sum(dsamp[j,k,])/iter
+                    colnames(drel)<-colnames(data)
+                #reliablity plot
+                dreprel<-drel
+                row.names(drel)<-colnames(drel)
+                diag(drel)<-1
+                #reliablity on correlation plot
+                dx<-matrix(nrow=length(drel))
+                dy<-matrix(nrow=length(dtru))
+                dwc<-0
+                for(i in 1:nrow(cormat))
+                    for(j in 1:ncol(cormat))
+                        if((drel[i,j]!=0&&dtru[i,j])!=0)
+                        {dwc<-dwc+1
+                        dx[dwc]<-drel[i,j]
+                        dy[dwc]<-dtru[i,j]}
+            dxo<-na.omit(dx)
+            dyo<-na.omit(dy)
+            
+            mar=c(2,2,2,2)
+            dcpo<-{plot(dxo,dyo,pch=16,ylab="Dependency Strength",xlab="Reliability",
+                       main="Dependency Strength on Reliability",xlim=c(0,1),ylim=range(dyo))
+                abline(lm(dyo~dxo))
+                text(x=.05,y=max(dyo-.05),labels = paste("r = ",round(cor(dyo,dxo),3)))}
+            
+            #plot reliability matrix
+            if(ncol(realmat)<=20)
+            {dplt<-corrplot::corrplot(drel,method="color",
+                                     title="Bootstrapped Dependency Reliabilities",
+                                     mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
+                                     cl.lim = c(0,1),addgrid.col = "grey",addCoef.col = "black")
+            }else if(ncol(realmat)>20){
+                dplt<-corrplot::corrplot(drel,method="color",
+                                        title="Bootstrapped Dependency Reliabilities",
+                                        mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
+                                        cl.lim = c(0,1),addgrid.col = "grey")}
+            }
     
     if(!depend)
     {return(list(orignet=tru,bootmat=bootmat,netrel=upp,bootrel=reprel,plotrel=plt,ConR=cpo))
-        }else{return(list(orignet=tru,bootmat=bootmat,bootrel=reprel,plotrel=plt))}
+    }else{orignet<-(list(orignet=tru,bootmat=bootmat,bootrel=reprel,plotrel=plt,ConR=cpo))
+          depnet<-(list(orignet=dtru,bootmat=dbootmat,bootrel=dreprel,plotrel=dplt,DonR=dcpo))
+          return(list(undirected=orignet,directed=depnet))}
 }
 #----
 #' Bootstrapped Walktrap Communities Likelihood
@@ -1329,13 +1388,16 @@ depend <- function (data, binary = FALSE, progBar = TRUE)
     if(progBar){pb <- txtProgressBar(max=inter, style = 3)}
     count<-0
     
+    partial <- function (data,i,k,j)
+    {(data[i,k]-(data[i,j]*data[k,j]))/sqrt((1-(data[i,j]^2))*(1-(data[k,j]^2)))}
+    
     parmat<-array(0,dim=c(nrow=ncol(cormat),ncol=ncol(cormat),ncol(cormat)))
     for(i in 1:ncol(cormat))
         for(k in 1:ncol(cormat))
             for(j in 1:ncol(cormat))
                 if(i!=j&&k!=j&&i!=k)
                 {count<-count+1
-                parmat[i,k,j]<-(cormat[i,k]-psych::partial.r(cormat,c(i,k),c(j))[1,2])
+                parmat[i,k,j]<-(cormat[i,k]-partial(cormat,i,k,j))
                 if(progBar){setTxtProgressBar(pb, count)}}
     if(progBar){close(pb)}
     
