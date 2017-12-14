@@ -4,7 +4,7 @@
 \alias{MaST}
 \title{Maximum Spanning Tree}
 \usage{
-MaST(data, binary = FALSE, weighted = TRUE)
+MaST(data, binary = FALSE, weighted = TRUE, depend = FALSE)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
@@ -12,6 +12,8 @@ MaST(data, binary = FALSE, weighted = TRUE)
 \item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 
 \item{weighted}{Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network}
+
+\item{depend}{Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a MaST-filtered dependency network}
 }
 \value{
 A sparse association matrix

@@ -175,6 +175,7 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
 #' @param data Can be a dataset or a correlation matrix
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network
+#' @param depend Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a MaST-filtered dependency network
 #' @return A sparse association matrix
 #' @examples
 #' weighted_MaSTnetwork<-MaST(hex)
@@ -189,8 +190,9 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Maximum Spanning Tree----
-MaST <- function (data, binary = FALSE, weighted = TRUE)
-{FIND_PathCompression <- function (temproot=temproot)
+MaST <- function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
+{
+FIND_PathCompression <- function (temproot=temproot)
 {
   ParentPointer[temproot]
   if(ParentPointer[temproot]!=temproot)
@@ -255,12 +257,16 @@ while((MSTcounter<(n-1))&&(e>=1))
 }
 S<-MSTreeEdges
 L<-S
-L[,2]<-S[,3]
+if(depend)
+{W<-matrix(1:nrow(cormat),nrow=nrow(cormat),ncol=1)
+X<-matrix(1:nrow(cormat),nrow=nrow(cormat),ncol=1)
+Y<-matrix(0,nrow=nrow(cormat),ncol=1)
+Z<-cbind(Y,W,X)
+K<-rbind(L,Z)
+}else{L[,2]<-S[,3]
 L[,3]<-S[,2]
-K<-rbind(S,L)
-K<-cbind(K,K[,1])
-K<-K[,-1]
-x<-as.matrix(Matrix::sparseMatrix(i=K[,1],j=K[,2],x=K[,3]))
+K<-rbind(S,L)}
+x<-as.matrix(Matrix::sparseMatrix(i=K[,2],j=K[,3],x=K[,1]))
 diag(x)<-0
 x<-as.matrix(x)
 ifelse(x!=0,cormat,0)
@@ -611,7 +617,7 @@ degree <- function (A)
   inDeg<-colSums(A)
   outDeg<-rowSums(A)
   relinf<-(outDeg-inDeg)/(outDeg+inDeg)
-  return(list(InDegree=inDeg,OutDegree=outDeg,DegRelativeInfluence=relinf))
+  return(list(inDegree=inDeg,outDegree=outDeg,relInf=relinf))
   }
 }
 #----
@@ -644,7 +650,7 @@ strength <- function (A)
       inStr<-colSums(A)
       outStr<-rowSums(A)
       relinf<-(outStr-inStr)/(outStr+inStr)
-      return(list(InStrength=inStr,OutStrength=outStr,StrRelativeInfluence=relinf))    
+      return(list(inStrength=inStr,outStrength=outStr,relInf=relinf))    
       
   }
 }
@@ -831,7 +837,7 @@ centlist <- function (A, weighted = TRUE)
     Str<-strength(A)
     EC<-eigenvector(A)
     lev<-leverage(A)
-    return(list(Betweenness=BC,Closeness=CC,Strength=Str,Eigenvector=EC,Leverage=lev))}
+    return(list(betweenness=BC,closeness=CC,strength=Str,eigenvector=EC,leverage=lev))}
 }
 #----
 #' Distance
@@ -902,6 +908,12 @@ pathlengths <- function (A, weighted = FALSE)
   if(!weighted)
   {D<-distance(A,weighted=FALSE)
   n<-nrow(D)
+  for(i in 1:ncol(D))
+      for(j in 1:nrow(D))
+      if(is.infinite(D[j,i]))
+      {D[j,i]<-0}
+  if(any(colSums(D)==0))
+  {D<-D[,-(which(colSums(D)==0))]}
   aspli<-colSums(D*(D!=0))/(ncol(D)-1)
   aspl<-mean(aspli)
   Emat<-(D*(D!=0))
@@ -916,7 +928,7 @@ pathlengths <- function (A, weighted = FALSE)
   colnames(ecc)<-c("ecc")
   rownames(ecc)<-colnames(A)
   
-  return(list(ASPL=aspl,ASPLi=aspli,ecc=ecc,Diameter=d))}
+  return(list(ASPL=aspl,ASPLi=aspli,ecc=ecc,diameter=d))}
   else{print("Weighted not coded.")}
 }
 #----
@@ -969,6 +981,188 @@ clustcoeff <- function (A, weighted = FALSE)
   CCi<-C
   CC<-mean(C)}
   return(list(CC=CC,CCi=CCi))
+}
+#----
+#' Louvain Community Detection Algorithm
+#' @description Computes a vector of communities (community) and a global modularity measure (Q)
+#' @param A An adjacency matrix of network data
+#' @param gamma Defaults to 1. Set to gamma > 1 to detect smaller modules and gamma < 1 for larger modules
+#' @param M0 Defaults to none. Input can be an initial community vector
+#' @param method Defaults to "modularity". Set to "potts" for Potts model
+#' @return Returns a list of community and Q
+#' @examples
+#' A<-TMFG(hex)$A
+#' 
+#' modularity<-louvain(A)
+#' 
+#' @references
+#' Blondel, V. D., Guillaume, J. L., Lambiotte, R., & Lefebvre, E. (2008).
+#' Fast unfolding of communities in large networks. 
+#' \emph{Journal of Statistical Mechanics: Theory and Experiment}, \emph{2008}(10), P10008.
+#'  
+#' Rubinov, M., & Sporns, O. (2010). 
+#' Complex network measures of brain connectivity: Uses and interpretations. 
+#' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
+#' 
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Louvain Community Detection----
+louvain <- function (A, gamma = 1, M0 = 1:ncol(A), method = "modularity")
+{
+    n<-ncol(A)
+    s<-sum(A)
+    
+    if(min(A)<0)
+    {warning("Matrix contains negative weights: absolute weights were used")
+        A<-abs(A)}
+    
+    Mb<-unique(M0)
+    M<-Mb
+    
+    if(method=="modularity") 
+    {mat<-matrix(0,nrow=n,ncol=n)
+    for(i in 1:n)
+        for(j in 1:n)
+        {mat[i,j]<-(colSums(A)[i]*rowSums(A)[j])/s}
+    
+    B<-A-(gamma*(mat))
+    }else if(method=="potts"){
+        B<-A-gamma*!A
+    }
+    
+    
+    B<-(B+t(B))/2
+    
+    Hnm<-matrix(0,nrow=n,ncol=n)
+    
+    for(m in 1:max(Mb))
+    {Hnm[,m]<-B[,Mb==m]}
+    
+    H<-colSums(Hnm)
+    Hm<-rowSums(Hnm)
+    
+    Q0<-(-Inf)
+    bsxfun<-matrix(0,nrow=n,ncol=n)
+    diag(bsxfun)<-1
+    Q<-sum(diag(B*bsxfun))/s
+    
+    
+    first_iter<-TRUE
+    while(Q-Q0>0)
+    {
+        flag<-TRUE
+        while(flag)
+        {
+            set.seed(0)
+            flag<-FALSE
+            for(u in sample(n))
+            {
+                ma<-Mb[u]
+                dQ<-Hnm[u,] - Hnm[u,ma] + B[u,u]
+                dQ[ma]<-0
+                
+                max_dQ<-max(dQ)
+                mb<-which.max(dQ)
+                
+                if(max_dQ>0)
+                {
+                    flag<-TRUE
+                    Mb[u]<-mb
+                    
+                    Hnm[,mb]<-Hnm[,mb]+B[,u]
+                    Hnm[,ma]<-Hnm[,ma]-B[,u]
+                    Hm[mb]<-Hm[mb]+H[u]
+                    Hm[ma]<-Hm[ma]-H[u]
+                }
+            }
+        }
+        Mb<-match(Mb,unique(Mb))
+        
+        M0<-M
+        if(first_iter)
+        {
+            M<-Mb
+            first_iter<-FALSE
+        }else{
+            for(u in 1:n)
+            {
+                M[M0==u]<-Mb[u]
+            }
+        }
+        
+        n<-max(Mb)
+        B1<-matrix(0,nrow=n,ncol=n)
+        for(u in 1:n)
+            for(v in u:n)
+            {
+                bm<-sum(sum(B[Mb==u,Mb==v]))
+                B1[u,v]<-bm
+                B1[v,u]<-bm
+            }
+        B<-B1
+        
+        Mb<-1:n
+        Hnm<-B
+        H<-colSums(B)
+        
+        Q0<-Q
+        
+        Q<-sum(diag(B))/s
+        
+    }
+    return(list(community=M,Q=Q))
+}
+#----
+#' Small-worldness Measure
+#' @description Computes the small-worldness measure of a network
+#' @param A An adjacency matrix of network data
+#' @param iter Number of random networks to generate, which are used to calculate the mean random ASPL and CC
+#' @return Returns a value of small-worldness
+#' @examples
+#' 
+#' A<-TMFG(hex)$A
+#'
+#' swm <- smallworldness(A)
+#' 
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Small-worldness Measure----
+smallworldness <- function (A, iter = 100)
+{
+    mat<-matrix(0,nrow=nrow(A),ncol=ncol(A)) #Initialize bootstrap matrix
+    asamps<-matrix(0,nrow=iter) #Initialize sample matrix
+    csamps<-matrix(0,nrow=iter) #Initialize sample matrix
+    pb <- txtProgressBar(max=iter, style = 3)
+    for(i in 1:iter) #Generate array of bootstrapped samples
+    {
+        f<-round(runif(i,min=1,max=1000000),0)
+        set.seed(f[round(runif(i,min=1,max=length(f)),0)])
+        rand<-randnet(ncol(A),sum(ifelse(A!=0,1,0))/2)
+        asamps[i,]<-pathlengths(rand)$ASPL
+        csamps[i,]<-clustcoeff(rand)$CC
+        setTxtProgressBar(pb, i)
+    }
+    close(pb)
+    nodes<-ncol(A)
+    edges<-sum(ifelse(A!=0,1,0))/2
+    rand<-randnet(nodes,edges)
+    #rASPL<-pathlengths(rand)$ASPL
+    rASPL<-mean(asamps)
+    ASPL<-pathlengths(A)$ASPL
+    CC<-clustcoeff(A)$CC
+    
+    #if(method=="rand")
+    #{
+    #rCC<-clustcoeff(rand)$CC
+    rCC<-mean(csamps)
+    swm<-(CC/rCC)/(ASPL/rASPL)
+    return(list(S=swm,ASPL=ASPL,randASPL=rASPL,CC=CC,randCC=rCC))
+    #}
+    
+    #if(method=="HG")
+    #{lCC<-clustcoeff(rand)$CC
+    #swm<-(rASPL/ASPL)-(CC/lCC)
+    #return(list(S=swm,ASPL=ASPL,randASPL=rASPL,CC=CC,latCC=lCC))}
 }
 #----
 #' Edge Replication
@@ -1032,11 +1226,11 @@ warning("Adjacency matrix B was made to be symmetric")}
               svec<-sd(vec)}else if(all(mat==0)){mvec<-0
                                                  svec<-0}
   
-  return(list(Replicated=count,
-              TotalEdgesA=possibleA,TotalEdgesB=possibleB,
-              PercentageA=percentA,PercentageB=percentB,
-              DensityA=densityA,DensityB=densityB,
-              MeanDifference=mvec,SdDifference=svec,Correlation=corr))
+  return(list(replicated=count,
+              totalEdgesA=possibleA,totalEdgesB=possibleB,
+              percentageA=percentA,percentageB=percentB,
+              densityA=densityA,densityB=densityB,
+              meanDifference=mvec,sdDifference=svec,correlation=corr))
 }
 #----
 #' Network Connectivity
@@ -1065,7 +1259,7 @@ conn <- function (A)
     mea<-mean(weights)
     s<-sd(weights)
     
-    return(list(Weights=weights,Mean=mea,SD=s,Total=tot))
+    return(list(weights=weights,mean=mea,sd=s,total=tot))
 }
 #----
 #' Bootstrapped Network Preprocessing
@@ -1112,7 +1306,7 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
     pb <- txtProgressBar(max=iter, style = 3)
     for(i in 1:iter) #Generate array of bootstrapped samples
     {
-        f<-round(runif(i,min=1,max=1000),0)
+        f<-round(runif(i,min=1,max=1000000),0)
         set.seed(f[round(runif(i,min=1,max=length(f)),0)])
         mat<-data[round(runif(n,min=1,max=n),0),]
         if(any(colSums(mat)<=1)){stop("Increase sample size: not enough observations")}
@@ -1411,6 +1605,38 @@ depend <- function (data, binary = FALSE, progBar = TRUE)
     
     colnames(depmat)<-colnames(data)
     return(depmat)
+}
+#----
+#' Random Network
+#' @description Generates a random network
+#' @param nodes Number of nodes in random network
+#' @param edges Number of edges in random network
+#' @return Returns an adjacency matrix of a random network
+#' @examples
+#' 
+#' rand <- randnet(10,27)
+#' 
+#' @references 
+#' Rubinov, M., & Sporns, O. (2010). 
+#' Complex network measures of brain connectivity: Uses and interpretations. 
+#' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Random Network----
+randnet <- function (nodes, edges)
+{
+    mat<-matrix(1,nrow=nodes,ncol=nodes)
+    diag(mat)<-0
+    ind<-ifelse(upper.tri(mat)==TRUE,1,0)
+    i<-which(ind==1)
+    rp<-sample(length(i))
+    irp<-i[rp]
+    
+    rand<-matrix(0,nrow=nodes,ncol=nodes)
+    rand[irp[1:edges]]<-1
+    rand<-rand+t(rand)
+    
+    return(rand)
 }
 #----
 #HEXACO Openness data----
