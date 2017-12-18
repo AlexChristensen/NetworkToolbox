@@ -4,12 +4,17 @@
 \alias{smallworldness}
 \title{Small-worldness Measure}
 \usage{
-smallworldness(A, iter = 100)
+smallworldness(A, iter = 100, progBar = FALSE, method = "HG")
 }
 \arguments{
 \item{A}{An adjacency matrix of network data}
 
-\item{iter}{Number of random networks to generate, which are used to calculate the mean random ASPL and CC}
+\item{iter}{Number of random (or lattice) networks to generate, which are used to calculate the mean random ASPL and CC (or lattice)}
+
+\item{progBar}{Defaults to FALSE. Set to TRUE to see progress bar}
+
+\item{method}{Defaults to HG (Humphries & Gurney, 2008). Set to "rand" for the CC to be calculated using a random network or
+set to "TJHBL" for (Telesford et al., 2011) where CC is calculated from a lattice network}
 }
 \value{
 Returns a value of small-worldness
@@ -21,8 +26,20 @@ Computes the small-worldness measure of a network
 
 A<-TMFG(hex)$A
 
-swm <- smallworldness(A)
+swmHG <- smallworldness(A, method="HG")
 
+swmRand <- smallworldness(A, method="rand")
+
+swmTJHBL <- smallworldness(A, method="TJHBL")
+}
+\references{
+Humphries, M. D., & Gurney, K. (2008).
+Network 'small-world-ness': A quantitative method for determining canonical network equivalence.
+\emph{PloS one}, \emph{3}(4), e0002051.
+
+Telesford, Q. K., Joyce, K. E., Hayasaka, S., Burdette, J. H., & Laurienti, P. J. (2011).
+The ubiquity of small-world networks.
+\emph{Brain Connectivity}, \emph{1}(5), 367-375.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

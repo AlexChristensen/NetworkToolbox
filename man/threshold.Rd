@@ -11,12 +11,12 @@ threshold(data, binary = FALSE, thresh = 0.1, a = 0.05)
 
 \item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 
-\item{thresh}{Sets threshold (defaults to \emph{r} = .10). Set to "alpha" to use an alpha value}
+\item{thresh}{Sets threshold (defaults to \emph{r} = .10). Set to "alpha" to use an alpha value, "bonferroni" for the bonferroni correction, and "FDR" for false discovery rate}
 
-\item{a}{Defaults to .05. Only applied when thresh = "alpha"}
+\item{a}{Defaults to .05. Applied when thresh = "alpha" and "bonferroni"}
 }
 \value{
-Returns a filtered adjacency matrix
+Returns a list containing a filtered adjacency matrix (A) and the critical r value (r.cv)
 }
 \description{
 Filters the network based on an r-value or alpha

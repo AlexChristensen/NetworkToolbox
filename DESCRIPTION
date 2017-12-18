@@ -15,5 +15,6 @@ Imports:
     qgraph,
     corrplot,
     RColorBrewer,
-    igraph
+    igraph,
+    fdrtool
 RoxygenNote: 6.0.1.9000

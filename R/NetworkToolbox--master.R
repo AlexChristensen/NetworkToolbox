@@ -462,9 +462,9 @@ ECOplusMaST <- function (data, weighted = TRUE, binary = FALSE)
 #' @description Filters the network based on an r-value or alpha
 #' @param data Can be a dataset or a correlation matrix
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
-#' @param thresh Sets threshold (defaults to \emph{r} = .10). Set to "alpha" to use an alpha value
-#' @param a Defaults to .05. Only applied when thresh = "alpha"
-#' @return Returns a filtered adjacency matrix
+#' @param thresh Sets threshold (defaults to \emph{r} = .10). Set to "alpha" to use an alpha value, "bonferroni" for the bonferroni correction, and "FDR" for false discovery rate
+#' @param a Defaults to .05. Applied when thresh = "alpha" and "bonferroni"
+#' @return Returns a list containing a filtered adjacency matrix (A) and the critical r value (r.cv)
 #' @examples
 #' 
 #' threshnet<-threshold(hex)
@@ -472,6 +472,8 @@ ECOplusMaST <- function (data, weighted = TRUE, binary = FALSE)
 #' alphanet<-threshold(hex, thresh = "alpha")
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @importFrom grDevices dev.off
+#' @importFrom utils capture.output
 #' @export
 #Threshold filtering----
 threshold <- function (data, binary = FALSE, thresh = .10, a = .05)
@@ -479,20 +481,36 @@ threshold <- function (data, binary = FALSE, thresh = .10, a = .05)
     if(nrow(data)==ncol(data)){cormat<-data}else
         if(binary){cormat<-psych::tetrachoric(data)$rho}else{cormat<-cor(data)}
     
+    critical.r <- function(nrow, a){
+        df <- nrow - 2
+        critical.t <- qt( a/2, df, lower.tail = F )
+        cvr <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
+        return(cvr)}
+    
     if(thresh=="alpha")
+    {thr<-critical.r(nrow(data),a)
+    }else if(thresh=="bonferroni")
+    {thr<-critical.r(nrow(data),(a/((ncol(cormat)^2)-(ncol(cormat))/2)))
+    }else if(thresh=="FDR")
     {
-        critical.r <- function(nrow, a){
-            df <- nrow - 2
-            critical.t <- qt( a/2, df, lower.tail = F )
-            cvr <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
-            return(cvr)}
+        fdrmat<-matrix(0,nrow=((ncol(cormat)^2)-(ncol(cormat))),ncol=3)
+        w<-0
+        for(i in 1:ncol(data))
+            for(j in 1:ncol(data))
+                if(i!=j)
+        {
+            w<-w+1
+            fdrmat[w,1]<-i
+            fdrmat[w,2]<-j
+            fdrmat[w,3]<-cor(data[,i],data[,j])
+        }
         
-        thresh<-critical.r(nrow(data),a)
-    }
+        thr<-fdrtool::fndr.cutoff(fdrmat[,3],statistic = "correlation")
+    }else thr<-thresh
     
-    cormat<-ifelse(cormat>=thresh,cormat,0)
+    cormat<-ifelse(cormat>=thr,cormat,0)
     
-    return(cormat)
+    return(list(A=cormat, r.cv=thr))
 }
 #----
 #' Betwenness Centrality
@@ -1063,6 +1081,38 @@ clustcoeff <- function (A, weighted = FALSE)
   return(list(CC=CC,CCi=CCi))
 }
 #----
+#' Transitivity
+#' @description Computes transitivity of a network
+#' @param A An adjacency matrix of network data
+#' @param weighted Is the network weighted? Defaults to FALSE. Set to TRUE for a weighted measure of transitivity
+#' @return Returns a value of transitivity
+#' @examples
+#' A<-TMFG(hex)$A
+#' 
+#' trans<-transitivity(A,weighted=TRUE)
+#' @references 
+#' Rubinov, M., & Sporns, O. (2010). 
+#' Complex network measures of brain connectivity: Uses and interpretations. 
+#' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Transitivity----
+transitivity <- function (A, weighted = FALSE)
+{
+    if(!weighted)
+    {
+        A<-ifelse(A!=0,1,0)
+        trans<-sum(diag(A%*%A%*%A))/((sum(A%*%A))-sum(diag(A%*%A)))
+    }else if(weighted){
+        K<-colSums(ifelse(A!=0,1,0))
+        W<-A^(1/3)
+        cyc<-diag(W%*%W%*%W)
+        trans<-sum(cyc)/sum(K*(K-1))
+    }
+    
+    return(trans)
+}
+#----
 #' Louvain Community Detection Algorithm
 #' @description Computes a vector of communities (community) and a global modularity measure (Q)
 #' @param A An adjacency matrix of network data
@@ -1196,53 +1246,102 @@ louvain <- function (A, gamma = 1, M0 = 1:ncol(A), method = "modularity")
 #' Small-worldness Measure
 #' @description Computes the small-worldness measure of a network
 #' @param A An adjacency matrix of network data
-#' @param iter Number of random networks to generate, which are used to calculate the mean random ASPL and CC
+#' @param iter Number of random (or lattice) networks to generate, which are used to calculate the mean random ASPL and CC (or lattice)
+#' @param progBar Defaults to FALSE. Set to TRUE to see progress bar
+#' @param method Defaults to HG (Humphries & Gurney, 2008). Set to "rand" for the CC to be calculated using a random network or
+#' set to "TJHBL" for (Telesford et al., 2011) where CC is calculated from a lattice network
 #' @return Returns a value of small-worldness
 #' @examples
 #' 
 #' A<-TMFG(hex)$A
 #'
-#' swm <- smallworldness(A)
+#' swmHG <- smallworldness(A, method="HG")
+#' 
+#' swmRand <- smallworldness(A, method="rand")
+#' 
+#' swmTJHBL <- smallworldness(A, method="TJHBL")
+#' @references 
+#' Humphries, M. D., & Gurney, K. (2008).
+#' Network 'small-world-ness': A quantitative method for determining canonical network equivalence.
+#' \emph{PloS one}, \emph{3}(4), e0002051.
+#' 
+#' Telesford, Q. K., Joyce, K. E., Hayasaka, S., Burdette, J. H., & Laurienti, P. J. (2011).
+#' The ubiquity of small-world networks.
+#' \emph{Brain Connectivity}, \emph{1}(5), 367-375.
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Small-worldness Measure----
-smallworldness <- function (A, iter = 100)
+smallworldness <- function (A, iter = 100, progBar = FALSE, method="HG")
 {
     mat<-matrix(0,nrow=nrow(A),ncol=ncol(A)) #Initialize bootstrap matrix
     asamps<-matrix(0,nrow=iter) #Initialize sample matrix
     csamps<-matrix(0,nrow=iter) #Initialize sample matrix
-    pb <- txtProgressBar(max=iter, style = 3)
+    if(progBar)
+    {pb <- txtProgressBar(max=iter, style = 3)}
     for(i in 1:iter) #Generate array of bootstrapped samples
     {
         f<-round(runif(i,min=1,max=1000000),0)
         set.seed(f[round(runif(i,min=1,max=length(f)),0)])
         rand<-randnet(ncol(A),sum(ifelse(A!=0,1,0))/2)
+        if(method=="TJHBL")
+        {latt<-lattnet(ncol(A),sum(ifelse(A!=0,1,0))/2)}
         asamps[i,]<-pathlengths(rand)$ASPL
-        csamps[i,]<-clustcoeff(rand)$CC
-        setTxtProgressBar(pb, i)
+        if(method=="rand")
+        {csamps[i,]<-clustcoeff(rand)$CC
+        }else if(method=="HG"){csamps[i,]<-transitivity(rand)
+        }else if(method=="TJHBL"){csamps[i,]<-clustcoeff(latt)$CC}else{stop("Method not available")}
+        if(progBar)
+        {setTxtProgressBar(pb, i)}
     }
-    close(pb)
+    if(progBar)
+    {close(pb)}
+    
     nodes<-ncol(A)
-    edges<-sum(ifelse(A!=0,1,0))/2
-    rand<-randnet(nodes,edges)
-    #rASPL<-pathlengths(rand)$ASPL
-    rASPL<-mean(asamps)
     ASPL<-pathlengths(A)$ASPL
     CC<-clustcoeff(A)$CC
+    trans<-transitivity(A)
+    rASPL<-mean(asamps)
     
-    #if(method=="rand")
-    #{
-    #rCC<-clustcoeff(rand)$CC
-    rCC<-mean(csamps)
+    if(method=="rand")
+    {rCC<-mean(csamps)
     swm<-(CC/rCC)/(ASPL/rASPL)
-    return(list(S=swm,ASPL=ASPL,randASPL=rASPL,CC=CC,randCC=rCC))
-    #}
+    }else if(method=="HG")
+    {rtrans<-mean(csamps)
+    swm<-(trans/rtrans)/(ASPL/rASPL)
+    }else if(method=="TJHBL")
+    {lCC<-mean(csamps)
+    swm<-(rASPL/ASPL)-(CC/lCC)}
     
-    #if(method=="HG")
-    #{lCC<-clustcoeff(rand)$CC
-    #swm<-(rASPL/ASPL)-(CC/lCC)
-    #return(list(S=swm,ASPL=ASPL,randASPL=rASPL,CC=CC,latCC=lCC))}
+    return(swm)
+}
+#----
+#' Semantic Network Measures
+#' @description Computes the average shortest path length (ASPL), clustering coefficient(CC),
+#' modularity (Q), and small-worldness (S) 
+#' @param A An adjacency matrix of network A
+#' @return Returns a values for ASPL, CC, Q, and S
+#' @examples
+#' A<-TMFG(hex)$A
+#' 
+#' connectivity<-semnetmeas(A)
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Semantic Network Measures
+semnetmeas <- function (A)
+{
+    aspl<-pathlengths(A)$ASPL
+    cc<-clustcoeff(A)$CC
+    q<-louvain(A)$Q
+    s<-smallworldness(A,iter=100,progBar = TRUE,method="rand")
+    
+    semnetmeas<-cbind(aspl,cc,q,s)
+    
+    semnetmeas<-as.data.frame(semnetmeas)
+    
+    colnames(semnetmeas)<-c("ASPL","CC","Q","S")
+    
+    return(semnetmeas)
 }
 #----
 #' Edge Replication
@@ -1314,7 +1413,7 @@ warning("Adjacency matrix B was made to be symmetric")}
 }
 #----
 #' Network Connectivity
-#' @description Computes the average and standard deviation of the
+#' @description Computes the average and standard deviation of the weights in the network
 #' @param A An adjacency matrix of network A
 #' @return Returns a list of the edge weights (Weights), the mean (Mean), the standard deviation (SD), and the sum of the edge weights (Total) in the network
 #' @examples
@@ -1717,6 +1816,45 @@ randnet <- function (nodes, edges)
     rand<-rand+t(rand)
     
     return(rand)
+}
+#----
+#' Lattice Network
+#' @description Generates a lattice network
+#' @param nodes Number of nodes in lattice network
+#' @param edges Number of edges in lattice network
+#' @return Returns an adjacency matrix of a lattice network
+#' @examples
+#' 
+#' latt <- lattnet(10,27)
+#' 
+#' @references 
+#' Rubinov, M., & Sporns, O. (2010). 
+#' Complex network measures of brain connectivity: Uses and interpretations. 
+#' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Lattice Network----
+lattnet <- function (nodes, edges)
+{
+    dlat<-matrix(0,nrow=nodes,ncol=nodes)
+    lat<-matrix(0,nrow=nodes,ncol=nodes)
+    
+    for(i in 1:nodes)
+    {
+        if(i!=nodes)
+        {dlat[i,i+1]<-1}
+        if(i<nodes-1)
+        {dlat[i,i+2]<-1}
+    }
+    lat<-dlat+t(dlat)
+    
+    over<-sum(lat)-edges
+    if(over!=0)
+    {rp<-sample(which(dlat==1))
+    for(i in 1:over)
+    {lat[rp[i]]<-0}}
+    
+    return(lat)   
 }
 #----
 #' Binarize Network

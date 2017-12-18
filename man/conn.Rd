@@ -13,7 +13,7 @@ conn(A)
 Returns a list of the edge weights (Weights), the mean (Mean), the standard deviation (SD), and the sum of the edge weights (Total) in the network
 }
 \description{
-Computes the average and standard deviation of the
+Computes the average and standard deviation of the weights in the network
 }
 \examples{
 A<-TMFG(hex)$A
