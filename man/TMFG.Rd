@@ -16,7 +16,7 @@ TMFG(data, binary = FALSE, weighted = TRUE, depend = FALSE)
 \item{depend}{Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a TMFG-filtered dependency network}
 }
 \value{
-Returns a list of the adjacency matrix (A) and separators (sep)
+Returns a list of the adjacency matrix (A), separators (separators), and cliques (cliques)
 }
 \description{
 Applies the Triangulated Maximally Filtered Graph (TMFG) filtering method

@@ -10,16 +10,16 @@ data(hex)
 }
 \description{
 A response matrix (n = 802) of HEXACO's Openness to Experience
-from Christensen, Cotter, & Silvia (in preparation).
-Nomological Network of Openness to Experience.
+from Christensen, Cotter, & Silvia (under review).
 }
 \examples{
 
 data(hex)
 }
 \references{
-Christensen, A.P., Cotter, K.N., Silvia, P.J. (in preparation).
-Nomological network of openness to experience:
-A network analysis of four openness to experience inventories.
+Christensen, A.P., Cotter, K.N., Silvia, P.J. (under review).
+Nomological network of Openness to Experience:
+A network analysis of four Openness to Experience inventories.
+\url{http://doi.org/10.17605/OSF.IO/954A7}
 }
 \keyword{datasets}

@@ -6,7 +6,7 @@
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network
 #' @param depend Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a TMFG-filtered dependency network
-#' @return Returns a list of the adjacency matrix (A) and separators (sep)
+#' @return Returns a list of the adjacency matrix (A), separators (separators), and cliques (cliques)
 #' @examples
 #' weighted_TMFGnetwork<-TMFG(hex)
 #' 
@@ -140,6 +140,8 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
         #update triangles
         ntri<-ntri+2
     }
+    cliques<-rbind(in_v[1:4],(cbind(separators,in_v[5:ncol(cormat)])))
+    
     L<-S
     if(depend)
     {W<-matrix(1:nrow(cormat),nrow=nrow(cormat),ncol=1)
@@ -167,7 +169,48 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
     x<-as.matrix(x)
     colnames(x)<-colnames(cormat)
     rownames(x)<-colnames(cormat)
-    return(list(A=x, sep=separators))
+    return(list(A=x, separators=separators, cliques=cliques))
+}
+#----
+#' Local/Global Sparse Inverse Covariance Matrix
+#' @description Applies the Local/Global method to estimate the sparse inverse covariance matrix
+#' @param data Must be a dataset
+#' @param separators Defaults to separators obtained from the TMFG function. Requires a list of separators
+#' @param cliques Defaults to cliques obtained from the TMFG function. Requires a list of cliques
+#' @return Returns a sparse TMFG-filtered matrix of the inverse covariance
+#' @examples
+#' 
+#' LoGonet<-LoGo(hex)
+#' 
+#' @references 
+#' Barfuss, W., Massara, G. P., Di Matteo, T., & Aste, T. (2016).
+#' Parsimonious modeling with information filtering networks.
+#' \emph{Physical Review E}, \emph{94}(6), 062306.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @importFrom stats cov
+#' @export
+#LoGo Sparse Inverse Covariance Matrix----
+LoGo <- function (data, separators = TMFG(data)$separators, cliques = TMFG(data)$cliques)
+{
+    S<-cov(data)
+    
+    n<-ncol(S)
+    Jlogo<-matrix(0,nrow=n,ncol=n)
+    
+    for(i in 1:nrow(cliques))
+    {v<-cliques[i,]
+    Jlogo[v,v]<-Jlogo[v,v]+solve(S[v,v])}
+    
+    for(i in 1:nrow(separators))
+    {
+        v<-separators[i,]
+        Jlogo[v,v]<-Jlogo[v,v]-solve(S[v,v])
+    }
+    
+    colnames(Jlogo)<-colnames(data)
+    row.names(Jlogo)<-colnames(data)
+    
+    return(Jlogo)
 }
 #----
 #' Maximum Spanning Tree
@@ -413,6 +456,43 @@ ECOplusMaST <- function (data, weighted = TRUE, binary = FALSE)
   colnames(k)<-colnames(data)
   k<-as.matrix(k)
   return(k)
+}
+#----
+#' Threshold Filter
+#' @description Filters the network based on an r-value or alpha
+#' @param data Can be a dataset or a correlation matrix
+#' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
+#' @param thresh Sets threshold (defaults to \emph{r} = .10). Set to "alpha" to use an alpha value
+#' @param a Defaults to .05. Only applied when thresh = "alpha"
+#' @return Returns a filtered adjacency matrix
+#' @examples
+#' 
+#' threshnet<-threshold(hex)
+#' 
+#' alphanet<-threshold(hex, thresh = "alpha")
+#' 
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Threshold filtering----
+threshold <- function (data, binary = FALSE, thresh = .10, a = .05)
+{
+    if(nrow(data)==ncol(data)){cormat<-data}else
+        if(binary){cormat<-psych::tetrachoric(data)$rho}else{cormat<-cor(data)}
+    
+    if(thresh=="alpha")
+    {
+        critical.r <- function(nrow, a){
+            df <- nrow - 2
+            critical.t <- qt( a/2, df, lower.tail = F )
+            cvr <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
+            return(cvr)}
+        
+        thresh<-critical.r(nrow(data),a)
+    }
+    
+    cormat<-ifelse(cormat>=thresh,cormat,0)
+    
+    return(cormat)
 }
 #----
 #' Betwenness Centrality
@@ -1639,12 +1719,29 @@ randnet <- function (nodes, edges)
     return(rand)
 }
 #----
+#' Binarize Network
+#' @description Converts weighted adjacency matrix to a binarized adjacency matrix
+#' @param A An adjacency matrix of network data
+#' @return Returns an adjancency matrix of 1's and 0's
+#' @examples
+#' net<-TMFG(hex)$A
+#' 
+#' hexb<-binarize(net)
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Binarize function----
+binarize <- function (A)
+{
+    bin<-ifelse(A!=0,1,0)
+    
+    return(bin)
+}
+#----
 #HEXACO Openness data----
 #' HEXACO Openness to Experience Response Matrix
 #' 
 #' A response matrix (n = 802) of HEXACO's Openness to Experience
-#' from Christensen, Cotter, & Silvia (in preparation).
-#' Nomological Network of Openness to Experience.
+#' from Christensen, Cotter, & Silvia (under review).
 #' 
 #' @docType data
 #' 
@@ -1656,9 +1753,10 @@ randnet <- function (nodes, edges)
 #' 
 #' @references
 #' 
-#' Christensen, A.P., Cotter, K.N., Silvia, P.J. (in preparation).
-#' Nomological network of openness to experience:
-#' A network analysis of four openness to experience inventories.
+#' Christensen, A.P., Cotter, K.N., Silvia, P.J. (under review).
+#' Nomological network of Openness to Experience:
+#' A network analysis of four Openness to Experience inventories.
+#' \url{http://doi.org/10.17605/OSF.IO/954A7}
 #' 
 #' @examples 
 #' 
@@ -1669,8 +1767,7 @@ randnet <- function (nodes, edges)
 #' HEXACO Openness to Experience Response Matrix (Binarized)
 #' 
 #' A response matrix (n = 802) of HEXACO's Openness to Experience
-#' from Christensen, Cotter, & Silvia (in preparation).
-#' Nomological Network of Openness to Experience.
+#' from Christensen, Cotter, & Silvia (under review).
 #' 
 #' @docType data
 #' 
@@ -1682,9 +1779,10 @@ randnet <- function (nodes, edges)
 #' 
 #' @references
 #' 
-#' Christensen, A.P., Cotter, K.N., Silvia, P.J. (in preparation).
-#' Nomological network of openness to experience:
-#' A network analysis of four openness to experience inventories.
+#' Christensen, A.P., Cotter, K.N., Silvia, P.J. (under review).
+#' Nomological network of Openness to Experience:
+#' A network analysis of four Openness to Experience inventories.
+#' \url{http://doi.org/10.17605/OSF.IO/954A7}
 #' 
 #' @examples 
 #' 
