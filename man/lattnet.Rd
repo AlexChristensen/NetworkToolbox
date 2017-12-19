@@ -2,7 +2,7 @@
 % Please edit documentation in R/NetworkToolbox--master.R
 \name{lattnet}
 \alias{lattnet}
-\title{Lattice Network}
+\title{Generates a Lattice Network}
 \usage{
 lattnet(nodes, edges)
 }

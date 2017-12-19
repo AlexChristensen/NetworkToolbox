@@ -2,7 +2,7 @@
 % Please edit documentation in R/NetworkToolbox--master.R
 \name{randnet}
 \alias{randnet}
-\title{Random Network}
+\title{Generates a Random Network}
 \usage{
 randnet(nodes, edges)
 }

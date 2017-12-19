@@ -299,6 +299,20 @@ while((MSTcounter<(n-1))&&(e>=1))
   i<-i-1
 }
 S<-MSTreeEdges
+if(depend)
+{
+    for(i in 1:nrow(S))
+        if(cormat[S[i,2],S[i,3]]>=cormat[S[i,3],S[i,2]])
+        {S[i,1]<-cormat[S[i,2],S[i,3]]
+        S[i,2]<-S[i,2]
+        S[i,3]<-S[i,3]
+        }else if(cormat[S[i,2],S[i,3]]<cormat[S[i,3],S[i,2]])
+        {
+            S[i,1]<-cormat[S[i,3],S[i,2]]
+            S[i,2]<-S[i,3]
+            S[i,3]<-S[i,2] 
+        }
+}
 L<-S
 if(depend)
 {W<-matrix(1:nrow(cormat),nrow=nrow(cormat),ncol=1)
@@ -574,8 +588,77 @@ betweenness <- function (A, weighted = TRUE)
     DPd1<- (as.matrix(((L==d)*(1+DP)/NSP))%*%as.matrix(Bt))*((L==(d-1))*NSP)
     DP<-DP+DPd1
   }
-  BC<-round(as.matrix(colSums(DP),ncol=60),0)}else{BC<-qgraph::centrality_auto(A)$node.centrality[,1]
-  BC<-round(as.matrix(BC,ncol=60),0)}
+  BC<-round(as.matrix(colSums(DP),ncol=ncol(A)),0)}else{G<-ifelse(1/A==Inf,0,1/A)
+      
+      if(any(!G==t(G)))
+      {if(max(abs(G-t(G)))<1e-10)
+      {G=(G+G)/2}}
+      
+      n<-ncol(G)
+      
+      BC<-matrix(0,nrow=n,ncol=1)
+      
+      for(u in 1:n)
+      {
+          D<-matrix(Inf,nrow=n,ncol=1)
+          D[u]<-0
+          NP<-matrix(0,nrow=n,ncol=1)
+          NP[u]<-1
+          S<-matrix(TRUE,nrow=n,ncol=1)
+          P<-matrix(FALSE,nrow=n,ncol=n)
+          Q<-matrix(0,nrow=n,ncol=1)
+          q<-n
+          
+          G1<-G
+          V<-u
+          
+          while(TRUE)
+          {
+              S[V]<-0
+              G1[,V]<-0
+              for(v in V)
+              {
+                  Q[q]<-v
+                  q<-q-1
+                  W<-which(G1[v,]!=0)
+                  
+                  for(w in W)
+                  {
+                      Duw<-D[v]+G1[v,w]
+                      if(Duw<D[w])
+                      {
+                          D[w]<-Duw
+                          NP[w]<-NP[v]
+                          P[w,]<-0
+                          P[w,v]<-1
+                      }else if(Duw==D[w])
+                      {
+                          NP[w]<-NP[w]+NP[v]
+                          P[w,v]<-1
+                      }
+                  }
+              }
+              
+              
+              minD<-suppressWarnings(min(D[S==TRUE]))
+              if(length(minD)==0){break}else if(is.infinite(minD))
+              {Q[1:q]<-ifelse(length(which(is.infinite(D)))==0,break,which(is.infinite(D)))
+              break}
+              V<-which(D==minD)
+          }
+          
+          DP<-matrix(0,nrow=n,ncol=1)
+          for(w in Q[1:n-1])
+          {BC[w]<-BC[w]+DP[w]
+          for(v in which(P[w,]!=0))
+              DP[v]<-(DP[v]+(1+DP[w]))*NP[v]/NP[w]}
+          
+      }
+  BC<-round(as.matrix(BC,ncol=ncol(A)),0)}
+    BC<-as.data.frame(BC)
+    row.names(BC)<-colnames(A)
+    colnames(BC)<-"BC"
+    
   return(BC)
 }
 #----
@@ -669,16 +752,15 @@ closeness <- function (A, weighted = TRUE)
 {
   if(nrow(A)!=ncol(A))
   {stop("Input not an adjacency matrix")}
-  if (!weighted)
-  {D<-distance(A,weighted=FALSE)
+  if (!weighted){D<-distance(A,weighted=FALSE)}else if(weighted){D<-distance(A,weighted=TRUE)}
   C<-matrix(0,ncol=ncol(D))
   for(i in 1:ncol(D))
   {
     C[i]<-1/sum(D[,i])
   }
   LC<-t(as.data.frame(C)*100)
-  rownames(LC)<-colnames(A)
-  colnames(LC)<-c("LCu")}else{LC<-qgraph::centrality_auto(A)$node.centrality[,2]*10}
+  row.names(LC)<-colnames(A)
+  colnames(LC)<-"LC"
   LC<-round(as.data.frame(LC),3)
   LC<-as.matrix(LC)
   return(LC)
@@ -978,7 +1060,47 @@ distance<-function (A, weighted = FALSE)
   
   D[!D]<-Inf
   diag(D)<-0
-  return(D)}else{print("Weighted not coded.")}
+  }else if(weighted){
+          G<-ifelse(1/A==Inf,0,1/A)
+          
+          if(any(!G==t(G)))
+          {if(max(abs(G-t(G)))<1e-10)
+          {G=(G+G)/2}}
+          
+          n<-ncol(G)
+          D<-matrix(Inf,nrow=n,ncol=n)
+          diag(D)<-0
+          B<-matrix(0,nrow=n,ncol=n)
+          
+          for(u in 1:n)
+          {
+              S<-matrix(TRUE,nrow=n,ncol=1)
+              L1<-G
+              V<-u
+              while(TRUE)
+              {
+                  S[V]<-0
+                  L1[,V]<-0
+                  for(v in V)
+                  {
+                      W<-which(L1[v,]!=0)
+                      d<-apply(rbind(D[u,W],(D[u,v]+L1[v,W])),2,min)    
+                      wi<-apply(rbind(D[u,W],(D[u,v]+L1[v,W])),2,which.min)
+                      D[u,W]<-d
+                      ind<-W[wi==2]
+                      B[u,ind]<-B[u,v]+1
+                  }
+                  
+                  minD<-suppressWarnings(min(D[u,S==TRUE]))
+                  if(length(minD)==0||is.infinite(minD)){break}
+                  
+                  V<-which(D[u,]==minD)
+              }
+          }
+  }
+    colnames(D)<-colnames(A)
+    row.names(D)<-colnames(A)
+    return(D)
 }
 #----
 #' Characteristic Path Lengths
@@ -1004,7 +1126,7 @@ pathlengths <- function (A, weighted = FALSE)
   if(nrow(A)!=ncol(A))
   {stop("Input not an adjacency matrix")}
   if(!weighted)
-  {D<-distance(A,weighted=FALSE)
+  {D<-distance(A,weighted=FALSE)}else if(weighted){D<-distance(A,weighted=TRUE)}
   n<-nrow(D)
   for(i in 1:ncol(D))
       for(j in 1:nrow(D))
@@ -1024,10 +1146,9 @@ pathlengths <- function (A, weighted = FALSE)
   
   ecc<-as.data.frame(ecc)
   colnames(ecc)<-c("ecc")
-  rownames(ecc)<-colnames(A)
+  row.names(ecc)<-colnames(A)
   
-  return(list(ASPL=aspl,ASPLi=aspli,ecc=ecc,diameter=d))}
-  else{print("Weighted not coded.")}
+  return(list(ASPL=aspl,ASPLi=aspli,ecc=ecc,diameter=d))
 }
 #----
 #' Clustering Coefficient
@@ -1248,9 +1369,15 @@ louvain <- function (A, gamma = 1, M0 = 1:ncol(A), method = "modularity")
 #' @param A An adjacency matrix of network data
 #' @param iter Number of random (or lattice) networks to generate, which are used to calculate the mean random ASPL and CC (or lattice)
 #' @param progBar Defaults to FALSE. Set to TRUE to see progress bar
-#' @param method Defaults to HG (Humphries & Gurney, 2008). Set to "rand" for the CC to be calculated using a random network or
+#' @param method Defaults to "HG" (Humphries & Gurney, 2008). Set to "rand" for the CC to be calculated using a random network or
 #' set to "TJHBL" for (Telesford et al., 2011) where CC is calculated from a lattice network
-#' @return Returns a value of small-worldness
+#' @return Returns a value of small-worldness.
+#' For "rand", values > 1 indicate a small-world network.
+#' For "HG", values > 3 indicate a small-world network.
+#' For "TJHBL" values near 0 indicate a small-world network
+#' while < 0 indicates a more regular network and > 0 
+#' indicates a more random network
+#' 
 #' @examples
 #' 
 #' A<-TMFG(hex)$A
@@ -1676,57 +1803,65 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
           return(list(undirected=orignet,directed=depnet))}
 }
 #----
-#' Bootstrapped Walktrap Communities Likelihood
+#' Bootstrapped Communities Likelihood
 #' @description Bootstraps the sample with replace to compute walktrap reliability (TMFG-filtered networks only)
 #' @param data A set of data
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param n Number of people to use in the bootstrap. Defaults to full sample size
-#' @param iter Number of bootstrap iterations. Defaults to 1000 iterations
+#' @param iter Number of bootstrap iterations. Defaults to 100 iterations
+#' @param method Defaults to "louvain". Set to "walktrap" for the walktrap algorithm
 #' @param steps Number of steps to use in the walktrap algorithm. Defaults to 4. Use a larger number of steps for smaller networks
 #' @return The factors and their proportion found across bootstrapped samples (i.e., their likelihood)
 #' @examples
 #' \dontrun{
 #' 
-#' walkTMFG<-walkboot(hex)
+#' commTMFG<-commboot(hex)
 #' }
 #' @references
+#' Blondel, V. D., Guillaume, J. L., Lambiotte, R., & Lefebvre, E. (2008).
+#' Fast unfolding of communities in large networks.
+#' \emph{Journal of Statistical Mechanics: Theory and Experiment}, \emph{2008}(10), P10008.
+#'
 #' Csardi, G., & Nepusz, T. (2006).
 #' The igraph software package for complex network research.
 #' \emph{InterJournal, Complex Systems}, \emph{1695}(5), 1-9.
 #'
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#Bootstrapped Walktrap Reliability----
-walkboot <- function (data, binary = FALSE, n = nrow(data), iter = 1000, steps = 4)
+#Bootstrapped Community Reliability----
+commboot <- function (data, binary = FALSE, n = nrow(data), iter = 100, method = "louvain", steps = 4)
 {
     col<-ncol(data)
     if(nrow(data)==ncol(data)){stop("Input must be a dataset")}else
         if(binary){realmat<-psych::tetrachoric(data)$rho}else{realmat<-cor(data)}
     mat<-matrix(0,nrow=n,ncol=col) #Initialize bootstrap matrix
-    walk<-matrix(0,nrow=iter,ncol=1) #Initialize walktrap matrix
+    comm<-matrix(0,nrow=iter,ncol=1) #Initialize community matrix
     pb <- txtProgressBar(max=iter, style = 3)
     for(i in 1:iter) #Generate array of bootstrapped samples
     {
-        f<-round(runif(i,min=1,max=1000),0)
+        f<-round(runif(i,min=1,max=1000000),0)
         set.seed(f[round(runif(i,min=1,max=length(f)),0)])
         mat<-data[round(runif(n,min=1,max=n),0),]
         if(any(colSums(mat)<=1)){stop("Increase sample size: not enough observations")}
         cormat<-cor(mat)
-        walk[i,]<-max(igraph::walktrap.community(igraph::as.igraph(qgraph::qgraph(TMFG(cormat)$A,DoNotPlot=TRUE)),steps=steps)$membership)
+        if(method=="walktrap")
+        {comm[i,]<-max(igraph::walktrap.community(igraph::as.igraph(qgraph::qgraph(TMFG(cormat)$A,DoNotPlot=TRUE)),steps=steps)$membership)
+        }else if(method=="louvain")
+        {comm[i,]<-max(suppressWarnings(louvain(TMFG(cormat)$A)$community))}
         setTxtProgressBar(pb, i)
     }
     close(pb)
     
     count<-0
-    prop<-matrix(0,nrow=length(seq(from=min(walk),to=max(walk))),ncol=1)
-    for(i in min(walk):max(walk))
+    prop<-matrix(0,nrow=length(seq(from=min(comm),to=max(comm))),ncol=1)
+    for(i in min(comm):max(comm))
     {
         count<-count+1
-        prop[count,]<-length(which(walk==i))
+        prop[count,]<-length(which(comm==i))
     }
     
     prop<-round(prop/iter,3)
-    prop<-cbind(seq(from=min(walk),to=max(walk)),prop)
+    prop<-cbind(seq(from=min(comm),to=max(comm)),prop)
     colnames(prop)<-c("Factors","Likelihood")
     
     return(prop)
@@ -1786,7 +1921,7 @@ depend <- function (data, binary = FALSE, progBar = TRUE)
     return(depmat)
 }
 #----
-#' Random Network
+#' Generates a Random Network
 #' @description Generates a random network
 #' @param nodes Number of nodes in random network
 #' @param edges Number of edges in random network
@@ -1818,7 +1953,7 @@ randnet <- function (nodes, edges)
     return(rand)
 }
 #----
-#' Lattice Network
+#' Generates a Lattice Network
 #' @description Generates a lattice network
 #' @param nodes Number of nodes in lattice network
 #' @param edges Number of edges in lattice network
