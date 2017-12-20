@@ -3,7 +3,7 @@ Title: Network Filtering Methods and Measures
 Version: 0.0.1.1
 Author: Alexander Christensen
 Maintainer: Alexander Christensen <alexpaulchristensen@gmail.com>
-Description: Implements numerous network filtering methods (TMFG; Massara, Di Matteo, & Aste (2016) <doi:10.1093/comnet/cnw015>, MaST; Chu & Liu (1965) and Edmonds (1967) <doi:10.6028/jres.071B.032>, ECO; Fallani, Latora, & Chavez (2017) <doi:10.1371/journal.pcbi.1005305>, and ECO+MaST; Fallani, Latora, & Chavez (2017) <doi:10.1371/journal.pcbi.1005305>), and several network measures (centrality, characteristic path length, clustering coefficient, and edge replication; Rubinov and Sporns (2010) <doi:10.1016/j.neuroimage.2009.10.003>). This package also includes a prototype bootstrap preprocessing technique for networks.
+Description: Implements Information Filtering Networks (IFN; Barfuss, Massara, Di Matteo, & Aste (2016)), ECO (ECO; Fallani, Latora, & Chavez (2017) <doi:10.1371/journal.pcbi.1005305>), and regression-based filtering network approaches (including the dependency network approach; Kenett, Tumminello, Madi, Gur-Gershogoren, Mantegna, & Ben-Jacob (2010) <https://doi.org/10.1371/journal.pone.0015032>). Also implements several network measures like local network characteristics (e.g., centralities), global network characteristics (e.g., clustering coefficient), and edge replication (Rubinov and Sporns (2010) <doi:10.1016/j.neuroimage.2009.10.003>). Finally, there are a few bootstrapping techniques that are aimed at increasing the reliability and reproducibility of network analysis (Tumminello, Coronnello, & Lillo  <https://doi.org/10.1142/S0218127407018415>).
 Depends: R (>= 3.3.0)
 License: GPL (>= 3.0)
 Encoding: UTF-8

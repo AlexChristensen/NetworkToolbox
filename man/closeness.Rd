@@ -27,14 +27,6 @@ unweighted_LC<-closeness(A,weighted=FALSE)
 }
 }
 \references{
-Epskamp, S., Cramer, A. O., Waldorp, L. J., Schmittmann, V. D., & Borsboom, D. (2012).
-qgraph: Network visualizations of relationships in psychometric data.
-Journal of Statistical Software, 48(4), 1-18.
-
-Opsahl, T., Agneessens, F., & Skvoretz, J. (2010).
-Node centrality in weighted networks: Generalizing degree and shortest paths.
-Social networks, 32(3), 245-251.
-
 Rubinov, M., & Sporns, O. (2010). 
 Complex network measures of brain connectivity: Uses and interpretations. 
 \emph{Neuroimage}, \emph{52}(3), 1059-1069.

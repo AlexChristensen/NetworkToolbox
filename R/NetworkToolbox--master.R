@@ -539,14 +539,6 @@ threshold <- function (data, binary = FALSE, thresh = .10, a = .05)
 #' 
 #' unweighted_BC<-betweenness(A,weighted=FALSE)
 #' @references 
-#' Epskamp, S., Cramer, A. O., Waldorp, L. J., Schmittmann, V. D., & Borsboom, D. (2012).
-#' qgraph: Network visualizations of relationships in psychometric data.
-#' \emph{Journal of Statistical Software}, \emph{48}(4), 1-18.
-#' 
-#' Opsahl, T., Agneessens, F., & Skvoretz, J. (2010).
-#' Node centrality in weighted networks: Generalizing degree and shortest paths.
-#' \emph{Social Networks}, \emph{32}(3), 245-251.
-#' 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
 #' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
@@ -734,14 +726,6 @@ rspbc <- function (A, beta = 0.01)
 #' unweighted_LC<-closeness(A,weighted=FALSE)
 #' }
 #' @references
-#' Epskamp, S., Cramer, A. O., Waldorp, L. J., Schmittmann, V. D., & Borsboom, D. (2012).
-#' qgraph: Network visualizations of relationships in psychometric data.
-#' Journal of Statistical Software, 48(4), 1-18.
-#' 
-#' Opsahl, T., Agneessens, F., & Skvoretz, J. (2010).
-#' Node centrality in weighted networks: Generalizing degree and shortest paths.
-#' Social networks, 32(3), 245-251.
-#' 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
 #' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
@@ -916,7 +900,6 @@ leverage <- function (A, weighted = TRUE)
 #' Kenett, Y. N., Kenett, D. Y., Ben-Jacob, E., & Faust, M. (2011).
 #' Global and local features of semantic networks: Evidence from the Hebrew mental lexicon.
 #' \emph{PloS one}, \emph{6}(8), e23912.
-#' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Node Impact----
@@ -1254,7 +1237,6 @@ transitivity <- function (A, weighted = FALSE)
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
 #' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
-#' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Louvain Community Detection----
@@ -1395,7 +1377,6 @@ louvain <- function (A, gamma = 1, M0 = 1:ncol(A), method = "modularity")
 #' Telesford, Q. K., Joyce, K. E., Hayasaka, S., Burdette, J. H., & Laurienti, P. J. (2011).
 #' The ubiquity of small-world networks.
 #' \emph{Brain Connectivity}, \emph{1}(5), 367-375.
-#' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Small-worldness Measure----
@@ -1825,7 +1806,6 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
 #' Csardi, G., & Nepusz, T. (2006).
 #' The igraph software package for complex network research.
 #' \emph{InterJournal, Complex Systems}, \emph{1695}(5), 1-9.
-#'
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Bootstrapped Community Reliability----
@@ -1871,6 +1851,7 @@ commboot <- function (data, binary = FALSE, n = nrow(data), iter = 100, method =
 #' @description Generates a dependency matrix of the data
 #' @param data A set of data
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
+#' @param index Should correlation with the latent variable (i.e., weighted average of all variables) be removed? Defaults to FALSE. Set to TRUE to remove common latent factor
 #' @param progBar Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar.
 #' @return Returns an adjacency matrix of dependencies
 #' @examples
@@ -1883,16 +1864,55 @@ commboot <- function (data, binary = FALSE, n = nrow(data), iter = 100, method =
 #' Dominating clasp of the financial sector revealed by partial correlation analysis of the stock market.
 #' \emph{PloS one}, \emph{5}(12), e15032.
 #' 
+#' Kenett, D. Y., Huang, X., Vodenska, I., Havlin, S., & Stanley, H. E. (2015).
+#' Partial correlation analysis: Applications for financial markets.
+#' \emph{Quantitative Finance}, \emph{15}(4), 569-578.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Dependency----
-depend <- function (data, binary = FALSE, progBar = TRUE)
+depend <- function (data, binary = FALSE, index = FALSE, progBar = TRUE)
 {
     if(nrow(data)==ncol(data)){cormat<-data}else
         if(binary){cormat<-psych::tetrachoric(data)$rho}else{cormat<-cor(data)}
     
     inter<-((ncol(cormat)*(ncol(cormat)-1)*(ncol(cormat)-2)))
     
+    if(index)
+    {
+        m<-rowMeans(data)
+        dat<-cbind(data,m)
+        if(nrow(dat)==ncol(dat)){cordat<-dat}else
+            if(binary){cordat<-psych::tetrachoric(dat)$rho}else{cordat<-cor(dat)}
+        indpartial <- function (data,i,k,m=ncol(cordat))
+        {(data[i,k]-(data[i,m]*data[k,m]))/sqrt((1-(data[i,m]^2))*(1-(data[k,m]^2)))}
+        indmat<-matrix(0,nrow=nrow(cordat)-1,ncol=ncol(cordat)-1)
+        for(i in 1:ncol(cordat)-1)
+            for(k in 1:ncol(cordat)-1)
+                if(i!=k)
+                {indmat[i,k]<-cordat[i,k]-indpartial(cordat,i,k)}
+        
+        if(progBar){pb <- txtProgressBar(max=inter, style = 3)}
+        count<-0
+        
+        partial <- function (data,i,k,j)
+        {(data[i,k]-(data[i,j]*data[k,j]))/sqrt((1-(data[i,j]^2))*(1-(data[k,j]^2)))}
+        
+        z <- function (r)
+        {.5*log((1+r)/(1-r))}
+        
+        parmat<-array(0,dim=c(nrow=ncol(indmat),ncol=ncol(indmat),ncol(indmat)))
+        for(i in 1:ncol(indmat))
+            for(k in 1:ncol(indmat))
+                for(j in 1:ncol(indmat))
+                    if(i!=j&&k!=j&&i!=k)
+                    {count<-count+1
+                    parmat[i,k,j]<-(z(indmat[i,k])-z(partial(indmat,i,k,j)))
+                    if(progBar){setTxtProgressBar(pb, count)}}
+        if(progBar){close(pb)}
+    }
+    
+    if(!index)
+    {
     if(progBar){pb <- txtProgressBar(max=inter, style = 3)}
     count<-0
     
@@ -1908,6 +1928,7 @@ depend <- function (data, binary = FALSE, progBar = TRUE)
                 parmat[i,k,j]<-(cormat[i,k]-partial(cormat,i,k,j))
                 if(progBar){setTxtProgressBar(pb, count)}}
     if(progBar){close(pb)}
+    }
     
     for(h in 1:j)
     diag(parmat[,,h])<-1

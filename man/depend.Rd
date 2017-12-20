@@ -4,12 +4,14 @@
 \alias{depend}
 \title{Dependency Matrix}
 \usage{
-depend(data, binary = FALSE, progBar = TRUE)
+depend(data, binary = FALSE, index = FALSE, progBar = TRUE)
 }
 \arguments{
 \item{data}{A set of data}
 
 \item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
+
+\item{index}{Should correlation with the latent variable (i.e., weighted average of all variables) be removed? Defaults to FALSE. Set to TRUE to remove common latent factor}
 
 \item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar.}
 }
@@ -29,6 +31,10 @@ binaryD<-depend(hexb,binary=TRUE)
 Kenett, D. Y., Tumminello, M., Madi, A., Gur-Gershgoren, G., Mantegna, R. N., & Ben-Jacob, E. (2010).
 Dominating clasp of the financial sector revealed by partial correlation analysis of the stock market.
 \emph{PloS one}, \emph{5}(12), e15032.
+
+Kenett, D. Y., Huang, X., Vodenska, I., Havlin, S., & Stanley, H. E. (2015).
+Partial correlation analysis: Applications for financial markets.
+\emph{Quantitative Finance}, \emph{15}(4), 569-578.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>
