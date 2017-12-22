@@ -28,7 +28,6 @@ indicates a more random network
 Computes the small-worldness measure of a network
 }
 \examples{
-
 A<-TMFG(hex)$A
 
 swmHG <- smallworldness(A, method="HG")

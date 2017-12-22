@@ -10,7 +10,7 @@ strength(A)
 \item{A}{An adjacency matrix of network data}
 }
 \value{
-A vector of strength values for each node in the network
+A vector of strength values for each node in the network. If directed network, returns a list of in-strength (inStrength), out-strength (outStrength), and relative influence (relInf)
 }
 \description{
 Computes strength of each node in a network

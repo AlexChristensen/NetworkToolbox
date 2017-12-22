@@ -18,8 +18,7 @@ Computes impact measure of each node in a network
 \examples{
 A<-TMFG(hex)$A
 
-nodeimp<-impact(A)
-
+nodeimpact<-impact(A)
 }
 \references{
 Kenett, Y. N., Kenett, D. Y., Ben-Jacob, E., & Faust, M. (2011).

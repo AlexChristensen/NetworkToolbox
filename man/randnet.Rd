@@ -18,9 +18,7 @@ Returns an adjacency matrix of a random network
 Generates a random network
 }
 \examples{
-
 rand <- randnet(10,27)
-
 }
 \references{
 Rubinov, M., & Sporns, O. (2010). 

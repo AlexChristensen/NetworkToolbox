@@ -15,7 +15,7 @@ distance(A, weighted = FALSE)
 A distance matrix of the network
 }
 \description{
-Computes distance matrix of the network (Weighted not coded)
+Computes distance matrix of the network
 }
 \examples{
 A<-TMFG(hex)$A

@@ -14,15 +14,13 @@ LoGo(data, separators = TMFG(data)$separators, cliques = TMFG(data)$cliques)
 \item{cliques}{Defaults to cliques obtained from the TMFG function. Requires a list of cliques}
 }
 \value{
-Returns a sparse TMFG-filtered matrix of the inverse covariance
+Returns a sparse TMFG-filtered inverse covariance matrix
 }
 \description{
 Applies the Local/Global method to estimate the sparse inverse covariance matrix
 }
 \examples{
-
 LoGonet<-LoGo(hex)
-
 }
 \references{
 Barfuss, W., Massara, G. P., Di Matteo, T., & Aste, T. (2016).

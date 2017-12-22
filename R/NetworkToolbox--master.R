@@ -91,8 +91,8 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
     gain[ou_v,4]<-rowSums(cormat[ou_v,(tri[4,])])
     
     ntri<-4 #number of triangles
-    gij<-matrix(nrow=1,ncol=272)
-    v<-matrix(nrow=1,ncol=272)
+    gij<-matrix(nrow=1,ncol=ncol(gain))
+    v<-matrix(nrow=1,ncol=ncol(gain))
     ve<-array()
     tr<-0
     for(e in 5:n)
@@ -177,15 +177,14 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
 #' @param data Must be a dataset
 #' @param separators Defaults to separators obtained from the TMFG function. Requires a list of separators
 #' @param cliques Defaults to cliques obtained from the TMFG function. Requires a list of cliques
-#' @return Returns a sparse TMFG-filtered matrix of the inverse covariance
+#' @return Returns a sparse TMFG-filtered inverse covariance matrix
 #' @examples
-#' 
 #' LoGonet<-LoGo(hex)
-#' 
 #' @references 
 #' Barfuss, W., Massara, G. P., Di Matteo, T., & Aste, T. (2016).
 #' Parsimonious modeling with information filtering networks.
 #' \emph{Physical Review E}, \emph{94}(6), 062306.
+#' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @importFrom stats cov
 #' @export
@@ -473,18 +472,16 @@ ECOplusMaST <- function (data, weighted = TRUE, binary = FALSE)
 }
 #----
 #' Threshold Filter
-#' @description Filters the network based on an r-value or alpha
+#' @description Filters the network based on an r-value, alpha, boneferroni, or false-discovery rate (FDR)
 #' @param data Can be a dataset or a correlation matrix
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param thresh Sets threshold (defaults to \emph{r} = .10). Set to "alpha" to use an alpha value, "bonferroni" for the bonferroni correction, and "FDR" for false discovery rate
 #' @param a Defaults to .05. Applied when thresh = "alpha" and "bonferroni"
 #' @return Returns a list containing a filtered adjacency matrix (A) and the critical r value (r.cv)
 #' @examples
-#' 
 #' threshnet<-threshold(hex)
 #' 
 #' alphanet<-threshold(hex, thresh = "alpha")
-#' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @importFrom grDevices dev.off
 #' @importFrom utils capture.output
@@ -580,11 +577,17 @@ betweenness <- function (A, weighted = TRUE)
     DPd1<- (as.matrix(((L==d)*(1+DP)/NSP))%*%as.matrix(Bt))*((L==(d-1))*NSP)
     DP<-DP+DPd1
   }
-  BC<-round(as.matrix(colSums(DP),ncol=ncol(A)),0)}else{G<-ifelse(1/A==Inf,0,1/A)
+  BC<-round(as.matrix(colSums(DP),ncol=ncol(A)),0)
+  }else{
+      G<-ifelse(1/A==Inf,0,1/A)
+      
+      if(any(G==-Inf))
+      {G<-ifelse(G==-Inf,0,G)}
       
       if(any(!G==t(G)))
-      {if(max(abs(G-t(G)))<1e-10)
-      {G=(G+G)/2}}
+      {
+      if(max(abs(G-t(G)))<1e-10){G<-(G+G)/2}
+      }
       
       n<-ncol(G)
       
@@ -718,13 +721,11 @@ rspbc <- function (A, beta = 0.01)
 #' @param weighted Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of closeness centrality
 #' @return A vector of closeness centrality values for each node in the network
 #' @examples
-#' \dontrun{
 #' A<-TMFG(hex)$A
 #'
 #' weighted_LC<-closeness(A)
 #' 
 #' unweighted_LC<-closeness(A,weighted=FALSE)
-#' }
 #' @references
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
@@ -753,7 +754,7 @@ closeness <- function (A, weighted = TRUE)
 #' Degree
 #' @description Computes degree of each node in a network
 #' @param A An adjacency matrix of network data
-#' @return A vector of degree values for each node in the network
+#' @return A vector of degree values for each node in the network. If directed network, returns a list of in-degree (inDegree), out-degree (outDegree), and relative influence (relInf)
 #' @examples
 #' A<-TMFG(hex)$A
 #' 
@@ -788,7 +789,7 @@ degree <- function (A)
 #' Node Strength
 #' @description Computes strength of each node in a network
 #' @param A An adjacency matrix of network data
-#' @return A vector of strength values for each node in the network
+#' @return A vector of strength values for each node in the network. If directed network, returns a list of in-strength (inStrength), out-strength (outStrength), and relative influence (relInf)
 #' @examples
 #' A<-TMFG(hex)$A
 #' 
@@ -883,6 +884,9 @@ leverage <- function (A, weighted = TRUE)
   {
     lev[i]<-(1/con[i])*sum((con[i]-con[which(B[,i]!=0)])/(con[i]+con[which(B[,i]!=0)]))
   }
+  for(i in 1:nrow(lev))
+  if(is.na(lev[i,]))
+  {lev[i,]<-0}
   row.names(lev)<-colnames(A)
   return(lev)
 }
@@ -894,8 +898,7 @@ leverage <- function (A, weighted = TRUE)
 #' @examples
 #' A<-TMFG(hex)$A
 #' 
-#' nodeimp<-impact(A)
-#'
+#' nodeimpact<-impact(A)
 #' @references 
 #' Kenett, Y. N., Kenett, D. Y., Ben-Jacob, E., & Faust, M. (2011).
 #' Global and local features of semantic networks: Evidence from the Hebrew mental lexicon.
@@ -1004,7 +1007,7 @@ centlist <- function (A, weighted = TRUE)
 }
 #----
 #' Distance
-#' @description Computes distance matrix of the network (Weighted not coded)
+#' @description Computes distance matrix of the network
 #' @param A An adjacency matrix of network data
 #' @param weighted Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measure of distance
 #' @return A distance matrix of the network
@@ -1046,9 +1049,12 @@ distance<-function (A, weighted = FALSE)
   }else if(weighted){
           G<-ifelse(1/A==Inf,0,1/A)
           
+          if(any(G==-Inf))
+          {G<-ifelse(G==-Inf,0,G)}
+          
           if(any(!G==t(G)))
           {if(max(abs(G-t(G)))<1e-10)
-          {G=(G+G)/2}}
+          {G<-(G+G)/2}}
           
           n<-ncol(G)
           D<-matrix(Inf,nrow=n,ncol=n)
@@ -1087,7 +1093,7 @@ distance<-function (A, weighted = FALSE)
 }
 #----
 #' Characteristic Path Lengths
-#' @description Computes global average shortest path length (ASPL), local average shortest path length (ASPLi), eccentricity (ecc), and diameter (D) of a network (Weighted not coded)
+#' @description Computes global average shortest path length (ASPL), local average shortest path length (ASPLi), eccentricity (ecc), and diameter (D) of a network
 #' @param A An adjacency matrix of network data
 #' @param weighted Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measures of ASPL, ASPLi, ecc, and D
 #' @return Returns a list of ASPL, ASPLi, ecc, and D of a network
@@ -1228,7 +1234,6 @@ transitivity <- function (A, weighted = FALSE)
 #' A<-TMFG(hex)$A
 #' 
 #' modularity<-louvain(A)
-#' 
 #' @references
 #' Blondel, V. D., Guillaume, J. L., Lambiotte, R., & Lefebvre, E. (2008).
 #' Fast unfolding of communities in large networks. 
@@ -1359,9 +1364,7 @@ louvain <- function (A, gamma = 1, M0 = 1:ncol(A), method = "modularity")
 #' For "TJHBL" values near 0 indicate a small-world network
 #' while < 0 indicates a more regular network and > 0 
 #' indicates a more random network
-#' 
 #' @examples
-#' 
 #' A<-TMFG(hex)$A
 #'
 #' swmHG <- smallworldness(A, method="HG")
@@ -1456,7 +1459,7 @@ semnetmeas <- function (A)
 #' @description Computes the number of edges that replicate between two cross-sectional networks
 #' @param A An adjacency matrix of network A
 #' @param B An adjacency matrix of network B
-#' @return Returns a list of the number of edges that replicate (Replicated), total number of edges (Possible), the percentage of edges that replicate (Percentage), the density of edges (Density), the mean difference between edges that replicate (MeanDifference), the sd of the difference between edges that replicate (SdDifference), and the correlation between the edges that replicate for both networks (Correlation)
+#' @return Returns a list of the number of edges that replicate (replicated), total number of edges (possibleA & possibleB), the percentage of edges that replicate (percentageA & percentageB), the density of edges (densityA & densityB), the mean difference between edges that replicate (meanDifference), the sd of the difference between edges that replicate (sdDifference), and the correlation between the edges that replicate for both networks (correlation)
 #' @examples
 #' A<-TMFG(hex)$A
 #' 
@@ -1523,7 +1526,7 @@ warning("Adjacency matrix B was made to be symmetric")}
 #' Network Connectivity
 #' @description Computes the average and standard deviation of the weights in the network
 #' @param A An adjacency matrix of network A
-#' @return Returns a list of the edge weights (Weights), the mean (Mean), the standard deviation (SD), and the sum of the edge weights (Total) in the network
+#' @return Returns a list of the edge weights (weights), the mean (mean), the standard deviation (sd), and the sum of the edge weights (total) in the network
 #' @examples
 #' A<-TMFG(hex)$A
 #' 
@@ -1552,12 +1555,13 @@ conn <- function (A)
 #' Bootstrapped Network Preprocessing
 #' @description Bootstraps the sample to identify the most stable correlations
 #' @param data A set of data
-#' @param method A network filtering method (e.g, "TMFG", "MaST", "ECO", "ECOplusMaST")
+#' @param method A network filtering method \strong{(see examples)}
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param n Number of people to use in the bootstrap. Defaults to full sample size
 #' @param iter Number of bootstrap iterations. Defaults to 1000 iterations
 #' @param a Alpha to be used for determining the critical value of correlation coefficients. Defaults to .05
 #' @param depend Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a TMFG-filtered dependency network
+#' @param ... Additional arguments for filtering methods
 #' @return Returns a list that includes the original filtered network (orignet),
 #' correlation matrix of the mean bootstrapped network (bootmat),
 #' reliabilities of the connections in the original network (netrel),
@@ -1566,8 +1570,15 @@ conn <- function (A)
 #' a plot of included correlations on their reliability (ConR)
 #' @examples
 #' \dontrun{
-#' 
 #' prepTMFG<-prepboot(hex,method="TMFG")
+#' 
+#' prepMaST<-prepboot(hex,method="MaST")
+#' 
+#' prepECO<-prepboot(hex,method="ECO")
+#' 
+#' prepECOplusMaST<-prepboot(hex,method="ECOplusMaST")
+#' 
+#' prepThreshold<-prepboot(hex,method="threshold")
 #' }
 #' @references
 #' Tumminello, M., Coronnello, C., Lillo, F., Micciche, S., & Mantegna, R. N. (2007).
@@ -1583,7 +1594,7 @@ conn <- function (A)
 #' @importFrom utils txtProgressBar setTxtProgressBar
 #' @export
 #Network Preprocessing Bootstrap----
-prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000, a = .05, depend = FALSE)
+prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000, a = .05, depend = FALSE, ...)
 {
     if(nrow(data)==ncol(data)){stop("Input must be a dataset")}else
         if(binary){realmat<-psych::tetrachoric(data)$rho}else{realmat<-cor(data)}
@@ -1600,17 +1611,15 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
         cormat<-cor(mat)
         if(!depend){
         if(method=="TMFG")
-        {samps[,,i]<-TMFG(cormat)$A
-        tru<-TMFG(data)$A
+        {samps[,,i]<-TMFG(cormat,...)$A
         }else if(method=="MaST")
-        {samps[,,i]<-MaST(cormat)
-        tru<-MaST(data)
+        {samps[,,i]<-MaST(cormat,...)
         }else if(method=="ECOplusMaST")
-        {samps[,,i]<-ECOplusMaST(cormat)
-        tru<-ECOplusMaST(data)
+        {samps[,,i]<-ECOplusMaST(cormat,...)
         }else if(method=="ECO")
-        {samps[,,i]<-ECO(cormat)
-        tru<-ECO(data)
+        {samps[,,i]<-ECO(cormat,...)
+        }else if(method=="threshold")
+        {samps[,,i]<-threshold(cormat,...)$A
         }else stop("Method not available")
         }else{if(method=="TMFG")
         {samps[,,i]<-TMFG(cormat)$A
@@ -1621,8 +1630,22 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
     }
     close(pb)
     
-    
-    tru<-TMFG(data)$A
+    if(!depend)
+    {
+        if(method=="TMFG")
+        {tru<-TMFG(data,...)$A
+        }else if(method=="MaST")
+        {tru<-MaST(data,...)
+        }else if(method=="ECOplusMaST")
+        {tru<-ECOplusMaST(data,...)
+        }else if(method=="MaST")
+        {tru<-MaST(data,...)
+        }else if(method=="ECO")
+        {tru<-ECO(data,...)
+        }else if(method=="threshold")
+        {tru<-threshold(data,...)$A
+        }else stop("Method not available")
+    }
     
     #Mean matrix
     meanmat<-matrix(0,nrow=nrow(realmat),ncol=ncol(realmat)) #Initialize Mean matrix
@@ -1785,19 +1808,20 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
 }
 #----
 #' Bootstrapped Communities Likelihood
-#' @description Bootstraps the sample with replace to compute walktrap reliability (TMFG-filtered networks only)
+#' @description Bootstraps the sample with replace to compute walktrap reliability
 #' @param data A set of data
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param n Number of people to use in the bootstrap. Defaults to full sample size
 #' @param iter Number of bootstrap iterations. Defaults to 100 iterations
+#' @param filter Set filter method. Defaults to "TMFG"
 #' @param method Defaults to "louvain". Set to "walktrap" for the walktrap algorithm
 #' @param steps Number of steps to use in the walktrap algorithm. Defaults to 4. Use a larger number of steps for smaller networks
+#' @param ... Additional arguments for network filtering methods
 #' @return The factors and their proportion found across bootstrapped samples (i.e., their likelihood)
 #' @examples
-#' \dontrun{
-#' 
 #' commTMFG<-commboot(hex)
-#' }
+#' 
+#' commThreshold<-commboot(hex,filter="threshold")
 #' @references
 #' Blondel, V. D., Guillaume, J. L., Lambiotte, R., & Lefebvre, E. (2008).
 #' Fast unfolding of communities in large networks.
@@ -1809,7 +1833,7 @@ prepboot <- function (data, method, binary = FALSE, n = nrow(data), iter = 1000,
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Bootstrapped Community Reliability----
-commboot <- function (data, binary = FALSE, n = nrow(data), iter = 100, method = "louvain", steps = 4)
+commboot <- function (data, binary = FALSE, n = nrow(data), iter = 100, filter = "TMFG", method = "louvain", steps = 4, ...)
 {
     col<-ncol(data)
     if(nrow(data)==ncol(data)){stop("Input must be a dataset")}else
@@ -1825,9 +1849,16 @@ commboot <- function (data, binary = FALSE, n = nrow(data), iter = 100, method =
         if(any(colSums(mat)<=1)){stop("Increase sample size: not enough observations")}
         cormat<-cor(mat)
         if(method=="walktrap")
-        {comm[i,]<-max(igraph::walktrap.community(igraph::as.igraph(qgraph::qgraph(TMFG(cormat)$A,DoNotPlot=TRUE)),steps=steps)$membership)
-        }else if(method=="louvain")
-        {comm[i,]<-max(suppressWarnings(louvain(TMFG(cormat)$A)$community))}
+        {if(filter=="TMFG")
+        {comm[i,]<-max(igraph::walktrap.community(igraph::as.igraph(qgraph::qgraph(TMFG(cormat,...)$A,DoNotPlot=TRUE)),steps=steps)$membership)
+        }else if(filter=="threshold")
+        {comm[i,]<-max(igraph::walktrap.community(igraph::as.igraph(qgraph::qgraph(threshold(cormat,...)$A,DoNotPlot=TRUE)),steps=steps)$membership)
+        }}else if(method=="louvain")
+        {if(filter=="TMFG")
+        {comm[i,]<-max(suppressWarnings(louvain(TMFG(cormat,...)$A)$community))
+        }else if(filter=="threshold")
+        {comm[i,]<-max(suppressWarnings(louvain(threshold(cormat,...)$A)$community))}
+        }
         setTxtProgressBar(pb, i)
     }
     close(pb)
@@ -1859,6 +1890,7 @@ commboot <- function (data, binary = FALSE, n = nrow(data), iter = 100, method =
 #' 
 #' binaryD<-depend(hexb,binary=TRUE)
 #' 
+#' Dindex<-depend(hex,index=TRUE)
 #' @references
 #' Kenett, D. Y., Tumminello, M., Madi, A., Gur-Gershgoren, G., Mantegna, R. N., & Ben-Jacob, E. (2010).
 #' Dominating clasp of the financial sector revealed by partial correlation analysis of the stock market.
@@ -1883,6 +1915,7 @@ depend <- function (data, binary = FALSE, index = FALSE, progBar = TRUE)
         dat<-cbind(data,m)
         if(nrow(dat)==ncol(dat)){cordat<-dat}else
             if(binary){cordat<-psych::tetrachoric(dat)$rho}else{cordat<-cor(dat)}
+        
         indpartial <- function (data,i,k,m=ncol(cordat))
         {(data[i,k]-(data[i,m]*data[k,m]))/sqrt((1-(data[i,m]^2))*(1-(data[k,m]^2)))}
         indmat<-matrix(0,nrow=nrow(cordat)-1,ncol=ncol(cordat)-1)
@@ -1948,9 +1981,7 @@ depend <- function (data, binary = FALSE, index = FALSE, progBar = TRUE)
 #' @param edges Number of edges in random network
 #' @return Returns an adjacency matrix of a random network
 #' @examples
-#' 
 #' rand <- randnet(10,27)
-#' 
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
@@ -1980,9 +2011,7 @@ randnet <- function (nodes, edges)
 #' @param edges Number of edges in lattice network
 #' @return Returns an adjacency matrix of a lattice network
 #' @examples
-#' 
 #' latt <- lattnet(10,27)
-#' 
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
@@ -2029,6 +2058,307 @@ binarize <- function (A)
     bin<-ifelse(A!=0,1,0)
     
     return(bin)
+}
+#----
+#' Import CONN Toolbox Brain Matrices to R format and convert to correlations
+#' @description Converts a Matlab brain z-score connectivity file (n x n x m) where \strong{n} is the n x n connectivity matrices and \strong{m} is the participant
+#' @param MatlabData Input for Matlab data file. Defaults to interactive file choice
+#' @param progBar Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar
+#' @return Returns an array of correlation connectivity (n x n x m)
+#' @examples
+#' \dontrun{braindata<-convertConnBrainMat()}
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Convert CONN Toolbox Brain Matrices----
+convertConnBrainMat <- function (MatlabData = file.choose(), progBar = TRUE)
+{
+    
+    mat<-R.matlab::readMat(MatlabData) #read in matlab data
+    n1<-nrow(mat$Z) #determine number of rows
+    n2<-ncol(mat$Z) #determine number of columns
+    if(nrow(mat$Z)!=ncol(mat$Z))
+    {warning("Row length does not match column length")}
+    m<-length(mat$Z)/n1/n2 #determine number of participants
+    coln1<-matrix(0,nrow=n1) #get row names
+    for(i in 1:n1)
+    {coln1[i,]<-mat$names[[i]][[1]][1,1]}
+    coln2<-matrix(0,nrow=n2) #get column names
+    for(i in 1:n2)
+    {coln2[i,]<-mat$names2[[i]][[1]][1,1]}
+    dat<-mat$Z
+    if(progBar)
+    {pb <- txtProgressBar(max=m, style = 3)}
+    for(i in 1:m) #populate array
+    {
+        dat[,,i]<-psych::fisherz2r(mat$Z[,,i])
+        for(j in 1:n1)
+            for(k in 1:n2)
+                if(is.na(dat[j,k,i]))
+                {dat[j,k,i]<-0}
+        if(progBar){setTxtProgressBar(pb, i)}
+    }
+    if(progBar){close(pb)}
+    
+    colnames(dat)<-coln2
+    
+    return(dat)
+}
+#----
+#' Neural Network Filter
+#' @description Applies a network filtering methodology to neural network array. Removes edges from the neural network output from \emph{convertConnBrainMat} using a network filtering approach
+#' @param datarray Array from \emph{convertConnBrainMat} function
+#' @param progBar Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar
+#' @param method Filtering method to be applied (e.g., "MaST")
+#' @param depend Should networks be dependency networks? Defaults to FALSE. Set to TRUE for dependency networks (only suitable TMFG and MaST filtering methods)
+#' @param ... Additional arguments from filtering methods
+#' @return Returns an array of n x n x m filtered matrices
+#' @examples
+#' \dontrun{braindata <- convertConnBrainMat()
+#' filteredbraindata <- neuralnetfilter(braindata, method = "threshold", thres = .50)
+#' }
+#' @references
+#' Fallani, F. D. V., Latora, V., & Chavez, M. (2017).
+#' A topological criterion for filtering information in complex brain networks.
+#' \emph{PLoS Computational Biology}, \emph{13}(1), e1005305.
+#' 
+#' Massara, G. P., Di Matteo, T., & Aste, T. (2016).
+#' Network filtering for big data: Triangulated maximally filtered graph.
+#' \emph{Journal of Complex Networks}, \emph{5}(2), 161-178. 
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Neural Network Filter----
+neuralnetfilter <- function (datarray, progBar = TRUE, method, depend = FALSE, ...)
+{
+    n<-length(datarray)/nrow(datarray)/ncol(datarray)  
+    
+    for(i in 1:n)    
+        if(nrow(datarray)!=ncol(datarray))
+        {stop(paste("Participant ",i,"'s matrix is not symmetric",sep=""))}
+    
+    filarray<-datarray
+    
+    mat<-datarray
+    
+    if(depend)
+    {for(i in 1:length(mat))
+        mat[,,i]<-depend(datarray[,,i])}
+    
+    if(progBar)
+    {pb <- txtProgressBar(max=n, style = 3)}
+    
+    for(i in 1:n)
+    {
+        if(method=="TMFG")
+        {filarray[,,i]<-TMFG(mat[,,i],...)$A
+        }else if(method=="MaST")
+        {filarray[,,i]<-MaST(mat[,,i],...)
+        }else if(method=="ECO")
+        {filarray[,,i]<-ECO(mat[,,i],...)
+        }else if(method=="ECOplusMaST")
+        {filarray[,,i]<-ECOplusMaST(mat[,,i],...)
+        }else if(method=="threshold")
+        {filarray[,,i]<-threshold(mat[,,i],...)$A
+        }else{stop("Method not available")}
+        if(progBar){setTxtProgressBar(pb, i)}
+    }
+    if(progBar){close(pb)}
+    
+    return(filarray)
+}
+#----
+#' Local and Global Neural Network Characteristics 
+#' @description Obtains a global or local network characteristic from neural network data
+#' @param filarray Filtered array from \emph{neuralnetfilter} function
+#' @param statistic A statistic to compute \strong{(see examples)}
+#' @param progBar Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar
+#' @param ... Additional arguments for statistics functions
+#' @return Returns vector of global characteristics (rows = participants, columns = statistic) or a matrix of local characteristics (rows = ROIs, columns = participants)
+#' @examples
+#' \dontrun{
+#' braindata <- convertConnBrainMat()
+#' 
+#' filteredbraindata <- neuralnetfilter(braindata, method = "threshold", thres = .50)
+#' 
+#' ClusteringCoefficient <- neuralstat(filteredbraindata, statistic = "CC")
+#' 
+#' AverageShortestPathLength <- neuralstat(filteredbraindata, statistic = "ASPL")
+#' 
+#' Modularity <- neuralstat(filteredbraindata, statistic = "Q")
+#' 
+#' Smallworldness <- neuralstat(filteredbraindata, statistic = "S")
+#' 
+#' Trasitivity <- neuralstat(filteredbraindata, statistic = "transitivity")
+#' 
+#' Connectivity <- neuralstat(filteredbraindata, statistic = "conn")
+#' 
+#' BetweennessCentrality <- neuralstat(filteredbraindata, statistic = "BC")
+#' 
+#' ClosenessCentrality <- neuralstat(filteredbraindata, statistic = "LC")
+#' 
+#' Degree <- neuralstat(filteredbraindata, statistic = "deg")
+#' 
+#' NodeStrength <- neuralstat(filteredbraindata, statistic = "str")
+#' 
+#' Communities <- neuralstat(filteredbraindata, statistic = "comm")
+#' 
+#' EigenvectorCentrality <- neuralstat(filteredbraindata, statistic = "EC")
+#' 
+#' LeverageCentrality <- neuralstat(filteredbraindata, statistic = "lev")
+#' 
+#' RandomShortestPathBC <- neuralstat(filteredbraindata, statistic = "rspbc")
+#' 
+#' HybridCentrality <- neuralstat(filteredbraindata, statistic = "hybrid")
+#' 
+#' NodeImpact <- neuralstat(filteredbraindata, statistic = "impact")
+#' }
+#' @references
+#' Blondel, V. D., Guillaume, J. L., Lambiotte, R., & Lefebvre, E. (2008).
+#' Fast unfolding of communities in large networks. 
+#' \emph{Journal of Statistical Mechanics: Theory and Experiment}, \emph{2008}(10), P10008.
+#' 
+#' Joyce, K. E., Laurienti, P. J., Burdette, J. H., & Hayasaka, S. (2010).
+#' A new measure of centrality for brain networks. 
+#' \emph{PLoS One}, \emph{5}(8), e12200.
+#' 
+#' Kenett, Y. N., Kenett, D. Y., Ben-Jacob, E., & Faust, M. (2011).
+#' Global and local features of semantic networks: Evidence from the Hebrew mental lexicon.
+#' \emph{PloS one}, \emph{6}(8), e23912.
+#' 
+#' Kivimaki, I., Lebichot, B., Saramaki, J., & Saerens, M. (2016).
+#' Two betweenness centrality measures based on Randomized Shortest Paths.
+#' \emph{Scientific Reports}, \emph{6}(19668), 1-15.
+#' 
+#' Pozzi, F., Di Matteo, T., & Aste, T. (2013).
+#' Spread of risk across financial markets: Better to invest in the peripheries. 
+#' \emph{Scientific Reports}, \emph{3}(1655), 1-7.
+#' 
+#' Rubinov, M., & Sporns, O. (2010). 
+#' Complex network measures of brain connectivity: Uses and interpretations. 
+#' \emph{Neuroimage}, \emph{52}(3), 1059-1069. 
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Neural Network Filter----
+neuralstat <- function (filarray, statistic, progBar = TRUE, ...)
+{
+    n<-length(filarray)/ncol(filarray)/nrow(filarray)
+    
+    gstat<-matrix(0,nrow=n,ncol=1)
+    lstat<-matrix(0,nrow=ncol(filarray),ncol=n)
+    
+    if(progBar)
+    {pb <- txtProgressBar(max=n, style = 3)}
+    
+    for(i in 1:n)
+    {
+        if(statistic=="CC")
+        {gstat[i,]<-clustcoeff(filarray[,,i],...)$CC
+        gstat<-as.data.frame(gstat)
+        colnames(gstat)<-"CC"
+        row.names(gstat)[i]<-paste("sub",i,sep="")
+        gstat<-as.matrix(gstat)
+        }else if(statistic=="ASPL")
+        {gstat[i,]<-pathlengths(filarray[,,i],...)$ASPL
+        gstat<-as.data.frame(gstat)
+        colnames(gstat)<-"ASPL"
+        row.names(gstat)[i]<-paste("sub",i,sep="")
+        gstat<-as.matrix(gstat)
+        }else if(statistic=="Q")
+        {gstat[i,]<-louvain(filarray[,,i],...)$Q
+        gstat<-as.data.frame(gstat)
+        colnames(gstat)<-"Q"
+        row.names(gstat)[i]<-paste("sub",i,sep="")
+        gstat<-as.matrix(gstat)
+        }else if(statistic=="S")
+        {gstat[i,]<-smallworldness(filarray[,,i],iter=10,...)
+        gstat<-as.data.frame(gstat)
+        colnames(gstat)<-"S"
+        row.names(gstat)[i]<-paste("sub",i,sep="")
+        gstat<-as.matrix(gstat)
+        }else if(statistic=="transitivity")
+        {gstat[i,]<-transitivity(filarray[,,i],...)
+        gstat<-as.data.frame(gstat)
+        colnames(gstat)<-"transitivity"
+        row.names(gstat)[i]<-paste("sub",i,sep="")
+        gstat<-as.matrix(gstat)
+        }else if(statistic=="conn")
+        {gstat[i,]<-conn(filarray[,,i],...)$total
+        gstat<-as.data.frame(gstat)
+        colnames(gstat)<-"connectivity"
+        row.names(gstat)[i]<-paste("sub",i,sep="")
+        gstat<-as.matrix(gstat)
+        }else if(statistic=="BC")
+        {lstat[,i]<-betweenness(filarray[,,i],...)[,1]
+        lstat<-as.data.frame(lstat)
+        colnames(lstat)[i]<-paste("sub",i,sep="")
+        row.names(lstat)<-colnames(filarray)
+        lstat<-as.matrix(lstat)
+        }else if(statistic=="LC")
+        {lstat[,i]<-closeness(filarray[,,i],...)[,1]
+        lstat<-as.data.frame(lstat)
+        colnames(lstat)[i]<-paste("sub",i,sep="")
+        row.names(lstat)<-colnames(filarray)
+        lstat<-as.matrix(lstat)
+        }else if(statistic=="deg")
+        {lstat[,i]<-degree(filarray[,,i])$inDegree
+        lstat<-as.data.frame(lstat)
+        colnames(lstat)[i]<-paste("sub",i,sep="")
+        row.names(lstat)<-colnames(filarray)
+        lstat<-as.matrix(lstat)
+        }else if(statistic=="str")
+        {lstat[,i]<-strength(filarray[,,i])$inStrength
+        lstat<-as.data.frame(lstat)
+        colnames(lstat)[i]<-paste("sub",i,sep="")
+        row.names(lstat)<-colnames(filarray)
+        lstat<-as.matrix(lstat)
+        }else if(statistic=="comm")
+        {lstat[,i]<-louvain(filarray[,,i],...)$community
+        lstat<-as.data.frame(lstat)
+        colnames(lstat)[i]<-paste("sub",i,sep="")
+        row.names(lstat)<-colnames(filarray)
+        lstat<-as.matrix(lstat)
+        }else if(statistic=="EC")
+        {lstat[,i]<-eigenvector(filarray[,,i],...)[,1]
+        lstat<-as.data.frame(lstat)
+        colnames(lstat)[i]<-paste("sub",i,sep="")
+        row.names(lstat)<-colnames(filarray)
+        lstat<-as.matrix(lstat)
+        }else if(statistic=="lev")
+        {lstat[,i]<-leverage(filarray[,,i],...)[,1]
+        lstat<-as.data.frame(lstat)
+        colnames(lstat)[i]<-paste("sub",i,sep="")
+        row.names(lstat)<-colnames(filarray)
+        lstat<-as.matrix(lstat)
+        }else if(statistic=="rspbc")
+        {lstat[,i]<-rspbc(filarray[,,i],...)[,1]
+        lstat<-as.data.frame(lstat)
+        colnames(lstat)[i]<-paste("sub",i,sep="")
+        row.names(lstat)<-colnames(filarray)
+        lstat<-as.matrix(lstat)
+        }else if(statistic=="hybrid")
+        {lstat[,i]<-hybrid(filarray[,,i],...)[,1]
+        lstat<-as.data.frame(lstat)
+        colnames(lstat)[i]<-paste("sub",i,sep="")
+        row.names(lstat)<-colnames(filarray)
+        lstat<-as.matrix(lstat)
+        }else if(statistic=="impact")
+        {lstat[,i]<-impact(filarray[,,i],...)[,1]
+        lstat<-as.data.frame(lstat)
+        colnames(lstat)[i]<-paste("sub",i,sep="")
+        row.names(lstat)<-colnames(filarray)
+        lstat<-as.matrix(lstat)
+        }
+        
+        if(progBar){setTxtProgressBar(pb, i)}
+        
+    }
+    
+    if(progBar){close(pb)}
+    
+    if(sum(gstat)!=0)
+    {return(gstat)}
+    
+    if(sum(lstat)!=0)
+    {return(lstat)}
 }
 #----
 #HEXACO Openness data----

@@ -5,7 +5,7 @@
 \title{Bootstrapped Communities Likelihood}
 \usage{
 commboot(data, binary = FALSE, n = nrow(data), iter = 100,
-  method = "louvain", steps = 4)
+  filter = "TMFG", method = "louvain", steps = 4, ...)
 }
 \arguments{
 \item{data}{A set of data}
@@ -16,21 +16,24 @@ commboot(data, binary = FALSE, n = nrow(data), iter = 100,
 
 \item{iter}{Number of bootstrap iterations. Defaults to 100 iterations}
 
+\item{filter}{Set filter method. Defaults to "TMFG"}
+
 \item{method}{Defaults to "louvain". Set to "walktrap" for the walktrap algorithm}
 
 \item{steps}{Number of steps to use in the walktrap algorithm. Defaults to 4. Use a larger number of steps for smaller networks}
+
+\item{...}{Additional arguments for network filtering methods}
 }
 \value{
 The factors and their proportion found across bootstrapped samples (i.e., their likelihood)
 }
 \description{
-Bootstraps the sample with replace to compute walktrap reliability (TMFG-filtered networks only)
+Bootstraps the sample with replace to compute walktrap reliability
 }
 \examples{
-\dontrun{
-
 commTMFG<-commboot(hex)
-}
+
+commThreshold<-commboot(hex,filter="threshold")
 }
 \references{
 Blondel, V. D., Guillaume, J. L., Lambiotte, R., & Lefebvre, E. (2008).

@@ -5,12 +5,12 @@
 \title{Bootstrapped Network Preprocessing}
 \usage{
 prepboot(data, method, binary = FALSE, n = nrow(data), iter = 1000,
-  a = 0.05, depend = FALSE)
+  a = 0.05, depend = FALSE, ...)
 }
 \arguments{
 \item{data}{A set of data}
 
-\item{method}{A network filtering method (e.g, "TMFG", "MaST", "ECO", "ECOplusMaST")}
+\item{method}{A network filtering method \strong{(see examples)}}
 
 \item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 
@@ -21,6 +21,8 @@ prepboot(data, method, binary = FALSE, n = nrow(data), iter = 1000,
 \item{a}{Alpha to be used for determining the critical value of correlation coefficients. Defaults to .05}
 
 \item{depend}{Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a TMFG-filtered dependency network}
+
+\item{...}{Additional arguments for filtering methods}
 }
 \value{
 Returns a list that includes the original filtered network (orignet),
@@ -35,8 +37,15 @@ Bootstraps the sample to identify the most stable correlations
 }
 \examples{
 \dontrun{
-
 prepTMFG<-prepboot(hex,method="TMFG")
+
+prepMaST<-prepboot(hex,method="MaST")
+
+prepECO<-prepboot(hex,method="ECO")
+
+prepECOplusMaST<-prepboot(hex,method="ECOplusMaST")
+
+prepThreshold<-prepboot(hex,method="threshold")
 }
 }
 \references{

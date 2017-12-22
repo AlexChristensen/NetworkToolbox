@@ -19,14 +19,12 @@ threshold(data, binary = FALSE, thresh = 0.1, a = 0.05)
 Returns a list containing a filtered adjacency matrix (A) and the critical r value (r.cv)
 }
 \description{
-Filters the network based on an r-value or alpha
+Filters the network based on an r-value, alpha, boneferroni, or false-discovery rate (FDR)
 }
 \examples{
-
 threshnet<-threshold(hex)
 
 alphanet<-threshold(hex, thresh = "alpha")
-
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

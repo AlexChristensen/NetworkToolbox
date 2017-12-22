@@ -10,7 +10,7 @@ conn(A)
 \item{A}{An adjacency matrix of network A}
 }
 \value{
-Returns a list of the edge weights (Weights), the mean (Mean), the standard deviation (SD), and the sum of the edge weights (Total) in the network
+Returns a list of the edge weights (weights), the mean (mean), the standard deviation (sd), and the sum of the edge weights (total) in the network
 }
 \description{
 Computes the average and standard deviation of the weights in the network

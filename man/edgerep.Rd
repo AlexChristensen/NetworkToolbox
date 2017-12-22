@@ -12,7 +12,7 @@ edgerep(A, B)
 \item{B}{An adjacency matrix of network B}
 }
 \value{
-Returns a list of the number of edges that replicate (Replicated), total number of edges (Possible), the percentage of edges that replicate (Percentage), the density of edges (Density), the mean difference between edges that replicate (MeanDifference), the sd of the difference between edges that replicate (SdDifference), and the correlation between the edges that replicate for both networks (Correlation)
+Returns a list of the number of edges that replicate (replicated), total number of edges (possibleA & possibleB), the percentage of edges that replicate (percentageA & percentageB), the density of edges (densityA & densityB), the mean difference between edges that replicate (meanDifference), the sd of the difference between edges that replicate (sdDifference), and the correlation between the edges that replicate for both networks (correlation)
 }
 \description{
 Computes the number of edges that replicate between two cross-sectional networks

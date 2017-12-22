@@ -18,13 +18,11 @@ A vector of closeness centrality values for each node in the network
 Computes closeness centrlaity of each node in a network
 }
 \examples{
-\dontrun{
 A<-TMFG(hex)$A
 
 weighted_LC<-closeness(A)
 
 unweighted_LC<-closeness(A,weighted=FALSE)
-}
 }
 \references{
 Rubinov, M., & Sporns, O. (2010). 

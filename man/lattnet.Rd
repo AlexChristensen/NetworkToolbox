@@ -18,9 +18,7 @@ Returns an adjacency matrix of a lattice network
 Generates a lattice network
 }
 \examples{
-
 latt <- lattnet(10,27)
-
 }
 \references{
 Rubinov, M., & Sporns, O. (2010). 

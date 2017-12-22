@@ -25,7 +25,6 @@ Computes a vector of communities (community) and a global modularity measure (Q)
 A<-TMFG(hex)$A
 
 modularity<-louvain(A)
-
 }
 \references{
 Blondel, V. D., Guillaume, J. L., Lambiotte, R., & Lefebvre, E. (2008).

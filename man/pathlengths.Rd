@@ -15,7 +15,7 @@ pathlengths(A, weighted = FALSE)
 Returns a list of ASPL, ASPLi, ecc, and D of a network
 }
 \description{
-Computes global average shortest path length (ASPL), local average shortest path length (ASPLi), eccentricity (ecc), and diameter (D) of a network (Weighted not coded)
+Computes global average shortest path length (ASPL), local average shortest path length (ASPLi), eccentricity (ecc), and diameter (D) of a network
 }
 \examples{
 A<-TMFG(hex)$A

@@ -26,6 +26,7 @@ D<-depend(hex)
 
 binaryD<-depend(hexb,binary=TRUE)
 
+Dindex<-depend(hex,index=TRUE)
 }
 \references{
 Kenett, D. Y., Tumminello, M., Madi, A., Gur-Gershgoren, G., Mantegna, R. N., & Ben-Jacob, E. (2010).
