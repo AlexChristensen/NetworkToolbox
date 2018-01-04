@@ -4,7 +4,7 @@
 \alias{louvain}
 \title{Louvain Community Detection Algorithm}
 \usage{
-louvain(A, gamma = 1, M0 = 1:ncol(A), method = "modularity")
+louvain(A, gamma = 1, M0 = 1:ncol(A), method = c("modularity", "potts"))
 }
 \arguments{
 \item{A}{An adjacency matrix of network data}

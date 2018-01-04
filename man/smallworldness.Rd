@@ -4,7 +4,8 @@
 \alias{smallworldness}
 \title{Small-worldness Measure}
 \usage{
-smallworldness(A, iter = 100, progBar = FALSE, method = "HG")
+smallworldness(A, iter = 100, progBar = FALSE, method = c("HG", "rand",
+  "TJHBL"))
 }
 \arguments{
 \item{A}{An adjacency matrix of network data}

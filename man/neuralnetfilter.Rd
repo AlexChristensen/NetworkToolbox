@@ -4,16 +4,15 @@
 \alias{neuralnetfilter}
 \title{Neural Network Filter}
 \usage{
-neuralnetfilter(datarray, progBar = TRUE, method, depend = FALSE, ...)
+neuralnetfilter(neuralarray, progBar = TRUE, method = c("TMFG", "MaST",
+  "ECOplusMaST", "ECO", "threshold"), ...)
 }
 \arguments{
-\item{datarray}{Array from \emph{convertConnBrainMat} function}
+\item{neuralarray}{Array from \emph{convertConnBrainMat} function}
 
 \item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar}
 
 \item{method}{Filtering method to be applied (e.g., "MaST")}
-
-\item{depend}{Should networks be dependency networks? Defaults to FALSE. Set to TRUE for dependency networks (only suitable TMFG and MaST filtering methods)}
 
 \item{...}{Additional arguments from filtering methods}
 }
@@ -24,8 +23,13 @@ Returns an array of n x n x m filtered matrices
 Applies a network filtering methodology to neural network array. Removes edges from the neural network output from \emph{convertConnBrainMat} using a network filtering approach
 }
 \examples{
-\dontrun{braindata <- convertConnBrainMat()
-filteredbraindata <- neuralnetfilter(braindata, method = "threshold", thres = .50)
+\dontrun{neuralarray <- convertConnBrainMat()
+
+filteredneuralarray <- neuralnetfilter(neuralarray, method = "threshold", thres = .50)
+
+dependencyarray <- depna(neuralarray)
+
+filtereddependencyarray <- neuralnetfilter(dependencyarray, method = "TMFG", depend = TRUE)
 }
 }
 \references{

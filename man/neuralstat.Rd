@@ -4,12 +4,15 @@
 \alias{neuralstat}
 \title{Local and Global Neural Network Characteristics}
 \usage{
-neuralstat(filarray, statistic, progBar = TRUE, ...)
+neuralstat(filarray, statistic = c("CC", "ASPL", "Q", "S", "transitivity",
+  "conn", "BC", "LC", "deg", "inDeg", "outDeg", "degRI", "str", "inStr",
+  "outStr", "strRI", "comm", "EC", "lev", "rspbc", "hybrid", "impact"),
+  progBar = TRUE, ...)
 }
 \arguments{
 \item{filarray}{Filtered array from \emph{neuralnetfilter} function}
 
-\item{statistic}{A statistic to compute \strong{(see examples)}}
+\item{statistic}{A statistic to compute}
 
 \item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar}
 
@@ -23,41 +26,41 @@ Obtains a global or local network characteristic from neural network data
 }
 \examples{
 \dontrun{
-braindata <- convertConnBrainMat()
+neuralarray <- convertConnBrainMat()
 
-filteredbraindata <- neuralnetfilter(braindata, method = "threshold", thres = .50)
+filteredneuralarray <- neuralnetfilter(neuralarray, method = "threshold", thres = .50)
 
-ClusteringCoefficient <- neuralstat(filteredbraindata, statistic = "CC")
+ClusteringCoefficient <- neuralstat(filteredneuralarray, statistic = "CC")
 
-AverageShortestPathLength <- neuralstat(filteredbraindata, statistic = "ASPL")
+AverageShortestPathLength <- neuralstat(filteredneuralarray, statistic = "ASPL")
 
-Modularity <- neuralstat(filteredbraindata, statistic = "Q")
+Modularity <- neuralstat(filteredneuralarray, statistic = "Q")
 
-Smallworldness <- neuralstat(filteredbraindata, statistic = "S")
+Smallworldness <- neuralstat(filteredneuralarray, statistic = "S")
 
-Trasitivity <- neuralstat(filteredbraindata, statistic = "transitivity")
+Trasitivity <- neuralstat(filteredneuralarray, statistic = "transitivity")
 
-Connectivity <- neuralstat(filteredbraindata, statistic = "conn")
+Connectivity <- neuralstat(filteredneuralarray, statistic = "conn")
 
-BetweennessCentrality <- neuralstat(filteredbraindata, statistic = "BC")
+BetweennessCentrality <- neuralstat(filteredneuralarray, statistic = "BC")
 
-ClosenessCentrality <- neuralstat(filteredbraindata, statistic = "LC")
+ClosenessCentrality <- neuralstat(filteredneuralarray, statistic = "LC")
 
-Degree <- neuralstat(filteredbraindata, statistic = "deg")
+Degree <- neuralstat(filteredneuralarray, statistic = "deg")
 
-NodeStrength <- neuralstat(filteredbraindata, statistic = "str")
+NodeStrength <- neuralstat(filteredneuralarray, statistic = "str")
 
-Communities <- neuralstat(filteredbraindata, statistic = "comm")
+Communities <- neuralstat(filteredneuralarray, statistic = "comm")
 
-EigenvectorCentrality <- neuralstat(filteredbraindata, statistic = "EC")
+EigenvectorCentrality <- neuralstat(filteredneuralarray, statistic = "EC")
 
-LeverageCentrality <- neuralstat(filteredbraindata, statistic = "lev")
+LeverageCentrality <- neuralstat(filteredneuralarray, statistic = "lev")
 
-RandomShortestPathBC <- neuralstat(filteredbraindata, statistic = "rspbc")
+RandomShortestPathBC <- neuralstat(filteredneuralarray, statistic = "rspbc")
 
-HybridCentrality <- neuralstat(filteredbraindata, statistic = "hybrid")
+HybridCentrality <- neuralstat(filteredneuralarray, statistic = "hybrid")
 
-NodeImpact <- neuralstat(filteredbraindata, statistic = "impact")
+NodeImpact <- neuralstat(filteredneuralarray, statistic = "impact")
 }
 }
 \references{

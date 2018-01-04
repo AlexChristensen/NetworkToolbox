@@ -4,14 +4,15 @@
 \alias{threshold}
 \title{Threshold Filter}
 \usage{
-threshold(data, binary = FALSE, thresh = 0.1, a = 0.05)
+threshold(data, binary = FALSE, thresh = c(0.1, "alpha", "bonferroni",
+  "FDR"), a = 0.05)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
 
 \item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 
-\item{thresh}{Sets threshold (defaults to \emph{r} = .10). Set to "alpha" to use an alpha value, "bonferroni" for the bonferroni correction, and "FDR" for false discovery rate}
+\item{thresh}{Sets threshold (defaults to \emph{r} = .10). Set to "alpha" to use an alpha value, "bonferroni" for the bonferroni correction, and "FDR" for local false discovery rate}
 
 \item{a}{Defaults to .05. Applied when thresh = "alpha" and "bonferroni"}
 }

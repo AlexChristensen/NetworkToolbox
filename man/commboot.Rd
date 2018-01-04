@@ -5,7 +5,7 @@
 \title{Bootstrapped Communities Likelihood}
 \usage{
 commboot(data, binary = FALSE, n = nrow(data), iter = 100,
-  filter = "TMFG", method = "louvain", steps = 4, ...)
+  filter = c("TMFG", "threshold"), method = "louvain", steps = 4, ...)
 }
 \arguments{
 \item{data}{A set of data}

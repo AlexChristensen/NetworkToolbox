@@ -17,5 +17,6 @@ Imports:
     RColorBrewer,
     igraph,
     fdrtool,
-    R.matlab
+    R.matlab,
+    IsingFit
 RoxygenNote: 6.0.1.9000

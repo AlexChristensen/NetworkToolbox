@@ -18,7 +18,7 @@ Returns an array of correlation connectivity (n x n x m)
 Converts a Matlab brain z-score connectivity file (n x n x m) where \strong{n} is the n x n connectivity matrices and \strong{m} is the participant
 }
 \examples{
-\dontrun{braindata<-convertConnBrainMat()}
+\dontrun{neuralarray<-convertConnBrainMat()}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>
