@@ -156,7 +156,7 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
     }
     
     x<-as.matrix(Matrix::sparseMatrix(i=K[,1],j=K[,2],x=K[,3]))
-    diag(x)<-0
+    diag(x)<-1
     
     if(weighted)
     {
@@ -323,7 +323,7 @@ K<-rbind(L,Z)
 L[,3]<-S[,2]
 K<-rbind(S,L)}
 x<-as.matrix(Matrix::sparseMatrix(i=K[,2],j=K[,3],x=K[,1]))
-diag(x)<-0
+diag(x)<-1
 x<-as.matrix(x)
 ifelse(x!=0,cormat,0)
 if(!weighted)
@@ -533,6 +533,8 @@ threshold <- function (data, binary = FALSE, thresh = c(.10,"alpha","bonferroni"
         cormat<-ifelse(fdrmat!=0,cormat,0)
         thr<-min(cormat[cormat!=0])
     }
+    
+    diag(cormat)<-1
     
     return(list(A=cormat, r.cv=thr))
 }
@@ -1462,19 +1464,21 @@ smallworldness <- function (A, iter = 100, progBar = FALSE, method = c("HG","ran
 #' connectivity<-semnetmeas(A)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#Semantic Network Measures
+#Semantic Network Measures----
 semnetmeas <- function (A)
 {
     aspl<-pathlengths(A)$ASPL
     cc<-clustcoeff(A)$CC
     q<-louvain(A)$Q
-    s<-smallworldness(A,iter=100,progBar = TRUE,method="rand")
+    s<-smallworldness(A,iter=100,progBar = FALSE,method="rand")
     
     semnetmeas<-cbind(aspl,cc,q,s)
     
     semnetmeas<-as.data.frame(semnetmeas)
     
     colnames(semnetmeas)<-c("ASPL","CC","Q","S")
+    
+    semnetmeas<-as.matrix(semnetmeas)
     
     return(semnetmeas)
 }
@@ -1495,7 +1499,6 @@ semnetmeas <- function (A)
 #Edge Replication----
 edgerep <- function (A, B)
 {
-  count<-0
 if(!isSymmetric(A))
 {
     if(all(rowSums(A)==colSums(A)))
@@ -1511,12 +1514,15 @@ if(!isSymmetric(B))
     }else{B<-B+t(B)
     warning("Adjacency matrix A was made to be symmetric")}
 }
-  
+
+count<-0
   for(i in 1:ncol(A))
     for(j in 1:nrow(A))
-      if(A[i,j]&&B[i,j]!=0){count<-count+1}
-      count<-count/2
-  
+        if(i!=j)
+            {if(A[i,j]&&B[i,j]!=0){count<-count+1}}
+                count<-count/2
+  diag(A)<-0
+  diag(B)<-0
   possibleA<-sum(ifelse(A!=0,1,0)/2)
   possibleB<-sum(ifelse(B!=0,1,0)/2)
   percentA<-count/possibleA
@@ -1654,13 +1660,12 @@ bootgen <- function (data, method = c("TMFG","LoGo","MaST","ECOplusMaST","ECO","
         f<-round(runif(i,min=1,max=1000000),0)
         set.seed(f[round(runif(i,min=1,max=length(f)),0)])
         mat<-data[round(runif(n,min=1,max=n),0),]
-        if(any(colSums(mat)<=1)){stop("Increase sample size: not enough observations")}
         cormat<-cor(mat)
         if(!depend){
         if(method=="TMFG")
         {samps[,,i]<-fish(TMFG(cormat)$A)
         }else if(method=="LoGo")
-        {l<-(-cov2cor(LoGo(mat)))
+        {l<-fish((-cov2cor(LoGo(mat))))
         samps[,,i]<-l
         }else if(method=="MaST")
         {samps[,,i]<-fish(MaST(cormat,...))
@@ -1729,7 +1734,7 @@ bootgen <- function (data, method = c("TMFG","LoGo","MaST","ECOplusMaST","ECO","
     if(!method=="LoGo")
     {for(x in 1:nrow(meanmat))
         for(y in 1:ncol(meanmat))
-            if(meanmat[x,y]<=critical.r(iter,a))
+            if(meanmat[x,y]<=critical.r(iter,(a/((ncol(data)^2)-(ncol(data)/2)))))
             {meanmat[x,y]<-0}
     }
     
@@ -1861,6 +1866,8 @@ bootgen <- function (data, method = c("TMFG","LoGo","MaST","ECOplusMaST","ECO","
                                         cl.lim = c(0,1),addgrid.col = "grey")}
             }
     
+    diag(bootmat)<-1        
+    
     if(!depend)
     {return(list(orignet=tru,bootmat=bootmat,netrel=upp,bootrel=reprel,plotrel=plt,ConR=cpo))
     }else{orignet<-(list(orignet=tru,bootmat=bootmat,bootrel=reprel,plotrel=plt,ConR=cpo))
@@ -1894,11 +1901,15 @@ bootgen <- function (data, method = c("TMFG","LoGo","MaST","ECOplusMaST","ECO","
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Bootstrapped Community Reliability----
-commboot <- function (data, binary = FALSE, n = nrow(data), iter = 100, filter = c("TMFG","threshold"), method = "louvain", steps = 4, ...)
+commboot <- function (data, binary = FALSE, n = nrow(data), iter = 100, filter = c("TMFG","threshold"), method = c("louvain","walktrap"), steps = 4, ...)
 {
     if(missing(filter))
     {filter<-"TMFG"
     }else{filter<-match.arg(filter)}
+    
+    if(missing(method))
+    {method<-"louvain"
+    }else{method<-match.arg(method)}
     
     col<-ncol(data)
     if(nrow(data)==ncol(data)){stop("Input must be a dataset")}else
@@ -1948,6 +1959,7 @@ commboot <- function (data, binary = FALSE, n = nrow(data), iter = 100, filter =
 #' @param data A set of data
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param index Should correlation with the latent variable (i.e., weighted average of all variables) be removed? Defaults to FALSE. Set to TRUE to remove common latent factor
+#' @param fisher Should Fisher's Z-test be used to keep significantly higher influences (index only)? Defaults to FALSE. Set to TRUE to remove non-significant influences
 #' @param progBar Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar.
 #' @return Returns an adjacency matrix of dependencies
 #' @examples
@@ -1967,7 +1979,7 @@ commboot <- function (data, binary = FALSE, n = nrow(data), iter = 100, filter =
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Dependency----
-depend <- function (data, binary = FALSE, index = FALSE, progBar = TRUE)
+depend <- function (data, binary = FALSE, index = FALSE, fisher = FALSE, progBar = TRUE)
 {
     if(nrow(data)==ncol(data)){cormat<-data}else
         if(binary){cormat<-psych::tetrachoric(data)$rho}else{cormat<-cor(data)}
@@ -2036,7 +2048,7 @@ depend <- function (data, binary = FALSE, index = FALSE, progBar = TRUE)
         for(j in 1:ncol(parmat))
         {depmat[j,i]<-mean(parmat[i,-j,j])}
     
-    if(index)
+    if(fisher)
     {
         fish <- function (r)
         {z<-.5*log((1+abs(r))/(1-abs(r)))
@@ -2055,15 +2067,14 @@ depend <- function (data, binary = FALSE, index = FALSE, progBar = TRUE)
             for(j in 1:ncol(indmat))
                 if(i!=j)
                 {sig[i,j]<-fishtest(indmat[i,j],depmat[i,j],nrow(data),nrow(data))}
-        
         sig<-ifelse(sig>=1.96,1,0)
     }
     
     colnames(depmat)<-colnames(data)
     
-    if(!index)
+    if(!fisher)
     {return(depmat)
-    }else if(index)
+    }else if(fisher)
     {return(list(depmat=depmat,sigmat=sig))}
 }
 #----
@@ -2266,6 +2277,125 @@ binarize <- function (A)
     bin<-ifelse(A!=0,1,0)
     
     return(bin)
+}
+#----
+#' Kullback-Leibler Divergence
+#' @description Estimates the Kullback-Leibler Divergence which measures how one probability distribution diverges from a second distribution (equivalent means are assumed). Matrices \strong{must} be positive definite for accurate measurement
+#' @param base Full or base model (e.g., a correlation or covariance matrix of the data)
+#' @param test Reduced or testing model (e.g., a sparse correlation or covariance matrix)
+#' @param basedata Full or base dataset to be compared
+#' @param testdata Testing dataset to be compared
+#' @param corr Are models correlation matrices? Defaults to TRUE. Set to FALSE for covariance matrices
+#' @return A value greater than 0. Values between 0 and 1 suggests the reduced or testing model is near the full mode
+#' @examples
+#' A1 <- cov(hex)
+#' 
+#' A2 <- solve(LoGo(hex))
+#' 
+#' kld_value <- kld(A1, A2, hex, corr = FALSE)
+#' 
+#' @references 
+#' Kullback, S., & Leibler, R. A. (1951).
+#' On information and sufficiency.
+#' \emph{The Annals of Mathematical Statistics}, \emph{22}(1), 79-86.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Kullback-Leibler Divergence----
+kld <- function (base, test, basedata, testdata, corr = TRUE)
+{
+    if(missing(testdata))
+    {testdata<-basedata}
+    if(corr) 
+    {
+        cor2cov <- function (A,data)
+        {
+            sds<-apply(data,2,sd)
+            b<-sds%*%t(sds)
+            S<-A*b
+            return(S)
+        }
+        
+        if(any(eigen(base)$values<0))
+        {
+            base<-matrix(Matrix::nearPD(base,corr=TRUE)$mat@x,nrow=nrow(base),ncol=ncol(base))
+            warning("Base was forced to be positive definite")
+        }
+        
+        if(any(eigen(test)$values<0))
+        {
+            test<-matrix(Matrix::nearPD(test,corr=TRUE)$mat@x,nrow=nrow(test),ncol=ncol(test))
+            warning("Test was forced to be positive definite")
+        }
+        
+        base<-cor2cov(base,basedata)
+        test<-cor2cov(test,testdata)
+    }else{
+        if(any(eigen(base)$values<0))
+        {
+            base<-matrix(Matrix::nearPD(base)$mat@x,nrow=nrow(base),ncol=ncol(base))
+            warning("Base was forced to be positive definite")
+        }
+        
+        if(any(eigen(test)$values<0))
+        {
+            test<-matrix(Matrix::nearPD(test)$mat@x,nrow=nrow(test),ncol=ncol(test))
+        }
+    }
+    
+    
+    kld<-.5*(log(det(test)/det(base)) + sum(diag(MASS::ginv(test)%*%base)) - nrow(base))
+    
+    return(kld)
+}
+#----
+#' Root Mean Square Error
+#' @description Computes the root mean square error of a sparse model to a full model
+#' @param base Base (or full) model to be evaulated against
+#' @param model Reduced (or testing) model (e.g., a sparse correlation or covariance matrix)
+#' @param test Data that is not the base dataset (i.e., comparing a training model to test data)
+#' @return RMSE value. Lower values suggest more similarity between the full and sparse model
+#' @examples
+#' A <- solve(LoGo(hex))
+#' 
+#' root <- rmse(hex, A)
+#' 
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Root Mean Square Error----
+rmse <- function (base, model, test)
+{
+    if(missing(test))
+    {test<-base}
+    
+    if(nrow(base)==ncol(base))
+    {stop("Base must be a dataset")}
+    
+    if(nrow(test)==ncol(test))
+    {stop("Test must be a dataset")}
+    
+    
+    cor2cov <- function (A, data)
+    {
+        sds<-apply(data,2,sd)
+        
+        b<-sds%*%t(sds)
+        
+        S<-A*b
+        
+        return(S)
+    }
+    
+    if(all(diag(model)==1))
+    {mod<-cor2cov(model,test)
+    }else if(all(diag(model)==0))
+    {
+        diag(model)<-1
+        mod<-cor2cov(model,test)
+    }else{mod<-model}
+    
+    root <- sqrt(sum((cov(base)-mod)^2)/(ncol(base)^2))
+    
+    return(root)
 }
 #----
 #' Import CONN Toolbox Brain Matrices to R format and convert to correlations
@@ -2685,7 +2815,7 @@ neuralstat <- function (filarray, statistic = c("CC","ASPL","Q","S","transitivit
 #' }
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#Neural Statistics----
+#Neural Groups----
 neuralstattest <- function (groups, nstat, correction = c("bonferroni","FDR"))
 {
     if(missing(correction))

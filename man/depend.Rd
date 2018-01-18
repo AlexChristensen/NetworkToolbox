@@ -4,7 +4,8 @@
 \alias{depend}
 \title{Dependency Matrix}
 \usage{
-depend(data, binary = FALSE, index = FALSE, progBar = TRUE)
+depend(data, binary = FALSE, index = FALSE, fisher = FALSE,
+  progBar = TRUE)
 }
 \arguments{
 \item{data}{A set of data}
@@ -12,6 +13,8 @@ depend(data, binary = FALSE, index = FALSE, progBar = TRUE)
 \item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 
 \item{index}{Should correlation with the latent variable (i.e., weighted average of all variables) be removed? Defaults to FALSE. Set to TRUE to remove common latent factor}
+
+\item{fisher}{Should Fisher's Z-test be used to keep significantly higher influences (index only)? Defaults to FALSE. Set to TRUE to remove non-significant influences}
 
 \item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar.}
 }
