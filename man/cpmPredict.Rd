@@ -16,7 +16,7 @@ cpmPredict(neuralarray, bstat, thresh = 0.01, progBar = TRUE)
 \item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar}
 }
 \value{
-Returns a list containing a correlation (R) and p-value (P) for positive (R_pos, P_pos) and negative (R_neg, P_neg) network strengths
+Returns a list containing a correlation (R) and p-value (P) for positive (R_pos, P_pos) and negative (R_neg, P_neg) network strengths. The list also contains the positive (posMask) and negative (negMask) masks used
 }
 \description{
 Applies the Connectome-based Predictive Modeling approach to neural data. \strong{Please see and cite references}

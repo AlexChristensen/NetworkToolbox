@@ -2439,7 +2439,7 @@ rmse <- function (base, model, test)
 #' @description Converts a Matlab brain z-score connectivity file (n x n x m) where \strong{n} is the n x n connectivity matrices and \strong{m} is the participant
 #' @param MatlabData Input for Matlab data file. Defaults to interactive file choice
 #' @param progBar Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar
-#' @return Returns an array of correlation connectivity (n x n x m)
+#' @return Returns a list of correlation (rmat) and z-score (zmat) arrays of neural connectivity matrices (n x n x m)
 #' @examples
 #' \dontrun{neuralarray<-convertConnBrainMat()}
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
@@ -3122,7 +3122,7 @@ neuralcorrtest <- function (bstat, nstat)
 #' @param bstat Behavioral statistic for each participant with neural data (a vector)
 #' @param thresh Sets an \strong{alpha} threshold for edge weights to be retained. Defaults to .01
 #' @param progBar Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar
-#' @return Returns a list containing a correlation (R) and p-value (P) for positive (R_pos, P_pos) and negative (R_neg, P_neg) network strengths
+#' @return Returns a list containing a correlation (R) and p-value (P) for positive (R_pos, P_pos) and negative (R_neg, P_neg) network strengths. The list also contains the positive (posMask) and negative (negMask) masks used
 #' @references 
 #' Finn, E. S., Shen, X., Scheinost, D., Rosenberg, M. D., Huang, J., Chun, M. M., Papademetris, X., Constable, R. T. (2015).
 #' Functional connectome fingerprinting: Identifying individuals using patterns of brain connectivity.
@@ -3237,7 +3237,7 @@ cpmPredict <- function (neuralarray, bstat, thresh = .01, progBar = TRUE)
     {text(x=-2,y=-2,
           labels = paste("r = ",round(R_pos,3),"\np = ",round(P_pos,3)))}
     #plot negative
-    plot(bstat,behav_pred_pos,xlab="Observed Score",ylab="Predicted Score",
+    plot(bstat,behav_pred_neg,xlab="Observed Score",ylab="Predicted Score",
          main="Negative Prediction",xlim=c(-3,3),ylim=c(-3,3),pch=16,col="skyblue2")
     abline(lm(behav_pred_neg~bstat))
     if(R_neg>=0)
@@ -3247,7 +3247,7 @@ cpmPredict <- function (neuralarray, bstat, thresh = .01, progBar = TRUE)
     {text(x=-2,y=-2,
           labels = paste("r = ",round(R_neg,3),"\np = ",round(P_neg,3)))}
     
-    return(list(R_pos=R_pos,P_pos=P_pos,R_neg=R_neg,P_neg=P_neg))
+    return(list(R_pos=R_pos,P_pos=P_pos,R_neg=R_neg,P_neg=P_neg,posMask=pos_mask,negMask=neg_mask))
 }
 #----
 #HEXACO Openness data----

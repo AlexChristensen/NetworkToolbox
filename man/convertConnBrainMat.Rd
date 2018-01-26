@@ -12,7 +12,7 @@ convertConnBrainMat(MatlabData, progBar = TRUE)
 \item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar}
 }
 \value{
-Returns an array of correlation connectivity (n x n x m)
+Returns a list of correlation (rmat) and z-score (zmat) arrays of neural connectivity matrices (n x n x m)
 }
 \description{
 Converts a Matlab brain z-score connectivity file (n x n x m) where \strong{n} is the n x n connectivity matrices and \strong{m} is the participant
