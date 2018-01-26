@@ -2,7 +2,7 @@
 % Please edit documentation in R/NetworkToolbox--master.R
 \name{cpmPredict}
 \alias{cpmPredict}
-\title{Connectome-based Predictive Modeling--Behavioral}
+\title{Connectome-based Predictive Modeling--Internal Validation}
 \usage{
 cpmPredict(neuralarray, bstat, thresh = 0.01, progBar = TRUE)
 }

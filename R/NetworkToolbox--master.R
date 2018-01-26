@@ -3116,7 +3116,7 @@ neuralcorrtest <- function (bstat, nstat)
     return(noquote(corr))
 }
 #----
-#' Connectome-based Predictive Modeling--Behavioral
+#' Connectome-based Predictive Modeling--Internal Validation
 #' @description Applies the Connectome-based Predictive Modeling approach to neural data. \strong{Please see and cite references}
 #' @param neuralarray Array from \emph{convertConnBrainMat} function
 #' @param bstat Behavioral statistic for each participant with neural data (a vector)
