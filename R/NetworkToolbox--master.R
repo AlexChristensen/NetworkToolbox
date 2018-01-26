@@ -28,6 +28,8 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
     if(nrow(data)==ncol(data)){cormat<-data}else
         if(binary){cormat<-psych::tetrachoric(data)$rho}else{cormat<-cor(data)}
     n<-ncol(cormat)
+    tcormat<-cormat
+    cormat<-abs(cormat)
     if(n<9){print("Matrix is too small")}
     nodeTO<-array()
     nodeFROM<-array()
@@ -162,7 +164,7 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
     {
         for(r in 1:nrow(x))
             for(z in 1:ncol(x))
-            {if(x[r,z]==1){x[r,z]<-cormat[r,z]}
+            {if(x[r,z]==1){x[r,z]<-tcormat[r,z]}
             }
     }
     
@@ -387,6 +389,9 @@ ECO <- function (data, weighted = TRUE, binary = FALSE, directed = FALSE)
   
   sorind<-matrix(0,nrow=length(ind),ncol=2)
   
+  G<-S
+  S<-abs(S)
+  
   x<-S[ind]
   y<-ind
   h<-cbind(ind,S[ind])
@@ -396,7 +401,7 @@ ECO <- function (data, weighted = TRUE, binary = FALSE, directed = FALSE)
   if(directed)
   {W<-C}else{W<-C+t(C)
   diag(W)<-1}
-  J<-S+t(S)
+  J<-G+t(G)
   diag(J)<-1
   if(weighted)
   {
@@ -475,8 +480,8 @@ ECOplusMaST <- function (data, weighted = TRUE, binary = FALSE)
 #' @description Filters the network based on an r-value, alpha, boneferroni, or false-discovery rate (FDR)
 #' @param data Can be a dataset or a correlation matrix
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
-#' @param thresh Sets threshold (defaults to \emph{r} = .10). Set to "alpha" to use an alpha value, "bonferroni" for the bonferroni correction, and "FDR" for local false discovery rate
-#' @param a Defaults to .05. Applied when thresh = "alpha" and "bonferroni"
+#' @param thresh Sets threshold (defaults to "alpha"). Set to any value 0>\emph{r}>1 to retain values greater than set value, "alpha" to use an alpha value, "bonferroni" for the bonferroni correction, "FDR" for local false discovery rate, and "proportional" for a fixed number of edges 
+#' @param a Defaults to .05. Applied when thresh = "alpha" and "bonferroni". Functions as a density threshold hold when thresh = "proportional"
 #' @return Returns a list containing a filtered adjacency matrix (A) and the critical r value (r.cv)
 #' @examples
 #' threshnet<-threshold(hex)
@@ -487,12 +492,8 @@ ECOplusMaST <- function (data, weighted = TRUE, binary = FALSE)
 #' @importFrom utils capture.output
 #' @export
 #Threshold filtering----
-threshold <- function (data, binary = FALSE, thresh = c(.10,"alpha","bonferroni","FDR"), a = .05)
+threshold <- function (data, binary = FALSE, thresh = c("alpha","bonferroni","FDR","proportional"), a = .05)
 {
-    if(missing(thresh))
-    {thresh<-.10
-    }else{thresh<-match.arg(thresh)}
-    
     if(nrow(data)==ncol(data)){cormat<-data}else
         if(binary){cormat<-psych::tetrachoric(data)$rho}else{cormat<-cor(data)}
     
@@ -504,34 +505,48 @@ threshold <- function (data, binary = FALSE, thresh = c(.10,"alpha","bonferroni"
     
     if(thresh=="alpha")
     {thr<-critical.r(nrow(data),a)
+    cormat<-ifelse(abs(cormat)>=thr,cormat,0)
     }else if(thresh=="bonferroni")
     {thr<-critical.r(nrow(data),(a/((ncol(cormat)^2)-(ncol(cormat))/2)))
+    cormat<-ifelse(abs(cormat)>=thr,cormat,0)
     }else if(thresh=="FDR")
     {
-        fdrmat<-matrix(0,nrow=((ncol(cormat)^2)-(ncol(cormat))),ncol=3)
-        w<-0
-        for(i in 1:ncol(cormat))
-            for(j in 1:ncol(cormat))
-                if(i!=j)
-        {
-            w<-w+1
-            fdrmat[w,1]<-i
-            fdrmat[w,2]<-j
-            fdrmat[w,3]<-cormat[i,j]
-        }
+        corsig<-cormat
+        for(i in 1:ncol(data))
+            for(j in 1:ncol(data))
+        corsig[i,j]<-cor.test(data[,i],data[,j])$p.value
         
-        fdrmat[,3]<-fdrtool::fdrtool(fdrmat[,3],plot=FALSE,cutoff.method=
-                                  "locfdr",statistic = "correlation")$qval
-    }else thr<-thresh
-    
-    if(!thresh=="FDR")
-    {cormat<-ifelse(cormat>=thr,cormat,0)
-    }else if(thresh=="FDR")
-    {
-        fdrmat[,3]<-ifelse(fdrmat[,3]<=a,fdrmat[,3],0)
-        fdrmat<-as.matrix(Matrix::sparseMatrix(i=fdrmat[,1],j=fdrmat[,2],x=fdrmat[,3]))
-        cormat<-ifelse(fdrmat!=0,cormat,0)
+        fdrmat<-matrix(0,nrow=((ncol(cormat)^2)-(ncol(cormat))),ncol=3)
+        fdrvec<-as.vector(corsig)
+        
+        fdrvec<-fdrtool::fdrtool(fdrvec,plot=FALSE,verbose=FALSE,statistic = "pvalue")$qval
+        fdrvec<-ifelse(fdrvec<=.10,fdrvec,0)
+        corsig<-matrix(fdrvec,nrow=nrow(cormat),ncol(cormat))
+        cormat<-ifelse(corsig!=0,cormat,0)
         thr<-min(cormat[cormat!=0])
+    }else if(thresh=="proportional")
+    {
+        a<-.15
+        
+        ltri<-cormat[lower.tri(cormat)]
+        altri<-abs(ltri)
+        
+        poss<-(ncol(cormat)^2-ncol(cormat))/2
+        
+        den<-round(poss*a,0)
+        
+        thr<-min(sort(altri,decreasing=TRUE)[1:den])
+        
+        ftri<-ifelse(altri>=thr,ltri,0)
+        
+        cormat[lower.tri(cormat)]<-ifelse(ftri!=0,ltri,0)
+        cormat[upper.tri(cormat)]<-0
+        cormat<-cormat+t(cormat)
+
+    }else if(is.numeric(thresh))
+    {
+    thr<-thresh
+    cormat<-ifelse(abs(cormat)>=thr,cormat,0)
     }
     
     diag(cormat)<-1
@@ -1245,7 +1260,7 @@ transitivity <- function (A, weighted = FALSE)
 #' @description Computes a vector of communities (community) and a global modularity measure (Q)
 #' @param A An adjacency matrix of network data
 #' @param gamma Defaults to 1. Set to gamma > 1 to detect smaller modules and gamma < 1 for larger modules
-#' @param M0 Defaults to none. Input can be an initial community vector
+#' @param M0 Input can be an initial community vector. Defaults to none
 #' @param method Defaults to "modularity". Set to "potts" for Potts model
 #' @return Returns a list of community and Q
 #' @examples
@@ -1263,11 +1278,19 @@ transitivity <- function (A, weighted = FALSE)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Louvain Community Detection----
-louvain <- function (A, gamma = 1, M0 = 1:ncol(A), method = c("modularity","potts"))
+louvain <- function (A, gamma, M0, method = c("modularity","potts"))
 {
     if(missing(method))
     {method<-"modularity"
     }else{method<-match.arg(method)}
+    
+    if(missing(gamma))
+    {gamma<-1
+    }else{gamma<-gamma}
+    
+    if(missing(M0))
+    {M0<-1:ncol(A)
+    }else(M0<-M0)
     
     n<-ncol(A)
     s<-sum(A)
@@ -1276,8 +1299,8 @@ louvain <- function (A, gamma = 1, M0 = 1:ncol(A), method = c("modularity","pott
     {warning("Matrix contains negative weights: absolute weights were used")
         A<-abs(A)}
     
-    Mb<-unique(M0)
-    M<-Mb
+    Mb<-M0
+    M<-M0
     
     if(method=="modularity") 
     {mat<-matrix(0,nrow=n,ncol=n)
@@ -1293,10 +1316,15 @@ louvain <- function (A, gamma = 1, M0 = 1:ncol(A), method = c("modularity","pott
     
     B<-(B+t(B))/2
     
-    Hnm<-matrix(0,nrow=n,ncol=n)
+    Hnm<-matrix(0,nrow=nrow(A),ncol=(length(unique(Mb))))
     
+
     for(m in 1:max(Mb))
-    {Hnm[,m]<-B[,Mb==m]}
+    {
+        if(!is.null(nrow(B[,which(Mb==m)])))
+        {Hnm[,m]<-rowSums(B[,which(Mb==m)])
+        }else{Hnm[,m]<-B[,which(Mb==m)]}
+    }
     
     H<-colSums(Hnm)
     Hm<-rowSums(Hnm)
@@ -1304,7 +1332,7 @@ louvain <- function (A, gamma = 1, M0 = 1:ncol(A), method = c("modularity","pott
     Q0<-(-Inf)
     bsxfun<-matrix(0,nrow=n,ncol=n)
     diag(bsxfun)<-1
-    Q<-sum(diag(B*bsxfun))/s
+    Q<-sum(diag(as.matrix(B)*bsxfun))/s
     
     
     first_iter<-TRUE
@@ -1457,6 +1485,7 @@ smallworldness <- function (A, iter = 100, progBar = FALSE, method = c("HG","ran
 #' @description Computes the average shortest path length (ASPL), clustering coefficient(CC),
 #' modularity (Q), and small-worldness (S) 
 #' @param A An adjacency matrix of network A
+#' @param ... Additional arguments for ASPL, CC, Q, and S functions
 #' @return Returns a values for ASPL, CC, Q, and S
 #' @examples
 #' A<-TMFG(hex)$A
@@ -1465,12 +1494,12 @@ smallworldness <- function (A, iter = 100, progBar = FALSE, method = c("HG","ran
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Semantic Network Measures----
-semnetmeas <- function (A)
+semnetmeas <- function (A, ...)
 {
-    aspl<-pathlengths(A)$ASPL
-    cc<-clustcoeff(A)$CC
+    aspl<-pathlengths(A,...)$ASPL
+    cc<-clustcoeff(A,...)$CC
     q<-louvain(A)$Q
-    s<-smallworldness(A,iter=100,progBar = FALSE,method="rand")
+    s<-smallworldness(A,iter=100,progBar = FALSE)
     
     semnetmeas<-cbind(aspl,cc,q,s)
     
@@ -1634,7 +1663,8 @@ conn <- function (A)
 #' @importFrom utils txtProgressBar setTxtProgressBar
 #' @export
 #Bootstrap Network Generalization----
-bootgen <- function (data, method = c("TMFG","LoGo","MaST","ECOplusMaST","ECO","threshold"), binary = FALSE, n = nrow(data), iter = 1000, depend = FALSE, ...)
+bootgen <- function (data, method = c("TMFG","LoGo","MaST","ECOplusMaST","ECO","threshold"),
+                     n = nrow(data), iter = 1000, binary = FALSE, depend = FALSE, ...)
 {
     if(missing(method))
     {method<-"TMFG"
@@ -1659,7 +1689,7 @@ bootgen <- function (data, method = c("TMFG","LoGo","MaST","ECOplusMaST","ECO","
     {
         f<-round(runif(i,min=1,max=1000000),0)
         set.seed(f[round(runif(i,min=1,max=length(f)),0)])
-        mat<-data[round(runif(n,min=1,max=n),0),]
+        mat<-data[sample(1:n,replace=TRUE),]
         cormat<-cor(mat)
         if(!depend){
         if(method=="TMFG")
@@ -1705,6 +1735,7 @@ bootgen <- function (data, method = c("TMFG","LoGo","MaST","ECOplusMaST","ECO","
         }else stop("Method not available")
     }
     
+    diag(tru)<-0
     
     zw <- function (z,iter)
     {
@@ -1725,18 +1756,24 @@ bootgen <- function (data, method = c("TMFG","LoGo","MaST","ECOplusMaST","ECO","
     {a<-1/iter
     }else if(n>iter)
     {a<-.05}
-    
-        critical.r <- function(iter, a){
+
+        critical.r <- function(iter, a)
+        {
             df <- iter - 2
-            critical.t <- qt( a/2, df, lower.tail = F )
-            cvr <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
-            return(cvr)}
+                critical.t <- qt( a/2, df, lower.tail = F )
+                    cvr <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
+                        return(cvr)
+        }
+    
     if(!method=="LoGo")
-    {for(x in 1:nrow(meanmat))
-        for(y in 1:ncol(meanmat))
-            if(meanmat[x,y]<=critical.r(iter,(a/((ncol(data)^2)-(ncol(data)/2)))))
-            {meanmat[x,y]<-0}
+    {
+        for(x in 1:nrow(meanmat))
+            for(y in 1:ncol(meanmat))
+                if(meanmat[x,y]<=critical.r(iter,a))
+                    {meanmat[x,y]<-0}
     }
+    
+        
     
     #return meanmat to bootmat
     bootmat<-meanmat
@@ -2393,7 +2430,7 @@ rmse <- function (base, model, test)
         mod<-cor2cov(model,test)
     }else{mod<-model}
     
-    root <- sqrt(sum((cov(base)-mod)^2)/(ncol(base)^2))
+    root <- sqrt(sum((cov(base)-mod)^2)/(sum(ifelse(mod==0,1,0))))
     
     return(root)
 }
@@ -2408,10 +2445,12 @@ rmse <- function (base, model, test)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Convert CONN Toolbox Brain Matrices----
-convertConnBrainMat <- function (MatlabData = file.choose(), progBar = TRUE)
+convertConnBrainMat <- function (MatlabData, progBar = TRUE)
 {
+    if(missing(MatlabData))
+    {mat<-R.matlab::readMat(file.choose())}
     
-    mat<-R.matlab::readMat(file.choose()) #read in matlab data
+    #read in matlab data
     n1<-nrow(mat$Z) #determine number of rows
     n2<-ncol(mat$Z) #determine number of columns
     if(nrow(mat$Z)!=ncol(mat$Z))
@@ -2444,7 +2483,7 @@ convertConnBrainMat <- function (MatlabData = file.choose(), progBar = TRUE)
     colnames(dat)<-coln2
     row.names(dat)<-coln1
     
-    return(dat)
+    return(list(rmat=dat,zmat=mat$Z))
 }
 #----
 #' Dependency Neural Networks
@@ -2494,8 +2533,8 @@ depna <- function (neuralarray, pB = TRUE, ...)
 #' Neural Network Filter
 #' @description Applies a network filtering methodology to neural network array. Removes edges from the neural network output from \emph{convertConnBrainMat} using a network filtering approach
 #' @param neuralarray Array from \emph{convertConnBrainMat} function
+#' @param method Filtering method to be applied
 #' @param progBar Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar
-#' @param method Filtering method to be applied (e.g., "MaST")
 #' @param ... Additional arguments from filtering methods
 #' @return Returns an array of n x n x m filtered matrices
 #' @examples
@@ -2518,7 +2557,7 @@ depna <- function (neuralarray, pB = TRUE, ...)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Neural Network Filter----
-neuralnetfilter <- function (neuralarray, progBar = TRUE, method = c("TMFG","MaST","ECOplusMaST","ECO","threshold"), ...)
+neuralnetfilter <- function (neuralarray, method = c("TMFG","LoGo","MaST","ECOplusMaST","ECO","threshold"),progBar = TRUE, ...)
 {
     if(missing(method))
     {method<-"TMFG"
@@ -2539,6 +2578,9 @@ neuralnetfilter <- function (neuralarray, progBar = TRUE, method = c("TMFG","MaS
     {
         if(method=="TMFG")
         {filarray[,,i]<-TMFG(neuralarray[,,i],...)$A
+        }else if(method=="LoGo")
+        {filarray[,,i]<--cov2cor(LoGo(neuralarray[,,i],...))
+        diag(filarray[,,i])<-1
         }else if(method=="MaST")
         {filarray[,,i]<-MaST(neuralarray[,,i],...)
         }else if(method=="ECO")
@@ -2663,7 +2705,7 @@ neuralstat <- function (filarray, statistic = c("CC","ASPL","Q","S","transitivit
         row.names(gstat)[i]<-paste("sub",i,sep="")
         gstat<-as.matrix(gstat)
         }else if(statistic=="S")
-        {gstat[i,]<-smallworldness(filarray[,,i],iter=10,...)
+        {gstat[i,]<-smallworldness(filarray[,,i],iter=10,method="HG",...)
         gstat<-as.data.frame(gstat)
         colnames(gstat)<-"S"
         row.names(gstat)[i]<-paste("sub",i,sep="")
@@ -2693,7 +2735,7 @@ neuralstat <- function (filarray, statistic = c("CC","ASPL","Q","S","transitivit
         row.names(lstat)<-colnames(filarray)
         lstat<-as.matrix(lstat)
         }else if(statistic=="deg")
-        {lstat[,i]<-degree(filarray[,,i])$inDegree
+        {lstat[,i]<-degree(filarray[,,i])
         lstat<-as.data.frame(lstat)
         colnames(lstat)[i]<-paste("sub",i,sep="")
         row.names(lstat)<-colnames(filarray)
@@ -2717,7 +2759,7 @@ neuralstat <- function (filarray, statistic = c("CC","ASPL","Q","S","transitivit
         row.names(lstat)<-colnames(filarray)
         lstat<-as.matrix(lstat)
         }else if(statistic=="str")
-        {lstat[,i]<-strength(filarray[,,i])$inStrength
+        {lstat[,i]<-strength(filarray[,,i])
         lstat<-as.data.frame(lstat)
         colnames(lstat)[i]<-paste("sub",i,sep="")
         row.names(lstat)<-colnames(filarray)
@@ -2741,7 +2783,7 @@ neuralstat <- function (filarray, statistic = c("CC","ASPL","Q","S","transitivit
         row.names(lstat)<-colnames(filarray)
         lstat<-as.matrix(lstat)
         }else if(statistic=="comm")
-        {lstat[,i]<-louvain(filarray[,,i],...)$community
+        {lstat[,i]<-suppressWarnings(louvain(filarray[,,i],...)$community)
         lstat<-as.data.frame(lstat)
         colnames(lstat)[i]<-paste("sub",i,sep="")
         row.names(lstat)<-colnames(filarray)
@@ -2814,12 +2856,13 @@ neuralstat <- function (filarray, statistic = c("CC","ASPL","Q","S","transitivit
 #' ROI_t-test <- neuralstattest(groups, Degree)
 #' }
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @importFrom stats coef
 #' @export
 #Neural Groups----
-neuralstattest <- function (groups, nstat, correction = c("bonferroni","FDR"))
+neuralgrouptest <- function (groups, nstat, correction = c("bonferroni","FDR"))
 {
     if(missing(correction))
-    {correction<-"FDR"
+    {correction<-"bonferroni"
     }else{correction<-match.arg(correction)}
     
     if(max(groups)==2)
@@ -2854,17 +2897,21 @@ neuralstattest <- function (groups, nstat, correction = c("bonferroni","FDR"))
             if(correction=="bonferroni")
             {cpval[count2]<-t.test(group1[,i],group2[,i],var.equal = TRUE)$p.value<=(.05/ncol(group1))}
             if(correction=="FDR")
-            {cpval<-fdrtool::fdrtool(oval,plot=FALSE,statistic = "pvalue")$qval}
+            {cpval<-fdrtool::fdrtool(oval,plot=FALSE,statistic = "pvalue")$qval
+            cpval<-ifelse(cpval<=.10,cpval,0)}
             g1[count2]<-t.test(group1[,i],group2[,i],var.equal = TRUE)$estimate[1]
             g2[count2]<-t.test(group1[,i],group2[,i],var.equal = TRUE)$estimate[2]}
         }
         sig<-cbind(ROI,round(tval,3),round(unpval,5),round(cpval,5),round(g1,3),round(g2,3))
-        if(any(sig==0))
-        {sig[which(sig==0)]<-"ns"}else{sig[which(sig==1)]<-"sig"}
+        sig<-as.data.frame(sig)
         colnames(sig)<-c("ROI","t-value","uncorrected p","corrected p","group 1 mean", "group 2 mean")
+        
         if(all(is.na(sig)))
         {print("No significant differences")
-        }else{return(sig)}
+        }else if(any(sig$`corrected p`==0))
+        {sig$`corrected p`[which(sig$`corrected p`==0)]<-"ns"
+        return(sig)}else{sig$`corrected p`[which(sig$`corrected p`==1)]<-"sig"
+        return(sig)}
     }
     #else if(max(groups)>2)
     #{
@@ -2905,6 +2952,302 @@ neuralstattest <- function (groups, nstat, correction = c("bonferroni","FDR"))
     #        
     #        return(t.test(group1,group2,var.equal=TRUE))
     #    }else if(ncol(nstat)!=1)
+}
+#----
+#' Neural Network Correlation Test
+#' @description Correlational test for group differences for global or local network characteristics of neural network data (\strong{only t-tests})
+#' @param bstat Behavioral statistic for each participant with neural data
+#' @param nstat A statistic vector (whole-network) or matrix (ROI) from the \emph{neuralstat} function
+#' @return Returns correlation test statistics for given statistics
+#' @examples
+#' \dontrun{
+#' neuralarray <- convertConnBrainMat()
+#' 
+#' filteredneuralarray <- neuralnetfilter(neuralarray, method = "threshold", thres = .50)
+#' 
+#' AverageShortestPathLength <- neuralstat(filteredneuralarray, statistic = "ASPL")
+#' 
+#' Degree <- neuralstat(filteredneuralarray, statistic = "deg")
+#' 
+#' bstat <- iq
+#' 
+#' WholeNetwork_corr <- neuralcorrtest(bstat, AverageShortestPathLength)
+#' 
+#' ROI_corr <- neuralcorrtest(bstat, Degree)
+#' }
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @importFrom stats cor.test
+#' @export
+#Neural Correlation----
+neuralcorrtest <- function (bstat, nstat)
+{
+    if(is.array(nstat))
+    {
+        corr<-matrix(0,nrow=nrow(nstat),ncol=ncol(nstat))
+        for(i in 1:nrow(nstat))
+            for(j in 1:ncol(nstat))
+                if(i!=j)
+        corr[i,j]<-cor(bstat,nstat[i,j,])
+                
+                critical.r <- function(iter, a)
+                {
+                    df <- iter - 2
+                    critical.t <- qt( a/2, df, lower.tail = F )
+                    cvr <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
+                    return(cvr)
+                }
+                
+        sigp<-ifelse(corr>=critical.r(ncol(nstat),.01),corr,0)
+        sign<-ifelse(corr<=-(critical.r(ncol(nstat),.01)),corr,0)
+        
+        colnames(sigp)<-colnames(nstat)
+        row.names(sigp)<-colnames(nstat)
+        colnames(sign)<-colnames(nstat)
+        row.names(sign)<-colnames(nstat)
+        
+        corr<-list(pos=sigp,neg=sigp)
+    }
+    
+    
+    if(!is.array(nstat))
+    {
+    bstat<-as.matrix(bstat)
+    nstat<-as.matrix(nstat)
+    
+    corBF <- function (n, r)
+    {
+        bf10JeffreysIntegrate <- function(n, r, alpha=1) {
+            # Jeffreys' test for whether a correlation is zero or not
+            # Jeffreys (1961), pp. 289-292
+            # This is the exact result, see EJ
+            ##
+            if ( any(is.na(r)) ){
+                return(NaN)
+            }
+            
+            # TODO: use which
+            if (n > 2 && abs(r)==1) {
+                return(Inf)
+            }
+            
+            hyperTerm <- Re(hypergeo::hypergeo((2*n-3)/4, (2*n-1)/4, (n+2*alpha)/2, r^2))
+            logTerm <- lgamma((n+2*alpha-1)/2)-lgamma((n+2*alpha)/2)-lbeta(alpha, alpha)
+            myResult <- sqrt(pi)*2^(1-2*alpha)*exp(logTerm)*hyperTerm
+            return(myResult)
+        }
+        
+        
+        # 3.0 One-sided preparation
+        
+        mPlusMarginalBJeffreys <- function(n, r, alpha=1){
+            # Ly et al 2014
+            # This is the exact result with symmetric beta prior on rho
+            # This is the contribution of one-sided test
+            #
+            #	
+            if ( any(is.na(r)) ){
+                return(NaN)
+            }
+            if (n > 2 && r>=1) {
+                return(Inf)
+            } else if (n > 2 && r<=-1){
+                return(0)
+            }
+            
+            hyperTerm <- Re(hypergeo::genhypergeo(U=c(1, (2*n-1)/4, (2*n+1)/4),
+                                                  L=c(3/2, (n+1+2*alpha)/2), z=r^2))
+            logTerm <- -lbeta(alpha, alpha)
+            myResult <- 2^(1-2*alpha)*r*(2*n-3)/(n+2*alpha-1)*exp(logTerm)*hyperTerm
+            return(myResult)
+        }
+        
+        
+        bfPlus0JeffreysIntegrate <- function(n, r, alpha=1){
+            # Ly et al 2014
+            # This is the exact result with symmetric beta prior on rho
+            #	
+            if ( any(is.na(r)) ){
+                return(NaN)
+            }
+            if (n > 2 && r>=1) {
+                return(Inf)
+            } else if (n > 2 && r<=-1){
+                return(0)
+            }
+            
+            bf10 <- bf10JeffreysIntegrate(n, r, alpha)
+            mPlus <- mPlusMarginalBJeffreys(n, r, alpha)
+            
+            if (is.na(bf10) || is.na(mPlus)){
+                return(NA)
+            }
+            
+            myResult <- bf10+mPlus	
+            return(myResult)
+        }
+        
+        bf<-bfPlus0JeffreysIntegrate(n,r)
+        
+        return(bf)
+        
+    }
+    
+    if(ncol(nstat)==1)
+    {corr<-list(corr=cor.test(bstat,nstat),corrBF=corBF(bstat,nstat))
+    }else if(ncol(nstat)>1)
+    {
+        corr<-matrix(0,nrow=nrow(nstat),ncol=4)
+        
+        for(i in 1:nrow(nstat))
+        {corr[i,1]<-round(cor.test(bstat,nstat[i,])$estimate,5)
+        corr[i,2]<-round(cor.test(bstat,nstat[i,])$p.value,5)}
+        
+        corr[,3]<-fdrtool::fdrtool(as.numeric(corr[,2]),statistic = "pvalue",plot=FALSE,verbose=FALSE)$qval
+        
+        for(i in 1:nrow(nstat))
+        {corr[i,4]<-corBF(nrow(bstat),corr[i,1])}
+        
+        row.names(corr)<-row.names(nstat)
+        colnames(corr)<-c("r","p-value","FDR","BF")
+        corr<-corr[which(corr[,2]<=.05),]
+    }
+    }
+    
+    return(noquote(corr))
+}
+#----
+#' Connectome-based Predictive Modeling--Behavioral
+#' @description Applies the Connectome-based Predictive Modeling approach to neural data. \strong{Please see and cite references}
+#' @param neuralarray Array from \emph{convertConnBrainMat} function
+#' @param bstat Behavioral statistic for each participant with neural data (a vector)
+#' @param thresh Sets an \strong{alpha} threshold for edge weights to be retained. Defaults to .01
+#' @param progBar Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar
+#' @return Returns a list containing a correlation (R) and p-value (P) for positive (R_pos, P_pos) and negative (R_neg, P_neg) network strengths
+#' @references 
+#' Finn, E. S., Shen, X., Scheinost, D., Rosenberg, M. D., Huang, J., Chun, M. M., Papademetris, X., Constable, R. T. (2015).
+#' Functional connectome fingerprinting: Identifying individuals using patterns of brain connectivity.
+#' \emph{Nature Neuroscience}, \emph{18}(11), 1664-1671.
+#' 
+#' Rosenberg, M. D., Finn, E. S., Scheinost, D., Papademetris, X., Shen, X., Constable, R. T., Chun, M. M. (2016).
+#' A neuromarker of sustained attention from whole-brain functional connectivity.
+#' \emph{Nature Neuroscience}, \emph{19}(1), 165-171.
+#'
+#' Shen, X. Finn, E. S., Scheinost, D., Rosenberg, M. D., Chun, M. M., Papademetris, X., Constable, R. T. (2017).
+#' Using connectome-based predictive modeling to predict individual behavior from brain connectivity.
+#' \emph{Nature Protocols}, \emph{12}(3), 506-518. 
+#' 
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#CPM Behavioral Prediction----
+cpmPredict <- function (neuralarray, bstat, thresh = .01, progBar = TRUE)
+{
+    #number of subjects
+    no_sub<-length(neuralarray)/nrow(neuralarray)/ncol(neuralarray)
+    #number of nodes
+    no_node<-ncol(neuralarray)
+    
+    #initialize positive and negative behavior stats
+    behav_pred_pos<-matrix(0,nrow=no_sub,ncol=1)
+    behav_pred_neg<-matrix(0,nrow=no_sub,ncol=1)
+    
+    #perform leave-out analysis
+    if(progBar)
+    {pb <- txtProgressBar(max=no_sub, style = 3)}
+    
+    for(leftout in 1:no_sub)
+    {
+        train_mats<-neuralarray
+        train_mats<-train_mats[,,-leftout]
+        ##initialize train vectors
+        #vector length
+        vctrow<-ncol(neuralarray)^2
+        vctcol<-length(train_mats)/nrow(train_mats)/ncol(train_mats)
+        train_vcts<-matrix(0,nrow=vctrow,ncol=vctcol)
+        for(i in 1:vctcol)
+        {train_vcts[,i]<-as.vector(train_mats[,,i])}
+        
+        #behavior stats
+        train_behav<-bstat
+        train_behav<-train_behav[-leftout]
+        
+        #correlate edges with behavior
+        r_mat<-matrix(suppressWarnings(cor(t(train_vcts),train_behav)),nrow=no_node,ncol=no_node)
+        
+        #critical r-value
+        critical.r <- function(iter, a)
+        {
+            df <- iter - 2
+            critical.t <- qt( a/2, df, lower.tail = F )
+            cvr <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
+            return(cvr)
+        }
+        cvr<-critical.r((no_sub-1),thresh)
+        
+        #set threshold and define masks
+        pos_mask<-matrix(0,nrow=no_node,ncol=no_node)
+        neg_mask<-matrix(0,nrow=no_node,ncol=no_node)
+        
+        pos_edges<-which(r_mat>=cvr)
+        neg_edges<-which(r_mat<=(-cvr))
+        
+        pos_mask[pos_edges]<-1
+        neg_mask[neg_edges]<-1
+        
+        #get sum of all edges in TRAIN subs (divide, if symmetric matrices)
+        train_sumpos<-matrix(0,nrow=(no_sub-1),ncol=1)
+        train_sumneg<-matrix(0,nrow=(no_sub-1),ncol=1)
+        
+        for(ss in 1:nrow(train_sumpos))
+        {
+            train_sumpos[ss]<-sum(train_mats[,,ss]*pos_mask)/2
+            train_sumneg[ss]<-sum(train_mats[,,ss]*neg_mask)/2
+        }
+        
+        #build model on TRAIN subs
+        fit_pos<-coef(lm(train_behav~train_sumpos))
+        fit_neg<-coef(lm(train_behav~train_sumneg))
+        
+        #run model on TEST sub
+        test_mat<-neuralarray[,,leftout]
+        test_sumpos<-sum(test_mat*pos_mask)/2
+        test_sumneg<-sum(test_mat*neg_mask)/2
+        
+        behav_pred_pos[leftout]<-fit_pos[2]*test_sumpos+fit_pos[1]
+        behav_pred_neg[leftout]<-fit_neg[2]*test_sumneg+fit_neg[1]
+        
+        if(progBar)
+        {setTxtProgressBar(pb, leftout)}
+    }
+    if(progBar)
+    {close(pb)}
+    
+    R_pos<-cor(behav_pred_pos,bstat)
+    P_pos<-cor.test(behav_pred_pos,bstat)$p.value
+    R_neg<-cor(behav_pred_neg,bstat)
+    P_neg<-cor.test(behav_pred_neg,bstat)$p.value
+    
+    #plot positive
+    plot(bstat,behav_pred_pos,xlab="Observed Score",ylab="Predicted Score",
+         main="Positive Prediction",xlim=c(-3,3),ylim=c(-3,3),pch=16,col="darkorange2")
+    abline(lm(behav_pred_pos~bstat))
+    if(R_pos>=0)
+    {text(x=-2,y=2,
+          labels = paste("r = ",round(R_pos,3),"\np = ",round(P_pos,3)))
+    }else if(R_pos<0)
+    {text(x=-2,y=-2,
+          labels = paste("r = ",round(R_pos,3),"\np = ",round(P_pos,3)))}
+    #plot negative
+    plot(bstat,behav_pred_pos,xlab="Observed Score",ylab="Predicted Score",
+         main="Negative Prediction",xlim=c(-3,3),ylim=c(-3,3),pch=16,col="skyblue2")
+    abline(lm(behav_pred_neg~bstat))
+    if(R_neg>=0)
+    {text(x=-2,y=2,
+          labels = paste("r = ",round(R_neg,3),"\np = ",round(P_neg,3)))
+    }else if(R_neg<0)
+    {text(x=-2,y=-2,
+          labels = paste("r = ",round(R_neg,3),"\np = ",round(P_neg,3)))}
+    
+    return(list(R_pos=R_pos,P_pos=P_pos,R_neg=R_neg,P_neg=P_neg))
 }
 #----
 #HEXACO Openness data----

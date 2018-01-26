@@ -4,10 +4,12 @@
 \alias{semnetmeas}
 \title{Semantic Network Measures}
 \usage{
-semnetmeas(A)
+semnetmeas(A, ...)
 }
 \arguments{
 \item{A}{An adjacency matrix of network A}
+
+\item{...}{Additional arguments for ASPL, CC, Q, and S functions}
 }
 \value{
 Returns a values for ASPL, CC, Q, and S

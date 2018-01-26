@@ -4,7 +4,7 @@
 \alias{convertConnBrainMat}
 \title{Import CONN Toolbox Brain Matrices to R format and convert to correlations}
 \usage{
-convertConnBrainMat(MatlabData = file.choose(), progBar = TRUE)
+convertConnBrainMat(MatlabData, progBar = TRUE)
 }
 \arguments{
 \item{MatlabData}{Input for Matlab data file. Defaults to interactive file choice}

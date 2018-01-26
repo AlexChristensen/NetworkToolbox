@@ -5,7 +5,7 @@
 \title{Bootstrapped Network Generalization}
 \usage{
 bootgen(data, method = c("TMFG", "LoGo", "MaST", "ECOplusMaST", "ECO",
-  "threshold"), binary = FALSE, n = nrow(data), iter = 1000,
+  "threshold"), n = nrow(data), iter = 1000, binary = FALSE,
   depend = FALSE, ...)
 }
 \arguments{
@@ -13,11 +13,11 @@ bootgen(data, method = c("TMFG", "LoGo", "MaST", "ECOplusMaST", "ECO",
 
 \item{method}{A network filtering method. Defaults to "TMFG"}
 
-\item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
-
 \item{n}{Number of people to use in the bootstrap. Defaults to full sample size}
 
 \item{iter}{Number of bootstrap iterations. Defaults to 1000 iterations}
+
+\item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 
 \item{depend}{Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a TMFG-filtered dependency network}
 

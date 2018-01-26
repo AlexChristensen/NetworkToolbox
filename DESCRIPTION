@@ -18,5 +18,6 @@ Imports:
     igraph,
     fdrtool,
     R.matlab,
-    MASS
+    MASS,
+    hypergeo
 RoxygenNote: 6.0.1.9000

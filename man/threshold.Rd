@@ -4,17 +4,17 @@
 \alias{threshold}
 \title{Threshold Filter}
 \usage{
-threshold(data, binary = FALSE, thresh = c(0.1, "alpha", "bonferroni",
-  "FDR"), a = 0.05)
+threshold(data, binary = FALSE, thresh = c("alpha", "bonferroni", "FDR",
+  "proportional"), a = 0.05)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
 
 \item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 
-\item{thresh}{Sets threshold (defaults to \emph{r} = .10). Set to "alpha" to use an alpha value, "bonferroni" for the bonferroni correction, and "FDR" for local false discovery rate}
+\item{thresh}{Sets threshold (defaults to "alpha"). Set to any value 0>\emph{r}>1 to retain values greater than set value, "alpha" to use an alpha value, "bonferroni" for the bonferroni correction, "FDR" for local false discovery rate, and "proportional" for a fixed number of edges}
 
-\item{a}{Defaults to .05. Applied when thresh = "alpha" and "bonferroni"}
+\item{a}{Defaults to .05. Applied when thresh = "alpha" and "bonferroni". Functions as a density threshold hold when thresh = "proportional"}
 }
 \value{
 Returns a list containing a filtered adjacency matrix (A) and the critical r value (r.cv)

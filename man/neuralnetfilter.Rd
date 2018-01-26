@@ -4,15 +4,15 @@
 \alias{neuralnetfilter}
 \title{Neural Network Filter}
 \usage{
-neuralnetfilter(neuralarray, progBar = TRUE, method = c("TMFG", "MaST",
-  "ECOplusMaST", "ECO", "threshold"), ...)
+neuralnetfilter(neuralarray, method = c("TMFG", "LoGo", "MaST", "ECOplusMaST",
+  "ECO", "threshold"), progBar = TRUE, ...)
 }
 \arguments{
 \item{neuralarray}{Array from \emph{convertConnBrainMat} function}
 
-\item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar}
+\item{method}{Filtering method to be applied}
 
-\item{method}{Filtering method to be applied (e.g., "MaST")}
+\item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar}
 
 \item{...}{Additional arguments from filtering methods}
 }
