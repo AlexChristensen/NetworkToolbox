@@ -2385,56 +2385,6 @@ kld <- function (base, test, basedata, testdata, corr = TRUE)
     return(kld)
 }
 #----
-#' Root Mean Square Error
-#' @description Computes the root mean square error of a sparse model to a full model
-#' @param base Base (or full) model to be evaulated against
-#' @param model Reduced (or testing) model (e.g., a sparse correlation or covariance matrix)
-#' @param test Data that is not the base dataset (i.e., comparing a training model to test data)
-#' @return RMSE value. Lower values suggest more similarity between the full and sparse model
-#' @examples
-#' A <- solve(LoGo(hex))
-#' 
-#' root <- rmse(hex, A)
-#' 
-#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
-#' @export
-#Root Mean Square Error----
-rmse <- function (base, model, test)
-{
-    if(missing(test))
-    {test<-base}
-    
-    if(nrow(base)==ncol(base))
-    {stop("Base must be a dataset")}
-    
-    if(nrow(test)==ncol(test))
-    {stop("Test must be a dataset")}
-    
-    
-    cor2cov <- function (A, data)
-    {
-        sds<-apply(data,2,sd)
-        
-        b<-sds%*%t(sds)
-        
-        S<-A*b
-        
-        return(S)
-    }
-    
-    if(all(diag(model)==1))
-    {mod<-cor2cov(model,test)
-    }else if(all(diag(model)==0))
-    {
-        diag(model)<-1
-        mod<-cor2cov(model,test)
-    }else{mod<-model}
-    
-    root <- sqrt(sum((cov(base)-mod)^2)/(sum(ifelse(mod==0,1,0))))
-    
-    return(root)
-}
-#----
 #' Import CONN Toolbox Brain Matrices to R format and convert to correlations
 #' @description Converts a Matlab brain z-score connectivity file (n x n x m) where \strong{n} is the n x n connectivity matrices and \strong{m} is the participant
 #' @param MatlabData Input for Matlab data file. Defaults to interactive file choice
@@ -2862,7 +2812,7 @@ neuralstat <- function (filarray, statistic = c("CC","ASPL","Q","S","transitivit
 neuralgrouptest <- function (groups, nstat, correction = c("bonferroni","FDR"))
 {
     if(missing(correction))
-    {correction<-"bonferroni"
+    {correction<-"FDR"
     }else{correction<-match.arg(correction)}
     
     if(max(groups)==2)
@@ -2897,7 +2847,7 @@ neuralgrouptest <- function (groups, nstat, correction = c("bonferroni","FDR"))
             if(correction=="bonferroni")
             {cpval[count2]<-t.test(group1[,i],group2[,i],var.equal = TRUE)$p.value<=(.05/ncol(group1))}
             if(correction=="FDR")
-            {cpval<-fdrtool::fdrtool(oval,plot=FALSE,statistic = "pvalue")$qval
+            {cpval<-fdrtool::fdrtool(oval,plot=FALSE,verbose=FALSE,statistic = "pvalue")$qval
             cpval<-ifelse(cpval<=.10,cpval,0)}
             g1[count2]<-t.test(group1[,i],group2[,i],var.equal = TRUE)$estimate[1]
             g2[count2]<-t.test(group1[,i],group2[,i],var.equal = TRUE)$estimate[2]}
@@ -3121,8 +3071,9 @@ neuralcorrtest <- function (bstat, nstat)
 #' @param neuralarray Array from \emph{convertConnBrainMat} function
 #' @param bstat Behavioral statistic for each participant with neural data (a vector)
 #' @param thresh Sets an \strong{alpha} threshold for edge weights to be retained. Defaults to .01
+#' @param method Use "mean" or "sum" of edge strengths in the positive and negative connectomes. Defaults to "mean"
 #' @param progBar Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar
-#' @return Returns a list containing a correlation (R) and p-value (P) for positive (R_pos, P_pos) and negative (R_neg, P_neg) network strengths. The list also contains the positive (posMask) and negative (negMask) masks used
+#' @return Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), r-squared (r-squared), root mean square error (rmse)). The list also contains the positive (posMask) and negative (negMask) masks used
 #' @references 
 #' Finn, E. S., Shen, X., Scheinost, D., Rosenberg, M. D., Huang, J., Chun, M. M., Papademetris, X., Constable, R. T. (2015).
 #' Functional connectome fingerprinting: Identifying individuals using patterns of brain connectivity.
@@ -3137,10 +3088,15 @@ neuralcorrtest <- function (bstat, nstat)
 #' \emph{Nature Protocols}, \emph{12}(3), 506-518. 
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @importFrom graphics par
 #' @export
 #CPM Behavioral Prediction----
-cpmPredict <- function (neuralarray, bstat, thresh = .01, progBar = TRUE)
+cpmPredict <- function (neuralarray, bstat, thresh = .01, method = c("mean", "sum"), progBar = TRUE)
 {
+    if(missing(method))
+    {method<-"mean"
+    }else{method<-match.arg(method)}
+    
     #number of subjects
     no_sub<-length(neuralarray)/nrow(neuralarray)/ncol(neuralarray)
     #number of nodes
@@ -3199,8 +3155,15 @@ cpmPredict <- function (neuralarray, bstat, thresh = .01, progBar = TRUE)
         
         for(ss in 1:nrow(train_sumpos))
         {
+            if(method=="sum")
+            {
             train_sumpos[ss]<-sum(train_mats[,,ss]*pos_mask)/2
             train_sumneg[ss]<-sum(train_mats[,,ss]*neg_mask)/2
+            }else if(method=="mean")
+            {
+                train_sumpos[ss]<-mean(train_mats[,,ss]*pos_mask)/2
+                train_sumneg[ss]<-mean(train_mats[,,ss]*neg_mask)/2
+            }
         }
         
         #build model on TRAIN subs
@@ -3209,8 +3172,15 @@ cpmPredict <- function (neuralarray, bstat, thresh = .01, progBar = TRUE)
         
         #run model on TEST sub
         test_mat<-neuralarray[,,leftout]
-        test_sumpos<-sum(test_mat*pos_mask)/2
-        test_sumneg<-sum(test_mat*neg_mask)/2
+        if(method=="sum")
+        {
+            test_sumpos<-sum(test_mat*pos_mask)/2
+            test_sumneg<-sum(test_mat*neg_mask)/2
+        }else if(method=="mean")
+        {
+            test_sumpos<-mean(test_mat*pos_mask)/2
+            test_sumneg<-mean(test_mat*neg_mask)/2
+        }
         
         behav_pred_pos[leftout]<-fit_pos[2]*test_sumpos+fit_pos[1]
         behav_pred_neg[leftout]<-fit_neg[2]*test_sumneg+fit_neg[1]
@@ -3227,27 +3197,145 @@ cpmPredict <- function (neuralarray, bstat, thresh = .01, progBar = TRUE)
     P_neg<-cor.test(behav_pred_neg,bstat)$p.value
     
     #plot positive
-    plot(bstat,behav_pred_pos,xlab="Observed Score",ylab="Predicted Score",
+    par(mar=c(5,5,4,2))
+    plot(bstat,behav_pred_pos,xlab="Observed Score\n(Z-score)",ylab="Predicted Score\n(Z-score)",
          main="Positive Prediction",xlim=c(-3,3),ylim=c(-3,3),pch=16,col="darkorange2")
     abline(lm(behav_pred_pos~bstat))
     if(R_pos>=0)
     {text(x=-2,y=2,
-          labels = paste("r = ",round(R_pos,3),"\np = ",round(P_pos,3)))
+          labels = paste("r = ",round(R_pos,3),"\np = ",round(P_pos,3)),cex=.75)
     }else if(R_pos<0)
     {text(x=-2,y=-2,
-          labels = paste("r = ",round(R_pos,3),"\np = ",round(P_pos,3)))}
+          labels = paste("r = ",round(R_pos,3),"\np = ",round(P_pos,3)),cex=.75)}
     #plot negative
-    plot(bstat,behav_pred_neg,xlab="Observed Score",ylab="Predicted Score",
+    plot(bstat,behav_pred_neg,xlab="Observed Score\n(Z-score)",ylab="Predicted Score\n(Z-score)",
          main="Negative Prediction",xlim=c(-3,3),ylim=c(-3,3),pch=16,col="skyblue2")
     abline(lm(behav_pred_neg~bstat))
     if(R_neg>=0)
     {text(x=-2,y=2,
-          labels = paste("r = ",round(R_neg,3),"\np = ",round(P_neg,3)))
+          labels = paste("r = ",round(R_neg,3),"\np = ",round(P_neg,3)),cex=.75)
     }else if(R_neg<0)
     {text(x=-2,y=-2,
-          labels = paste("r = ",round(R_neg,3),"\np = ",round(P_neg,3)))}
+          labels = paste("r = ",round(R_neg,3),"\np = ",round(P_neg,3)),cex=.75)}
     
-    return(list(R_pos=R_pos,P_pos=P_pos,R_neg=R_neg,P_neg=P_neg,posMask=pos_mask,negMask=neg_mask))
+    bstat<-as.vector(bstat)
+    behav_pred_pos<-as.vector(behav_pred_pos)
+    behav_pred_neg<-as.vector(behav_pred_neg)
+    
+    for(i in 1:length(bstat))
+    {
+        #r-squared
+        ssr_pos<-sum((behav_pred_pos[i]-mean(bstat))^2)
+        sst_pos<-sum((bstat[i]-mean(bstat))^2)
+        ssr_neg<-sum((behav_pred_neg[i]-mean(bstat))^2)
+        sst_neg<-sum((bstat[i]-mean(bstat))^2)
+        
+        #rmse
+        rmse_pos<-sqrt(sum((behav_pred_pos[i]-bstat[i])^2)/length(bstat))
+        rmse_neg<-sqrt(sum((behav_pred_neg[i]-bstat[i])^2)/length(bstat))
+    }
+    
+    rsq_pos<-ssr_pos/sst_pos
+    rsq_neg<-ssr_neg/sst_neg
+    
+    corBF <- function (n, r)
+    {
+        bf10JeffreysIntegrate <- function(n, r, alpha=1) {
+            # Jeffreys' test for whether a correlation is zero or not
+            # Jeffreys (1961), pp. 289-292
+            # This is the exact result, see EJ
+            ##
+            if ( any(is.na(r)) ){
+                return(NaN)
+            }
+            
+            # TODO: use which
+            if (n > 2 && abs(r)==1) {
+                return(Inf)
+            }
+            
+            hyperTerm <- Re(hypergeo::hypergeo((2*n-3)/4, (2*n-1)/4, (n+2*alpha)/2, r^2))
+            logTerm <- lgamma((n+2*alpha-1)/2)-lgamma((n+2*alpha)/2)-lbeta(alpha, alpha)
+            myResult <- sqrt(pi)*2^(1-2*alpha)*exp(logTerm)*hyperTerm
+            return(myResult)
+        }
+        
+        
+        # 3.0 One-sided preparation
+        
+        mPlusMarginalBJeffreys <- function(n, r, alpha=1){
+            # Ly et al 2014
+            # This is the exact result with symmetric beta prior on rho
+            # This is the contribution of one-sided test
+            #
+            #	
+            if ( any(is.na(r)) ){
+                return(NaN)
+            }
+            if (n > 2 && r>=1) {
+                return(Inf)
+            } else if (n > 2 && r<=-1){
+                return(0)
+            }
+            
+            hyperTerm <- Re(hypergeo::genhypergeo(U=c(1, (2*n-1)/4, (2*n+1)/4),
+                                                  L=c(3/2, (n+1+2*alpha)/2), z=r^2))
+            logTerm <- -lbeta(alpha, alpha)
+            myResult <- 2^(1-2*alpha)*r*(2*n-3)/(n+2*alpha-1)*exp(logTerm)*hyperTerm
+            return(myResult)
+        }
+        
+        
+        bfPlus0JeffreysIntegrate <- function(n, r, alpha=1){
+            # Ly et al 2014
+            # This is the exact result with symmetric beta prior on rho
+            #	
+            if ( any(is.na(r)) ){
+                return(NaN)
+            }
+            if (n > 2 && r>=1) {
+                return(Inf)
+            } else if (n > 2 && r<=-1){
+                return(0)
+            }
+            
+            bf10 <- bf10JeffreysIntegrate(n, r, alpha)
+            mPlus <- mPlusMarginalBJeffreys(n, r, alpha)
+            
+            if (is.na(bf10) || is.na(mPlus)){
+                return(NA)
+            }
+            
+            myResult <- bf10+mPlus	
+            return(myResult)
+        }
+        
+        bf<-bfPlus0JeffreysIntegrate(n,r)
+        
+        return(bf)
+        
+    }
+        
+    pos_BF<-corBF(length(bstat),R_pos)
+    neg_BF<-corBF(length(bstat),R_neg)
+    
+    results<-matrix(0,nrow=2,ncol=5)
+    
+    results[1,1]<-round(R_pos,3)
+    results[1,2]<-round(P_pos,3)
+    results[1,3]<-round(pos_BF,3)
+    results[1,4]<-round(rsq_pos,3)
+    results[1,5]<-round(rmse_pos,3)
+    results[2,1]<-round(R_neg,3)
+    results[2,2]<-round(P_neg,3)
+    results[2,3]<-round(neg_BF,3)
+    results[2,4]<-round(rsq_neg,3)
+    results[2,5]<-round(rmse_neg,3)
+    
+    colnames(results)<-c("r","p-value","BF","r-squared","rmse")
+    row.names(results)<-c("positive","negative")
+    
+    return(list(results=results,posMask=pos_mask,negMask=neg_mask))
 }
 #----
 #HEXACO Openness data----

@@ -4,7 +4,8 @@
 \alias{cpmPredict}
 \title{Connectome-based Predictive Modeling--Internal Validation}
 \usage{
-cpmPredict(neuralarray, bstat, thresh = 0.01, progBar = TRUE)
+cpmPredict(neuralarray, bstat, thresh = 0.01, method = c("mean", "sum"),
+  progBar = TRUE)
 }
 \arguments{
 \item{neuralarray}{Array from \emph{convertConnBrainMat} function}
@@ -13,10 +14,12 @@ cpmPredict(neuralarray, bstat, thresh = 0.01, progBar = TRUE)
 
 \item{thresh}{Sets an \strong{alpha} threshold for edge weights to be retained. Defaults to .01}
 
+\item{method}{Use "mean" or "sum" of edge strengths in the positive and negative connectomes. Defaults to "mean"}
+
 \item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar}
 }
 \value{
-Returns a list containing a correlation (R) and p-value (P) for positive (R_pos, P_pos) and negative (R_neg, P_neg) network strengths. The list also contains the positive (posMask) and negative (negMask) masks used
+Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), r-squared (r-squared), root mean square error (rmse)). The list also contains the positive (posMask) and negative (negMask) masks used
 }
 \description{
 Applies the Connectome-based Predictive Modeling approach to neural data. \strong{Please see and cite references}
