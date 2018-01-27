@@ -34,6 +34,15 @@ WholeNetwork_corr <- neuralcorrtest(bstat, AverageShortestPathLength)
 ROI_corr <- neuralcorrtest(bstat, Degree)
 }
 }
+\references{
+Wagenmakers, E. J., Verhagen, J., & Ly, A. (2016).
+How to quantify the evidence for the absence of a correlation.
+\emph{Behavior Research Methods}, \emph{48}(2), 413-426.
+
+Wetzels, R., & Wagenmakers, E. J. (2012).
+A default Bayesian hypothesis test for correlations and partial correlations.
+\emph{Psychonomic Bulletin & Review}, \emph{19}(6), 1057-1064.
+}
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>
 }

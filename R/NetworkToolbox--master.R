@@ -2926,6 +2926,15 @@ neuralgrouptest <- function (groups, nstat, correction = c("bonferroni","FDR"))
 #' ROI_corr <- neuralcorrtest(bstat, Degree)
 #' }
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @references
+#' Wagenmakers, E. J., Verhagen, J., & Ly, A. (2016).
+#' How to quantify the evidence for the absence of a correlation.
+#' \emph{Behavior Research Methods}, \emph{48}(2), 413-426.
+#' 
+#' Wetzels, R., & Wagenmakers, E. J. (2012).
+#' A default Bayesian hypothesis test for correlations and partial correlations.
+#' \emph{Psychonomic Bulletin & Review}, \emph{19}(6), 1057-1064. 
+#' 
 #' @importFrom stats cor.test
 #' @export
 #Neural Correlation----
@@ -3085,8 +3094,15 @@ neuralcorrtest <- function (bstat, nstat)
 #'
 #' Shen, X. Finn, E. S., Scheinost, D., Rosenberg, M. D., Chun, M. M., Papademetris, X., Constable, R. T. (2017).
 #' Using connectome-based predictive modeling to predict individual behavior from brain connectivity.
-#' \emph{Nature Protocols}, \emph{12}(3), 506-518. 
+#' \emph{Nature Protocols}, \emph{12}(3), 506-518.
 #' 
+#' Wagenmakers, E. J., Verhagen, J., & Ly, A. (2016).
+#' How to quantify the evidence for the absence of a correlation.
+#' \emph{Behavior Research Methods}, \emph{48}(2), 413-426.
+#' 
+#' Wetzels, R., & Wagenmakers, E. J. (2012).
+#' A default Bayesian hypothesis test for correlations and partial correlations.
+#' \emph{Psychonomic Bulletin & Review}, \emph{19}(6), 1057-1064. 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @importFrom graphics par
 #' @export
