@@ -3113,6 +3113,8 @@ cpmPredict <- function (neuralarray, bstat, thresh = .01, method = c("mean", "su
     {method<-"mean"
     }else{method<-match.arg(method)}
     
+    bstat<-scale(bstat)
+    
     #number of subjects
     no_sub<-length(neuralarray)/nrow(neuralarray)/ncol(neuralarray)
     #number of nodes
