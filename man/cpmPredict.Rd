@@ -19,10 +19,10 @@ cpmPredict(neuralarray, bstat, thresh = 0.01, method = c("mean", "sum"),
 \item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar}
 }
 \value{
-Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), r-squared (r-squared), root mean square error (rmse)). The list also contains the positive (posMask) and negative (negMask) masks used
+Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), mean absoluate error (mae)). The list also contains the positive (posMask) and negative (negMask) masks used
 }
 \description{
-Applies the Connectome-based Predictive Modeling approach to neural data. \strong{Please see and cite references}
+Applies the Connectome-based Predictive Modeling approach to neural data. \strong{Please cite Finn et al., 2015; Rosenberg et al., 2016; Shen et al., 2017}
 }
 \references{
 Finn, E. S., Shen, X., Scheinost, D., Rosenberg, M. D., Huang, J., Chun, M. M., Papademetris, X., Constable, R. T. (2015).

@@ -3076,13 +3076,13 @@ neuralcorrtest <- function (bstat, nstat)
 }
 #----
 #' Connectome-based Predictive Modeling--Internal Validation
-#' @description Applies the Connectome-based Predictive Modeling approach to neural data. \strong{Please see and cite references}
+#' @description Applies the Connectome-based Predictive Modeling approach to neural data. \strong{Please cite Finn et al., 2015; Rosenberg et al., 2016; Shen et al., 2017}
 #' @param neuralarray Array from \emph{convertConnBrainMat} function
 #' @param bstat Behavioral statistic for each participant with neural data (a vector)
 #' @param thresh Sets an \strong{alpha} threshold for edge weights to be retained. Defaults to .01
 #' @param method Use "mean" or "sum" of edge strengths in the positive and negative connectomes. Defaults to "mean"
 #' @param progBar Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar
-#' @return Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), r-squared (r-squared), root mean square error (rmse)). The list also contains the positive (posMask) and negative (negMask) masks used
+#' @return Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), mean absoluate error (mae)). The list also contains the positive (posMask) and negative (negMask) masks used
 #' @references 
 #' Finn, E. S., Shen, X., Scheinost, D., Rosenberg, M. D., Huang, J., Chun, M. M., Papademetris, X., Constable, R. T. (2015).
 #' Functional connectome fingerprinting: Identifying individuals using patterns of brain connectivity.
@@ -3211,6 +3211,8 @@ cpmPredict <- function (neuralarray, bstat, thresh = .01, method = c("mean", "su
     P_pos<-cor.test(behav_pred_pos,bstat)$p.value
     R_neg<-cor(behav_pred_neg,bstat)
     P_neg<-cor.test(behav_pred_neg,bstat)$p.value
+    P_pos<-ifelse(round(P_pos,3)!=0,round(P_pos,3),noquote("<.001"))
+    P_neg<-ifelse(round(P_neg,3)!=0,round(P_neg,3),noquote("<.001"))
     
     #plot positive
     par(mar=c(5,5,4,2))
@@ -3219,20 +3221,20 @@ cpmPredict <- function (neuralarray, bstat, thresh = .01, method = c("mean", "su
     abline(lm(behav_pred_pos~bstat))
     if(R_pos>=0)
     {text(x=-2,y=2,
-          labels = paste("r = ",round(R_pos,3),"\np = ",round(P_pos,3)),cex=.75)
+          labels = paste("r = ",round(R_pos,3),"\np = ",P_pos),cex=.75)
     }else if(R_pos<0)
     {text(x=-2,y=-2,
-          labels = paste("r = ",round(R_pos,3),"\np = ",round(P_pos,3)),cex=.75)}
+          labels = paste("r = ",round(R_pos,3),"\np = ",P_pos),cex=.75)}
     #plot negative
     plot(bstat,behav_pred_neg,xlab="Observed Score\n(Z-score)",ylab="Predicted Score\n(Z-score)",
          main="Negative Prediction",xlim=c(-3,3),ylim=c(-3,3),pch=16,col="skyblue2")
     abline(lm(behav_pred_neg~bstat))
     if(R_neg>=0)
     {text(x=-2,y=2,
-          labels = paste("r = ",round(R_neg,3),"\np = ",round(P_neg,3)),cex=.75)
+          labels = paste("r = ",round(R_neg,3),"\np = ",P_neg),cex=.75)
     }else if(R_neg<0)
     {text(x=-2,y=-2,
-          labels = paste("r = ",round(R_neg,3),"\np = ",round(P_neg,3)),cex=.75)}
+          labels = paste("r = ",round(R_neg,3),"\np = ",P_neg),cex=.75)}
     
     bstat<-as.vector(bstat)
     behav_pred_pos<-as.vector(behav_pred_pos)
@@ -3240,19 +3242,10 @@ cpmPredict <- function (neuralarray, bstat, thresh = .01, method = c("mean", "su
     
     for(i in 1:length(bstat))
     {
-        #r-squared
-        ssr_pos<-sum((behav_pred_pos[i]-mean(bstat))^2)
-        sst_pos<-sum((bstat[i]-mean(bstat))^2)
-        ssr_neg<-sum((behav_pred_neg[i]-mean(bstat))^2)
-        sst_neg<-sum((bstat[i]-mean(bstat))^2)
-        
         #rmse
-        rmse_pos<-sqrt(sum((behav_pred_pos[i]-bstat[i])^2)/length(bstat))
-        rmse_neg<-sqrt(sum((behav_pred_neg[i]-bstat[i])^2)/length(bstat))
+        mae_pos<-sum(abs(behav_pred_pos[i]-bstat[i]))/length(bstat)
+        mae_neg<-sum(abs(behav_pred_neg[i]-bstat[i]))/length(bstat)
     }
-    
-    rsq_pos<-ssr_pos/sst_pos
-    rsq_neg<-ssr_neg/sst_neg
     
     corBF <- function (n, r)
     {
@@ -3335,20 +3328,18 @@ cpmPredict <- function (neuralarray, bstat, thresh = .01, method = c("mean", "su
     pos_BF<-corBF(length(bstat),R_pos)
     neg_BF<-corBF(length(bstat),R_neg)
     
-    results<-matrix(0,nrow=2,ncol=5)
+    results<-matrix(0,nrow=2,ncol=4)
     
     results[1,1]<-round(R_pos,3)
-    results[1,2]<-round(P_pos,3)
+    results[1,2]<-P_pos
     results[1,3]<-round(pos_BF,3)
-    results[1,4]<-round(rsq_pos,3)
-    results[1,5]<-round(rmse_pos,3)
+    results[1,4]<-round(mae_pos,3)
     results[2,1]<-round(R_neg,3)
-    results[2,2]<-round(P_neg,3)
+    results[2,2]<-P_neg
     results[2,3]<-round(neg_BF,3)
-    results[2,4]<-round(rsq_neg,3)
-    results[2,5]<-round(rmse_neg,3)
+    results[2,4]<-round(mae_neg,3)
     
-    colnames(results)<-c("r","p-value","BF","r-squared","rmse")
+    colnames(results)<-c("r","p-value","BF","mae")
     row.names(results)<-c("positive","negative")
     
     return(list(results=results,posMask=pos_mask,negMask=neg_mask))
