@@ -1976,6 +1976,14 @@ bootgen <- function (data, method = c("TMFG","LoGo","MaST","ECOplusMaST","ECO","
                     for(k in 1:ncol(realmat))
                     {dmeanmat[j,k]<-mean(dsamps[j,k,])}
                     
+                critical.r <- function(iter, a)
+                {
+                    df <- iter - 3
+                    critical.t <- qt( a/2, df, lower.tail = F )
+                    cvr <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
+                    return(cvr)
+                }
+                
                     for(x in 1:nrow(dmeanmat))
                         for(y in 1:ncol(dmeanmat))
                             if(dmeanmat[x,y]<=critical.r(iter))
@@ -3267,6 +3275,7 @@ neuralcorrtest <- function (bstat, nstat)
 #' \emph{Psychonomic Bulletin & Review}, \emph{19}(6), 1057-1064. 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @importFrom graphics par
+#' @importFrom grDevices colorRampPalette dev.new
 #' @export
 #CPM Behavioral Prediction----
 cpmIV <- function (neuralarray, bstat, thresh = .01, method = c("mean", "sum"),
@@ -3801,6 +3810,9 @@ cpmPerm <- function (session1, session2, iter = 1000, progBar = TRUE)
     {session2<-session2[[1]]}
     
     no_sub<-length(session1)/nrow(session1)/ncol(session1)
+    
+    m<-nrow(session1)*ncol(session1)
+    n<-length(session1)/m
     
     if(isSymmetric(session1[,,1]))
     {sesh1<-matrix(as.vector(session1),nrow=m,ncol=n)}
