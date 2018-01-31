@@ -7,7 +7,7 @@
 LoGo(data, separators = TMFG(data)$separators, cliques = TMFG(data)$cliques)
 }
 \arguments{
-\item{data}{Must be a dataset}
+\item{data}{Must be a dataset (missing data will be removed using the function \emph{na.omit})}
 
 \item{separators}{Defaults to separators obtained from the TMFG function. Requires a list of separators}
 

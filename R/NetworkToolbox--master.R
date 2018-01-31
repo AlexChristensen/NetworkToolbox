@@ -2,7 +2,7 @@
 #
 #' Triangulated Maximally Filtered Graph
 #' @description Applies the Triangulated Maximally Filtered Graph (TMFG) filtering method
-#' @param data Can be a dataset or a correlation matrix
+#' @param data Can be a dataset or a correlation matrix (missing data will be removed using the function \emph{na.omit})
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network
 #' @param depend Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a TMFG-filtered dependency network
@@ -25,6 +25,16 @@
 #TMFG Filtering Method----
 TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
 {
+    
+    if(any(is.na(data)))
+    {
+        miss<-which(rowSums(is.na(data))!=0)
+        warning(paste(length(miss)),
+        " row(s) were removed for missing data\nRemoved row(s): ",
+        paste(miss,collapse = ", "))
+        data<-na.omit(data)
+    }
+    
     if(nrow(data)==ncol(data)){cormat<-data}else
         if(binary){cormat<-psych::tetrachoric(data)$rho}else{cormat<-cor(data)}
     n<-ncol(cormat)
@@ -176,7 +186,7 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
 #----
 #' Local/Global Sparse Inverse Covariance Matrix
 #' @description Applies the Local/Global method to estimate the sparse inverse covariance matrix
-#' @param data Must be a dataset
+#' @param data Must be a dataset (missing data will be removed using the function \emph{na.omit})
 #' @param separators Defaults to separators obtained from the TMFG function. Requires a list of separators
 #' @param cliques Defaults to cliques obtained from the TMFG function. Requires a list of cliques
 #' @return Returns a sparse TMFG-filtered inverse covariance matrix
@@ -193,6 +203,15 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
 #LoGo Sparse Inverse Covariance Matrix----
 LoGo <- function (data, separators = TMFG(data)$separators, cliques = TMFG(data)$cliques)
 {
+    if(any(is.na(data)))
+    {
+        miss<-which(rowSums(is.na(data))!=0)
+        warning(paste(length(miss)),
+                " row(s) were removed for missing data\n Removed row(s): ",
+                paste(miss,collapse = ", "))
+        data<-na.omit(data)
+    }
+    
     S<-cov(data)
     
     n<-ncol(S)
@@ -216,7 +235,7 @@ LoGo <- function (data, separators = TMFG(data)$separators, cliques = TMFG(data)
 #----
 #' Maximum Spanning Tree
 #' @description Applies the Maximum Spanning Tree (MaST) filtering method
-#' @param data Can be a dataset or a correlation matrix
+#' @param data Can be a dataset or a correlation matrix (missing data will be removed using the function \emph{na.omit})
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network
 #' @param depend Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a MaST-filtered dependency network
@@ -236,6 +255,16 @@ LoGo <- function (data, separators = TMFG(data)$separators, cliques = TMFG(data)
 #Maximum Spanning Tree----
 MaST <- function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
 {
+    
+    if(any(is.na(data)))
+    {
+        miss<-which(rowSums(is.na(data))!=0)
+        warning(paste(length(miss)),
+                " row(s) were removed for missing data\nRemoved row(s): ",
+                paste(miss,collapse = ", "))
+        data<-na.omit(data)
+    }
+    
 FIND_PathCompression <- function (temproot=temproot)
 {
   ParentPointer[temproot]
@@ -338,7 +367,7 @@ return(x)
 #----
 #' ECO Neural Network Filter
 #' @description Applies the ECO neural network filtering method
-#' @param data Can be a dataset or a correlation matrix
+#' @param data Can be a dataset or a correlation matrix (missing data will be removed using the function \emph{na.omit})
 #' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param directed Is the network directed? Defaults to FALSE. Set TRUE if the network is directed
@@ -368,6 +397,15 @@ return(x)
 #ECO Neural Network Filter----
 ECO <- function (data, weighted = TRUE, binary = FALSE, directed = FALSE)
 {
+    if(any(is.na(data)))
+    {
+        miss<-which(rowSums(is.na(data))!=0)
+        warning(paste(length(miss)),
+                " row(s) were removed for missing data\nRemoved row(s): ",
+                paste(miss,collapse = ", "))
+        data<-na.omit(data)
+    }
+    
   if(nrow(data)==ncol(data)){C<-data}else
     if(binary){C<-psych::tetrachoric(data)$rho}else{C<-cor(data)}
   n<-ncol(C)
@@ -415,7 +453,7 @@ ECO <- function (data, weighted = TRUE, binary = FALSE, directed = FALSE)
 #----
 #' ECO+MaST Network Filter
 #' @description Applies the ECO neural network filtering method combined with the MaST filtering method
-#' @param data Can be a dataset or a correlation matrix
+#' @param data Can be a dataset or a correlation matrix (missing data will be removed using the function \emph{na.omit})
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param weighted Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network
 #' @return A sparse association matrix
@@ -436,6 +474,15 @@ ECO <- function (data, weighted = TRUE, binary = FALSE, directed = FALSE)
 #ECO Filter + MaST----
 ECOplusMaST <- function (data, weighted = TRUE, binary = FALSE)
 {
+    if(any(is.na(data)))
+    {
+        miss<-which(rowSums(is.na(data))!=0)
+        warning(paste(length(miss)),
+                " row(s) were removed for missing data\nRemoved row(s): ",
+                paste(miss,collapse = ", "))
+        data<-na.omit(data)
+    }
+    
   if(weighted&&!binary)
 {
   a<-MaST(data,weighted=TRUE)
@@ -478,7 +525,7 @@ ECOplusMaST <- function (data, weighted = TRUE, binary = FALSE)
 #----
 #' Threshold Filter
 #' @description Filters the network based on an r-value, alpha, boneferroni, or false-discovery rate (FDR)
-#' @param data Can be a dataset or a correlation matrix
+#' @param data Can be a dataset or a correlation matrix (missing data will be removed using the function \emph{na.omit})
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param thresh Sets threshold (defaults to "alpha"). Set to any value 0>\emph{r}>1 to retain values greater than set value, "alpha" to use an alpha value, "bonferroni" for the bonferroni correction, "FDR" for local false discovery rate, and "proportional" for a fixed number of edges 
 #' @param a Defaults to .05. Applied when thresh = "alpha" and "bonferroni". Functions as a density threshold hold when thresh = "proportional"
@@ -494,6 +541,15 @@ ECOplusMaST <- function (data, weighted = TRUE, binary = FALSE)
 #Threshold filtering----
 threshold <- function (data, binary = FALSE, thresh = c("alpha","bonferroni","FDR","proportional"), a = .05)
 {
+    if(any(is.na(data)))
+    {
+        miss<-which(rowSums(is.na(data))!=0)
+        warning(paste(length(miss)),
+                " row(s) were removed for missing data\nRemoved row(s): ",
+                paste(miss,collapse = ", "))
+        data<-na.omit(data)
+    }
+    
     if(nrow(data)==ncol(data)){cormat<-data}else
         if(binary){cormat<-psych::tetrachoric(data)$rho}else{cormat<-cor(data)}
     
@@ -1622,7 +1678,7 @@ conn <- function (A)
 #----
 #' Bootstrapped Network Generalization
 #' @description Bootstraps the sample to identify the most stable correlations
-#' @param data A set of data
+#' @param data A set of data (missing data will be removed using the function \emph{na.omit})
 #' @param method A network filtering method. Defaults to "TMFG"
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param n Number of people to use in the bootstrap. Defaults to full sample size
@@ -1669,6 +1725,15 @@ bootgen <- function (data, method = c("TMFG","LoGo","MaST","ECOplusMaST","ECO","
     if(missing(method))
     {method<-"TMFG"
     }else{method<-match.arg(method)}
+    
+    if(any(is.na(data)))
+    {
+        miss<-which(rowSums(is.na(data))!=0)
+        warning(paste(length(miss)),
+                " row(s) were removed for missing data\nRemoved row(s): ",
+                paste(miss,collapse = ", "))
+        data<-na.omit(data)
+    }
     
     if(nrow(data)==ncol(data)){stop("Input must be a dataset")}else
         if(binary){realmat<-psych::tetrachoric(data)$rho}else{realmat<-cor(data)}
@@ -1751,29 +1816,94 @@ bootgen <- function (data, method = c("TMFG","LoGo","MaST","ECOplusMaST","ECO","
     if(!method=="LoGo")
     {meanmat<-psych::fisherz2r(meanmat)}
     
-    #Set alpha
-    if(n<=iter)
-    {a<-1/iter
-    }else if(n>iter)
-    {a<-.05}
-
-        critical.r <- function(iter, a)
-        {
-            df <- iter - 2
-                critical.t <- qt( a/2, df, lower.tail = F )
-                    cvr <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
-                        return(cvr)
+    corBF <- function (n, r)
+    {
+        bf10JeffreysIntegrate <- function(n, r, alpha=1) {
+            # Jeffreys' test for whether a correlation is zero or not
+            # Jeffreys (1961), pp. 289-292
+            # This is the exact result, see EJ
+            ##
+            if ( any(is.na(r)) ){
+                return(NaN)
+            }
+            
+            # TODO: use which
+            if (n > 2 && abs(r)==1) {
+                return(Inf)
+            }
+            
+            hyperTerm <- Re(hypergeo::hypergeo((2*n-3)/4, (2*n-1)/4, (n+2*alpha)/2, r^2))
+            logTerm <- lgamma((n+2*alpha-1)/2)-lgamma((n+2*alpha)/2)-lbeta(alpha, alpha)
+            myResult <- sqrt(pi)*2^(1-2*alpha)*exp(logTerm)*hyperTerm
+            return(myResult)
         }
+        
+        
+        # 3.0 One-sided preparation
+        
+        mPlusMarginalBJeffreys <- function(n, r, alpha=1){
+            # Ly et al 2014
+            # This is the exact result with symmetric beta prior on rho
+            # This is the contribution of one-sided test
+            #
+            #	
+            if ( any(is.na(r)) ){
+                return(NaN)
+            }
+            if (n > 2 && r>=1) {
+                return(Inf)
+            } else if (n > 2 && r<=-1){
+                return(0)
+            }
+            
+            hyperTerm <- Re(hypergeo::genhypergeo(U=c(1, (2*n-1)/4, (2*n+1)/4),
+                                                  L=c(3/2, (n+1+2*alpha)/2), z=r^2))
+            logTerm <- -lbeta(alpha, alpha)
+            myResult <- 2^(1-2*alpha)*r*(2*n-3)/(n+2*alpha-1)*exp(logTerm)*hyperTerm
+            return(myResult)
+        }
+        
+        
+        bfPlus0JeffreysIntegrate <- function(n, r, alpha=1){
+            # Ly et al 2014
+            # This is the exact result with symmetric beta prior on rho
+            #	
+            if ( any(is.na(r)) ){
+                return(NaN)
+            }
+            if (n > 2 && r>=1) {
+                return(Inf)
+            } else if (n > 2 && r<=-1){
+                return(0)
+            }
+            
+            bf10 <- bf10JeffreysIntegrate(n, r, alpha)
+            mPlus <- mPlusMarginalBJeffreys(n, r, alpha)
+            
+            if (is.na(bf10) || is.na(mPlus)){
+                return(NA)
+            }
+            
+            myResult <- bf10+mPlus	
+            return(myResult)
+        }
+        
+        bf<-bfPlus0JeffreysIntegrate(n,r)
+        
+        return(bf)
+        
+    }
+    
+    bayesmat<-meanmat
     
     if(!method=="LoGo")
     {
         for(x in 1:nrow(meanmat))
             for(y in 1:ncol(meanmat))
-                if(meanmat[x,y]<=critical.r(iter,a))
-                    {meanmat[x,y]<-0}
+               (bayesmat[x,y]<-corBF(n,meanmat[x,y]))
+            meanmat<-ifelse(bayesmat>=3,meanmat,0)
     }
     
-        
     
     #return meanmat to bootmat
     bootmat<-meanmat
@@ -1914,7 +2044,7 @@ bootgen <- function (data, method = c("TMFG","LoGo","MaST","ECOplusMaST","ECO","
 #----
 #' Bootstrapped Communities Likelihood
 #' @description Bootstraps the sample with replace to compute walktrap reliability
-#' @param data A set of data
+#' @param data A set of data (missing data will be removed using the function \emph{na.omit})
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param n Number of people to use in the bootstrap. Defaults to full sample size
 #' @param iter Number of bootstrap iterations. Defaults to 100 iterations
@@ -1947,6 +2077,15 @@ commboot <- function (data, binary = FALSE, n = nrow(data), iter = 100, filter =
     if(missing(method))
     {method<-"louvain"
     }else{method<-match.arg(method)}
+    
+    if(any(is.na(data)))
+    {
+        miss<-which(rowSums(is.na(data))!=0)
+        warning(paste(length(miss)),
+                " row(s) were removed for missing data\nRemoved row(s): ",
+                paste(miss,collapse = ", "))
+        data<-na.omit(data)
+    }
     
     col<-ncol(data)
     if(nrow(data)==ncol(data)){stop("Input must be a dataset")}else
@@ -1993,7 +2132,7 @@ commboot <- function (data, binary = FALSE, n = nrow(data), iter = 100, filter =
 #----
 #' Dependency Matrix
 #' @description Generates a dependency matrix of the data
-#' @param data A set of data
+#' @param data A set of data (missing data will be removed using the function \emph{na.omit})
 #' @param binary Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)
 #' @param index Should correlation with the latent variable (i.e., weighted average of all variables) be removed? Defaults to FALSE. Set to TRUE to remove common latent factor
 #' @param fisher Should Fisher's Z-test be used to keep significantly higher influences (index only)? Defaults to FALSE. Set to TRUE to remove non-significant influences
@@ -2018,6 +2157,15 @@ commboot <- function (data, binary = FALSE, n = nrow(data), iter = 100, filter =
 #Dependency----
 depend <- function (data, binary = FALSE, index = FALSE, fisher = FALSE, progBar = TRUE)
 {
+    if(any(is.na(data)))
+    {
+        miss<-which(rowSums(is.na(data))!=0)
+        warning(paste(length(miss)),
+                " row(s) were removed for missing data\nRemoved row(s): ",
+                paste(miss,collapse = ", "))
+        data<-na.omit(data)
+    }
+    
     if(nrow(data)==ncol(data)){cormat<-data}else
         if(binary){cormat<-psych::tetrachoric(data)$rho}else{cormat<-cor(data)}
     
@@ -2117,7 +2265,7 @@ depend <- function (data, binary = FALSE, index = FALSE, fisher = FALSE, progBar
 #----
 #' Split sample
 #' @description Randomly splits sample into equally divded sub-samples
-#' @param data Must be a dataset
+#' @param data Must be a dataset (missing data will be removed using the function \emph{na.omit})
 #' @param samples Number of samples to produce (Defaults to 10)
 #' @param splits Number to divide the sample by (Defaults to 2; i.e., split-half)
 #' @return A list containing the training (trainSample) and testing (testSample) sizes (training sample is made to have slightly larger sizes in the case of uneven splits), and their respective sample sizes (trainSize and testSize)
@@ -2132,6 +2280,15 @@ depend <- function (data, binary = FALSE, index = FALSE, fisher = FALSE, progBar
 #Split samples----
 splitsamp <- function (data, samples = 10, splits = 2)
 {
+    if(any(is.na(data)))
+    {
+        miss<-which(rowSums(is.na(data))!=0)
+        warning(paste(length(miss)),
+                " row(s) were removed for missing data\nRemoved row(s): ",
+                paste(miss,collapse = ", "))
+        data<-na.omit(data)
+    }
+    
     data<-as.matrix(data)
     n<-nrow(data)
     spli<-n/splits
@@ -2385,7 +2542,7 @@ kld <- function (base, test, basedata, testdata, corr = TRUE)
     return(kld)
 }
 #----
-#' Import CONN Toolbox Brain Matrices to R format and convert to correlations
+#' Import CONN Toolbox Brain Matrices to R format
 #' @description Converts a Matlab brain z-score connectivity file (n x n x m) where \strong{n} is the n x n connectivity matrices and \strong{m} is the participant
 #' @param MatlabData Input for Matlab data file. Defaults to interactive file choice
 #' @param progBar Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar
@@ -2783,7 +2940,7 @@ neuralstat <- function (filarray, statistic = c("CC","ASPL","Q","S","transitivit
     {return(lstat)}
 }
 #----
-#' Group-wise Neural Network Statistics Tests
+#' Neural Network Group Statistics Tests
 #' @description Statistical test for group differences for global or local network characteristics of neural network data (\strong{only t-tests})
 #' @param groups Participant list divided into the desired groups (\strong{see examples})
 #' @param nstat A statistic vector (whole-network) or matrix (ROI) from the \emph{neuralstat} function
@@ -2862,7 +3019,9 @@ neuralgrouptest <- function (groups, nstat, correction = c("bonferroni","FDR"))
         {sig$`corrected p`[which(sig$`corrected p`==0)]<-"ns"
         return(sig)}else{sig$`corrected p`[which(sig$`corrected p`==1)]<-"sig"
         return(sig)}
-    }
+        }
+    
+    
     #else if(max(groups)>2)
     #{
     #    if(ncol(nstat)>1){
@@ -3076,13 +3235,15 @@ neuralcorrtest <- function (bstat, nstat)
 }
 #----
 #' Connectome-based Predictive Modeling--Internal Validation
-#' @description Applies the Connectome-based Predictive Modeling approach to neural data. \strong{Please cite Finn et al., 2015; Rosenberg et al., 2016; Shen et al., 2017}
+#' @description Applies the Connectome-based Predictive Modeling approach to neural data. This method predicts a behavioral statistic using neural connectivity from the sample. \strong{Please cite Finn et al., 2015; Rosenberg et al., 2016; Shen et al., 2017}
 #' @param neuralarray Array from \emph{convertConnBrainMat} function
 #' @param bstat Behavioral statistic for each participant with neural data (a vector)
 #' @param thresh Sets an \strong{alpha} threshold for edge weights to be retained. Defaults to .01
 #' @param method Use "mean" or "sum" of edge strengths in the positive and negative connectomes. Defaults to "mean"
-#' @param progBar Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar
-#' @return Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), mean absoluate error (mae)). The list also contains the positive (posMask) and negative (negMask) masks used
+#' @param model Regression model to use for fitting the data. Defaults to "linear"
+#' @param corr Correlation method for assessing the relatonship between the observed and predicted scores. Defaults to "pearson"
+#' @param progBar Should progress bar be displayed? Defaults to TRUE. Set to FALSE for no progress bar
+#' @return Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), mean absolute error (mae), root mean square error (rmse)). The list also contains the positive (posMask) and negative (negMask) masks used
 #' @references 
 #' Finn, E. S., Shen, X., Scheinost, D., Rosenberg, M. D., Huang, J., Chun, M. M., Papademetris, X., Constable, R. T. (2015).
 #' Functional connectome fingerprinting: Identifying individuals using patterns of brain connectivity.
@@ -3107,13 +3268,26 @@ neuralcorrtest <- function (bstat, nstat)
 #' @importFrom graphics par
 #' @export
 #CPM Behavioral Prediction----
-cpmPredict <- function (neuralarray, bstat, thresh = .01, method = c("mean", "sum"), progBar = TRUE)
+cpmIV <- function (neuralarray, bstat, thresh = .01, method = c("mean", "sum"),
+                    model = c("linear","quadratic","cubic"), corr = c("pearson","spearman"), progBar = TRUE)
 {
     if(missing(method))
     {method<-"mean"
     }else{method<-match.arg(method)}
     
+    if(missing(model))
+    {model<-"linear"
+    }else{model<-match.arg(model)}
+    
+    if(missing(corr))
+    {corr<-"pearson"
+    }else{corr<-match.arg(corr)}
+    
+    if(is.list(neuralarray))
+    {neuralarray<-neuralarray[[1]]}
+    
     bstat<-scale(bstat)
+    bstat<-as.vector(bstat)
     
     #number of subjects
     no_sub<-length(neuralarray)/nrow(neuralarray)/ncol(neuralarray)
@@ -3145,8 +3319,11 @@ cpmPredict <- function (neuralarray, bstat, thresh = .01, method = c("mean", "su
         train_behav<-train_behav[-leftout]
         
         #correlate edges with behavior
-        r_mat<-matrix(suppressWarnings(cor(t(train_vcts),train_behav)),nrow=no_node,ncol=no_node)
-        
+        see<-try(r_mat<-matrix(suppressWarnings(cor(train_vcts,train_behav)),nrow=no_node,ncol=no_node),silent=TRUE)
+        if(!is.matrix(see))
+        {if(see[1]=="Error in cor(train_vcts, train_behav) : incompatible dimensions\n")
+        {r_mat<-matrix(suppressWarnings(cor(t(train_vcts),train_behav)),nrow=no_node,ncol=no_node)}
+        }else{r_mat<-matrix(suppressWarnings(cor(train_vcts,train_behav)),nrow=no_node,ncol=no_node)}
         #critical r-value
         critical.r <- function(iter, a)
         {
@@ -3175,8 +3352,8 @@ cpmPredict <- function (neuralarray, bstat, thresh = .01, method = c("mean", "su
         {
             if(method=="sum")
             {
-            train_sumpos[ss]<-sum(train_mats[,,ss]*pos_mask)/2
-            train_sumneg[ss]<-sum(train_mats[,,ss]*neg_mask)/2
+                train_sumpos[ss]<-sum(train_mats[,,ss]*pos_mask)/2
+                train_sumneg[ss]<-sum(train_mats[,,ss]*neg_mask)/2
             }else if(method=="mean")
             {
                 train_sumpos[ss]<-mean(train_mats[,,ss]*pos_mask)/2
@@ -3185,8 +3362,28 @@ cpmPredict <- function (neuralarray, bstat, thresh = .01, method = c("mean", "su
         }
         
         #build model on TRAIN subs
-        fit_pos<-coef(lm(train_behav~train_sumpos))
-        fit_neg<-coef(lm(train_behav~train_sumneg))
+        if(model=="linear")
+        {
+            fit_pos<-coef(lm(train_behav~train_sumpos))
+            fit_neg<-coef(lm(train_behav~train_sumneg))
+        }else if(model=="quadratic")
+        {
+            quad_pos<-train_sumpos^2
+            quad_neg<-train_sumneg^2
+            
+            fit_pos<-coef(lm(train_behav~train_sumpos+quad_pos))
+            fit_neg<-coef(lm(train_behav~train_sumneg+quad_neg))
+        }else if(model=="cubic")
+        {
+            cube_pos<-train_sumpos^3
+            cube_neg<-train_sumneg^3
+            
+            quad_pos<-train_sumpos^2
+            quad_neg<-train_sumneg^2
+            
+            fit_pos<-coef(lm(train_behav~train_sumpos+quad_pos+cube_pos))
+            fit_neg<-coef(lm(train_behav~train_sumneg+quad_neg+cube_pos))
+        }
         
         #run model on TEST sub
         test_mat<-neuralarray[,,leftout]
@@ -3200,8 +3397,28 @@ cpmPredict <- function (neuralarray, bstat, thresh = .01, method = c("mean", "su
             test_sumneg<-mean(test_mat*neg_mask)/2
         }
         
-        behav_pred_pos[leftout]<-fit_pos[2]*test_sumpos+fit_pos[1]
-        behav_pred_neg[leftout]<-fit_neg[2]*test_sumneg+fit_neg[1]
+        if(model=="linear")
+        {
+            behav_pred_pos[leftout]<-fit_pos[2]*test_sumpos+fit_pos[1]
+            behav_pred_neg[leftout]<-fit_neg[2]*test_sumneg+fit_neg[1]
+        }else if(model=="quadratic")
+        {
+            quad_post<-test_sumpos^2
+            quad_negt<-test_sumneg^2
+            
+            behav_pred_pos[leftout]<-fit_pos[3]*quad_post+fit_pos[2]*test_sumpos+fit_pos[1]
+            behav_pred_neg[leftout]<-fit_neg[3]*quad_negt+fit_neg[2]*test_sumneg+fit_neg[1]
+        }else if(model=="cubic")
+        {
+            cube_post<-test_sumpos^3
+            cube_negt<-test_sumneg^3
+            
+            quad_post<-test_sumpos^2
+            quad_negt<-test_sumneg^2
+            
+            behav_pred_pos[leftout]<-fit_pos[4]*cube_post+fit_pos[3]*quad_post+fit_pos[2]*test_sumpos+fit_pos[1]
+            behav_pred_neg[leftout]<-fit_neg[4]*cube_negt+fit_neg[3]*quad_negt+fit_neg[2]*test_sumneg+fit_neg[1]
+        }
         
         if(progBar)
         {setTxtProgressBar(pb, leftout)}
@@ -3209,34 +3426,36 @@ cpmPredict <- function (neuralarray, bstat, thresh = .01, method = c("mean", "su
     if(progBar)
     {close(pb)}
     
-    R_pos<-cor(behav_pred_pos,bstat)
-    P_pos<-cor.test(behav_pred_pos,bstat)$p.value
-    R_neg<-cor(behav_pred_neg,bstat)
-    P_neg<-cor.test(behav_pred_neg,bstat)$p.value
+    R_pos<-cor(behav_pred_pos,bstat,method=corr)
+    P_pos<-cor.test(behav_pred_pos,bstat,method=corr)$p.value
+    R_neg<-cor(behav_pred_neg,bstat,method=corr)
+    P_neg<-cor.test(behav_pred_neg,bstat,method=corr)$p.value
     P_pos<-ifelse(round(P_pos,3)!=0,round(P_pos,3),noquote("<.001"))
     P_neg<-ifelse(round(P_neg,3)!=0,round(P_neg,3),noquote("<.001"))
     
     #plot positive
     par(mar=c(5,5,4,2))
+    dev.new()
     plot(bstat,behav_pred_pos,xlab="Observed Score\n(Z-score)",ylab="Predicted Score\n(Z-score)",
          main="Positive Prediction",xlim=c(-3,3),ylim=c(-3,3),pch=16,col="darkorange2")
     abline(lm(behav_pred_pos~bstat))
     if(R_pos>=0)
     {text(x=-2,y=2,
-          labels = paste("r = ",round(R_pos,3),"\np = ",P_pos),cex=.75)
+          labels = paste("r = ",round(R_pos,3),"\np = ",P_pos))
     }else if(R_pos<0)
     {text(x=-2,y=-2,
-          labels = paste("r = ",round(R_pos,3),"\np = ",P_pos),cex=.75)}
+          labels = paste("r = ",round(R_pos,3),"\np = ",P_pos))}
     #plot negative
+    dev.new()
     plot(bstat,behav_pred_neg,xlab="Observed Score\n(Z-score)",ylab="Predicted Score\n(Z-score)",
          main="Negative Prediction",xlim=c(-3,3),ylim=c(-3,3),pch=16,col="skyblue2")
     abline(lm(behav_pred_neg~bstat))
     if(R_neg>=0)
     {text(x=-2,y=2,
-          labels = paste("r = ",round(R_neg,3),"\np = ",P_neg),cex=.75)
+          labels = paste("r = ",round(R_neg,3),"\np = ",P_neg))
     }else if(R_neg<0)
     {text(x=-2,y=-2,
-          labels = paste("r = ",round(R_neg,3),"\np = ",P_neg),cex=.75)}
+          labels = paste("r = ",round(R_neg,3),"\np = ",P_neg))}
     
     bstat<-as.vector(bstat)
     behav_pred_pos<-as.vector(behav_pred_pos)
@@ -3326,25 +3545,221 @@ cpmPredict <- function (neuralarray, bstat, thresh = .01, method = c("mean", "su
         return(bf)
         
     }
-        
+    
     pos_BF<-corBF(length(bstat),R_pos)
     neg_BF<-corBF(length(bstat),R_neg)
     
-    results<-matrix(0,nrow=2,ncol=4)
+    for(i in 1:length(bstat))
+    {
+        pos_rmse<-sqrt(sum((behav_pred_pos[i]-bstat[i])^2)/length(bstat))
+        neg_rmse<-sqrt(sum((behav_pred_neg[i]-bstat[i])^2)/length(bstat))
+    }
+    
+    results<-matrix(0,nrow=2,ncol=5)
     
     results[1,1]<-round(R_pos,3)
     results[1,2]<-P_pos
     results[1,3]<-round(pos_BF,3)
     results[1,4]<-round(mae_pos,3)
+    results[1,5]<-round(pos_rmse,3)
     results[2,1]<-round(R_neg,3)
     results[2,2]<-P_neg
     results[2,3]<-round(neg_BF,3)
     results[2,4]<-round(mae_neg,3)
+    results[2,5]<-round(neg_rmse,3)
     
-    colnames(results)<-c("r","p-value","BF","mae")
+    colnames(results)<-c("r","p-value","BF","mae","rmse")
     row.names(results)<-c("positive","negative")
     
     return(list(results=results,posMask=pos_mask,negMask=neg_mask))
+}
+#----
+#' Connectome-based Predictive Modeling--Fingerprinting
+#' @description Applies the Connectome-based Predictive Modeling approach to neural data. This method identifies individuals based on their specific connectivity patterns. \strong{Please cite Finn et al., 2015; Rosenberg et al., 2016; Shen et al., 2017}
+#' @param session1 Array from \emph{convertConnBrainMat} function (first session)
+#' @param session2 Array from \emph{convertConnBrainMat} function (second session)
+#' @param progBar Should progress bar be displayed? Defaults to TRUE. Set to FALSE for no progress bar
+#' @return Returns a matrix containing the percentage and number of correctly identified subjects for sessions 1 and 2
+#' @references 
+#' Finn, E. S., Shen, X., Scheinost, D., Rosenberg, M. D., Huang, J., Chun, M. M., Papademetris, X., Constable, R. T. (2015).
+#' Functional connectome fingerprinting: Identifying individuals using patterns of brain connectivity.
+#' \emph{Nature Neuroscience}, \emph{18}(11), 1664-1671.
+#' 
+#' Rosenberg, M. D., Finn, E. S., Scheinost, D., Papademetris, X., Shen, X., Constable, R. T., Chun, M. M. (2016).
+#' A neuromarker of sustained attention from whole-brain functional connectivity.
+#' \emph{Nature Neuroscience}, \emph{19}(1), 165-171.
+#'
+#' Shen, X. Finn, E. S., Scheinost, D., Rosenberg, M. D., Chun, M. M., Papademetris, X., Constable, R. T. (2017).
+#' Using connectome-based predictive modeling to predict individual behavior from brain connectivity.
+#' \emph{Nature Protocols}, \emph{12}(3), 506-518.
+#' 
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#CPM Fingerprinting----
+cpmFP <- function (session1, session2, progBar = TRUE)
+{
+    count1<-0
+    count2<-0
+    
+    if(is.list(session1))
+    {session1<-session1[[1]]}
+    
+    if(is.list(session2))
+    {session2<-session2[[1]]}
+    
+    m<-nrow(session1)*ncol(session1)
+    n<-length(session1)/m
+    
+    no_sub<-n
+    
+    if(isSymmetric(session1[,,1]))
+    {sesh1<-matrix(as.vector(session1),nrow=m,ncol=n)}
+    if(isSymmetric(session2[,,1]))
+    {sesh2<-matrix(as.vector(session2),nrow=m,ncol=n)}
+    
+    tt_cor<-matrix(0,nrow=nrow(sesh1),ncol=1)
+    
+    if(progBar)
+    {pb <- txtProgressBar(max=no_sub, style = 3)}
+    
+    for(i in 1:no_sub)
+    {
+        #session 1    
+        tt_cor<-sesh2[,i]
+        
+        tt_to_all<-cor(tt_cor,sesh1)
+        
+        va_id<-which.max(tt_to_all)
+        
+        if(i == va_id)
+        {count1<-count1+1}
+        
+        #session 2
+        tt_cor<-sesh1[,i]
+        
+        tt_to_all<-cor(tt_cor,sesh2)
+        
+        va_id<-which.max(tt_to_all)
+        
+        if(i == va_id)
+        {count2<-count2+1}
+        
+        if(progBar)
+        {setTxtProgressBar(pb, i)}
+    }
+    
+    if(progBar)
+    {close(pb)}
+    
+    ident<-matrix(0,nrow=2,ncol=2)
+    
+    ident[1,1]<-round((count1/no_sub),3)
+    ident[1,2]<-round((count2/no_sub),3)
+    ident[2,1]<-round(count1,0)
+    ident[2,2]<-round(count2,0)
+    
+    row.names(ident)<-c("percentage identified","number identified")
+    colnames(ident)<-c("session 1","session 2")
+    
+    return(ident)
+}
+#----
+#' Connectome-based Predictive Modeling--Permutation
+#' @description Applies the Connectome-based Predictive Modeling approach to neural data. This method identifies individuals based on their specific connectivity patterns. \strong{Please cite Finn et al., 2015; Rosenberg et al., 2016; Shen et al., 2017}
+#' @param session1 Array from \emph{convertConnBrainMat} function (first session)
+#' @param session2 Array from \emph{convertConnBrainMat} function (second session)
+#' @param iter Number of iterations to perform. Defaults to 1,000
+#' @param progBar Should progress bar be displayed? Defaults to TRUE. Set to FALSE for no progress bar
+#' @return Returns a matrix containing the percentage and number of correctly identified subjects for sessions 1 and 2
+#' @references 
+#' Finn, E. S., Shen, X., Scheinost, D., Rosenberg, M. D., Huang, J., Chun, M. M., Papademetris, X., Constable, R. T. (2015).
+#' Functional connectome fingerprinting: Identifying individuals using patterns of brain connectivity.
+#' \emph{Nature Neuroscience}, \emph{18}(11), 1664-1671.
+#' 
+#' Rosenberg, M. D., Finn, E. S., Scheinost, D., Papademetris, X., Shen, X., Constable, R. T., Chun, M. M. (2016).
+#' A neuromarker of sustained attention from whole-brain functional connectivity.
+#' \emph{Nature Neuroscience}, \emph{19}(1), 165-171.
+#'
+#' Shen, X. Finn, E. S., Scheinost, D., Rosenberg, M. D., Chun, M. M., Papademetris, X., Constable, R. T. (2017).
+#' Using connectome-based predictive modeling to predict individual behavior from brain connectivity.
+#' \emph{Nature Protocols}, \emph{12}(3), 506-518.
+#' 
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+cpmPerm <- function (session1, session2, iter = 1000, progBar = TRUE)
+{
+    rate<-matrix(nrow=iter,ncol=4)
+    
+    if(is.list(session1))
+    {session1<-session1[[1]]}
+    
+    if(is.list(session2))
+    {session2<-session2[[1]]}
+    
+    no_sub<-length(session1)/nrow(session1)/ncol(session1)
+    
+    if(isSymmetric(session1[,,1]))
+    {sesh1<-matrix(as.vector(session1),nrow=m,ncol=n)}
+    if(isSymmetric(session2[,,1]))
+    {sesh2<-matrix(as.vector(session2),nrow=m,ncol=n)}
+    
+    if(progBar)
+    {pb <- txtProgressBar(max=iter*no_sub, style = 3)}
+    
+    count3<-0
+    
+    for(j in 1:iter)
+    {
+        sub_order<-sample(no_sub)
+        
+        all_se1<-sesh1
+        all_se2<-sesh2[,sub_order]
+        
+        count1<-0
+        count2<-0
+        
+        for(i in 1:no_sub)
+        {
+            #session 1
+            tt_cor<-sesh2[,i]
+            
+            tt_to_all<-cor(tt_cor,all_se1)
+            
+            va<-max(tt_to_all)
+            va_id<-which.max(tt_to_all)
+            
+            if(i == va_id)
+            {count1<-count1+1}
+            
+            #session 2
+            tt_cor<-sesh1[,i]
+            
+            tt_to_all<-cor(tt_cor,sesh2)
+            
+            va<-max(tt_to_all)
+            va_id<-which.max(tt_to_all)
+            
+            if(i == va_id)
+            {count2<-count2+1}
+            
+            count3<-count3+1
+            
+            if(progBar)
+            {setTxtProgressBar(pb, count3)}
+        }
+        
+        rate[j,1]<-round(count1/no_sub,3)
+        rate[j,2]<-round(count1,0)
+        rate[j,3]<-round(count2/no_sub,3)
+        rate[j,4]<-round(count2,0)
+    }
+    
+    if(progBar)
+    {close(pb)}
+    
+    colnames(rate)<-c("session 1 percent","session 1 count","session 2 percent","session 2 count")
+    
+    return(rate)
 }
 #----
 #HEXACO Openness data----

@@ -2,7 +2,7 @@
 % Please edit documentation in R/NetworkToolbox--master.R
 \name{neuralgrouptest}
 \alias{neuralgrouptest}
-\title{Group-wise Neural Network Statistics Tests}
+\title{Neural Network Group Statistics Tests}
 \usage{
 neuralgrouptest(groups, nstat, correction = c("bonferroni", "FDR"))
 }

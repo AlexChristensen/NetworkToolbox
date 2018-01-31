@@ -9,7 +9,7 @@ bootgen(data, method = c("TMFG", "LoGo", "MaST", "ECOplusMaST", "ECO",
   depend = FALSE, ...)
 }
 \arguments{
-\item{data}{A set of data}
+\item{data}{A set of data (missing data will be removed using the function \emph{na.omit})}
 
 \item{method}{A network filtering method. Defaults to "TMFG"}
 

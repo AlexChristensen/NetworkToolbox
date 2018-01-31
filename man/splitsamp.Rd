@@ -7,7 +7,7 @@
 splitsamp(data, samples = 10, splits = 2)
 }
 \arguments{
-\item{data}{Must be a dataset}
+\item{data}{Must be a dataset (missing data will be removed using the function \emph{na.omit})}
 
 \item{samples}{Number of samples to produce (Defaults to 10)}
 

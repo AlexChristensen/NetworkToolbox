@@ -8,7 +8,7 @@ depend(data, binary = FALSE, index = FALSE, fisher = FALSE,
   progBar = TRUE)
 }
 \arguments{
-\item{data}{A set of data}
+\item{data}{A set of data (missing data will be removed using the function \emph{na.omit})}
 
 \item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 

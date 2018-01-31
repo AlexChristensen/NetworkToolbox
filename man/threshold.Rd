@@ -8,7 +8,7 @@ threshold(data, binary = FALSE, thresh = c("alpha", "bonferroni", "FDR",
   "proportional"), a = 0.05)
 }
 \arguments{
-\item{data}{Can be a dataset or a correlation matrix}
+\item{data}{Can be a dataset or a correlation matrix (missing data will be removed using the function \emph{na.omit})}
 
 \item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 

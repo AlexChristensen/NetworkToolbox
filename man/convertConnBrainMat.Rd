@@ -2,7 +2,7 @@
 % Please edit documentation in R/NetworkToolbox--master.R
 \name{convertConnBrainMat}
 \alias{convertConnBrainMat}
-\title{Import CONN Toolbox Brain Matrices to R format and convert to correlations}
+\title{Import CONN Toolbox Brain Matrices to R format}
 \usage{
 convertConnBrainMat(MatlabData, progBar = TRUE)
 }
