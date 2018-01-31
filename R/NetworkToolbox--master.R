@@ -3474,7 +3474,59 @@ cpmIV <- function (neuralarray, bstat, thresh = .01, method = c("mean", "sum"),
                 6,7,7,7,6,6,4,5,1,4,4,3,3,4,3,4,3,5,4,4,4,
                 4,4,4,5,4,4,4,3,8,7,2,4,4,4,2,2,4,4,4,4,4,
                 4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4)
+        
+        #lobes
+        rtlobenets<-c(rep("PFC",22),rep("Mot",11),rep("Ins",4),rep("Par",13),
+                    rep("Tem",21),rep("Occ",11),rep("Lim",17),rep("Cer",20),
+                    rep("Sub",9),rep("Bsm",5))
+        
+        ltlobenets<-c(rep("PFC",24),rep("Mot",10),rep("Ins",3),rep("Par",14),
+                     rep("Tem",18),rep("Occ",14),rep("Lim",19),rep("Cer",21),
+                     rep("Sub",8),rep("Bsm",4))
+        
+        lobenets<-c(rtlobenets,ltlobenets)
+        
+        pos_lobe<-pos_mask
+        neg_lobe<-neg_mask
+        colnames(pos_lobe)<-lobenets
+        colnames(neg_lobe)<-lobenets
+        
+        ten<-c("PFC","Mot","Ins","Par","Tem","Occ","Lim","Cer","Sub","Bsm")
+        
+        colnames
+        
+        colnames(pos_lobe)<-lobenets
+        colnames(neg_lobe)<-lobenets
+        
+        poslobemat<-matrix(0,nrow=10,ncol=10)
+        neglobemat<-matrix(0,nrow=10,ncol=10)
+        
+        for(i in 1:10)
+            for(j in 1:10)
+            {
+                poslobemat[i,j]<-sum(pos_lobe[which(colnames(pos_lobe)==ten[i]),which(colnames(pos_lobe)==ten[j])])
+                neglobemat[i,j]<-sum(neg_lobe[which(colnames(neg_lobe)==ten[i]),which(colnames(neg_lobe)==ten[j])])
+            }
+        
+        ldiffmat<-(poslobemat-neglobemat)
+        
+        colnames(ldiffmat)<-c("PFC","Mot","Ins","Par","Tem","Occ","Lim","Cer","Sub","Bsm")
+        row.names(ldiffmat)<-c("PFC","Mot","Ins","Par","Tem","Occ","Lim","Cer","Sub","Bsm")
+        
+        ldiffmat[upper.tri(ldiffmat)]<-0
+        
+        llim<-ifelse(abs(min(ldiffmat))>max(ldiffmat),abs(min(ldiffmat)),max(ldiffmat))
+        
+        colo<-colorRampPalette(c("skyblue2","white","darkorange2"))
+        
+        dev.new()
+        corrplot::corrplot(ldiffmat,is.corr=FALSE,method="color",
+                           tl.col="black",col = colo(100),na.label="square",
+                           na.label.col = "white",addgrid.col="black",
+                           title="Difference in the Number of Edges\nin Macroscale Regions",
+                           mar=c(0,0,4,0),cl.length=2,cl.pos="b",cl.lim=c(-llim,llim))
     
+        #canonical networks
         pos_nets<-pos_mask
         neg_nets<-neg_mask
         
@@ -3488,21 +3540,23 @@ cpmIV <- function (neuralarray, bstat, thresh = .01, method = c("mean", "sum"),
         for(j in 1:max(shennets))
             {
                 posnetmat[i,j]<-sum(pos_nets[which(colnames(pos_nets)==i),which(colnames(pos_nets)==j)])
-                negnetmat[i,j]<-sum(neg_nets[which(colnames(pos_nets)==i),which(colnames(neg_nets)==j)])
+                negnetmat[i,j]<-sum(neg_nets[which(colnames(neg_nets)==i),which(colnames(neg_nets)==j)])
             }
     
         diffmat<-(posnetmat-negnetmat)
     
-        diffmat[upper.tri(diffmat)]<-NA
+        diffmat[upper.tri(diffmat)]<-0
+        
+        dlim<-ifelse(abs(min(diffmat))>max(diffmat),abs(min(diffmat)),max(diffmat))
     
         colo<-colorRampPalette(c("skyblue2","white","darkorange2"))
         
         dev.new()
-        corrplot::corrplot(diffmat,is.corr=FALSE,method="color",addCoef.col="black",
+        corrplot::corrplot(diffmat,is.corr=FALSE,method="color",
                        tl.col="black",col = colo(100),na.label="square",
                        na.label.col = "white",addgrid.col="black",
                        title="Difference in the Number of Edges\nin the Canonical Networks",
-                       mar=c(0,0,4,0),cl.length=5,cl.pos="b",number.cex=.75)
+                       mar=c(0,0,4,0),cl.length=2,cl.pos="b",cl.lim=c(-dlim,dlim))
     
     }
     
