@@ -3524,7 +3524,7 @@ cpmIV <- function (neuralarray, bstat, thresh = .01, method = c("mean", "sum"),
                            tl.col="black",col = colo(100),na.label="square",
                            na.label.col = "white",addgrid.col="black",
                            title="Difference in the Number of Edges\nin Macroscale Regions",
-                           mar=c(0,0,4,0),cl.length=2,cl.pos="b",cl.lim=c(-llim,llim))
+                           mar=c(0,0,4,0),cl.length=3,cl.pos="b",cl.lim=c(-llim,llim))
     
         #canonical networks
         pos_nets<-pos_mask
@@ -3556,7 +3556,7 @@ cpmIV <- function (neuralarray, bstat, thresh = .01, method = c("mean", "sum"),
                        tl.col="black",col = colo(100),na.label="square",
                        na.label.col = "white",addgrid.col="black",
                        title="Difference in the Number of Edges\nin the Canonical Networks",
-                       mar=c(0,0,4,0),cl.length=2,cl.pos="b",cl.lim=c(-dlim,dlim))
+                       mar=c(0,0,4,0),cl.length=3,cl.pos="b",cl.lim=c(-dlim,dlim))
     
     }
     
