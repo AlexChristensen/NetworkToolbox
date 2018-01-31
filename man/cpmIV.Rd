@@ -6,7 +6,7 @@
 \usage{
 cpmIV(neuralarray, bstat, thresh = 0.01, method = c("mean", "sum"),
   model = c("linear", "quadratic", "cubic"), corr = c("pearson",
-  "spearman"), progBar = TRUE)
+  "spearman"), shen = FALSE, progBar = TRUE)
 }
 \arguments{
 \item{neuralarray}{Array from \emph{convertConnBrainMat} function}
@@ -20,6 +20,8 @@ cpmIV(neuralarray, bstat, thresh = 0.01, method = c("mean", "sum"),
 \item{model}{Regression model to use for fitting the data. Defaults to "linear"}
 
 \item{corr}{Correlation method for assessing the relatonship between the observed and predicted scores. Defaults to "pearson"}
+
+\item{shen}{Are ROIs from Shen et al. 2013 atlas? Defaults to FALSE. Set to TRUE for canonical networks plot}
 
 \item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set to FALSE for no progress bar}
 }

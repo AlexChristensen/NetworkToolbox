@@ -3242,6 +3242,7 @@ neuralcorrtest <- function (bstat, nstat)
 #' @param method Use "mean" or "sum" of edge strengths in the positive and negative connectomes. Defaults to "mean"
 #' @param model Regression model to use for fitting the data. Defaults to "linear"
 #' @param corr Correlation method for assessing the relatonship between the observed and predicted scores. Defaults to "pearson"
+#' @param shen Are ROIs from Shen et al. 2013 atlas? Defaults to FALSE. Set to TRUE for canonical networks plot
 #' @param progBar Should progress bar be displayed? Defaults to TRUE. Set to FALSE for no progress bar
 #' @return Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), mean absolute error (mae), root mean square error (rmse)). The list also contains the positive (posMask) and negative (negMask) masks used
 #' @references 
@@ -3269,7 +3270,8 @@ neuralcorrtest <- function (bstat, nstat)
 #' @export
 #CPM Behavioral Prediction----
 cpmIV <- function (neuralarray, bstat, thresh = .01, method = c("mean", "sum"),
-                    model = c("linear","quadratic","cubic"), corr = c("pearson","spearman"), progBar = TRUE)
+                    model = c("linear","quadratic","cubic"),
+                   corr = c("pearson","spearman"), shen = FALSE, progBar = TRUE)
 {
     if(missing(method))
     {method<-"mean"
@@ -3456,6 +3458,53 @@ cpmIV <- function (neuralarray, bstat, thresh = .01, method = c("mean", "sum"),
     }else if(R_neg<0)
     {text(x=-2,y=-2,
           labels = paste("r = ",round(R_neg,3),"\np = ",P_neg))}
+    
+    if(shen==TRUE)
+    {
+        shennets<-c(2,4,3,2,3,3,2,2,2,1,4,1,3,2,4,1,2,4,2,4,2,
+                2,5,5,5,5,5,4,4,2,2,4,5,5,5,4,5,5,5,5,8,6,
+                8,4,5,5,2,2,3,3,5,1,1,1,2,1,1,5,8,5,5,5,5,
+                1,1,8,8,6,8,2,8,6,8,8,6,7,6,7,6,6,7,6,4,5,
+                3,3,6,4,5,3,4,5,4,4,4,3,5,6,4,7,4,7,4,4,4,
+                4,4,4,5,4,2,2,4,4,3,2,4,4,4,4,4,4,4,4,4,4,
+                4,4,4,4,4,4,4,3,4,4,1,3,2,1,3,2,2,4,1,4,2,
+                1,1,1,1,4,1,2,4,1,2,5,5,5,5,1,5,2,1,5,5,5,
+                4,5,5,5,5,5,8,6,8,4,5,5,5,2,1,2,1,1,1,5,5,
+                1,5,1,2,1,5,2,5,6,2,8,8,5,3,8,6,8,6,6,8,8,
+                6,7,7,7,6,6,4,5,1,4,4,3,3,4,3,4,3,5,4,4,4,
+                4,4,4,5,4,4,4,3,8,7,2,4,4,4,2,2,4,4,4,4,4,
+                4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4)
+    
+        pos_nets<-pos_mask
+        neg_nets<-neg_mask
+        
+        colnames(pos_nets)<-shennets
+        colnames(neg_nets)<-shennets
+    
+        posnetmat<-matrix(0,nrow=max(shennets),ncol=max(shennets))
+        negnetmat<-matrix(0,nrow=max(shennets),ncol=max(shennets))
+    
+        for(i in 1:max(shennets))
+        for(j in 1:max(shennets))
+            {
+                posnetmat[i,j]<-sum(pos_nets[which(colnames(pos_nets)==i),which(colnames(pos_nets)==j)])
+                negnetmat[i,j]<-sum(neg_nets[which(colnames(pos_nets)==i),which(colnames(neg_nets)==j)])
+            }
+    
+        diffmat<-(posnetmat-negnetmat)
+    
+        diffmat[upper.tri(diffmat)]<-NA
+    
+        colo<-colorRampPalette(c("skyblue2","white","darkorange2"))
+        
+        dev.new()
+        corrplot::corrplot(diffmat,is.corr=FALSE,method="color",addCoef.col="black",
+                       tl.col="black",col = colo(100),na.label="square",
+                       na.label.col = "white",addgrid.col="black",
+                       title="Difference in the Number of Edges\nin the Canonical Networks",
+                       mar=c(0,0,4,0),cl.length=5,cl.pos="b",number.cex=.75)
+    
+    }
     
     bstat<-as.vector(bstat)
     behav_pred_pos<-as.vector(behav_pred_pos)
@@ -3686,6 +3735,7 @@ cpmFP <- function (session1, session2, progBar = TRUE)
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
+#CPM Permutation Testing----
 cpmPerm <- function (session1, session2, iter = 1000, progBar = TRUE)
 {
     rate<-matrix(nrow=iter,ncol=4)
