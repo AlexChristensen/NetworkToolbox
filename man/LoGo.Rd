@@ -4,14 +4,10 @@
 \alias{LoGo}
 \title{Local/Global Sparse Inverse Covariance Matrix}
 \usage{
-LoGo(data, separators = TMFG(data)$separators, cliques = TMFG(data)$cliques)
+LoGo(data)
 }
 \arguments{
-\item{data}{Must be a dataset (missing data will be removed using the function \emph{na.omit})}
-
-\item{separators}{Defaults to separators obtained from the TMFG function. Requires a list of separators}
-
-\item{cliques}{Defaults to cliques obtained from the TMFG function. Requires a list of cliques}
+\item{data}{Must be a dataset (missing data is handled using the Full Information Maximum Likelihood function \emph{corFiml} in the \emph{psych} package)}
 }
 \value{
 Returns a sparse TMFG-filtered inverse covariance matrix

@@ -7,7 +7,7 @@
 ECO(data, weighted = TRUE, binary = FALSE, directed = FALSE)
 }
 \arguments{
-\item{data}{Can be a dataset or a correlation matrix (missing data will be removed using the function \emph{na.omit})}
+\item{data}{Can be a dataset or a correlation matrix (missing data is handled using the Full Information Maximum Likelihood function \emph{corFiml} in the \emph{psych} package)}
 
 \item{weighted}{Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network}
 

@@ -9,7 +9,7 @@ bootgen(data, method = c("TMFG", "LoGo", "MaST", "ECOplusMaST", "ECO",
   depend = FALSE, ...)
 }
 \arguments{
-\item{data}{A set of data (missing data will be removed using the function \emph{na.omit})}
+\item{data}{A set of data (missing data is handled using the Full Information Maximum Likelihood function \emph{corFiml} in the \emph{psych} package)}
 
 \item{method}{A network filtering method. Defaults to "TMFG"}
 
@@ -54,9 +54,17 @@ Tumminello, M., Coronnello, C., Lillo, F., Micciche, S., & Mantegna, R. N. (2007
 Spanning trees and bootstrap reliability estimation in correlation-based networks.
 \emph{International Journal of Bifurcation and Chaos}, \emph{17}(7), 2319-2329.
 
+Wagenmakers, E. J., Verhagen, J., & Ly, A. (2016).
+How to quantify the evidence for the absence of a correlation.
+\emph{Behavior Research Methods}, \emph{48}(2), 413-426.
+
 Wei, T. & Simko, V.(2017).
 R package "corrplot": Visualization of a correlation matrix (Version 0.84).
 Available from \url{https://github.com/taiyun/corrplot}
+
+Wetzels, R., & Wagenmakers, E. J. (2012).
+A default Bayesian hypothesis test for correlations and partial correlations.
+\emph{Psychonomic Bulletin & Review}, \emph{19}(6), 1057-1064.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

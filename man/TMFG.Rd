@@ -7,7 +7,7 @@
 TMFG(data, binary = FALSE, weighted = TRUE, depend = FALSE)
 }
 \arguments{
-\item{data}{Can be a dataset or a correlation matrix (missing data will be removed using the function \emph{na.omit})}
+\item{data}{Can be a dataset or a correlation matrix (missing data is handled using the Full Information Maximum Likelihood function \emph{corFiml} in the \emph{psych} package)}
 
 \item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 
