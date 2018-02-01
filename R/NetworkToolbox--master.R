@@ -26,7 +26,7 @@
 TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
 {
     if(any(is.na(data)))
-    {cormat<-psych::corFiml(data)$cor
+    {cormat<-psych::corFiml(data)
     }else if(nrow(data)==ncol(data)){cormat<-data
     }else if(binary){cormat<-psych::tetrachoric(data)$rho
     }else{cormat<-cor(data)}
@@ -197,7 +197,7 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
 LoGo <- function (data)
 {
     if(any(is.na(data)))
-    {cormat<-psych::corFiml(data)$cor
+    {cormat<-psych::corFiml(data)
     }else{cormat<-cor(data)}
     
     if(any(is.na(data)))
@@ -251,7 +251,7 @@ MaST <- function (data, binary = FALSE, weighted = TRUE, depend = FALSE)
 {
     
     if(any(is.na(data)))
-    {cormat<-psych::corFiml(data)$cor
+    {cormat<-psych::corFiml(data)
     }else if(nrow(data)==ncol(data)){cormat<-data
     }else if(binary){cormat<-psych::tetrachoric(data)$rho
     }else{cormat<-cor(data)}
@@ -389,7 +389,7 @@ return(x)
 ECO <- function (data, weighted = TRUE, binary = FALSE, directed = FALSE)
 {
     if(any(is.na(data)))
-    {cormat<-psych::corFiml(data)$cor
+    {cormat<-psych::corFiml(data)
     }else if(nrow(data)==ncol(data)){cormat<-data
     }else if(binary){cormat<-psych::tetrachoric(data)$rho
     }else{cormat<-cor(data)}
@@ -463,7 +463,7 @@ ECO <- function (data, weighted = TRUE, binary = FALSE, directed = FALSE)
 ECOplusMaST <- function (data, weighted = TRUE, binary = FALSE)
 {
     if(any(is.na(data)))
-    {cormat<-psych::corFiml(data)$cor
+    {cormat<-psych::corFiml(data)
     }else if(nrow(data)==ncol(data)){cormat<-data
     }else if(binary){cormat<-psych::tetrachoric(data)$rho
     }else{cormat<-cor(data)}
@@ -527,7 +527,7 @@ ECOplusMaST <- function (data, weighted = TRUE, binary = FALSE)
 threshold <- function (data, binary = FALSE, thresh = c("alpha","bonferroni","FDR","proportional"), a = .05)
 {
     if(any(is.na(data)))
-    {cormat<-psych::corFiml(data)$cor
+    {cormat<-psych::corFiml(data)
     }else if(nrow(data)==ncol(data)){cormat<-data
     }else if(binary){cormat<-psych::tetrachoric(data)$rho
     }else{cormat<-cor(data)}
@@ -1714,7 +1714,7 @@ bootgen <- function (data, method = c("TMFG","LoGo","MaST","ECOplusMaST","ECO","
     }else{method<-match.arg(method)}
     
     if(any(is.na(data)))
-    {cormat<-psych::corFiml(data)$cor
+    {cormat<-psych::corFiml(data)
     }else if(nrow(data)==ncol(data)){cormat<-data
     }else if(binary){cormat<-psych::tetrachoric(data)$rho
     }else{cormat<-cor(data)}
@@ -1741,10 +1741,10 @@ bootgen <- function (data, method = c("TMFG","LoGo","MaST","ECOplusMaST","ECO","
         mat<-data[sample(1:n,replace=TRUE),]
         
         if(any(is.na(data)))
-        {cormat<-psych::corFiml(data)$cor
-        }else if(nrow(data)==ncol(data)){cormat<-data
-        }else if(binary){cormat<-psych::tetrachoric(data)$rho
-        }else{cormat<-cor(data)}
+        {cormat<-psych::corFiml(mat)
+        }else if(nrow(mat)==ncol(mat)){cormat<-mat
+        }else if(binary){cormat<-psych::tetrachoric(mat)$rho
+        }else{cormat<-cor(mat)}
         
         if(!depend){
         if(method=="TMFG")
@@ -2077,7 +2077,7 @@ commboot <- function (data, binary = FALSE, n = nrow(data), iter = 100, filter =
     }else{method<-match.arg(method)}
     
     if(any(is.na(data)))
-    {cormat<-psych::corFiml(data)$cor
+    {cormat<-psych::corFiml(data)
     }else if(nrow(data)==ncol(data)){cormat<-data
     }else if(binary){cormat<-psych::tetrachoric(data)$rho
     }else{cormat<-cor(data)}
@@ -2153,7 +2153,7 @@ commboot <- function (data, binary = FALSE, n = nrow(data), iter = 100, filter =
 depend <- function (data, binary = FALSE, index = FALSE, fisher = FALSE, progBar = TRUE)
 {
     if(any(is.na(data)))
-    {cormat<-psych::corFiml(data)$cor
+    {cormat<-psych::corFiml(data)
     }else if(nrow(data)==ncol(data)){cormat<-data
     }else if(binary){cormat<-psych::tetrachoric(data)$rho
     }else{cormat<-cor(data)}
@@ -2544,7 +2544,12 @@ kld <- function (base, test, basedata, testdata, corr = TRUE)
 convertConnBrainMat <- function (MatlabData, progBar = TRUE)
 {
     if(missing(MatlabData))
-    {mat<-R.matlab::readMat(file.choose())}
+    {mat<-R.matlab::readMat(file.choose())
+    }else{mat<-R.matlab::readMat(MatlabData)}
+    
+    if(!is.list(mat))
+    {return(mat)
+    }else
     
     #read in matlab data
     n1<-nrow(mat$Z) #determine number of rows
@@ -2565,6 +2570,7 @@ convertConnBrainMat <- function (MatlabData, progBar = TRUE)
     dat<-mat$Z
     if(progBar)
     {pb <- txtProgressBar(max=m, style = 3)}
+    
     for(i in 1:m) #populate array
     {
         dat[,,i]<-psych::fisherz2r(mat$Z[,,i])
