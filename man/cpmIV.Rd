@@ -4,7 +4,7 @@
 \alias{cpmIV}
 \title{Connectome-based Predictive Modeling--Internal Validation}
 \usage{
-cpmIV(neuralarray, bstat, thresh = 0.01, method = c("mean", "sum"),
+cpmIV(neuralarray, bstat, covar, thresh = 0.01, method = c("mean", "sum"),
   model = c("linear", "quadratic", "cubic"), corr = c("pearson",
   "spearman"), shen = FALSE, progBar = TRUE)
 }
@@ -13,11 +13,17 @@ cpmIV(neuralarray, bstat, thresh = 0.01, method = c("mean", "sum"),
 
 \item{bstat}{Behavioral statistic for each participant with neural data (a vector)}
 
-\item{thresh}{Sets an \strong{alpha} threshold for edge weights to be retained. Defaults to .01}
+\item{covar}{Covariates to be included in regression model.
+\strong{Must} be input as a list() (see examples)}
 
-\item{method}{Use "mean" or "sum" of edge strengths in the positive and negative connectomes. Defaults to "mean"}
+\item{thresh}{Sets an \strong{alpha} threshold for edge weights to be retained.
+Defaults to .01}
 
-\item{model}{Regression model to use for fitting the data. Defaults to "linear"}
+\item{method}{Use "mean" or "sum" of edge strengths in the positive and negative connectomes.
+Defaults to "mean"}
+
+\item{model}{Regression model to use for fitting the data.
+Defaults to "linear"}
 
 \item{corr}{Correlation method for assessing the relatonship between the observed and predicted scores. Defaults to "pearson"}
 
@@ -29,7 +35,9 @@ cpmIV(neuralarray, bstat, thresh = 0.01, method = c("mean", "sum"),
 Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), mean absolute error (mae), root mean square error (rmse)). The list also contains the positive (posMask) and negative (negMask) masks used
 }
 \description{
-Applies the Connectome-based Predictive Modeling approach to neural data. This method predicts a behavioral statistic using neural connectivity from the sample. \strong{Please cite Finn et al., 2015; Rosenberg et al., 2016; Shen et al., 2017}
+Applies the Connectome-based Predictive Modeling approach to neural data.
+This method predicts a behavioral statistic using neural connectivity from the sample.
+\strong{Please cite Finn et al., 2015; Rosenberg et al., 2016; Shen et al., 2017}
 }
 \references{
 Finn, E. S., Shen, X., Scheinost, D., Rosenberg, M. D., Huang, J., Chun, M. M., Papademetris, X., Constable, R. T. (2015).

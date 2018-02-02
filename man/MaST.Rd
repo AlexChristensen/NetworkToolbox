@@ -4,16 +4,29 @@
 \alias{MaST}
 \title{Maximum Spanning Tree}
 \usage{
-MaST(data, binary = FALSE, weighted = TRUE, depend = FALSE)
+MaST(data, binary = FALSE, weighted = TRUE, depend = FALSE,
+  na.data = c("listwise", "fiml"))
 }
 \arguments{
-\item{data}{Can be a dataset or a correlation matrix (missing data is handled using the Full Information Maximum Likelihood function \emph{corFiml} in the \emph{psych} package)}
+\item{data}{Can be a dataset or a correlation matrix}
 
-\item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
+\item{binary}{Is dataset dichotomous?
+Defaults to FALSE.
+Set to TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 
-\item{weighted}{Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network}
+\item{weighted}{Should network be weighted?
+Defaults to TRUE.
+Set to FALSE to produce an unweighted (binary) network}
 
-\item{depend}{Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a MaST-filtered dependency network}
+\item{depend}{Is network a dependency (or directed) network?
+Defaults to FALSE.
+Set TRUE to generate a MaST-filtered dependency network
+(output obtained from the \emph{depend} function)}
+
+\item{na.data}{How should missing data be handled?
+For "listwise" deletion the \emph{na.omit} fucntion is applied.
+Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
+Note that the Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 }
 \value{
 A sparse association matrix

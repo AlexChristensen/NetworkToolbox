@@ -7,11 +7,15 @@
 ECOplusMaST(data, weighted = TRUE, binary = FALSE)
 }
 \arguments{
-\item{data}{Can be a dataset or a correlation matrix (missing data is handled using the Full Information Maximum Likelihood function \emph{corFiml} in the \emph{psych} package)}
+\item{data}{Can be a dataset or a correlation matrix}
 
-\item{weighted}{Should network be weighted? Defaults to TRUE. Set FALSE to produce an unweighted (binary) network}
+\item{weighted}{Should network be weighted?
+Defaults to TRUE.
+Set to FALSE to produce an unweighted (binary) network}
 
-\item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
+\item{binary}{Is dataset dichotomous?
+Defaults to FALSE.
+Set to TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 }
 \value{
 A sparse association matrix

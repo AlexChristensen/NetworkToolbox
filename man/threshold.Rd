@@ -4,28 +4,63 @@
 \alias{threshold}
 \title{Threshold Filter}
 \usage{
-threshold(data, binary = FALSE, thresh = c("alpha", "bonferroni", "FDR",
-  "proportional"), a = 0.05)
+threshold(data, a, thresh = c("alpha", "adaptive", "bonferroni", "FDR",
+  "proportional"), n = nrow(data), binary = FALSE, na.data = c("listwise",
+  "fiml"))
 }
 \arguments{
-\item{data}{Can be a dataset or a correlation matrix (missing data is handled using the Full Information Maximum Likelihood function \emph{corFiml} in the \emph{psych} package)}
+\item{data}{Can be a dataset or a correlation matrix}
 
-\item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
+\item{a}{When thresh = "alpha", "adaptive", and "bonferroni" an alpha threshold is applied (defaults to \strong{.05}).
+For "adaptive", beta (Type II error) is set to \strong{a*5}.
+When thresh = "FDR", a q-value threshold is applied (defaults to \strong{.10}).
+When thresh = "proportional", a density threshold is applied (defaults to \strong{.15})}
 
-\item{thresh}{Sets threshold (defaults to "alpha"). Set to any value 0>\emph{r}>1 to retain values greater than set value, "alpha" to use an alpha value, "bonferroni" for the bonferroni correction, "FDR" for local false discovery rate, and "proportional" for a fixed number of edges}
+\item{thresh}{Sets threshold. Defaults to "alpha".
+Set to any value 0> \emph{r} >1 to retain values greater than set value,
+"adaptive" for an adapative alpha based on sample size (Perez & Pericchi, 2014),
+"bonferroni" for the bonferroni correction on alpha,
+"FDR" for local false discovery rate,
+and "proportional" for a fixed density of edges (keeps strongest correlations within density)}
 
-\item{a}{Defaults to .05. Applied when thresh = "alpha" and "bonferroni". Functions as a density threshold hold when thresh = "proportional"}
+\item{n}{Number of participants in sample.
+Defaults to the number of rows in the data.
+If input is a correlation matrix, then n \strong{must} be set}
+
+\item{binary}{Is dataset dichotomous?
+Defaults to FALSE.
+Set to TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
+
+\item{na.data}{How should missing data be handled?
+For "listwise" deletion the \emph{na.omit} fucntion is applied.
+Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package)}
 }
 \value{
 Returns a list containing a filtered adjacency matrix (A) and the critical r value (r.cv)
 }
 \description{
-Filters the network based on an r-value, alpha, boneferroni, or false-discovery rate (FDR)
+Filters the network based on an r-value, alpha, adaptive alpha (see Perez & Pericchi, 2014),
+bonferroni, false-discovery rate (FDR, \emph{fdrtool} package), or proportional density (fixed number of edges) value
 }
 \examples{
 threshnet<-threshold(hex)
 
-alphanet<-threshold(hex, thresh = "alpha")
+alphanet<-threshold(hex, thresh = "alpha", a = .05)
+
+bonnet<-threshold(hex, thresh = "bonferroni", a = .05)
+
+FDRnet<-threshold(hex, thresh = "FDR", a = .10)
+
+propnet<-threshold(hex, thresh = "proportional", a = .15)
+}
+\references{
+Perez, M. E., & Pericchi, L. R. (2014).
+Changing statistical significance with the amount of information: The adaptive \emph{a} significance level.
+\emph{Statistics & Probability Letters}, \emph{85}, 20-24.
+
+Strimmer, K. (2008).
+fdrtool: A versatile R package for estimating local and tail area-based false discovery rates.
+\emph{Bioinformatics}, \emph{24}(12), 1461-1462.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

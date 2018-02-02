@@ -4,19 +4,33 @@
 \alias{LoGo}
 \title{Local/Global Sparse Inverse Covariance Matrix}
 \usage{
-LoGo(data)
+LoGo(data, binary = FALSE, na.data = c("listwise", "fiml"))
 }
 \arguments{
-\item{data}{Must be a dataset (missing data is handled using the Full Information Maximum Likelihood function \emph{corFiml} in the \emph{psych} package)}
+\item{data}{Must be a dataset}
+
+\item{binary}{Is dataset dichotomous?
+Defaults to FALSE.
+Set to TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
+
+\item{na.data}{How should missing data be handled?
+For "listwise" deletion the \emph{na.omit} fucntion is applied.
+Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
+Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 }
 \value{
 Returns a sparse TMFG-filtered inverse covariance matrix
+(can be converted to a partial correlation matrix using the \emph{-cov2cor} function; see examples)
 }
 \description{
-Applies the Local/Global method to estimate the sparse inverse covariance matrix
+Applies the Local/Global method to estimate the sparse inverse covariance matrix using a TMFG-filtered network
+(see and cite Barfuss et al., 2016)
 }
 \examples{
 LoGonet<-LoGo(hex)
+
+corrLoGonet<-(-cov2cor(LoGonet))
+diag(corrLoGonet)<-0
 }
 \references{
 Barfuss, W., Massara, G. P., Di Matteo, T., & Aste, T. (2016).
