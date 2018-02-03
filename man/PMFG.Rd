@@ -31,8 +31,7 @@ Returns a PMFG-filtered associaton matrix
 }
 \description{
 Applies the Planar Maximally Filtered Graph (PMFG) filtering method
-(see and cite Tumminello et al., 2005). You must download the package \emph{RBGL} from \emph{BioLite}.
-run in R {source("https://bioconductor.org/biocLite.R");biocLite("RBGL")}
+(see and cite Tumminello et al., 2005).
 }
 \references{
 Tumminello, M., Aste, T., Di Matteo, T., & Mantegna, R. N. (2005).

@@ -208,8 +208,7 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE, na.data 
 #----
 #' Planar Maximally Filtered Graph
 #' @description Applies the Planar Maximally Filtered Graph (PMFG) filtering method
-#' (see and cite Tumminello et al., 2005). You must download the package \emph{RBGL} from \emph{BioLite}.
-#' run in R {source("https://bioconductor.org/biocLite.R");biocLite("RBGL")}
+#' (see and cite Tumminello et al., 2005).
 #' @param data Can be a dataset or a correlation matrix
 #' @param binary Is dataset dichotomous?
 #' Defaults to FALSE.
@@ -224,16 +223,29 @@ TMFG <-function (data, binary = FALSE, weighted = TRUE, depend = FALSE, na.data 
 #' Defaults to TRUE.
 #' Set to FALSE for no progress bar
 #' @return Returns a PMFG-filtered associaton matrix
-#' @references 
+#' @references
+#' Carey V, Long L and Gentleman R (2017).
+#' RBGL: An interface to the BOOST graph library.
+#' R package version 1.54.0, http://www.bioconductor.org.
+#'  
 #' Tumminello, M., Aste, T., Di Matteo, T., & Mantegna, R. N. (2005).
 #' A tool for filtering information in complex systems.
 #' \emph{Proceedings of the National Academy of Sciences}, \emph{102}(30), 10421-10426.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @importFrom utils installed.packages
 #' @export
 #PMFG Filtering Method----
 PMFG <- function (data, binary = FALSE, weighted = TRUE,
                   na.data = c("listwise","fiml"), progBar = TRUE)
 {
+    
+    if(!"RBGL" %in% rownames(installed.packages()))
+    {
+        cat("In order to perform this function, please copy code below to install: RBGL and graph packages",sep="\n")
+        cat('source("https://bioconductor.org/biocLite.R")',sep="\n")
+        cat('biocLite("RBGL")',sep="\n")
+    }
+    
     #missing data handling
     if(missing(na.data))
     {
