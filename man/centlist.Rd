@@ -9,7 +9,9 @@ centlist(A, weighted = TRUE)
 \arguments{
 \item{A}{An adjacency matrix of network data}
 
-\item{weighted}{Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted list of centrality measures}
+\item{weighted}{Is the network weighted?
+Defaults to TRUE.
+Set to FALSE for unweighted list of centrality measures}
 }
 \value{
 Returns a list of betweenness, closeness, degree (weighted = strength), eigenvector, and leverage centralities

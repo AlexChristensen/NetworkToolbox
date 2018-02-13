@@ -9,7 +9,9 @@ transitivity(A, weighted = FALSE)
 \arguments{
 \item{A}{An adjacency matrix of network data}
 
-\item{weighted}{Is the network weighted? Defaults to FALSE. Set to TRUE for a weighted measure of transitivity}
+\item{weighted}{Is the network weighted?
+Defaults to FALSE.
+Set to TRUE for a weighted measure of transitivity}
 }
 \value{
 Returns a value of transitivity

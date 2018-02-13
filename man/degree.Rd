@@ -10,7 +10,8 @@ degree(A)
 \item{A}{An adjacency matrix of network data}
 }
 \value{
-A vector of degree values for each node in the network. If directed network, returns a list of in-degree (inDegree), out-degree (outDegree), and relative influence (relInf)
+A vector of degree values for each node in the network.
+If directed network, returns a list of in-degree (inDegree), out-degree (outDegree), and relative influence (relInf)
 }
 \description{
 Computes degree of each node in a network

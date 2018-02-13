@@ -9,7 +9,9 @@ betweenness(A, weighted = TRUE)
 \arguments{
 \item{A}{An adjacency matrix of network data}
 
-\item{weighted}{Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of betwenness centrality}
+\item{weighted}{Is the network weighted?
+Defaults to TRUE.
+Set to FALSE for unweighted measure of betwenness centrality}
 }
 \value{
 A vector of betweenness centrality values for each node in the network

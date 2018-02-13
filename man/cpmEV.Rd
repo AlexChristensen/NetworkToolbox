@@ -8,30 +8,46 @@ cpmEV(train_na, train_b, valid_na, valid_b, thresh = 0.01, overlap = FALSE,
   progBar = TRUE)
 }
 \arguments{
-\item{train_na}{Training dataset (an array from \emph{convertConnBrainMat} function)}
+\item{train_na}{Training dataset
+(an array from \emph{convertConnBrainMat} function)}
 
 \item{train_b}{Behavioral statistic for each participant for the \strong{training} neural data (a vector)}
 
-\item{valid_na}{Validation dataset (an array from \emph{convertConnBrainMat} function)}
+\item{valid_na}{Validation dataset
+(an array from \emph{convertConnBrainMat} function)}
 
 \item{valid_b}{Behavioral statistic for each participant for the \strong{validation} neural data (a vector)}
 
-\item{thresh}{Sets an \strong{alpha} threshold for edge weights to be retained. Defaults to .01}
+\item{thresh}{Sets an \strong{alpha} threshold for edge weights to be retained.
+Defaults to .01}
 
-\item{overlap}{Should leave-one-out cross-validation be used? Defaults to FALSE (use full dataset, no leave-one-out). Set to TRUE to select edges that appear in every leave-one-out cross-validation network (\emph{time consuming})}
+\item{overlap}{Should leave-one-out cross-validation be used?
+Defaults to FALSE (use full dataset, no leave-one-out).
+Set to TRUE to select edges that appear in every leave-one-out cross-validation network (\emph{time consuming})}
 
-\item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set to FALSE for no progress bar}
+\item{progBar}{Should progress bar be displayed?
+Defaults to TRUE.
+Set to FALSE for no progress bar}
 }
 \value{
-Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), mean absolute error (mae), root mean square error (rmse)). The list also contains the positive (posMask) and negative (negMask) masks used
+Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), mean absolute error (mae), root mean square error (rmse)).
+The list also contains the positive (posMask) and negative (negMask) masks used
 }
 \description{
-STILL IN BETA STAGE. Applies the Connectome-based Predictive Modeling approach to neural data. This method predicts a behavioral statistic using neural connectivity from the sample. \strong{Please cite Finn et al., 2015; Rosenberg et al., 2016; Shen et al., 2017}
+Applies the Connectome-based Predictive Modeling approach to neural data.
+This method predicts a behavioral statistic using neural connectivity from the sample.
+Results \strong{may} differ from \emph{Matlab} results because of robust GLM methodology.
+This function is still in its \strong{testing phase}.
+\strong{Please cite Finn et al., 2015; Rosenberg et al., 2016; Shen et al., 2017}
 }
 \references{
 Finn, E. S., Shen, X., Scheinost, D., Rosenberg, M. D., Huang, J., Chun, M. M., Papademetris, X., Constable, R. T. (2015).
 Functional connectome fingerprinting: Identifying individuals using patterns of brain connectivity.
 \emph{Nature Neuroscience}, \emph{18}(11), 1664-1671.
+
+Ly, A., Verhagen, A. J., & Wagenmakers, E.-J. (2016).
+Harold Jeffreys's default Bayes factor hypothesis tests: Explanation, extension, and application in psychology.
+\emph{Journal of Mathematical Psychology}, \emph{72}, 19-32.
 
 Rosenberg, M. D., Finn, E. S., Scheinost, D., Papademetris, X., Shen, X., Constable, R. T., Chun, M. M. (2016).
 A neuromarker of sustained attention from whole-brain functional connectivity.
@@ -48,10 +64,6 @@ How to quantify the evidence for the absence of a correlation.
 Wei, T. & Simko, V.(2017).
 R package "corrplot": Visualization of a correlation matrix (Version 0.84).
 Available from \url{https://github.com/taiyun/corrplot}
-
-Wetzels, R., & Wagenmakers, E. J. (2012).
-A default Bayesian hypothesis test for correlations and partial correlations.
-\emph{Psychonomic Bulletin & Review}, \emph{19}(6), 1057-1064.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

@@ -5,14 +5,14 @@
 \title{Threshold Filter}
 \usage{
 threshold(data, a, thresh = c("alpha", "adaptive", "bonferroni", "FDR",
-  "proportional"), n = nrow(data), binary = FALSE, na.data = c("listwise",
-  "fiml"))
+  "proportional"), n = nrow(data), normal = FALSE, na.data = c("pairwise",
+  "listwise", "fiml"))
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
 
 \item{a}{When thresh = "alpha", "adaptive", and "bonferroni" an alpha threshold is applied (defaults to \strong{.05}).
-For "adaptive", beta (Type II error) is set to \strong{a*5}.
+For "adaptive", beta (Type II error) is set to \strong{a*5} for a medium effect size (\emph{r} = \strong{.3}).
 When thresh = "FDR", a q-value threshold is applied (defaults to \strong{.10}).
 When thresh = "proportional", a density threshold is applied (defaults to \strong{.15})}
 
@@ -27,13 +27,17 @@ and "proportional" for a fixed density of edges (keeps strongest correlations wi
 Defaults to the number of rows in the data.
 If input is a correlation matrix, then n \strong{must} be set}
 
-\item{binary}{Is dataset dichotomous?
-Defaults to FALSE.
-Set to TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
+\item{normal}{Should data be transform to a normal distribution?
+Defaults to FALSE. Data is not transformed to be normal.
+Set to TRUE if data should be transformed to be normal
+(computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)}
 
 \item{na.data}{How should missing data be handled?
+For "pairwise" deletion \emph{na.rm} is applied.
+If normal is TRUE, then "pairwise" is used.
 For "listwise" deletion the \emph{na.omit} fucntion is applied.
-Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package)}
+Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
+Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 }
 \value{
 Returns a list containing a filtered adjacency matrix (A) and the critical r value (r.cv)

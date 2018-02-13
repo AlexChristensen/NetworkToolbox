@@ -9,13 +9,16 @@ rspbc(A, beta = 0.01)
 \arguments{
 \item{A}{An adjacency matrix of network data}
 
-\item{beta}{Sets the beta parameter. Defaults to 0.01 (recommended). Beta > 0.01 measure gets closer to weighted betweenness centrality (10) and beta < 0.01 measure gets closer to degree (.0001)}
+\item{beta}{Sets the beta parameter.
+Defaults to 0.01 (recommended).
+Beta > 0.01 measure gets closer to weighted betweenness centrality (10) and beta < 0.01 measure gets closer to degree (.0001)}
 }
 \value{
 A vector of randomized shortest paths betweenness centrality values for each node in the network
 }
 \description{
 Computes betweenness centrlaity based on randomized shortest paths of each node in a network
+(Please see and cite Kivimaki et al., 2016)
 }
 \examples{
 A<-TMFG(hex)$A

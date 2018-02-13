@@ -4,31 +4,35 @@
 \alias{kld}
 \title{Kullback-Leibler Divergence}
 \usage{
-kld(base, test, basedata, testdata, corr = TRUE)
+kld(base, test, basedata, testdata)
 }
 \arguments{
-\item{base}{Full or base model (e.g., a correlation or covariance matrix of the data)}
+\item{base}{Full or base model
+(e.g., a correlation or covariance matrix of the data)}
 
-\item{test}{Reduced or testing model (e.g., a sparse correlation or covariance matrix)}
+\item{test}{Reduced or testing model
+(e.g., a sparse correlation or covariance matrix)}
 
 \item{basedata}{Full or base dataset to be compared}
 
 \item{testdata}{Testing dataset to be compared}
-
-\item{corr}{Are models correlation matrices? Defaults to TRUE. Set to FALSE for covariance matrices}
 }
 \value{
-A value greater than 0. Values between 0 and 1 suggests the reduced or testing model is near the full mode
+A value greater than 0.
+Values between 0 and 1 suggests the probablity distribution of the reduced model is near the full model
 }
 \description{
-Estimates the Kullback-Leibler Divergence which measures how one probability distribution diverges from a second distribution (equivalent means are assumed). Matrices \strong{must} be positive definite for accurate measurement
+Estimates the Kullback-Leibler Divergence which measures how one probability distribution
+diverges from a second distribution (equivalent means are assumed).
+Matrices \strong{must} be positive definite for accurate measurement.
+This is not a quantitative metric
 }
 \examples{
 A1 <- cov(hex)
 
 A2 <- solve(LoGo(hex))
 
-kld_value <- kld(A1, A2, hex, corr = FALSE)
+kld_value <- kld(A1, A2, hex)
 
 }
 \references{

@@ -18,7 +18,7 @@ data(hexb)
 }
 \references{
 Christensen, A.P., Cotter, K.N., Silvia, P.J. (under review).
-Nomological network of Openness to Experience:
+Reopening Openness to Experience:
 A network analysis of four Openness to Experience inventories.
 \url{http://doi.org/10.17605/OSF.IO/954A7}
 }

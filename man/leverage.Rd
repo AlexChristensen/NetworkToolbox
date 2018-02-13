@@ -9,13 +9,15 @@ leverage(A, weighted = TRUE)
 \arguments{
 \item{A}{An adjacency matrix of network data}
 
-\item{weighted}{Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of leverage centrality}
+\item{weighted}{Is the network weighted? Defaults to TRUE.
+Set to FALSE for unweighted measure of leverage centrality}
 }
 \value{
 A vector of leverage centrality values for each node in the network
 }
 \description{
-Computes leverage centrlaity of each node in a network
+Computes leverage centrlaity of each node in a network (the degree of connected neighbors)
+(Please see and cite Joyce et al., 2010)
 }
 \examples{
 A<-TMFG(hex)$A

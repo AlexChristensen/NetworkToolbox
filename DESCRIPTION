@@ -1,13 +1,12 @@
 Package: NetworkToolbox
-Title: Network Filtering Methods and Measures
-Version: 0.0.1.2
+Title: Methods and Measures for Brain, Cognitive, and Psychometric Network Analysis
+Version: 1.0.0
 Author: Alexander Christensen
 Maintainer: Alexander Christensen <alexpaulchristensen@gmail.com>
-Description: Implements Information Filtering Networks (IFN; Barfuss, Massara, Di Matteo, & Aste, 2016 <doi:10.1103/PhysRevE.94.062306>), ECO (ECO; Fallani, Latora, & Chavez, 2017 <doi:10.1371/journal.pcbi.1005305>), and regression-based filtering network approaches (including the dependency network approach; Kenett, Tumminello, Madi, Gur-Gershogoren, Mantegna, & Ben-Jacob, 2010 <doi:10.1371/journal.pone.0015032>). Also implements several network measures like local network characteristics (e.g., centralities), global network characteristics (e.g., clustering coefficient), and edge replication (Rubinov & Sporns, 2010 <doi:10.1016/j.neuroimage.2009.10.003>). Finally, there are a few bootstrapping techniques that are aimed at increasing the reliability and reproducibility of network analysis (Tumminello, Coronnello, & Lillo, 2007 <doi:10.1142/S0218127407018415>).
+Description: Implements network analysis and graph theory measures used in neuroscience, cognitive science, and psychology. Methods include various filtering methods such as threshold, dependency (Kenett, Tumminello, Madi, Gur-Gershogoren, Mantegna, & Ben-Jacob, 2010 <doi:10.1371/journal.pone.0015032>), Information Filtering Networks (Barfuss, Massara, Di Matteo, & Aste, 2016 <doi:10.1103/PhysRevE.94.062306>), and Efficiency-Cost Optimization (Fallani, Latora, & Chavez, 2017 <doi:10.1371/journal.pcbi.1005305>). Brain methods include the recently develop Connectome-Predictive Modeling (see references in package). Also implements several network measures include local network characteristics (e.g., centrality), global network characteristics (e.g., clustering coefficient), and various other measures associated with the reliabliity and reproducibility of network analysis. 
 Depends: R (>= 3.3.0)
 License: GPL (>= 3.0)
 Encoding: UTF-8
 LazyData: true
-Imports: Matrix, psych, qgraph, corrplot, RColorBrewer, igraph, fdrtool, R.matlab, MASS, hypergeo, pwr
-Suggests: RBGL, graph
+Imports: devtools, Matrix, psych, corrplot, RColorBrewer, fdrtool, R.matlab, MASS, hypergeo, pwr, graph, igraph, qgraph, RBGL
 RoxygenNote: 6.0.1.9000

@@ -9,19 +9,21 @@ semnetmeas(A, ...)
 \arguments{
 \item{A}{An adjacency matrix of network A}
 
-\item{...}{Additional arguments for ASPL, CC, Q, and S functions}
+\item{...}{Additional arguments for ASPL and CC (weighted)}
 }
 \value{
 Returns a values for ASPL, CC, Q, and S
 }
 \description{
-Computes the average shortest path length (ASPL), clustering coefficient(CC),
-modularity (Q), and small-worldness (S)
+Computes the average shortest path length (ASPL),
+clustering coefficient(CC),
+modularity (Q),
+and small-worldness (S; defaults to "rand" and 100 iterations)
 }
 \examples{
 A<-TMFG(hex)$A
 
-connectivity<-semnetmeas(A)
+globmeas<-semnetmeas(A)
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

@@ -4,15 +4,16 @@
 \alias{MaST}
 \title{Maximum Spanning Tree}
 \usage{
-MaST(data, binary = FALSE, weighted = TRUE, depend = FALSE,
-  na.data = c("listwise", "fiml"))
+MaST(data, normal = FALSE, weighted = TRUE, depend = FALSE,
+  na.data = c("pairwise", "listwise", "fiml"))
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
 
-\item{binary}{Is dataset dichotomous?
-Defaults to FALSE.
-Set to TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
+\item{normal}{Should data be transform to a normal distribution?
+Defaults to FALSE. Data is not transformed to be normal.
+Set to TRUE if data should be transformed to be normal
+(computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)}
 
 \item{weighted}{Should network be weighted?
 Defaults to TRUE.
@@ -24,9 +25,11 @@ Set TRUE to generate a MaST-filtered dependency network
 (output obtained from the \emph{depend} function)}
 
 \item{na.data}{How should missing data be handled?
+For "pairwise" deletion \emph{na.rm} is applied.
+If normal is TRUE, then "pairwise" is used.
 For "listwise" deletion the \emph{na.omit} fucntion is applied.
 Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
-Note that the Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
+Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 }
 \value{
 A sparse association matrix
@@ -37,11 +40,9 @@ Applies the Maximum Spanning Tree (MaST) filtering method
 \examples{
 weighted_MaSTnetwork<-MaST(hex)
 
-weighted_binary_MaSTnetwork<-MaST(hexb,binary=TRUE)
 
 unweighted_MaSTnetwork<-MaST(hex,weighted=FALSE)
 
-unweighted_binary_MaSTnetwork<-MaST(hexb,binary=TRUE,weighted=FALSE)
 }
 \references{
 Adapted from: \url{https://www.mathworks.com/matlabcentral/fileexchange/23276-maximum-weight-spanning-tree--undirected}

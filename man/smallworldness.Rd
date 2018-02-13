@@ -10,20 +10,22 @@ smallworldness(A, iter = 100, progBar = FALSE, method = c("HG", "rand",
 \arguments{
 \item{A}{An adjacency matrix of network data}
 
-\item{iter}{Number of random (or lattice) networks to generate, which are used to calculate the mean random ASPL and CC (or lattice)}
+\item{iter}{Number of random (or lattice) networks to generate,
+which are used to calculate the mean random ASPL and CC (or lattice)}
 
-\item{progBar}{Defaults to FALSE. Set to TRUE to see progress bar}
+\item{progBar}{Defaults to FALSE.
+Set to TRUE to see progress bar}
 
-\item{method}{Defaults to "HG" (Humphries & Gurney, 2008). Set to "rand" for the CC to be calculated using a random network or
+\item{method}{Defaults to "HG" (Humphries & Gurney, 2008).
+Set to "rand" for the CC to be calculated using a random network or
 set to "TJHBL" for (Telesford et al., 2011) where CC is calculated from a lattice network}
 }
 \value{
 Returns a value of small-worldness.
 For "rand", values > 1 indicate a small-world network.
 For "HG", values > 3 indicate a small-world network.
-For "TJHBL" values near 0 indicate a small-world network
-while < 0 indicates a more regular network and > 0 
-indicates a more random network
+For "TJHBL" values near 0 indicate a small-world network,
+while < 0 indicates a more regular network and > 0 indicates a more random network
 }
 \description{
 Computes the small-worldness measure of a network

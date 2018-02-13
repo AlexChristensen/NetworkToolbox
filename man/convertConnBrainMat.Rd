@@ -7,18 +7,27 @@
 convertConnBrainMat(MatlabData, progBar = TRUE)
 }
 \arguments{
-\item{MatlabData}{Input for Matlab data file. Defaults to interactive file choice}
+\item{MatlabData}{Input for Matlab data file.
+Defaults to interactive file choice}
 
-\item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar}
+\item{progBar}{Should progress bar be displayed?
+Defaults to TRUE.
+Set FALSE for no progress bar}
 }
 \value{
 Returns a list of correlation (rmat) and z-score (zmat) arrays of neural connectivity matrices (n x n x m)
 }
 \description{
-Converts a Matlab brain z-score connectivity file (n x n x m) where \strong{n} is the n x n connectivity matrices and \strong{m} is the participant
+Converts a Matlab brain z-score connectivity array (n x n x m) where \strong{n} is the n x n connectivity matrices and \strong{m} is the participant.
+If you would like to simply import a connectivity array from Matlab, then see the examples
 }
 \examples{
-\dontrun{neuralarray<-convertConnBrainMat()}
+\dontrun{
+neuralarray<-convertConnBrainMat()
+
+library(R.matlab)
+neuralarray<-readMat(file.choose())
+}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

@@ -4,15 +4,16 @@
 \alias{TMFG}
 \title{Triangulated Maximally Filtered Graph}
 \usage{
-TMFG(data, binary = FALSE, weighted = TRUE, depend = FALSE,
-  na.data = c("listwise", "fiml"))
+TMFG(data, normal = FALSE, weighted = TRUE, depend = FALSE,
+  na.data = c("pairwise", "listwise", "fiml"))
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
 
-\item{binary}{Is dataset dichotomous?
-Defaults to FALSE.
-Set to TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
+\item{normal}{Should data be transform to a normal distribution?
+Defaults to FALSE. Data is not transformed to be normal.
+Set to TRUE if data should be transformed to be normal
+(computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)}
 
 \item{weighted}{Should network be weighted?
 Defaults to TRUE.
@@ -23,7 +24,9 @@ Defaults to FALSE.
 Set to TRUE to generate a TMFG-filtered dependency network
 (output obtained from the \emph{depend} function)}
 
-\item{na.data}{How should missing data be handled? For "listwise" deletion the \emph{na.omit} fucntion is applied.
+\item{na.data}{How should missing data be handled?
+For "pairwise" deletion \emph{na.rm} is applied.
+For "listwise" deletion the \emph{na.omit} fucntion is applied.
 Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 }
@@ -32,16 +35,14 @@ Returns a list of the adjacency matrix (A), separators (separators), and cliques
 }
 \description{
 Applies the Triangulated Maximally Filtered Graph (TMFG) filtering method
-(see and cite Massara et al., 2016)
+(Please see and cite Massara et al., 2016)
 }
 \examples{
 weighted_TMFGnetwork<-TMFG(hex)
 
-weighted_binary_TMFGnetwork<-TMFG(hexb,binary=TRUE)
 
 unweighted_TMFGnetwork<-TMFG(hex,weighted=FALSE)
 
-unweighted_binary_TMFGnetwork<-TMFG(hexb,binary=TRUE,weighted=FALSE)
 }
 \references{
 Massara, G. P., Di Matteo, T., & Aste, T. (2016).

@@ -9,7 +9,9 @@ depna(neuralarray, pB = TRUE, ...)
 \arguments{
 \item{neuralarray}{Array from \emph{convertConnBrainMat} function}
 
-\item{pB}{Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar}
+\item{pB}{Should progress bar be displayed?
+Defaults to TRUE.
+Set FALSE for no progress bar}
 
 \item{...}{Additional arguments from \emph{depend} function}
 }
@@ -20,7 +22,8 @@ Returns an array of n x n x m dependency matrices
 Applies the dependency network approach to neural network array
 }
 \examples{
-\dontrun{neuralarray <- convertConnBrainMat()
+\dontrun{
+neuralarray <- convertConnBrainMat()
 
 dependencyneuralarray <- depna(neuralarray)
 }

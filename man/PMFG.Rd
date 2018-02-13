@@ -4,21 +4,25 @@
 \alias{PMFG}
 \title{Planar Maximally Filtered Graph}
 \usage{
-PMFG(data, binary = FALSE, weighted = TRUE, na.data = c("listwise",
-  "fiml"), progBar = TRUE)
+PMFG(data, normal = FALSE, weighted = TRUE, na.data = c("pairwise",
+  "listwise", "fiml"), progBar = TRUE)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
 
-\item{binary}{Is dataset dichotomous?
-Defaults to FALSE.
-Set to TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
+\item{normal}{Should data be transform to a normal distribution?
+Defaults to FALSE. Data is not transformed to be normal.
+Set to TRUE if data should be transformed to be normal
+(computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)}
 
 \item{weighted}{Should network be weighted?
 Defaults to TRUE.
 Set to FALSE to produce an unweighted (binary) network}
 
-\item{na.data}{How should missing data be handled? For "listwise" deletion the \emph{na.omit} fucntion is applied.
+\item{na.data}{How should missing data be handled?
+For "pairwise" deletion \emph{na.rm} is applied.
+If normal is TRUE, then "pairwise" is used.
+For "listwise" deletion the \emph{na.omit} fucntion is applied.
 Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 
@@ -32,6 +36,12 @@ Returns a PMFG-filtered associaton matrix
 \description{
 Applies the Planar Maximally Filtered Graph (PMFG) filtering method
 (see and cite Tumminello et al., 2005).
+Currently very slow! (efficiency updates soon to come)
+}
+\examples{
+\dontrun{
+weighted_PMFGnetwork<-PMFG(hex)
+}
 }
 \references{
 Tumminello, M., Aste, T., Di Matteo, T., & Mantegna, R. N. (2005).

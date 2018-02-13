@@ -7,17 +7,23 @@
 cpmFP(session1, session2, progBar = TRUE)
 }
 \arguments{
-\item{session1}{Array from \emph{convertConnBrainMat} function (first session)}
+\item{session1}{Array from \emph{convertConnBrainMat} function
+(first session)}
 
-\item{session2}{Array from \emph{convertConnBrainMat} function (second session)}
+\item{session2}{Array from \emph{convertConnBrainMat} function
+(second session)}
 
-\item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set to FALSE for no progress bar}
+\item{progBar}{Should progress bar be displayed?
+Defaults to TRUE.
+Set to FALSE for no progress bar}
 }
 \value{
 Returns a matrix containing the percentage and number of correctly identified subjects for sessions 1 and 2
 }
 \description{
-Applies the Connectome-based Predictive Modeling approach to neural data. This method identifies individuals based on their specific connectivity patterns. \strong{Please cite Finn et al., 2015; Rosenberg et al., 2016; Shen et al., 2017}
+Applies the Connectome-based Predictive Modeling approach to neural data.
+This method identifies individuals based on their specific connectivity patterns.
+\strong{Please cite Finn et al., 2015; Rosenberg et al., 2016; Shen et al., 2017}
 }
 \references{
 Finn, E. S., Shen, X., Scheinost, D., Rosenberg, M. D., Huang, J., Chun, M. M., Papademetris, X., Constable, R. T. (2015).

@@ -9,13 +9,18 @@ pathlengths(A, weighted = FALSE)
 \arguments{
 \item{A}{An adjacency matrix of network data}
 
-\item{weighted}{Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measures of ASPL, ASPLi, ecc, and D}
+\item{weighted}{Is the network weighted?
+Defaults to FALSE.
+Set to TRUE for weighted measures of ASPL, ASPLi, ecc, and D}
 }
 \value{
 Returns a list of ASPL, ASPLi, ecc, and D of a network
 }
 \description{
-Computes global average shortest path length (ASPL), local average shortest path length (ASPLi), eccentricity (ecc), and diameter (D) of a network
+Computes global average shortest path length (ASPL),
+local average shortest path length (ASPLi),
+eccentricity (ecc),
+and diameter (D) of a network
 }
 \examples{
 A<-TMFG(hex)$A

@@ -12,7 +12,9 @@ neuralnetfilter(neuralarray, method = c("TMFG", "LoGo", "MaST", "ECOplusMaST",
 
 \item{method}{Filtering method to be applied}
 
-\item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar}
+\item{progBar}{Should progress bar be displayed?
+Defaults to TRUE.
+Set FALSE for no progress bar}
 
 \item{...}{Additional arguments from filtering methods}
 }
@@ -20,7 +22,8 @@ neuralnetfilter(neuralarray, method = c("TMFG", "LoGo", "MaST", "ECOplusMaST",
 Returns an array of n x n x m filtered matrices
 }
 \description{
-Applies a network filtering methodology to neural network array. Removes edges from the neural network output from \emph{convertConnBrainMat} using a network filtering approach
+Applies a network filtering methodology to neural network array.
+Removes edges from the neural network output from \emph{convertConnBrainMat} using a network filtering approach
 }
 \examples{
 \dontrun{neuralarray <- convertConnBrainMat()

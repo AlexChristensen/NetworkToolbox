@@ -7,17 +7,19 @@
 neuralgrouptest(groups, nstat, correction = c("bonferroni", "FDR"))
 }
 \arguments{
-\item{groups}{Participant list divided into the desired groups (\strong{see examples})}
+\item{groups}{Participant vector of desired groups (\strong{see examples})}
 
 \item{nstat}{A statistic vector (whole-network) or matrix (ROI) from the \emph{neuralstat} function}
 
-\item{correction}{Multiple comparisons correction for ROI testing. Defaults to local false discovery rate (i.e., "FDR")}
+\item{correction}{Multiple comparisons correction for ROI testing.
+Defaults to local false discovery rate (i.e., "FDR")}
 }
 \value{
 Returns test statistics for given groups and statistics
 }
 \description{
-Statistical test for group differences for global or local network characteristics of neural network data (\strong{only t-tests})
+Statistical test for group differences for global or local network characteristics of neural network data
+(still in testing phase)
 }
 \examples{
 \dontrun{

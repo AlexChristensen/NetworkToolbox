@@ -2,7 +2,7 @@
 % Please edit documentation in R/NetworkToolbox--master.R
 \name{neuralcorrtest}
 \alias{neuralcorrtest}
-\title{Neural Network Correlation Test}
+\title{Neural-Behavioral Correlation Test}
 \usage{
 neuralcorrtest(bstat, nstat)
 }
@@ -15,7 +15,8 @@ neuralcorrtest(bstat, nstat)
 Returns correlation test statistics for given statistics
 }
 \description{
-Correlational test for group differences for global or local network characteristics of neural network data (\strong{only t-tests})
+Correlational test for global or local network characteristics of neural network data with behavioral data
+(still in testing phase)
 }
 \examples{
 \dontrun{
@@ -35,13 +36,13 @@ ROI_corr <- neuralcorrtest(bstat, Degree)
 }
 }
 \references{
+Ly, A., Verhagen, A. J., & Wagenmakers, E.-J. (2016).
+Harold Jeffreys's default Bayes factor hypothesis tests: Explanation, extension, and application in psychology.
+\emph{Journal of Mathematical Psychology}, \emph{72}, 19-32.
+
 Wagenmakers, E. J., Verhagen, J., & Ly, A. (2016).
 How to quantify the evidence for the absence of a correlation.
 \emph{Behavior Research Methods}, \emph{48}(2), 413-426.
-
-Wetzels, R., & Wagenmakers, E. J. (2012).
-A default Bayesian hypothesis test for correlations and partial correlations.
-\emph{Psychonomic Bulletin & Review}, \emph{19}(6), 1057-1064.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

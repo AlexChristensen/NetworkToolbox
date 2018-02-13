@@ -10,7 +10,8 @@ hybrid(A)
 \item{A}{An adjacency matrix of network data}
 }
 \value{
-A vector of hybrid centrality values for each node in the network (higher values are more central, lower values are more peripheral)
+A vector of hybrid centrality values for each node in the network
+(higher values are more central, lower values are more peripheral)
 }
 \description{
 Computes hybrid centrality of each node in a network

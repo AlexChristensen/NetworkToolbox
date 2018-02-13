@@ -7,14 +7,16 @@
 splitsamp(data, samples = 10, splits = 2)
 }
 \arguments{
-\item{data}{Must be a dataset (missing data will be removed using the function \emph{na.omit})}
+\item{data}{Must be a dataset}
 
 \item{samples}{Number of samples to produce (Defaults to 10)}
 
 \item{splits}{Number to divide the sample by (Defaults to 2; i.e., split-half)}
 }
 \value{
-A list containing the training (trainSample) and testing (testSample) sizes (training sample is made to have slightly larger sizes in the case of uneven splits), and their respective sample sizes (trainSize and testSize)
+A list containing the training (trainSample) and testing (testSample) sizes
+(training sample is made to have slightly larger sizes in the case of uneven splits),
+and their respective sample sizes (trainSize and testSize)
 }
 \description{
 Randomly splits sample into equally divded sub-samples

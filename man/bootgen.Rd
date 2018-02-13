@@ -4,22 +4,43 @@
 \alias{bootgen}
 \title{Bootstrapped Network Generalization}
 \usage{
-bootgen(data, method = c("TMFG", "LoGo", "MaST", "ECOplusMaST", "ECO",
-  "threshold"), n = nrow(data), iter = 1000, binary = FALSE,
-  depend = FALSE, ...)
+bootgen(data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold"),
+  thresh = c("adaptive", "BF"), n = nrow(data), iter = 1000,
+  normal = FALSE, na.data = c("pairwise", "listwise", "fiml"), a = 0.05,
+  ...)
 }
 \arguments{
-\item{data}{A set of data (missing data is handled using the Full Information Maximum Likelihood function \emph{corFiml} in the \emph{psych} package)}
+\item{data}{A set of data}
 
-\item{method}{A network filtering method. Defaults to "TMFG"}
+\item{method}{A network filtering method.
+Defaults to "TMFG"}
 
-\item{n}{Number of people to use in the bootstrap. Defaults to full sample size}
+\item{thresh}{Threshold to remove less reliable and small correlations.
+Defaults to "adaptive," alters the alpha value based on sample size (generally recommended).
+Set to "BF" for Bayes factor (see and cite Ly et al., 2016 and Wagenmakers et al., 2016).
+If set to "BF", then a Bayes factor of > 3 is used (recommended for a large number of variables; > 100)}
 
-\item{iter}{Number of bootstrap iterations. Defaults to 1000 iterations}
+\item{n}{Number of people to use in the bootstrap.
+Defaults to full sample size}
 
-\item{binary}{Is dataset dichotomous? Defaults to FALSE. Set TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
+\item{iter}{Number of bootstrap iterations.
+Defaults to 1000 iterations}
 
-\item{depend}{Is network a dependency (or directed) network? Defaults to FALSE. Set TRUE to generate a TMFG-filtered dependency network}
+\item{normal}{Should data be transform to a normal distribution?
+Defaults to FALSE.
+Data is not transformed to be normal.
+Set to TRUE if data should be transformed to be normal
+(computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)}
+
+\item{na.data}{How should missing data be handled?
+For "pairwise" deletion \emph{na.rm} is applied.
+If normal is TRUE, then "pairwise" is used.
+For "listwise" deletion the \emph{na.omit} fucntion is applied.
+Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
+Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
+
+\item{a}{Alpha threshold hold for adaptive alpha (Perez & Pericchi, 2014).
+Defaults to .05}
 
 \item{...}{Additional arguments for filtering methods}
 }
@@ -32,7 +53,7 @@ a plot of the bootrel reliability matrix (netrel; upper triangle = actual networ
 a plot of included correlations on their reliability (ConR)
 }
 \description{
-Bootstraps the sample to identify the most stable correlations
+Bootstraps the sample to identify the most stable correlations (still in testing)
 }
 \examples{
 \dontrun{
@@ -42,14 +63,18 @@ prepLoGo<-bootgen(hex,method="LoGo")
 
 prepMaST<-bootgen(hex,method="MaST")
 
-prepECO<-bootgen(hex,method="ECO")
-
-prepECOplusMaST<-bootgen(hex,method="ECOplusMaST")
-
 prepThreshold<-bootgen(hex,method="threshold")
 }
 }
 \references{
+Ly, A., Verhagen, A. J., & Wagenmakers, E.-J. (2016).
+Harold Jeffreys's default Bayes factor hypothesis tests: Explanation, extension, and application in psychology.
+\emph{Journal of Mathematical Psychology}, \emph{72}, 19-32
+
+Perez, M. E., & Pericchi, L. R. (2014).
+Changing statistical significance with the amount of information: The adaptive \emph{a} significance level.
+\emph{Statistics & Probability Letters}, \emph{85}, 20-24.
+
 Tumminello, M., Coronnello, C., Lillo, F., Micciche, S., & Mantegna, R. N. (2007).
 Spanning trees and bootstrap reliability estimation in correlation-based networks.
 \emph{International Journal of Bifurcation and Chaos}, \emph{17}(7), 2319-2329.
@@ -61,10 +86,6 @@ How to quantify the evidence for the absence of a correlation.
 Wei, T. & Simko, V.(2017).
 R package "corrplot": Visualization of a correlation matrix (Version 0.84).
 Available from \url{https://github.com/taiyun/corrplot}
-
-Wetzels, R., & Wagenmakers, E. J. (2012).
-A default Bayesian hypothesis test for correlations and partial correlations.
-\emph{Psychonomic Bulletin & Review}, \emph{19}(6), 1057-1064.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

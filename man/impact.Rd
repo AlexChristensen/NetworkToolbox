@@ -4,16 +4,22 @@
 \alias{impact}
 \title{Node Impact}
 \usage{
-impact(A)
+impact(A, progBar = TRUE)
 }
 \arguments{
 \item{A}{An adjacency matrix of network data}
+
+\item{progBar}{Defaults to FALSE.
+Set to TRUE to see progress bar}
 }
 \value{
 A vector of node impact values for each node in the network
+(impact > 0, greater ASPL; impact < 0, lower ASPL)
 }
 \description{
 Computes impact measure of each node in a network
+(how much the average distance in the network changes with that node removed; 
+Please see and cite Kenett et al., 2011)
 }
 \examples{
 A<-TMFG(hex)$A

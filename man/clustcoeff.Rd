@@ -9,7 +9,9 @@ clustcoeff(A, weighted = FALSE)
 \arguments{
 \item{A}{An adjacency matrix of network data}
 
-\item{weighted}{Is the network weighted? Defaults to FALSE. Set to TRUE for weighted measures of CC and CCi}
+\item{weighted}{Is the network weighted?
+Defaults to FALSE.
+Set to TRUE for weighted measures of CC and CCi}
 }
 \value{
 Returns a list of CC and CCi

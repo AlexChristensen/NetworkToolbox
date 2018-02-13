@@ -6,7 +6,7 @@
 \usage{
 cpmIV(neuralarray, bstat, covar, thresh = 0.01, method = c("mean", "sum"),
   model = c("linear", "quadratic", "cubic"), corr = c("pearson",
-  "spearman"), shen = FALSE, progBar = TRUE)
+  "spearman"), shen = FALSE, depend = FALSE, progBar = TRUE)
 }
 \arguments{
 \item{neuralarray}{Array from \emph{convertConnBrainMat} function}
@@ -25,11 +25,20 @@ Defaults to "mean"}
 \item{model}{Regression model to use for fitting the data.
 Defaults to "linear"}
 
-\item{corr}{Correlation method for assessing the relatonship between the observed and predicted scores. Defaults to "pearson"}
+\item{corr}{Correlation method for assessing the relatonship between the observed and predicted scores.
+Defaults to "pearson"}
 
-\item{shen}{Are ROIs from Shen et al. 2013 atlas? Defaults to FALSE. Set to TRUE for canonical networks plot}
+\item{shen}{Are ROIs from Shen et al. 2013 atlas? Defaults to FALSE.
+Set to TRUE for canonical networks plot}
 
-\item{progBar}{Should progress bar be displayed? Defaults to TRUE. Set to FALSE for no progress bar}
+\item{depend}{Is network a dependency (or directed) network?
+Defaults to FALSE.
+Set to TRUE to for dependency network analysis
+(output obtained from the \emph{depna} function)}
+
+\item{progBar}{Should progress bar be displayed?
+Defaults to TRUE.
+Set to FALSE for no progress bar}
 }
 \value{
 Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), mean absolute error (mae), root mean square error (rmse)). The list also contains the positive (posMask) and negative (negMask) masks used
@@ -43,6 +52,10 @@ This method predicts a behavioral statistic using neural connectivity from the s
 Finn, E. S., Shen, X., Scheinost, D., Rosenberg, M. D., Huang, J., Chun, M. M., Papademetris, X., Constable, R. T. (2015).
 Functional connectome fingerprinting: Identifying individuals using patterns of brain connectivity.
 \emph{Nature Neuroscience}, \emph{18}(11), 1664-1671.
+
+Ly, A., Verhagen, A. J., & Wagenmakers, E.-J. (2016).
+Harold Jeffreys's default Bayes factor hypothesis tests: Explanation, extension, and application in psychology.
+\emph{Journal of Mathematical Psychology}, \emph{72}, 19-32.
 
 Rosenberg, M. D., Finn, E. S., Scheinost, D., Papademetris, X., Shen, X., Constable, R. T., Chun, M. M. (2016).
 A neuromarker of sustained attention from whole-brain functional connectivity.
@@ -59,10 +72,6 @@ How to quantify the evidence for the absence of a correlation.
 Wei, T. & Simko, V.(2017).
 R package "corrplot": Visualization of a correlation matrix (Version 0.84).
 Available from \url{https://github.com/taiyun/corrplot}
-
-Wetzels, R., & Wagenmakers, E. J. (2012).
-A default Bayesian hypothesis test for correlations and partial correlations.
-\emph{Psychonomic Bulletin & Review}, \emph{19}(6), 1057-1064.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

@@ -4,7 +4,7 @@
 \alias{ECO}
 \title{ECO Neural Network Filter}
 \usage{
-ECO(data, weighted = TRUE, binary = FALSE, directed = FALSE)
+ECO(data, weighted = TRUE, directed = FALSE)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
@@ -12,10 +12,6 @@ ECO(data, weighted = TRUE, binary = FALSE, directed = FALSE)
 \item{weighted}{Should network be weighted?
 Defaults to TRUE.
 Set to FALSE to produce an unweighted (binary) network}
-
-\item{binary}{Is dataset dichotomous?
-Defaults to FALSE.
-Set to TRUE if dataset is dichotomous (tetrachoric correlations are computed)}
 
 \item{directed}{Is the network directed?
 Defaults to FALSE.
@@ -28,6 +24,7 @@ A sparse association matrix
 Applies the ECO neural network filtering method
 }
 \examples{
+\dontrun{
 weighted_undirected_ECOnetwork<-ECO(hex)
 
 unweighted_undirected_ECOnetwork<-ECO(hex,weighted=FALSE)
@@ -35,14 +32,7 @@ unweighted_undirected_ECOnetwork<-ECO(hex,weighted=FALSE)
 weighted_directed_ECOnetwork<-ECO(hex,directed=TRUE)
 
 unweighted_directed_ECOnetwork<-ECO(hex,weighted=FALSE,directed=TRUE)
-
-weighted_undirected_binary_ECOnetwork<-ECO(hexb,binary=TRUE)
-
-unweighted_undirected_binary_ECOnetwork<-ECO(hexb,weighted=FALSE,binary=TRUE)
-
-weighted_directed_binary_ECOnetwork<-ECO(hexb,directed=TRUE,binary=TRUE)
-
-unweighted_directed_binary_ECOnetwork<-ECO(hexb,weighted=FALSE,directed=TRUE,binary=TRUE)
+}
 }
 \references{
 Fallani, F. D. V., Latora, V., & Chavez, M. (2017).

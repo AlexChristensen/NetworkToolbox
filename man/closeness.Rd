@@ -9,7 +9,9 @@ closeness(A, weighted = TRUE)
 \arguments{
 \item{A}{An adjacency matrix of network data}
 
-\item{weighted}{Is the network weighted? Defaults to TRUE. Set to FALSE for unweighted measure of closeness centrality}
+\item{weighted}{Is the network weighted?
+Defaults to TRUE.
+Set to FALSE for unweighted measure of closeness centrality}
 }
 \value{
 A vector of closeness centrality values for each node in the network
