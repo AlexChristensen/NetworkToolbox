@@ -5678,7 +5678,7 @@ cpmFPperm <- function (session1, session2, iter = 1000, progBar = TRUE)
 }
 #----
 #NEO-PI-3 Openness to Experience Data----
-#' #NEO-PI-3 Openness to Experience Data
+#'NEO-PI-3 Openness to Experience Data
 #' 
 #' A response matrix (n = 802) of NEO-PI-3's Openness to Experience
 #' from Christensen, Cotter, & Silvia (under review).

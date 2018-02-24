@@ -3,7 +3,7 @@
 \docType{data}
 \name{neoOpen}
 \alias{neoOpen}
-\title{#NEO-PI-3 Openness to Experience Data}
+\title{NEO-PI-3 Openness to Experience Data}
 \format{A 802x48 response matrix}
 \usage{
 data(neoOpen)
