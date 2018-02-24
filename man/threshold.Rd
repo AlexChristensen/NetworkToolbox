@@ -47,15 +47,15 @@ Filters the network based on an r-value, alpha, adaptive alpha (see Perez & Peri
 bonferroni, false-discovery rate (FDR, \emph{fdrtool} package), or proportional density (fixed number of edges) value
 }
 \examples{
-threshnet<-threshold(hex)
+threshnet<-threshold(neoOpen)
 
-alphanet<-threshold(hex, thresh = "alpha", a = .05)
+alphanet<-threshold(neoOpen, thresh = "alpha", a = .05)
 
-bonnet<-threshold(hex, thresh = "bonferroni", a = .05)
+bonnet<-threshold(neoOpen, thresh = "bonferroni", a = .05)
 
-FDRnet<-threshold(hex, thresh = "FDR", a = .10)
+FDRnet<-threshold(neoOpen, thresh = "FDR", a = .10)
 
-propnet<-threshold(hex, thresh = "proportional", a = .15)
+propnet<-threshold(neoOpen, thresh = "proportional", a = .15)
 }
 \references{
 Perez, M. E., & Pericchi, L. R. (2014).

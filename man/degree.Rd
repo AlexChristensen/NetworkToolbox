@@ -17,7 +17,7 @@ If directed network, returns a list of in-degree (inDegree), out-degree (outDegr
 Computes degree of each node in a network
 }
 \examples{
-A<-TMFG(hex)$A
+A<-TMFG(neoOpen)$A
 
 deg<-degree(A)
 }

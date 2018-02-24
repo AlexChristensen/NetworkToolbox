@@ -25,13 +25,13 @@ Applies the ECO neural network filtering method
 }
 \examples{
 \dontrun{
-weighted_undirected_ECOnetwork<-ECO(hex)
+weighted_undirected_ECOnetwork<-ECO(neoOpen)
 
-unweighted_undirected_ECOnetwork<-ECO(hex,weighted=FALSE)
+unweighted_undirected_ECOnetwork<-ECO(neoOpen,weighted=FALSE)
 
-weighted_directed_ECOnetwork<-ECO(hex,directed=TRUE)
+weighted_directed_ECOnetwork<-ECO(neoOpen,directed=TRUE)
 
-unweighted_directed_ECOnetwork<-ECO(hex,weighted=FALSE,directed=TRUE)
+unweighted_directed_ECOnetwork<-ECO(neoOpen,weighted=FALSE,directed=TRUE)
 }
 }
 \references{

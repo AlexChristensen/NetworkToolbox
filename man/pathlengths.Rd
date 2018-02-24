@@ -23,7 +23,7 @@ eccentricity (ecc),
 and diameter (D) of a network
 }
 \examples{
-A<-TMFG(hex)$A
+A<-TMFG(neoOpen)$A
 
 unweighted_PL<-pathlengths(A)
 

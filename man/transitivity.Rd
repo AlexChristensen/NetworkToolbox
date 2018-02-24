@@ -20,7 +20,7 @@ Returns a value of transitivity
 Computes transitivity of a network
 }
 \examples{
-A<-TMFG(hex)$A
+A<-TMFG(neoOpen)$A
 
 trans<-transitivity(A,weighted=TRUE)
 }

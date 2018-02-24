@@ -22,7 +22,7 @@ Computes impact measure of each node in a network
 Please see and cite Kenett et al., 2011)
 }
 \examples{
-A<-TMFG(hex)$A
+A<-TMFG(neoOpen)$A
 
 nodeimpact<-impact(A)
 }

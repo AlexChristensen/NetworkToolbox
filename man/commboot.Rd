@@ -12,16 +12,21 @@ commboot(data, normal = FALSE, n = nrow(data), iter = 100,
 \item{data}{A set of data}
 
 \item{normal}{Should data be transform to a normal distribution?
-Defaults to FALSE. Data is not transformed to be normal.
+Defaults to FALSE.
+Data is not transformed to be normal.
 Set to TRUE if data should be transformed to be normal}
 
-\item{n}{Number of people to use in the bootstrap. Defaults to full sample size}
+\item{n}{Number of people to use in the bootstrap.
+Defaults to full sample size}
 
-\item{iter}{Number of bootstrap iterations. Defaults to 100 iterations}
+\item{iter}{Number of bootstrap iterations.
+Defaults to 100 iterations}
 
-\item{filter}{Set filter method. Defaults to "TMFG"}
+\item{filter}{Set filter method.
+Defaults to "TMFG"}
 
-\item{method}{Defaults to "louvain". Set to "walktrap" for the walktrap algorithm}
+\item{method}{Defaults to "walktrap".
+Set to "louvain" for the louvain community detection algorithm}
 
 \item{na.data}{How should missing data be handled?
 For "pairwise" deletion \emph{na.rm} is applied.
@@ -30,7 +35,9 @@ For "listwise" deletion the \emph{na.omit} fucntion is applied.
 Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 
-\item{steps}{Number of steps to use in the walktrap algorithm. Defaults to 4. Use a larger number of steps for smaller networks}
+\item{steps}{Number of steps to use in the walktrap algorithm.
+Defaults to 4.
+Use a larger number of steps for smaller networks}
 
 \item{...}{Additional arguments for network filtering methods}
 }
@@ -38,13 +45,13 @@ Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 The factors and their proportion found across bootstrapped samples (i.e., their likelihood)
 }
 \description{
-Bootstraps the sample with replace to compute walktrap reliability (still in testing phase)
+Bootstraps the sample with replace to compute walktrap reliability
 }
 \examples{
 \dontrun{
-commTMFG<-commboot(hex)
+commTMFG<-commboot(neoOpen)
 
-commThreshold<-commboot(hex,filter="threshold")
+commThreshold<-commboot(neoOpen,filter="threshold")
 }
 }
 \references{

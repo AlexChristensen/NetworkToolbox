@@ -24,9 +24,9 @@ and the correlation between the edges that replicate for both networks (correlat
 Computes the number of edges that replicate between two cross-sectional networks
 }
 \examples{
-A<-TMFG(hex)$A
+A<-TMFG(neoOpen)$A
 
-B<-MaST(hex)
+B<-MaST(neoOpen)
 
 edges<-edgerep(A,B)
 }

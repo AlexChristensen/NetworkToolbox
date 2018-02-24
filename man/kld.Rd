@@ -28,11 +28,11 @@ Matrices \strong{must} be positive definite for accurate measurement.
 This is not a quantitative metric
 }
 \examples{
-A1 <- cov(hex)
+A1 <- cov(neoOpen)
 
-A2 <- solve(LoGo(hex))
+A2 <- solve(LoGo(neoOpen)$logo)
 
-kld_value <- kld(A1, A2, hex)
+kld_value <- kld(A1, A2, neoOpen)
 
 }
 \references{

@@ -25,7 +25,7 @@ Returns a list of community and Q
 Computes a vector of communities (community) and a global modularity measure (Q)
 }
 \examples{
-A<-TMFG(hex)$A
+A<-TMFG(neoOpen)$A
 
 modularity<-louvain(A)
 }

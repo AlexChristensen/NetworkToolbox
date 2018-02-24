@@ -20,7 +20,7 @@ A vector of eigenvector centrality values for each node in the network
 Computes eigenvector centrality of each node in a network
 }
 \examples{
-A<-TMFG(hex)$A
+A<-TMFG(neoOpen)$A
 
 weighted_EC<-eigenvector(A)
 

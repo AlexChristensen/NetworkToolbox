@@ -20,7 +20,7 @@ Returns a list of betweenness, closeness, degree (weighted = strength), eigenvec
 Computes centrality measures of the network
 }
 \examples{
-A<-TMFG(hex)$A
+A<-TMFG(neoOpen)$A
 
 weighted_centralitylist<-centlist(A)
 

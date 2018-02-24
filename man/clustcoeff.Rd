@@ -20,7 +20,7 @@ Returns a list of CC and CCi
 Computes global clustering coefficient (CC) and local clustering coefficient (CCi)
 }
 \examples{
-A<-TMFG(hex)$A
+A<-TMFG(neoOpen)$A
 
 unweighted_CC<-clustcoeff(A)
 

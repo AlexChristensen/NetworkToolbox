@@ -17,7 +17,7 @@ If directed network, returns a list of in-strength (inStrength), out-strength (o
 Computes strength of each node in a network
 }
 \examples{
-A<-TMFG(hex)$A
+A<-TMFG(neoOpen)$A
 
 str<-strength(A)
 }

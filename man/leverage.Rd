@@ -20,7 +20,7 @@ Computes leverage centrlaity of each node in a network (the degree of connected 
 (Please see and cite Joyce et al., 2010)
 }
 \examples{
-A<-TMFG(hex)$A
+A<-TMFG(neoOpen)$A
 
 weighted_lev<-leverage(A)
 

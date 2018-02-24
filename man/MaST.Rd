@@ -38,10 +38,10 @@ A sparse association matrix
 Applies the Maximum Spanning Tree (MaST) filtering method
 }
 \examples{
-weighted_MaSTnetwork<-MaST(hex)
+weighted_MaSTnetwork<-MaST(neoOpen)
 
 
-unweighted_MaSTnetwork<-MaST(hex,weighted=FALSE)
+unweighted_MaSTnetwork<-MaST(neoOpen,weighted=FALSE)
 
 }
 \references{

@@ -44,13 +44,15 @@ Bootstraps (without replacement) the nodes in the network and computes global ne
 }
 \examples{
 \dontrun{
-semTMFG<-semnetboot(hex)
+lowO <- subset(animals, Group==1)[-1]
 
-semLoGo<-semnetboot(hex,method="LoGo")
+semPMFG<-semnetboot(lowO)
 
-semMaST<-semnetboot(hex,method="MaST")
+semLoGo<-semnetboot(lowO,method="LoGo")
 
-semThreshold<-semnetboot(hex,method="threshold")
+semMaST<-semnetboot(lowO,method="MaST")
+
+semThreshold<-semnetboot(lowO,method="threshold")
 }
 }
 \references{

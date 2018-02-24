@@ -4,11 +4,15 @@
 \alias{PMFG}
 \title{Planar Maximally Filtered Graph}
 \usage{
-PMFG(data, normal = FALSE, weighted = TRUE, na.data = c("pairwise",
-  "listwise", "fiml"), progBar = TRUE)
+PMFG(data, sparseList = FALSE, normal = FALSE, weighted = TRUE,
+  na.data = c("pairwise", "listwise", "fiml"), progBar = TRUE)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
+
+\item{sparseList}{Should a sparse matrix be returned?
+Defaults to FALSE.
+Set to TRUE to return a sparse matrix list}
 
 \item{normal}{Should data be transform to a normal distribution?
 Defaults to FALSE. Data is not transformed to be normal.
@@ -40,7 +44,7 @@ Currently very slow! (efficiency updates soon to come)
 }
 \examples{
 \dontrun{
-weighted_PMFGnetwork<-PMFG(hex)
+weighted_PMFGnetwork<-PMFG(neoOpen)
 }
 }
 \references{

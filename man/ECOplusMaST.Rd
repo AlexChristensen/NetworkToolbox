@@ -20,7 +20,7 @@ A sparse association matrix
 Applies the ECO neural network filtering method combined with the MaST filtering method
 }
 \examples{
-weighted_ECOplusMaSTnetwork<-ECOplusMaST(hex)
+weighted_ECOplusMaSTnetwork<-ECOplusMaST(neoOpen)
 }
 \references{
 Fallani, F. D. V., Latora, V., & Chavez, M. (2017).

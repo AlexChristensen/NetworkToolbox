@@ -41,7 +41,8 @@ Defaults to TRUE.
 Set to FALSE for no progress bar}
 }
 \value{
-Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), mean absolute error (mae), root mean square error (rmse)). The list also contains the positive (posMask) and negative (negMask) masks used
+Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), mean absolute error (mae), root mean square error (rmse)).
+The list also contains the positive (posMask) and negative (negMask) masks, which can be visualized here: \url{http://bisweb.yale.edu/build/connviewer.html}
 }
 \description{
 Applies the Connectome-based Predictive Modeling approach to neural data.

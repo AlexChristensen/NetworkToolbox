@@ -22,7 +22,7 @@ and their respective sample sizes (trainSize and testSize)
 Randomly splits sample into equally divded sub-samples
 }
 \examples{
-splithalf<-splitsamp(hex)
+splithalf<-splitsamp(neoOpen)
 }
 \references{
 Forbes, M. K., Wright, A. G. C., Markon, K. E., & Krueger, R. F. (2017a).

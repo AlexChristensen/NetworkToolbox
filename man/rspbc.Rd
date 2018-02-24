@@ -21,7 +21,7 @@ Computes betweenness centrlaity based on randomized shortest paths of each node 
 (Please see and cite Kivimaki et al., 2016)
 }
 \examples{
-A<-TMFG(hex)$A
+A<-TMFG(neoOpen)$A
 
 rspbc<-rspbc(A, beta=0.01)
 }

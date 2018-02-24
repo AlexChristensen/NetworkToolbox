@@ -21,9 +21,13 @@ modularity (Q),
 and small-worldness (S; defaults to "rand" and 100 iterations)
 }
 \examples{
-A<-TMFG(hex)$A
+\dontrun{
+lowO <- subset(animals, Group==1)[-1]
+
+A<-PMFG(lowO)
 
 globmeas<-semnetmeas(A)
+}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

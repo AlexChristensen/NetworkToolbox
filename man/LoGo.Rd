@@ -4,10 +4,15 @@
 \alias{LoGo}
 \title{Local/Global Sparse Inverse Covariance Matrix}
 \usage{
-LoGo(data, normal = FALSE, na.data = c("pairwise", "listwise", "fiml"))
+LoGo(data, partial = FALSE, normal = FALSE, na.data = c("pairwise",
+  "listwise", "fiml"))
 }
 \arguments{
 \item{data}{Must be a dataset}
+
+\item{partial}{Should the network's connections be the partial correlation between two nodes given all other nodes?
+Defaults to FALSE, which returns a sparse inverse covariance matrix.
+Set to TRUE for partial correlation matrix}
 
 \item{normal}{Should data be transform to a normal distribution?
 Defaults to FALSE. Data is not transformed to be normal.
@@ -21,18 +26,17 @@ Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 }
 \value{
-Returns a sparse TMFG-filtered inverse covariance matrix
-(can be converted to a zero-order partial correlation matrix using the \emph{-cov2cor} function; see examples)
+Returns a list containing the TMFG-filtered matrix (tmfg)
+and the sparse TMFG-filtered inverse covariance matrix (logo)
 }
 \description{
 Applies the Local/Global method to estimate the sparse inverse covariance matrix using a TMFG-filtered network
 (see and cite Barfuss et al., 2016)
 }
 \examples{
-LoGonet<-LoGo(hex)
+LoGonet<-LoGo(neoOpen)$logo
 
-corrLoGonet<-(-cov2cor(LoGonet))
-diag(corrLoGonet)<-0
+TMFGnet<-LoGo(neoOpen)$tmfg
 }
 \references{
 Barfuss, W., Massara, G. P., Di Matteo, T., & Aste, T. (2016).

@@ -31,7 +31,7 @@ while < 0 indicates a more regular network and > 0 indicates a more random netwo
 Computes the small-worldness measure of a network
 }
 \examples{
-A<-TMFG(hex)$A
+A<-TMFG(neoOpen)$A
 
 swmHG <- smallworldness(A, method="HG")
 

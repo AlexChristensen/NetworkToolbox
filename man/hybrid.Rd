@@ -4,10 +4,17 @@
 \alias{hybrid}
 \title{Hybrid Centrality}
 \usage{
-hybrid(A)
+hybrid(A, BC = c("standard", "random", "average"), beta)
 }
 \arguments{
 \item{A}{An adjacency matrix of network data}
+
+\item{BC}{How should the betweenness centrality be computed?
+Defaults to "standard".
+Set to "random" for rspbc.
+Set to "average" for the average of "standard" and "random"}
+
+\item{beta}{Beta parameter to be passed to the \emph{rspbc} function}
 }
 \value{
 A vector of hybrid centrality values for each node in the network
@@ -17,7 +24,7 @@ A vector of hybrid centrality values for each node in the network
 Computes hybrid centrality of each node in a network
 }
 \examples{
-A<-TMFG(hex)$A
+A<-TMFG(neoOpen)$A
 
 HC<-hybrid(A)
 }

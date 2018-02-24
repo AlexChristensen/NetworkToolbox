@@ -20,7 +20,7 @@ A distance matrix of the network
 Computes distance matrix of the network
 }
 \examples{
-A<-TMFG(hex)$A
+A<-TMFG(neoOpen)$A
 
 unweighted_D<-distance(A)
 

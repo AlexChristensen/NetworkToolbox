@@ -16,9 +16,9 @@ Returns an adjancency matrix of 1's and 0's
 Converts weighted adjacency matrix to a binarized adjacency matrix
 }
 \examples{
-net<-TMFG(hex)$A
+net<-TMFG(neoOpen)$A
 
-hexb<-binarize(net)
+psyb<-binarize(net)
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

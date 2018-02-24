@@ -38,10 +38,10 @@ Applies the Triangulated Maximally Filtered Graph (TMFG) filtering method
 (Please see and cite Massara et al., 2016)
 }
 \examples{
-weighted_TMFGnetwork<-TMFG(hex)
+weighted_TMFGnetwork<-TMFG(neoOpen)
 
 
-unweighted_TMFGnetwork<-TMFG(hex,weighted=FALSE)
+unweighted_TMFGnetwork<-TMFG(neoOpen,weighted=FALSE)
 
 }
 \references{

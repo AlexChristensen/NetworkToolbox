@@ -22,10 +22,10 @@
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
 #' @return Returns a list of the adjacency matrix (A), separators (separators), and cliques (cliques)
 #' @examples
-#' weighted_TMFGnetwork<-TMFG(hex)
+#' weighted_TMFGnetwork<-TMFG(neoOpen)
 #' 
 #' 
-#' unweighted_TMFGnetwork<-TMFG(hex,weighted=FALSE)
+#' unweighted_TMFGnetwork<-TMFG(neoOpen,weighted=FALSE)
 #' 
 #' @references 
 #' Massara, G. P., Di Matteo, T., & Aste, T. (2016).
@@ -230,6 +230,9 @@ TMFG <-function (data, normal = FALSE, weighted = TRUE, depend = FALSE,
 #' @description Applies the Local/Global method to estimate the sparse inverse covariance matrix using a TMFG-filtered network
 #' (see and cite Barfuss et al., 2016)
 #' @param data Must be a dataset
+#' @param partial Should the network's connections be the partial correlation between two nodes given all other nodes?
+#' Defaults to FALSE, which returns a sparse inverse covariance matrix.
+#' Set to TRUE for partial correlation matrix
 #' @param normal Should data be transform to a normal distribution?
 #' Defaults to FALSE. Data is not transformed to be normal.
 #' Set to TRUE if data should be transformed to be normal
@@ -239,13 +242,12 @@ TMFG <-function (data, normal = FALSE, weighted = TRUE, depend = FALSE,
 #' For "listwise" deletion the \emph{na.omit} fucntion is applied.
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
-#' @return Returns a sparse TMFG-filtered inverse covariance matrix
-#' (can be converted to a zero-order partial correlation matrix using the \emph{-cov2cor} function; see examples)
+#' @return Returns a list containing the TMFG-filtered matrix (tmfg)
+#' and the sparse TMFG-filtered inverse covariance matrix (logo)
 #' @examples
-#' LoGonet<-LoGo(hex)
+#' LoGonet<-LoGo(neoOpen)$logo
 #' 
-#' corrLoGonet<-(-cov2cor(LoGonet))
-#' diag(corrLoGonet)<-0
+#' TMFGnet<-LoGo(neoOpen)$tmfg
 #' @references 
 #' Barfuss, W., Massara, G. P., Di Matteo, T., & Aste, T. (2016).
 #' Parsimonious modeling with information filtering networks.
@@ -255,7 +257,8 @@ TMFG <-function (data, normal = FALSE, weighted = TRUE, depend = FALSE,
 #' @importFrom psych corFiml
 #' @export
 #LoGo Sparse Inverse Covariance Matrix----
-LoGo <- function (data, normal = FALSE, na.data = c("pairwise","listwise","fiml"))
+LoGo <- function (data, partial = FALSE, normal = FALSE, 
+                  na.data = c("pairwise","listwise","fiml"))
 {
     #corrlation to covariance
     cor2cov <- function (A, data)
@@ -268,7 +271,6 @@ LoGo <- function (data, normal = FALSE, na.data = c("pairwise","listwise","fiml"
         
         return(S)
     }
-    
     
     #missing data handling
     if(missing(na.data))
@@ -308,14 +310,14 @@ LoGo <- function (data, normal = FALSE, na.data = c("pairwise","listwise","fiml"
     
     #corrlation matrix
     if(nrow(data)==ncol(data)){
-    cormat<-data
-    S<-cor2cov(cormat,data)
+        cormat<-data
+        S<-cor2cov(cormat,data)
     }else if(normal){
-    cormat<-qgraph::cor_auto(data)
-    S<-cor2cov(cormat,data)
+        cormat<-qgraph::cor_auto(data)
+        S<-cor2cov(cormat,data)
     }else{
-    cormat<-cor(data)
-    S<-cov(data)
+        cormat<-cor(data)
+        S<-cov(data)
     }
     
     tmfg<-TMFG(cormat)
@@ -329,16 +331,20 @@ LoGo <- function (data, normal = FALSE, na.data = c("pairwise","listwise","fiml"
     {v<-cliques[i,]
     Jlogo[v,v]<-Jlogo[v,v]+solve(S[v,v])}
     
-    for(i in 1:nrow(separators))
+        for(i in 1:nrow(separators))
+        {v<-separators[i,]
+        Jlogo[v,v]<-Jlogo[v,v]-solve(S[v,v])}
+    
+    if(partial)
     {
-        v<-separators[i,]
-        Jlogo[v,v]<-Jlogo[v,v]-solve(S[v,v])
+        Jlogo<-(-cov2cor(Jlogo))
+        diag(Jlogo)<-0
     }
     
     colnames(Jlogo)<-colnames(data)
     row.names(Jlogo)<-colnames(data)
     
-    return(Jlogo)
+    return(list(logo=Jlogo,tmfg=tmfg$A))
 }
 #----
 #' Planar Maximally Filtered Graph
@@ -346,6 +352,9 @@ LoGo <- function (data, normal = FALSE, na.data = c("pairwise","listwise","fiml"
 #' (see and cite Tumminello et al., 2005).
 #' Currently very slow! (efficiency updates soon to come)
 #' @param data Can be a dataset or a correlation matrix
+#' @param sparseList Should a sparse matrix be returned?
+#' Defaults to FALSE.
+#' Set to TRUE to return a sparse matrix list
 #' @param normal Should data be transform to a normal distribution?
 #' Defaults to FALSE. Data is not transformed to be normal.
 #' Set to TRUE if data should be transformed to be normal
@@ -365,7 +374,7 @@ LoGo <- function (data, normal = FALSE, na.data = c("pairwise","listwise","fiml"
 #' @return Returns a PMFG-filtered associaton matrix
 #' @examples
 #' \dontrun{
-#' weighted_PMFGnetwork<-PMFG(hex)
+#' weighted_PMFGnetwork<-PMFG(neoOpen)
 #' }
 #' @references
 #' Tumminello, M., Aste, T., Di Matteo, T., & Mantegna, R. N. (2005).
@@ -375,10 +384,9 @@ LoGo <- function (data, normal = FALSE, na.data = c("pairwise","listwise","fiml"
 #' @importFrom utils installed.packages
 #' @export
 #PMFG Filtering Method----
-PMFG <- function (data, normal = FALSE, weighted = TRUE,
+PMFG <- function (data, sparseList = FALSE, normal = FALSE, weighted = TRUE,
                   na.data = c("pairwise","listwise","fiml"), progBar = TRUE)
 {
-    
     if(!"RBGL" %in% rownames(installed.packages()))
     {
         cat("In order to perform this function, please copy code below to install: RBGL and graph packages",sep="\n")
@@ -524,6 +532,7 @@ PMFG <- function (data, normal = FALSE, weighted = TRUE,
     while(E < 3*(ncol(data)-2))
     {
         ii<-ii+1
+        
         P1[ijw[ii,1],ijw[ii,2]]<-ijw[ii,3]
         P1[ijw[ii,2],ijw[ii,1]]<-ijw[ii,3]
         
@@ -531,19 +540,20 @@ PMFG <- function (data, normal = FALSE, weighted = TRUE,
         
         g<-as_graphnel(graph)
         
-        if(RBGL::boyerMyrvoldPlanarityTest(g)==TRUE)
-        {
-            P<-P1
-            E<-E+1
-            
-            if(progBar==TRUE)
-            {setTxtProgressBar(pb, E)}
-        }else{P1<-P}
+            if(RBGL::boyerMyrvoldPlanarityTest(g)==TRUE)
+            {
+                P<-P1
+                E<-E+1
+                
+                if(progBar==TRUE)
+                {setTxtProgressBar(pb, E)}
+            }else{P1<-P}
         
         if(ii>(ncol(data)*(ncol(data)-1)/2))
         {print("PMFG not found")}
         
     }
+        
     if(progBar==TRUE)
     {close(pb)}
     
@@ -552,7 +562,20 @@ PMFG <- function (data, normal = FALSE, weighted = TRUE,
     if(!weighted)
     {pmfg<-ifelse(pmfg!=0,1,0)}
     
-    return(pmfg)
+    if(sparseList)
+    {
+        pmfg<-ifelse(pmfg!=0,1,0)
+    
+        i<-as.vector(rep(1:ncol(data),ncol(data)))
+        j<-sort(as.vector(rep(1:ncol(data),ncol(data))))
+        w<-as.vector(pmfg)
+    
+        List<-cbind(i,j,w)
+        List<-ifelse(List[,3]==0,NA,List)
+        List<-na.omit(List)
+    }
+    
+    return(list(pmfg=pmfg, List=List))
 }
 #----
 #' Maximum Spanning Tree
@@ -577,10 +600,10 @@ PMFG <- function (data, normal = FALSE, weighted = TRUE,
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
 #' @return A sparse association matrix
 #' @examples
-#' weighted_MaSTnetwork<-MaST(hex)
+#' weighted_MaSTnetwork<-MaST(neoOpen)
 #' 
 #' 
-#' unweighted_MaSTnetwork<-MaST(hex,weighted=FALSE)
+#' unweighted_MaSTnetwork<-MaST(neoOpen,weighted=FALSE)
 #' 
 #' @references 
 #' Adapted from: \url{https://www.mathworks.com/matlabcentral/fileexchange/23276-maximum-weight-spanning-tree--undirected}
@@ -738,13 +761,13 @@ return(x)
 #' @return A sparse association matrix
 #' @examples
 #' \dontrun{
-#' weighted_undirected_ECOnetwork<-ECO(hex)
+#' weighted_undirected_ECOnetwork<-ECO(neoOpen)
 #' 
-#' unweighted_undirected_ECOnetwork<-ECO(hex,weighted=FALSE)
+#' unweighted_undirected_ECOnetwork<-ECO(neoOpen,weighted=FALSE)
 #' 
-#' weighted_directed_ECOnetwork<-ECO(hex,directed=TRUE)
+#' weighted_directed_ECOnetwork<-ECO(neoOpen,directed=TRUE)
 #' 
-#' unweighted_directed_ECOnetwork<-ECO(hex,weighted=FALSE,directed=TRUE)
+#' unweighted_directed_ECOnetwork<-ECO(neoOpen,weighted=FALSE,directed=TRUE)
 #' }
 #' @references 
 #' Fallani, F. D. V., Latora, V., & Chavez, M. (2017).
@@ -812,7 +835,7 @@ ECO <- function (data, weighted = TRUE, directed = FALSE)
 #' Set to FALSE to produce an unweighted (binary) network
 #' @return A sparse association matrix
 #' @examples
-#' weighted_ECOplusMaSTnetwork<-ECOplusMaST(hex)
+#' weighted_ECOplusMaSTnetwork<-ECOplusMaST(neoOpen)
 #' @references 
 #' Fallani, F. D. V., Latora, V., & Chavez, M. (2017).
 #' A topological criterion for filtering information in complex brain networks.
@@ -879,15 +902,15 @@ ECOplusMaST <- function (data, weighted = TRUE)
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
 #' @return Returns a list containing a filtered adjacency matrix (A) and the critical r value (r.cv)
 #' @examples
-#' threshnet<-threshold(hex)
+#' threshnet<-threshold(neoOpen)
 #' 
-#' alphanet<-threshold(hex, thresh = "alpha", a = .05)
+#' alphanet<-threshold(neoOpen, thresh = "alpha", a = .05)
 #' 
-#' bonnet<-threshold(hex, thresh = "bonferroni", a = .05)
+#' bonnet<-threshold(neoOpen, thresh = "bonferroni", a = .05)
 #' 
-#' FDRnet<-threshold(hex, thresh = "FDR", a = .10)
+#' FDRnet<-threshold(neoOpen, thresh = "FDR", a = .10)
 #' 
-#' propnet<-threshold(hex, thresh = "proportional", a = .15)
+#' propnet<-threshold(neoOpen, thresh = "proportional", a = .15)
 #' @references
 #' Perez, M. E., & Pericchi, L. R. (2014).
 #' Changing statistical significance with the amount of information: The adaptive \emph{a} significance level.
@@ -1036,7 +1059,7 @@ threshold <- function (data, a,
 #' Set to FALSE for unweighted measure of betwenness centrality
 #' @return A vector of betweenness centrality values for each node in the network
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #' 
 #' weighted_BC<-betweenness(A)
 #' 
@@ -1172,7 +1195,7 @@ betweenness <- function (A, weighted = TRUE)
 #' Beta > 0.01 measure gets closer to weighted betweenness centrality (10) and beta < 0.01 measure gets closer to degree (.0001)
 #' @return A vector of randomized shortest paths betweenness centrality values for each node in the network
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #' 
 #' rspbc<-rspbc(A, beta=0.01)
 #' @references 
@@ -1232,7 +1255,7 @@ rspbc <- function (A, beta = 0.01)
 #' Set to FALSE for unweighted measure of closeness centrality
 #' @return A vector of closeness centrality values for each node in the network
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #'
 #' weighted_LC<-closeness(A)
 #' 
@@ -1268,7 +1291,7 @@ closeness <- function (A, weighted = TRUE)
 #' @return A vector of degree values for each node in the network.
 #' If directed network, returns a list of in-degree (inDegree), out-degree (outDegree), and relative influence (relInf)
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #' 
 #' deg<-degree(A)
 #' @references 
@@ -1304,7 +1327,7 @@ degree <- function (A)
 #' @return A vector of strength values for each node in the network.
 #' If directed network, returns a list of in-strength (inStrength), out-strength (outStrength), and relative influence (relInf)
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #' 
 #' str<-strength(A)
 #' @references 
@@ -1340,7 +1363,7 @@ strength <- function (A)
 #' Set to FALSE for unweighted measure of eigenvector centrality
 #' @return A vector of eigenvector centrality values for each node in the network
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #' 
 #' weighted_EC<-eigenvector(A)
 #' 
@@ -1375,7 +1398,7 @@ eigenvector <- function (A, weighted = TRUE)
 #' Set to FALSE for unweighted measure of leverage centrality
 #' @return A vector of leverage centrality values for each node in the network
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #' 
 #' weighted_lev<-leverage(A)
 #'
@@ -1417,7 +1440,7 @@ leverage <- function (A, weighted = TRUE)
 #' @return A vector of node impact values for each node in the network
 #' (impact > 0, greater ASPL; impact < 0, lower ASPL)
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #' 
 #' nodeimpact<-impact(A)
 #' @references 
@@ -1455,10 +1478,15 @@ impact <- function (A, progBar = TRUE)
 #' Hybrid Centrality
 #' @description Computes hybrid centrality of each node in a network
 #' @param A An adjacency matrix of network data
+#' @param BC How should the betweenness centrality be computed?
+#' Defaults to "standard".
+#' Set to "random" for rspbc.
+#' Set to "average" for the average of "standard" and "random"
+#' @param beta Beta parameter to be passed to the \emph{rspbc} function
 #' @return A vector of hybrid centrality values for each node in the network
 #' (higher values are more central, lower values are more peripheral)
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #' 
 #' HC<-hybrid(A)
 #' @references 
@@ -1468,12 +1496,31 @@ impact <- function (A, progBar = TRUE)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Hybrid Centality----
-hybrid <- function (A)
+hybrid <- function (A, BC = c("standard","random","average"), beta)
 {
+  if(missing(BC))
+  {BC<-"standard"
+  }else{BC<-match.arg(BC)}
+
+  if(missing(beta))
+  {beta<-.01
+  }else{beta<-beta}
+    
   if(nrow(A)!=ncol(A))
   {stop("Input not an adjacency matrix")}
-  BCu<-betweenness(A,weighted=FALSE)
-  BCw<-betweenness(A)
+    if(BC=="standard")
+    {
+        BCu<-betweenness(A,weighted=FALSE)
+        BCw<-betweenness(A)
+    }else if(BC=="random")
+    {
+        BCu<-rspbc(binarize(A),beta=beta)
+        BCw<-rspbc(A,beta=beta)
+    }else if(BC=="average")
+    {
+        BCu<-rowMeans(cbind(betweenness(A,weighted=FALSE),rspbc(binarize(A))))
+        BCw<-rowMeans(cbind(betweenness(A),rspbc(A)))
+    }
   CCu<-closeness(A,weighted=FALSE)
   CCw<-closeness(A)
   if(isSymmetric(A))
@@ -1501,12 +1548,195 @@ hybrid <- function (A)
             #rank(levw,ties.method="max")-
             #rev(rank(Eu,ties.method="max"))+
             #rev(rank(Ew,ties.method="max"))-
-            8)/(8*((ncol(A))-8)))
+            8)/(8*((ncol(A))-1)))
   hybrid<-round(as.data.frame(hybrid),3)
   colnames(hybrid)<-c("HC")
   rownames(hybrid)<-colnames(A)
   hybrid<-as.matrix(hybrid)
   return(hybrid)
+}
+#----
+#' Network Adjusted Mean/Sum
+#' @description The hybrid centrality is used to adjust the mean or sum score of participant's factor scores based on each node's centrality.
+#' Each participant's response values are multipled by the corresponding hybrid centrality value (uses "average" for BC argument).
+#' In this way, more central nodes contribute a greater score and less central nodes contribute a lesser score
+#' @param data Must be a dataset
+#' @param A Adjacency matrix that has already been filtered
+#' @param adjusted Should adjusted values be the mean or sum score?
+#' Defaults to "mean".
+#' Set to "sum" for sum scores
+#' @param factors Can be a vector of factor assignments or community detection algorithms
+#' ("walktrap" or "louvain")can be used to determine the number of factors.
+#' Defaults to 1 factor.
+#' Set to "walktrap" for the walktrap algortihm.
+#' Set to "louvain" for louvain community detection
+#' @param method A network filtering method.
+#' Defaults to "TMFG".
+#' The "threshold" option is set to the default arguments (thresh = "alpha", a = .05).
+#' To use additional arguments for "threshold", apply \emph{threshold} function with
+#' desired arguments and set to "none".
+#' Use "none" for an adjacency matrix that has already been filtered
+#' @param normal Should data be transform to a normal distribution?
+#' Defaults to FALSE. Data is not transformed to be normal.
+#' Set to TRUE if data should be transformed to be normal
+#' (computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)
+#' @param na.data How should missing data be handled?
+#' For "pairwise" deletion \emph{na.rm} is applied.
+#' For "listwise" deletion the \emph{na.omit} fucntion is applied.
+#' Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
+#' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
+#' @param ... Additional arguments for community detection algorithms
+#' @return Returns a list of the network adjusted score (NetAdjScore)
+#' and the items associated with the specified or identified factors (FactorItems)
+#' @examples
+#' 
+#' sumadj <- nams(neoOpen, adjusted = "sum")
+#' 
+#' knownfactors <- nams(neoOpen, method = "threshold",
+#' factors = c(rep(1,6),rep(2,6),rep(3,6),rep(4,6),rep(5,6),rep(6,6)))
+#' 
+#' walkadj <- nams(neoOpen, method = "none", factors = "walktrap")
+#' 
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Network Adjusted Mean/Sum----
+nams <- function (data, A,
+                  adjusted = c("mean","sum"),
+                  factors = c("walktrap","louvain"),
+                  method = c("TMFG","LoGo","PMFG","threshold", "none"),
+                  normal = FALSE, na.data = c("pairwise","listwise","fiml"), ...)
+{
+    if(missing(data))
+    {stop("Dataset is required for analysis")}
+    
+    if(missing(A))
+    {A<-NULL}
+    
+    if(missing(adjusted))
+    {adjusted<-"mean"
+    }else(adjusted<-match.arg(adjusted))
+    
+    if(missing(factors))
+    {factors<-rep(1,ncol(data))}
+    
+    if(missing(method))
+    {method<-"TMFG"
+    }else{method<-match.arg(method)}
+    
+    #missing data handling
+    if(missing(na.data))
+    {
+        if(any(is.na(data)))
+        {stop("Missing values were detected! Set 'na.data' argument")
+        }else{na.data<-"none"}
+    }else{na.data<-match.arg(na.data)}
+    
+    if(na.data=="pairwise")
+    {
+        if(normal)
+        {cormat<-qgraph::cor_auto(data,missing=na.data)
+        }else{cormat<-psych::cor2(data,use=na.data)}
+    }else if(na.data=="listwise")
+    {
+        if(normal)
+        {cormat<-qgraph::cor_auto(data,missing=na.data)
+        }else{
+            rem<-na.action(na.omit(data))
+            warning(paste(length(na.action(na.omit(data)))),
+                    " rows were removed for missing data\nrow(s): ",
+                    paste(na.action(na.omit(data)),collapse = ", "))
+            data<-na.omit(data)
+        }
+    }else if(na.data=="fiml")
+    {
+        if(normal)
+        {cormat<-qgraph::cor_auto(data,missing=na.data)
+        }else{data<-psych::corFiml(data)}
+    }
+    
+    #corrlation matrix
+    if(nrow(data)==ncol(data)){cormat<-data
+    }else if(normal){cormat<-qgraph::cor_auto(data)
+    }else{cormat<-cor(data)}
+    
+    if(!is.numeric(factors))
+    {
+        if(method=="TMFG")
+        {net<-TMFG(cormat)$A
+        }else if(method=="LoGo")
+        {net<-TMFG(cormat)$A
+        }else if(method=="PMFG")
+        {net<-PMFG(cormat)
+        }else if(method=="threshold")
+        {net<-threshold(cormat)$A
+        }else if(method=="none")
+        {net<-cormat}
+        
+        if(factors=="walktrap")
+        {facts<-igraph::walktrap.community(igraph::as.igraph(qgraph::qgraph(net,DoNotPlot=TRUE)))$membership
+        }else if(factors=="louvain")
+        {facts<-louvain(net,...)$community}
+        
+    }else{facts<-factors}
+    
+    fact<-matrix(0,nrow=nrow(data),ncol=max(facts))
+    
+    for(i in 1:max(facts))
+    {
+        
+        if(method=="TMFG")
+        {A<-TMFG(data[,which(facts==i)])$A
+        }else if(method=="PMFG")
+        {A<-PMFG(data[,which(facts==i)])
+        }else if(method=="LoGo")
+        {A<-LoGo(data[,which(facts==i)])$logo
+        A<-(-cov2cor(A))
+        diag(A)<-1
+        }else if(method=="threshold")
+        {A<-threshold(data[,which(facts==i)])$A
+        }else if(method=="none")
+        {A<-cormat[which(facts==i),which(facts==i)]}
+        
+        hyb<-hybrid(A,BC="average")
+        
+        tdata<-t(data[,which(facts==i)])
+        
+        mat<-matrix(0,nrow=nrow(tdata),ncol=ncol(tdata))
+        
+        for(j in 1:ncol(tdata))
+        {mat[,j]<-hyb*tdata[,j]}
+        
+        if(adjusted=="mean")
+        {wei<-colMeans(mat)
+        }else if(adjusted=="sum")
+        {wei<-colSums(mat)}
+        
+        adj<-wei/mean(hyb)
+        
+        fact[,i]<-adj
+    }
+    
+    fact<-as.data.frame(fact)
+    
+    for(l in 1:nrow(data))
+    {row.names(fact)[l]<-paste("part",l,sep="")}
+    
+    for(k in 1:max(facts))
+        colnames(fact)[k]<-paste("factor",k,sep="")
+    
+    
+    ufacts<-unique(facts)
+    
+    matf<-matrix(0,nrow=length(ufacts),ncol=1)
+    
+    for(i in 1:length(ufacts))
+    {matf[i,]<-paste(colnames(data)[which(facts==ufacts[i])],collapse = ", ")}
+    
+    matf<-noquote(matf)
+    row.names(matf)<-ufacts
+    colnames(matf)<-"Factors"
+    
+    return(list(NetAdjScore=fact,FactorItems=matf))
 }
 #----
 #' List of Centrality Measures
@@ -1517,7 +1747,7 @@ hybrid <- function (A)
 #' Set to FALSE for unweighted list of centrality measures
 #' @return Returns a list of betweenness, closeness, degree (weighted = strength), eigenvector, and leverage centralities
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #' 
 #' weighted_centralitylist<-centlist(A)
 #' 
@@ -1557,7 +1787,7 @@ centlist <- function (A, weighted = TRUE)
 #' Set to TRUE for weighted measure of distance
 #' @return A distance matrix of the network
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #' 
 #' unweighted_D<-distance(A)
 #' 
@@ -1648,7 +1878,7 @@ distance<-function (A, weighted = FALSE)
 #' Set to TRUE for weighted measures of ASPL, ASPLi, ecc, and D
 #' @return Returns a list of ASPL, ASPLi, ecc, and D of a network
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #' 
 #' unweighted_PL<-pathlengths(A)
 #' 
@@ -1698,7 +1928,7 @@ pathlengths <- function (A, weighted = FALSE)
 #' Set to TRUE for weighted measures of CC and CCi
 #' @return Returns a list of CC and CCi
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #' 
 #' unweighted_CC<-clustcoeff(A)
 #' 
@@ -1751,7 +1981,7 @@ clustcoeff <- function (A, weighted = FALSE)
 #' Set to TRUE for a weighted measure of transitivity
 #' @return Returns a value of transitivity
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #' 
 #' trans<-transitivity(A,weighted=TRUE)
 #' @references 
@@ -1788,7 +2018,7 @@ transitivity <- function (A, weighted = FALSE)
 #' Set to "potts" for Potts model
 #' @return Returns a list of community and Q
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #' 
 #' modularity<-louvain(A)
 #' @references
@@ -1941,7 +2171,7 @@ louvain <- function (A, gamma, M0, method = c("modularity","potts"))
 #' For "TJHBL" values near 0 indicate a small-world network,
 #' while < 0 indicates a more regular network and > 0 indicates a more random network
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #'
 #' swmHG <- smallworldness(A, method="HG")
 #' 
@@ -2016,9 +2246,13 @@ smallworldness <- function (A, iter = 100, progBar = FALSE, method = c("HG","ran
 #' @param ... Additional arguments for ASPL and CC (weighted)
 #' @return Returns a values for ASPL, CC, Q, and S
 #' @examples
-#' A<-TMFG(hex)$A
+#' \dontrun{
+#' lowO <- subset(animals, Group==1)[-1]
+#' 
+#' A<-PMFG(lowO)
 #' 
 #' globmeas<-semnetmeas(A)
+#' }
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Semantic Network Measures----
@@ -2065,13 +2299,15 @@ semnetmeas <- function (A, ...)
 #' (origmeas; ASPL, CC, Q, S) and the bootstrapped semantic network measures (bootmeas)
 #' @examples 
 #' \dontrun{
-#' semTMFG<-semnetboot(hex)
+#' lowO <- subset(animals, Group==1)[-1]
 #' 
-#' semLoGo<-semnetboot(hex,method="LoGo")
+#' semPMFG<-semnetboot(lowO)
 #' 
-#' semMaST<-semnetboot(hex,method="MaST")
+#' semLoGo<-semnetboot(lowO,method="LoGo")
 #' 
-#' semThreshold<-semnetboot(hex,method="threshold")
+#' semMaST<-semnetboot(lowO,method="MaST")
+#' 
+#' semThreshold<-semnetboot(lowO,method="threshold")
 #' }
 #' @references
 #' Kenett, Y. N., Wechsler-Kashi, D., Kenett, D. Y., Schwartz, R. G., Ben Jacob, E., & Faust, M. (2013).
@@ -2166,7 +2402,7 @@ semnetboot <- function (data, method = c("PMFG","TMFG","LoGo","MaST","threshold"
         if(method=="TMFG")
         {samps[i,]<-suppressWarnings(semnetmeas(binarize(TMFG(cormat)$A)))
         }else if(method=="LoGo")
-        {l<-(-cov2cor(LoGo(mat)))
+        {l<-(-cov2cor(LoGo(mat)$logo))
         samps[i,]<-suppressWarnings(semnetmeas(l))
         }else if(method=="MaST")
         {samps[i,]<-suppressWarnings(semnetmeas(MaST(cormat,...)))
@@ -2183,7 +2419,7 @@ semnetboot <- function (data, method = c("PMFG","TMFG","LoGo","MaST","threshold"
     if(method=="TMFG")
     {tru<-suppressWarnings(semnetmeas(TMFG(data,...)$A))
     }else if(method=="LoGo")
-    {tru<-suppressWarnings(semnetmeas((-cov2cor(LoGo(data)))))
+    {tru<-suppressWarnings(semnetmeas((-cov2cor(LoGo(data)$logo))))
     }else if(method=="MaST")
     {tru<-suppressWarnings(semnetmeas(MaST(data,...)))
     }else if(method=="PMFG")
@@ -2211,9 +2447,9 @@ semnetboot <- function (data, method = c("PMFG","TMFG","LoGo","MaST","threshold"
 #' the sd of the difference between edges that replicate (sdDifference),
 #' and the correlation between the edges that replicate for both networks (correlation)
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #' 
-#' B<-MaST(hex)
+#' B<-MaST(neoOpen)
 #' 
 #' edges<-edgerep(A,B)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
@@ -2234,7 +2470,7 @@ if(!isSymmetric(B))
     if(all(rowSums(B)==colSums(B)))
     {B<-as.matrix(Matrix::forceSymmetric(B))
     }else{B<-B+t(B)
-    warning("Adjacency matrix A was made to be symmetric")}
+    warning("Adjacency matrix B was made to be symmetric")}
 }
 
 count<-0
@@ -2292,7 +2528,7 @@ count<-0
 #' the standard deviation (sd),
 #' and the sum of the edge weights (total) in the network
 #' @examples
-#' A<-TMFG(hex)$A
+#' A<-TMFG(neoOpen)$A
 #' 
 #' connectivity<-conn(A)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
@@ -2317,16 +2553,17 @@ conn <- function (A)
 }
 #----
 #' Bootstrapped Network Generalization
-#' @description Bootstraps the sample to identify the most stable correlations (still in testing)
+#' @description Bootstraps the sample to identify the most stable correlations
 #' @param data A set of data
 #' @param method A network filtering method.
 #' Defaults to "TMFG"
-#' @param thresh Threshold to remove less reliable and small correlations.
+#' @param bootThresh Threshold to remove less reliable and small correlations.
 #' Defaults to "adaptive," alters the alpha value based on sample size (generally recommended).
 #' Set to "BF" for Bayes factor (see and cite Ly et al., 2016 and Wagenmakers et al., 2016).
-#' If set to "BF", then a Bayes factor of > 3 is used (recommended for a large number of variables; > 100)
-#' @param a Alpha threshold hold for adaptive alpha (Perez & Pericchi, 2014).
-#' Defaults to .05
+#' If set to "BF", then a Bayes factor is used
+#' @param bootAlpha Alpha threshold hold for "adaptive" (Perez & Pericchi, 2014)
+#' and Bayes factor for "BF" (Ly et al., 2016; Wagenmakers et al., 2016).
+#' Defaults to .05 for "adaptive" and 3 for "BF"
 #' @param n Number of people to use in the bootstrap.
 #' Defaults to full sample size
 #' @param iter Number of bootstrap iterations.
@@ -2342,22 +2579,26 @@ conn <- function (A)
 #' For "listwise" deletion the \emph{na.omit} fucntion is applied.
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
+#' @param seeds Seeds to use for random number generation.
+#' Defaults to NULL.
+#' Input seeds from previous run (\strong{see examples})
 #' @param ... Additional arguments for filtering methods
 #' @return Returns a list that includes the original filtered network (orignet),
 #' correlation matrix of the mean bootstrapped network (bootmat),
-#' reliabilities of the connections in the original network (netrel),
-#' reliabilities of the connections in the bootstrapped network (bootrel),
-#' a plot of the bootrel reliability matrix (netrel; upper triangle = actual network reliabilites, bootrel; lower triangle = overall network reliablities),
-#' a plot of included correlations on their reliability (ConR)
+#' unfiltered reliabilities of all of the connections (netrel),
+#' seeds used in the random number generator (Seeds)
 #' @examples
 #' \dontrun{
-#' prepTMFG<-bootgen(hex)
+#' bootTMFG<-bootgen(neoOpen)
 #' 
-#' prepLoGo<-bootgen(hex,method="LoGo")
+#' #Replicates previous analysis
+#' repbootTMFG<-bootgen(neoOpen, seeds = bootTMFG$Seeds)
 #' 
-#' prepMaST<-bootgen(hex,method="MaST")
+#' bootLoGo<-bootgen(neoOpen,method="LoGo")
 #' 
-#' prepThreshold<-bootgen(hex,method="threshold")
+#' bootMaST<-bootgen(neoOpen,method="MaST")
+#' 
+#' bootThreshold<-bootgen(neoOpen,method="threshold")
 #' }
 #' @references
 #' Ly, A., Verhagen, A. J., & Wagenmakers, E.-J. (2016).
@@ -2375,28 +2616,30 @@ conn <- function (A)
 #' Wagenmakers, E. J., Verhagen, J., & Ly, A. (2016).
 #' How to quantify the evidence for the absence of a correlation.
 #' \emph{Behavior Research Methods}, \emph{48}(2), 413-426.
-#' 
-#' Wei, T. & Simko, V.(2017).
-#' R package "corrplot": Visualization of a correlation matrix (Version 0.84).
-#' Available from \url{https://github.com/taiyun/corrplot}
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
-#' @importFrom graphics abline plot text
-#' @importFrom stats lm na.omit cov2cor
+#' @importFrom stats cov2cor
 #' @importFrom utils txtProgressBar setTxtProgressBar
 #' @export
 #Bootstrap Network Generalization----
-bootgen <- function (data, method = c("MaST","PMFG","TMFG","LoGo","threshold"),
-                     thresh = c("adaptive","BF"),
+bootgen <- function (data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold"),
+                     bootThresh = c("adaptive", "BF"), bootAlpha = .05,
                      n = nrow(data), iter = 1000, normal = FALSE,
-                     na.data = c("pairwise","listwise","fiml"), a = .05, ...)
+                     na.data = c("pairwise", "listwise", "fiml"),
+                     seeds = NULL, ...)
 {
     if(missing(method))
     {method<-"TMFG"
     }else{method<-match.arg(method)}
     
-    if(missing(thresh))
-    {thresh<-"adaptive"
-    }else{thresh<-match.arg(thresh)}
+    if(missing(bootThresh))
+    {bootThresh<-"adaptive"
+    }else{bootThresh<-match.arg(bootThresh)}
+    
+    if(!is.null(seeds))
+    {
+        if(length(seeds)!=iter)
+        {iter<-length(seeds)}
+    }
     
     #missing data handling
     if(missing(na.data))
@@ -2437,7 +2680,12 @@ bootgen <- function (data, method = c("MaST","PMFG","TMFG","LoGo","threshold"),
     realmat<-cormat
     
     samps<-array(0,c(nrow=nrow(realmat),ncol=ncol(realmat),iter)) #Initialize sample matrix
+    
+    Seeds<-matrix(0,nrow=iter,ncol=1)
 
+    if(method=="LoGo")
+    {tsamps<-array(0,c(nrow=nrow(realmat),ncol=ncol(realmat),iter))}
+    
     #fisher's z
     fish <- function (r)
     {z<-.5*log((1+abs(r))/(1-abs(r)))
@@ -2448,8 +2696,11 @@ bootgen <- function (data, method = c("MaST","PMFG","TMFG","LoGo","threshold"),
     pb <- txtProgressBar(max=iter, style = 3)
     for(i in 1:iter) #Generate array of bootstrapped samples
     {
-        f<-round(runif(i,min=1,max=1000000),0)
-        set.seed(f[round(runif(i,min=1,max=length(f)),0)])
+        if(is.null(seeds))
+        {f<-round(runif(i,min=1,max=1000000),0)
+        Seeds[i,]<-f[round(runif(i,min=1,max=length(f)),0)][i]
+        }else{Seeds<-as.matrix(seeds)}
+        set.seed(Seeds[i,])
         mat<-data[sample(1:n,replace=TRUE),]
 
         #missing data handling
@@ -2481,7 +2732,9 @@ bootgen <- function (data, method = c("MaST","PMFG","TMFG","LoGo","threshold"),
         if(method=="TMFG")
         {samps[,,i]<-fish(TMFG(cormat)$A)
         }else if(method=="LoGo")
-        {l<-fish((-cov2cor(LoGo(mat))))
+        {logmats<-LoGo(mat)
+        tsamps[,,i]<-fish(logmats$tmfg)
+        l<-fish((-cov2cor(logmats$logo)))
         samps[,,i]<-l
         }else if(method=="MaST")
         {samps[,,i]<-fish(MaST(cormat,...))
@@ -2498,7 +2751,7 @@ bootgen <- function (data, method = c("MaST","PMFG","TMFG","LoGo","threshold"),
         if(method=="TMFG")
         {tru<-TMFG(data,...)$A
         }else if(method=="LoGo")
-        {tru<-(-cov2cor(LoGo(data)))
+        {tru<-(-cov2cor(LoGo(data)$logo))
         diag(tru)<-0
         }else if(method=="MaST")
         {tru<-MaST(data,...)
@@ -2521,12 +2774,21 @@ bootgen <- function (data, method = c("MaST","PMFG","TMFG","LoGo","threshold"),
         for(k in 1:ncol(realmat))
         {meanmat[j,k]<-zw(samps[j,k,],iter)}
     
-    if(!method=="LoGo")
-    {meanmat<-psych::fisherz2r(meanmat)}
+    if(method=="LoGo")
+    {
+    tmeanmat<-matrix(0,nrow=nrow(realmat),ncol=ncol(realmat)) #Initialize Mean matrix
+    for(j in 1:nrow(realmat))
+        for(k in 1:ncol(realmat))
+        {tmeanmat[j,k]<-zw(tsamps[j,k,],iter)}
+    }
+    
+    meanmat<-psych::fisherz2r(meanmat)
+    if(method=="LoGo")
+    {tmeanmat<-psych::fisherz2r(tmeanmat)}
 
     
     #bayes values
-    if(thresh=="BF")
+    if(bootThresh=="BF")
     {
     corBF <- function (n, r)
     {
@@ -2608,14 +2870,37 @@ bootgen <- function (data, method = c("MaST","PMFG","TMFG","LoGo","threshold"),
     
     bayesmat<-meanmat
     
+    if(method=="LoGo")
+    {bayesmat<-tmeanmat}
+    
+    
     for(i in 1:nrow(meanmat))
         for(j in 1:ncol(meanmat))
             if(i!=j)
             {bayesmat[i,j]<-corBF(n,meanmat[i,j])}
     
-    meanmat<-ifelse(bayesmat>=3,meanmat,0)
+    if(bootAlpha<3)
+    {bf<-3}
+    else{bf<-bootAlpha}
     
-    }else if(thresh=="adaptive")
+        if(method=="LoGo")
+        {
+            for(i in 1:nrow(tmeanmat))
+                for(j in 1:ncol(tmeanmat))
+                    if(i!=j)
+                    {bayesmat[i,j]<-corBF(n,tmeanmat[i,j])}
+        }
+    
+        meanmat<-ifelse(bayesmat>=bf,meanmat,0)
+    
+        if(method=="LoGo")
+        {
+            tmeanmat<-ifelse(bayesmat>=bf,tmeanmat,0)
+            meanmat<-ifelse(tmeanmat!=0,meanmat,0)
+        }
+    
+    
+    }else if(bootThresh=="adaptive")
     {
     #threshold value
         critical.r <- function(nrow, a){
@@ -2628,9 +2913,13 @@ bootgen <- function (data, method = c("MaST","PMFG","TMFG","LoGo","threshold"),
             alpha<-a*(sqrt(pwr::pwr.r.test(r=.3,power=1-(a*5))$n*(log(pwr::pwr.r.test(r=.3,power=1-(a*5))$n)+qchisq((1-a),1))))/(sqrt(n*(log(n)+qchisq((1-a),1))))
             return(alpha)}
         
-        cvr<-critical.r(n,adapt(n,a))
+        cvr<-critical.r(n,adapt(n,bootAlpha))
         
-        meanmat<-ifelse(abs(meanmat)>=cvr,meanmat,0)
+        if(method=="LoGo")
+        {
+            tmeanmat<-ifelse(abs(tmeanmat)>=cvr,tmeanmat,0)
+            meanmat<-ifelse(tmeanmat!=0,meanmat,0)
+        }else{meanmat<-ifelse(abs(meanmat)>=cvr,meanmat,0)}
     }
     
     #return meanmat to bootmat
@@ -2652,78 +2941,185 @@ bootgen <- function (data, method = c("MaST","PMFG","TMFG","LoGo","threshold"),
             for(k in 1:ncol(realmat))
             rel[j,k]<-sum(samp[j,k,])/iter
             colnames(rel)<-colnames(data)
-            
-            reprel<-rel
-            row.names(rel)<-colnames(rel)
-            diag(rel)<-1
-            upp<-matrix(0,nrow=nrow(rel),ncol=ncol(rel))
-            for(i in 1:nrow(rel))
-                for(j in 1:ncol(rel))
-                    if(rel[i,j]!=0&&tru[i,j]!=0)
-                    {upp[i,j]<-rel[i,j]}
-            colnames(upp)<-colnames(rel)
-            rel[upper.tri(rel)]<-upp[upper.tri(upp)]
-            #reliablity on correlation plot
-            x<-matrix(nrow=length(upp))
-            y<-matrix(nrow=length(tru))
-            wc<-0
-            for(i in 1:nrow(cormat))
-                for(j in 1:ncol(cormat))
-                    if((upp[i,j]!=0&&tru[i,j])!=0)
-                    {wc<-wc+1
-                    x[wc]<-upp[i,j]
-                    y[wc]<-tru[i,j]}
-            xo<-na.omit(abs(x))
-            yo<-na.omit(abs(y))
-            
-            mar=c(2,2,2,2)
-            cpo<-{plot(xo,yo,pch=16,ylab="Correlation Strength",xlab="Reliability",
-                       main="Bootstrapped Correlation Strength on Reliability",xlim=c(0,1),ylim=range(yo))
-                abline(lm(yo~xo))
-                text(x=.05,y=max(yo-.05),labels = paste("r = ",round(cor(yo,xo),3)))}
-            
-            
-            #plot reliability matrix
-            if(ncol(realmat)<=20)
-            {plt<-corrplot::corrplot(rel,method="color",
-                                     title="Bootstrapped Correlation Reliabilities",
-                                     mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
-                                     cl.lim = c(0,1),addgrid.col = "grey",addCoef.col = "black")
-            }else if(ncol(realmat)>20){
-                plt<-corrplot::corrplot(rel,method="color",
-                                        title="Bootstrapped Correlation Reliabilities",
-                                        mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
-                                        cl.lim = c(0,1),addgrid.col = "grey")}
     
-    diag(bootmat)<-1        
+    diag(bootmat)<-0  
     
-    return(list(orignet=tru,bootmat=bootmat,netrel=upp,bootrel=reprel,plotrel=plt,ConR=cpo))
+    return(list(orignet=tru,bootmat=bootmat,netrel=rel,Seeds=Seeds))
+}
+#----
+#' Bootstrapped Network Generalization Plots
+#' @description Bootstraps the sample to identify the most stable correlations (still in testing)
+#' @param object An output from the \emph{bootgen} function
+#' @param bootmat Should the bootstrap generalization matrix be included?
+#' Defaults to FALSE.
+#' Set to TRUE to plot the original and bootmat networks' reliablities
+#' @return Returns the following plots:
+#' a reliability matrix for the original network
+#' ("Original Network Correlation Reliabilities"
+#' upper triangle = network reliabilites from the filtered network,
+#' lower triangle = full, unfiltered matrix reliablities),
+#' a plot of retained correlations on their reliability ("Original Network Correlation Strength on Reliability"),
+#' a reliability matrix for the bootgen network
+#' ("bootgen Network Correlation Reliabilities"
+#' upper triangle = network reliabilites from the bootgen filtered network,
+#' lower triangle = full, unfiltered matrix reliablities),
+#' a plot of retained correlations on their reliability ("Original Network Correlation Strength on Reliability")
+#' @examples
+#' \dontrun{
+#' bootTMFG <- bootgen(neoOpen)
+#' 
+#' bootPlot <- bootPlot(bootTMFG)
+#' }
+#' @references
+#' Wei, T. & Simko, V.(2017).
+#' R package "corrplot": Visualization of a correlation matrix (Version 0.84).
+#' Available from \url{https://github.com/taiyun/corrplot}
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @importFrom graphics abline plot text
+#' @importFrom stats lm na.omit
+#' @export
+#Bootstrap Network Generalization Plots----
+bootgenPlot <- function (object, bootmat = FALSE)
+{
+    tru<-object$orignet
+    rel<-object$netrel
+    if(bootmat==TRUE)
+    {
+        boot<-object$bootmat
+        brel<-rel
+    }
+    
+    #create tru reliability plot matrix
+    row.names(rel)<-colnames(rel)
+    diag(rel)<-1
+    upp<-matrix(0,nrow=nrow(rel),ncol=ncol(rel))
+    for(i in 1:nrow(rel))
+        for(j in 1:ncol(rel))
+            if(rel[i,j]!=0&&tru[i,j]!=0)
+            {upp[i,j]<-rel[i,j]}
+    colnames(upp)<-colnames(rel)
+    rel[upper.tri(rel)]<-upp[upper.tri(upp)]
+    
+    #reliablity on correlation plot
+    x<-matrix(nrow=length(upp))
+    y<-matrix(nrow=length(tru))
+    diag(upp)<-0
+    diag(tru)<-0
+    wc<-0
+    for(i in 1:nrow(tru))
+        for(j in 1:ncol(tru))
+            if((upp[i,j]!=0&&tru[i,j])!=0)
+            {wc<-wc+1
+            x[wc]<-upp[i,j]
+            y[wc]<-tru[i,j]}
+    xo<-na.omit(abs(x))
+    yo<-na.omit(abs(y))
+    
+    dev.new()
+    mar=c(2,2,2,2)
+    cpo<-{plot(xo,yo,pch=16,ylab="Edge Weight Strength",xlab="Reliability",
+               main="Original Network Edge Weight Strength on Reliability",xlim=c(0,1),ylim=range(yo))
+        abline(lm(yo~xo))
+        text(x=.05,y=max(yo-.05),labels = paste("r = ",round(cor(yo,xo),3)))}
+    
+    
+    #plot reliability matrix
+    dev.new()
+    if(ncol(tru)<=20)
+    {plt<-corrplot::corrplot(rel,method="color",
+                             title="Original Network Edge Weight Reliabilities",
+                             mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
+                             cl.lim = c(0,1),addgrid.col = "grey",addCoef.col = "black")
+    }else if(ncol(tru)>20){
+        plt<-corrplot::corrplot(rel,method="color",
+                                title="Original Network Edge Weight Reliabilities",
+                                mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
+                                cl.lim = c(0,1),addgrid.col = "grey")}
+    
+    
+    ############################################################################################
+    #create boot reliability plot matrix
+    if(bootmat==TRUE)
+    {
+    row.names(brel)<-colnames(brel)
+    diag(brel)<-1
+    upp<-matrix(0,nrow=nrow(brel),ncol=ncol(brel))
+    for(i in 1:nrow(brel))
+        for(j in 1:ncol(brel))
+            if(brel[i,j]!=0&&boot[i,j]!=0)
+            {upp[i,j]<-brel[i,j]}
+    colnames(upp)<-colnames(brel)
+    brel[upper.tri(brel)]<-upp[upper.tri(upp)]
+    
+    #reliablity on correlation plot
+    x<-matrix(nrow=length(upp))
+    y<-matrix(nrow=length(boot))
+    diag(upp)<-0
+    diag(boot)<-0
+    wc<-0
+    for(i in 1:nrow(boot))
+        for(j in 1:ncol(boot))
+            if((upp[i,j]!=0&&boot[i,j])!=0)
+            {wc<-wc+1
+            x[wc]<-upp[i,j]
+            y[wc]<-boot[i,j]}
+    xo<-na.omit(abs(x))
+    yo<-na.omit(abs(y))
+    
+    dev.new()
+    mar=c(2,2,2,2)
+    cpo<-{plot(xo,yo,pch=16,ylab="Edge Weight Strength",xlab="Reliability",
+               main="bootgen Network Edge Weight Strength on Reliability",xlim=c(0,1),ylim=range(yo))
+        abline(lm(yo~xo))
+        text(x=.05,y=max(yo-.05),labels = paste("r = ",round(cor(yo,xo),3)))}
+    
+    
+    #plot reliability matrix
+    dev.new()
+    if(ncol(boot)<=20)
+    {plt<-corrplot::corrplot(brel,method="color",
+                             title="bootgen Network Edge Weight Reliabilities",
+                             mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
+                             cl.lim = c(0,1),addgrid.col = "grey",addCoef.col = "black")
+    }else if(ncol(boot)>20){
+        plt<-corrplot::corrplot(brel,method="color",
+                                title="bootgen Network Edge Weight Reliabilities",
+                                mar=c(2,2,2,2),tl.col="black",tl.cex=.75,
+                                cl.lim = c(0,1),addgrid.col = "grey")}
+    }
 }
 #----
 #' Bootstrapped Communities Likelihood
-#' @description Bootstraps the sample with replace to compute walktrap reliability (still in testing phase)
+#' @description Bootstraps the sample with replace to compute walktrap reliability
 #' @param data A set of data
 #' @param normal Should data be transform to a normal distribution?
-#' Defaults to FALSE. Data is not transformed to be normal.
+#' Defaults to FALSE.
+#' Data is not transformed to be normal.
 #' Set to TRUE if data should be transformed to be normal
-#' @param n Number of people to use in the bootstrap. Defaults to full sample size
-#' @param iter Number of bootstrap iterations. Defaults to 100 iterations
-#' @param filter Set filter method. Defaults to "TMFG"
-#' @param method Defaults to "louvain". Set to "walktrap" for the walktrap algorithm
+#' @param n Number of people to use in the bootstrap.
+#' Defaults to full sample size
+#' @param iter Number of bootstrap iterations.
+#' Defaults to 100 iterations
+#' @param filter Set filter method.
+#' Defaults to "TMFG"
+#' @param method Defaults to "walktrap".
+#' Set to "louvain" for the louvain community detection algorithm
 #' @param na.data How should missing data be handled?
 #' For "pairwise" deletion \emph{na.rm} is applied.
 #' If normal is TRUE, then "pairwise" is used.
 #' For "listwise" deletion the \emph{na.omit} fucntion is applied.
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
-#' @param steps Number of steps to use in the walktrap algorithm. Defaults to 4. Use a larger number of steps for smaller networks
+#' @param steps Number of steps to use in the walktrap algorithm.
+#' Defaults to 4.
+#' Use a larger number of steps for smaller networks
 #' @param ... Additional arguments for network filtering methods
 #' @return The factors and their proportion found across bootstrapped samples (i.e., their likelihood)
 #' @examples
 #' \dontrun{
-#' commTMFG<-commboot(hex)
+#' commTMFG<-commboot(neoOpen)
 #' 
-#' commThreshold<-commboot(hex,filter="threshold")
+#' commThreshold<-commboot(neoOpen,filter="threshold")
 #' }
 #' @references
 #' Blondel, V. D., Guillaume, J. L., Lambiotte, R., & Lefebvre, E. (2008).
@@ -2746,7 +3142,7 @@ commboot <- function (data, normal = FALSE, n = nrow(data), iter = 100,
     }else{filter<-match.arg(filter)}
     
     if(missing(method))
-    {method<-"louvain"
+    {method<-"walktrap"
     }else{method<-match.arg(method)}
     
     #missing data handling
@@ -2858,7 +3254,7 @@ commboot <- function (data, normal = FALSE, n = nrow(data), iter = 100,
 #----
 #' Dependency Matrix
 #' @description Generates a dependency matrix of the data (index argument is still in testing phase)
-#' @param data A set of data (missing data is handled using the Full Information Maximum Likelihood function \emph{corFiml} in the \emph{psych} package)
+#' @param data A set of data
 #' @param normal Should data be transform to a normal distribution?
 #' Defaults to FALSE. Data is not transformed to be normal.
 #' Set to TRUE if data should be transformed to be normal
@@ -2869,14 +3265,21 @@ commboot <- function (data, normal = FALSE, n = nrow(data), iter = 100,
 #' For "listwise" deletion the \emph{na.omit} fucntion is applied.
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
-#' @param index Should correlation with the latent variable (i.e., weighted average of all variables) be removed? Defaults to FALSE. Set to TRUE to remove common latent factor
-#' @param fisher Should Fisher's Z-test be used to keep significantly higher influences (index only)? Defaults to FALSE. Set to TRUE to remove non-significant influences
-#' @param progBar Should progress bar be displayed? Defaults to TRUE. Set FALSE for no progress bar.
+#' @param index Should correlation with the latent variable
+#' (i.e., weighted average of all variables) be removed?
+#' Defaults to FALSE.
+#' Set to TRUE to remove common latent factor
+#' @param fisher Should Fisher's Z-test be used to keep significantly higher influences (index only)?
+#' Defaults to FALSE.
+#' Set to TRUE to remove non-significant influences
+#' @param progBar Should progress bar be displayed?
+#' Defaults to TRUE.
+#' Set to FALSE for no progress bar
 #' @return Returns an adjacency matrix of dependencies
 #' @examples
-#' D<-depend(hex)
+#' D<-depend(neoOpen)
 #' 
-#' Dindex<-depend(hex,index=TRUE)
+#' Dindex<-depend(neoOpen,index=TRUE)
 #' @references
 #' Kenett, D. Y., Tumminello, M., Madi, A., Gur-Gershgoren, G., Mantegna, R. N., & Ben-Jacob, E. (2010).
 #' Dominating clasp of the financial sector revealed by partial correlation analysis of the stock market.
@@ -3027,7 +3430,7 @@ depend <- function (data, normal = FALSE,
         return(z)}
         
         zsd <- function (n)
-        {zsd<-1/sqrt(n-3)
+        {zsd<-1/(n-3)
         return(zsd)}
         
         fishtest <- function (r1,r2,n1,n2)
@@ -3059,7 +3462,7 @@ depend <- function (data, normal = FALSE,
 #' (training sample is made to have slightly larger sizes in the case of uneven splits),
 #' and their respective sample sizes (trainSize and testSize)
 #' @examples
-#' splithalf<-splitsamp(hex)
+#' splithalf<-splitsamp(neoOpen)
 #' @references 
 #' Forbes, M. K., Wright, A. G. C., Markon, K. E., & Krueger, R. F. (2017a).
 #' Evidence that psychopathology symptom networks do not replicate.
@@ -3240,9 +3643,9 @@ lattnet <- function (nodes, edges)
 #' @param A An adjacency matrix of network data (or an array of matrices)
 #' @return Returns an adjancency matrix of 1's and 0's
 #' @examples
-#' net<-TMFG(hex)$A
+#' net<-TMFG(neoOpen)$A
 #' 
-#' hexb<-binarize(net)
+#' psyb<-binarize(net)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Binarize function----
@@ -3267,11 +3670,11 @@ binarize <- function (A)
 #' @return A value greater than 0.
 #' Values between 0 and 1 suggests the probablity distribution of the reduced model is near the full model
 #' @examples
-#' A1 <- cov(hex)
+#' A1 <- cov(neoOpen)
 #' 
-#' A2 <- solve(LoGo(hex))
+#' A2 <- solve(LoGo(neoOpen)$logo)
 #' 
-#' kld_value <- kld(A1, A2, hex)
+#' kld_value <- kld(A1, A2, neoOpen)
 #' 
 #' @references 
 #' Kullback, S., & Leibler, R. A. (1951).
@@ -3325,6 +3728,66 @@ kld <- function (base, test, basedata, testdata)
     kld<-.5*(log(det(test)/det(base)) + sum(diag(MASS::ginv(test)%*%base)) - nrow(base))
     
     return(kld)
+}
+#----
+#' Logisitic Regression
+#' @description Computes logistic regression such that one variable is (logistically) regressed
+#' over all other variables
+#' @param data A dataset
+#' @param symmetric Should matrix be symmetric?
+#' Defaults to TRUE, taking the mean of the two edge weights
+#' (i.e., [\emph{i},\emph{j}] and [\emph{j},\emph{i}])
+#' Set to FALSE for asymmwtric weights
+#' (i.e., [\emph{i},\emph{j}] does not equal [\emph{j},\emph{i}])
+#' @return A matrix of fully regressed coefficients where one variable
+#' is regressed over all others
+#' @examples
+#' #binarize responses
+#' psyb <- ifelse(neoOpen>=4, 1, 0)
+#' 
+#' #perform logistic regression
+#' mat <- logreg(psyb)
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @importFrom stats glm
+#' @export 
+#Logistic Regression----
+logreg <- function (data, symmetric = TRUE)
+{
+    n<-ncol(data)
+    
+    data<-as.data.frame(data)
+    
+    mat<-matrix(0,nrow=(n-1),ncol=n)
+    
+    pb <- txtProgressBar(max=n, style = 3)
+    for(i in 1:ncol(data))
+    {
+        res<-cbind(data[,i],data[,-i])
+        mat[,i]<-glm(res,family="binomial")$coefficients[2:(ncol(data))]
+        
+        setTxtProgressBar(pb, i)
+    }
+    close(pb)
+    
+    nmat<-matrix(0,nrow=n,ncol=n)
+    
+    for(i in 1:n)
+    {
+        if(i==1)
+        {nmat[,i]<-c(0,mat[,i])
+        }else if(i!=n)
+        {nmat[,i]<-c(mat[1:(i-1),i],0,mat[i:nrow(mat),i])
+        }else if(i==n)
+        {nmat[,i]<-c(mat[,i],0)}
+    }
+    
+    if(symmetric)
+    {nmat<-(nmat+t(nmat))/2}
+    
+    row.names(nmat)<-colnames(data)
+    colnames(nmat)<-colnames(data)
+    
+    return(nmat)
 }
 #----
 #' Import CONN Toolbox Brain Matrices to R format
@@ -3492,7 +3955,7 @@ neuralnetfilter <- function (neuralarray, method = c("TMFG","LoGo","MaST","ECOpl
         if(method=="TMFG")
         {filarray[,,i]<-TMFG(neuralarray[,,i],...)$A
         }else if(method=="LoGo")
-        {filarray[,,i]<--cov2cor(LoGo(neuralarray[,,i],...))
+        {filarray[,,i]<--cov2cor(LoGo(neuralarray[,,i],...)$logo)
         diag(filarray[,,i])<-1
         }else if(method=="MaST")
         {filarray[,,i]<-MaST(neuralarray[,,i],...)
@@ -4068,7 +4531,8 @@ neuralcorrtest <- function (bstat, nstat)
 #' @param progBar Should progress bar be displayed?
 #' Defaults to TRUE.
 #' Set to FALSE for no progress bar
-#' @return Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), mean absolute error (mae), root mean square error (rmse)). The list also contains the positive (posMask) and negative (negMask) masks used
+#' @return Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), mean absolute error (mae), root mean square error (rmse)).
+#' The list also contains the positive (posMask) and negative (negMask) masks, which can be visualized here: \url{http://bisweb.yale.edu/build/connviewer.html}
 #' @references 
 #' Finn, E. S., Shen, X., Scheinost, D., Rosenberg, M. D., Huang, J., Chun, M. M., Papademetris, X., Constable, R. T. (2015).
 #' Functional connectome fingerprinting: Identifying individuals using patterns of brain connectivity.
@@ -5206,54 +5670,110 @@ cpmFPperm <- function (session1, session2, iter = 1000, progBar = TRUE)
     return(rate)
 }
 #----
-#HEXACO Openness data----
-#' HEXACO Openness to Experience Response Matrix
+#NEO-PI-3 Openness to Experience Data----
+#' #NEO-PI-3 Openness to Experience Data
 #' 
-#' A response matrix (n = 802) of HEXACO's Openness to Experience
+#' A response matrix (n = 802) of NEO-PI-3's Openness to Experience
 #' from Christensen, Cotter, & Silvia (under review).
 #' 
 #' @docType data
 #' 
-#' @usage data(hex)
+#' @usage data(neoOpen)
 #' 
-#' @format A 802x16 response matrix
+#' @format A 802x48 response matrix
 #' 
 #' @keywords datasets
 #' 
 #' @references
-#' 
-#' Christensen, A.P., Cotter, K.N., Silvia, P.J. (under review).
+#' Christensen, A.P., Cotter, K.N., & Silvia, P.J. (under review).
 #' Reopening Openness to Experience:
 #' A network analysis of four Openness to Experience inventories.
 #' \url{http://doi.org/10.17605/OSF.IO/954A7}
-#' 
 #' @examples 
-#' 
-#' data(hex)
-"hex"
+#' data(neoOpen)
+"neoOpen"
 #----
-#HEXACO Openness data----
-#' HEXACO Openness to Experience Response Matrix (Binarized)
+#Animal Verbal Fluency Data----
+#'Animal Verbal Fluency Data
+#'
+#' Verbal fluency reponses for the animal category. The group variable specifies
+#' people's level of NEO-FFI-3 Openness to Experience (low = 1, moderate = 2, high = 3).
 #' 
-#' A response matrix (n = 802) of HEXACO's Openness to Experience
-#' from Christensen, Cotter, & Silvia (under review).
+#' A binary verbal fluency response matrix (n = 354) from
+#' Christensen, Kenett, Cotter, Beaty, & Silvia (under review).
 #' 
 #' @docType data
 #' 
-#' @usage data(hexb)
+#' @usage data(animals)
 #' 
-#' @format A 802x16 response matrix
+#' @format A 802x48 response matrix
 #' 
 #' @keywords datasets
 #' 
 #' @references
-#' 
-#' Christensen, A.P., Cotter, K.N., Silvia, P.J. (under review).
-#' Reopening Openness to Experience:
-#' A network analysis of four Openness to Experience inventories.
-#' \url{http://doi.org/10.17605/OSF.IO/954A7}
-#' 
+#' Christensen, A.P., Kenett, Y. N., Cotter, K.N., Beaty, R. E., & Silvia, P.J. (under review).
+#' Remotely close associations:
+#' Openness to Experience and semantic memory structure
 #' @examples 
+#' data(animals)
+"animals"
+#----
+#Resting-state Brain Data----
+#'Resting-state Brain Data
 #' 
-#' data(hexb)
-"hexb"
+#' Resting-state brain data associated with NEO-PI-3's Openness to Experience (\emph{n} = 144).
+#' 
+#' A correlation connectivity array of brain data (rmats).
+#' Shen et al.'s (2013) brain atlas is used.
+#' 
+#' @docType data
+#' 
+#' @usage data(restOpen)
+#' 
+#' @format restOpen (268 x 268 x 144 array)
+#' 
+#' @keywords datasets
+#' 
+#' @references
+#' Beaty, R. E., Chen, Q., Christensen, A. P., Qiu, J., Silvia, P. J., & Schacter, D. L. (2018).
+#' Brain networks of the imaginative mind: Dynamic functional connectivity of default and cognitive control networks relates to Openness to Experience.
+#' \emph{Human Brain Mapping}, \emph{39}(2), 811-821.
+#' 
+#' Beaty, R. E., Kenett, Y. N., Christensen, A. P., Rosenberg, M. D., Benedek, M., Chen, Q., ... & Silvia, P. J. (2018).
+#' Robust prediction of individual creative ability from brain functional connectivity.
+#' \emph{Proceedings of the National Academy of Sciences}, 201713532.
+#' 
+#' Shen, X., Tokoglu, F., Papademetris, X., & Constable, R. T. (2013).
+#' Groupwise whole-brain parcellation from resting-state fMRI data for network node identification.
+#' \emph{Neuroimage}, \emph{82}, 403-415.
+#' @examples 
+#' data(restOpen)
+"restOpen"
+#----
+#NEO-PI-3 for Resting-State Data----
+#'NEO-PI-3 for Resting-State Data
+#'
+#' NEO-PI-3 Openness to Experience associated with resting-state data (\emph{n} = 144).
+#' 
+#' Behavioral data of NEO-PI-3 associated with each connectivity matrix (open)
+#' 
+#' @docType data
+#' 
+#' @usage data(behavOpen)
+#' 
+#' @format behavOpen (vector, length = 144)
+#' 
+#' @keywords datasets
+#' 
+#' @references
+#' Beaty, R. E., Chen, Q., Christensen, A. P., Qiu, J., Silvia, P. J., & Schacter, D. L. (2018).
+#' Brain networks of the imaginative mind: Dynamic functional connectivity of default and cognitive control networks relates to Openness to Experience.
+#' \emph{Human Brain Mapping}, \emph{39}(2), 811-821.
+#' 
+#' Beaty, R. E., Kenett, Y. N., Christensen, A. P., Rosenberg, M. D., Benedek, M., Chen, Q., ... & Silvia, P. J. (2018).
+#' Robust prediction of individual creative ability from brain functional connectivity.
+#' \emph{Proceedings of the National Academy of Sciences}, 201713532.
+#' @examples 
+#' data(behavOpen)
+"behavOpen"
+#----

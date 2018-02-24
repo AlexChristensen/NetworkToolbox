@@ -19,7 +19,7 @@ and the sum of the edge weights (total) in the network
 Computes the average and standard deviation of the weights in the network
 }
 \examples{
-A<-TMFG(hex)$A
+A<-TMFG(neoOpen)$A
 
 connectivity<-conn(A)
 }
