@@ -3730,29 +3730,36 @@ kld <- function (base, test, basedata, testdata)
     return(kld)
 }
 #----
-#' Logisitic Regression
-#' @description Computes logistic regression such that one variable is (logistically) regressed
-#' over all other variables
+#' Regression Matrix
+#' @description Computes regression such that one variable is regressed over all other variables
 #' @param data A dataset
+#' @param family Error distribution to be used in the regression model.
+#' Defaults to "logistic".
+#' Set to any family used in function \emph{glm} (see \code{\link{family}})
 #' @param symmetric Should matrix be symmetric?
 #' Defaults to TRUE, taking the mean of the two edge weights
 #' (i.e., [\emph{i},\emph{j}] and [\emph{j},\emph{i}])
 #' Set to FALSE for asymmwtric weights
 #' (i.e., [\emph{i},\emph{j}] does not equal [\emph{j},\emph{i}])
-#' @return A matrix of fully regressed coefficients where one variable
-#' is regressed over all others
+#' @return A matrix of fully regressed coefficients where one variable is regressed over all others
 #' @examples
 #' #binarize responses
 #' psyb <- ifelse(neoOpen>=4, 1, 0)
 #' 
 #' #perform logistic regression
-#' mat <- logreg(psyb)
+#' mat <- reg(psyb)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @importFrom stats glm
 #' @export 
 #Logistic Regression----
-logreg <- function (data, symmetric = TRUE)
+reg <- function (data,
+                 family = c("binomial" ,"gaussian", "Gamma", "poisson"),
+                 symmetric = TRUE)
 {
+    if(missing(family))
+    {family<-"binomial"
+    }else(family<-match.arg(family))
+    
     n<-ncol(data)
     
     data<-as.data.frame(data)
@@ -3763,7 +3770,7 @@ logreg <- function (data, symmetric = TRUE)
     for(i in 1:ncol(data))
     {
         res<-cbind(data[,i],data[,-i])
-        mat[,i]<-glm(res,family="binomial")$coefficients[2:(ncol(data))]
+        mat[,i]<-glm(res,family=family)$coefficients[2:(ncol(data))]
         
         setTxtProgressBar(pb, i)
     }
