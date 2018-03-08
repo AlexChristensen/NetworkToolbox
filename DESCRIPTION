@@ -9,5 +9,5 @@ Depends: R (>= 3.3.0)
 License: GPL (>= 3.0)
 Encoding: UTF-8
 LazyData: true
-Imports: devtools, Matrix, psych, corrplot, RColorBrewer, fdrtool, R.matlab, MASS, hypergeo, pwr, graph, igraph, qgraph, RBGL
+Imports: devtools, Matrix, psych, corrplot, RColorBrewer, fdrtool, R.matlab, MASS, hypergeo, pwr, graph, igraph, qgraph, RBGL, ppcor, parallel, foreach, doParallel
 RoxygenNote: 6.0.1.9000

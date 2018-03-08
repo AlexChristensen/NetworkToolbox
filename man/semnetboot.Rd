@@ -6,7 +6,7 @@
 \usage{
 semnetboot(data, method = c("PMFG", "TMFG", "LoGo", "MaST", "threshold"),
   normal = FALSE, nodes, iter = 1000, na.data = c("pairwise", "listwise",
-  "fiml"), ...)
+  "fiml"), seeds = NULL, ...)
 }
 \arguments{
 \item{data}{A set of data}
@@ -33,11 +33,16 @@ For "listwise" deletion the \emph{na.omit} fucntion is applied.
 Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 
+\item{seeds}{Seeds to use for random number generation.
+Defaults to NULL.
+Input seeds from previous run (\strong{see examples})}
+
 \item{...}{Additional arguments for filtering methods}
 }
 \value{
-Returns a list that includes the original semantic network measures
-(origmeas; ASPL, CC, Q, S) and the bootstrapped semantic network measures (bootmeas)
+Returns a list that includes the original semantic network measures (origmeas; ASPL, CC, Q, S),
+the bootstrapped semantic network measures (bootmeas),
+and the seeds used in the random number generator (Seeds)
 }
 \description{
 Bootstraps (without replacement) the nodes in the network and computes global network characteristics
@@ -47,6 +52,9 @@ Bootstraps (without replacement) the nodes in the network and computes global ne
 lowO <- subset(animals, Group==1)[-1]
 
 semPMFG<-semnetboot(lowO)
+
+#Replicates previous analysis
+repsemPMFG<-semnetboot(lowO, seeds = semPMFG$Seeds)
 
 semLoGo<-semnetboot(lowO,method="LoGo")
 

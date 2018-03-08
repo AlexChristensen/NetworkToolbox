@@ -1,0 +1,21 @@
+Changes in Version 1.1.0
+
+o new data files: NEO-PI-3 data for psychometric network analysis, verbal fluency files for semantic network analysis, behavioral NEO-PI-3 and an associated brain connectivity array for brain network analysis
+
+o bootgen: no longer produces plots and a seeds argument can now be used to replicate the previous analysis using the Seeds output
+
+o bootgenPlot: output from the bootgen function can now be input into a separate function to obtain plots. Contains an argument to also plot the bootstrapped network generalization method
+
+o PMFG: now outputs a list to be used in Cytoscape visualization software (sparseList)
+
+o reg: a function to perform regression for a dataset. An argument can set the type of regression and for the matrix to be symmetric
+
+o nams: a function to calculate network adjusted mean or sum for data (based on the hybrid centrality)
+
+o hybrid: added an option for "standard", "random", or "average" betweenness centrality to be used
+
+o cpmIV: parallel processing now available for covariate estimation (defaults to max(cores) - 1)
+
+o LoGo: if network is not positive definite, then partial correlations given all others is associated with the network structure (usually positive definite)
+
+o edgerep: includes a list of the replicated edges and their respective weights in each network. A plot for this information is also available (defaults to FALSE)

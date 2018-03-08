@@ -2,7 +2,7 @@
 % Please edit documentation in R/NetworkToolbox--master.R
 \name{depend}
 \alias{depend}
-\title{Dependency Matrix}
+\title{Dependency Network Approach}
 \usage{
 depend(data, normal = FALSE, na.data = c("pairwise", "listwise", "fiml"),
   index = FALSE, fisher = FALSE, progBar = TRUE)

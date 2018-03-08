@@ -4,8 +4,8 @@
 \alias{neuralnetfilter}
 \title{Neural Network Filter}
 \usage{
-neuralnetfilter(neuralarray, method = c("TMFG", "LoGo", "MaST", "ECOplusMaST",
-  "ECO", "threshold"), progBar = TRUE, ...)
+neuralnetfilter(neuralarray, method = c("TMFG", "MaST", "ECOplusMaST", "ECO",
+  "threshold"), progBar = TRUE, ...)
 }
 \arguments{
 \item{neuralarray}{Array from \emph{convertConnBrainMat} function}

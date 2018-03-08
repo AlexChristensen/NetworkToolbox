@@ -4,7 +4,7 @@
 \alias{louvain}
 \title{Louvain Community Detection Algorithm}
 \usage{
-louvain(A, gamma, M0, method = c("modularity", "potts"))
+louvain(A, gamma, M0)
 }
 \arguments{
 \item{A}{An adjacency matrix of network data}
@@ -14,9 +14,6 @@ Set to gamma > 1 to detect smaller modules and gamma < 1 for larger modules}
 
 \item{M0}{Input can be an initial community vector.
 Defaults to none}
-
-\item{method}{Defaults to "modularity".
-Set to "potts" for Potts model}
 }
 \value{
 Returns a list of community and Q

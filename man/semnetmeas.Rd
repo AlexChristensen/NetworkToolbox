@@ -4,12 +4,12 @@
 \alias{semnetmeas}
 \title{Semantic Network Measures}
 \usage{
-semnetmeas(A, ...)
+semnetmeas(A, iter)
 }
 \arguments{
 \item{A}{An adjacency matrix of network A}
 
-\item{...}{Additional arguments for ASPL and CC (weighted)}
+\item{iter}{Number of iterations for the small-worldness measure}
 }
 \value{
 Returns a values for ASPL, CC, Q, and S
@@ -18,7 +18,7 @@ Returns a values for ASPL, CC, Q, and S
 Computes the average shortest path length (ASPL),
 clustering coefficient(CC),
 modularity (Q),
-and small-worldness (S; defaults to "rand" and 100 iterations)
+and small-worldness (S; defaults to "rand")
 }
 \examples{
 \dontrun{

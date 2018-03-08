@@ -21,10 +21,10 @@ Set to "rand" for the CC to be calculated using a random network or
 set to "TJHBL" for (Telesford et al., 2011) where CC is calculated from a lattice network}
 }
 \value{
-Returns a value of small-worldness.
-For "rand", values > 1 indicate a small-world network.
-For "HG", values > 3 indicate a small-world network.
-For "TJHBL" values near 0 indicate a small-world network,
+Returns a list with value of small-worldness (swm) and random ASPL (rASPL).
+For "rand", values > 1 indicate a small-world network (lrCCt = random CC).
+For "HG", values > 3 indicate a small-world network (lrCCt = random Transitivity).
+For "TJHBL" values near 0 indicate a small-world network (lrCCt = lattice CC),
 while < 0 indicates a more regular network and > 0 indicates a more random network
 }
 \description{

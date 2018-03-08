@@ -6,7 +6,8 @@
 \usage{
 commboot(data, normal = FALSE, n = nrow(data), iter = 100,
   filter = c("TMFG", "threshold"), method = c("louvain", "walktrap"),
-  na.data = c("pairwise", "listwise", "fiml"), steps = 4, ...)
+  na.data = c("pairwise", "listwise", "fiml"), steps = 4, seeds = NULL,
+  ...)
 }
 \arguments{
 \item{data}{A set of data}
@@ -39,10 +40,15 @@ Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 Defaults to 4.
 Use a larger number of steps for smaller networks}
 
+\item{seeds}{Seeds to use for random number generation.
+Defaults to NULL.
+Input seeds from previous run (\strong{see examples})}
+
 \item{...}{Additional arguments for network filtering methods}
 }
 \value{
-The factors and their proportion found across bootstrapped samples (i.e., their likelihood)
+Returns a list with the factors and their proportion found across bootstrapped samples
+(proportion; i.e., their likelihood) and the seeds used in the random number generator (Seeds)
 }
 \description{
 Bootstraps the sample with replace to compute walktrap reliability
@@ -50,6 +56,9 @@ Bootstraps the sample with replace to compute walktrap reliability
 \examples{
 \dontrun{
 commTMFG<-commboot(neoOpen)
+
+#Replicates previous analysis
+repcommTMFG<-commboot(neoOpen, seeds = commTMFG$Seeds)
 
 commThreshold<-commboot(neoOpen,filter="threshold")
 }

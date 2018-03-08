@@ -20,11 +20,13 @@ a reliability matrix for the original network
 upper triangle = network reliabilites from the filtered network,
 lower triangle = full, unfiltered matrix reliablities),
 a plot of retained correlations on their reliability ("Original Network Correlation Strength on Reliability"),
+If bootmat is set to TRUE, then also 
 a reliability matrix for the bootgen network
 ("bootgen Network Correlation Reliabilities"
 upper triangle = network reliabilites from the bootgen filtered network,
 lower triangle = full, unfiltered matrix reliablities),
-a plot of retained correlations on their reliability ("Original Network Correlation Strength on Reliability")
+a plot of retained correlations on their reliability ("bootgen Network Correlation Strength on Reliability"),
+a frequency of the reliability of edges in both the original and bootgen network
 }
 \description{
 Bootstraps the sample to identify the most stable correlations (still in testing)

@@ -35,7 +35,8 @@ Defaults to TRUE.
 Set to FALSE for no progress bar}
 }
 \value{
-Returns a PMFG-filtered associaton matrix
+Returns a list of PMFG-filtered associaton matrix (pmfg).
+If \emph{sparseList} = TRUE, then the list will contain a sparse list (List)
 }
 \description{
 Applies the Planar Maximally Filtered Graph (PMFG) filtering method

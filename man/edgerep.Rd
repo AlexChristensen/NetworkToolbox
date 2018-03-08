@@ -4,15 +4,20 @@
 \alias{edgerep}
 \title{Edge Replication}
 \usage{
-edgerep(A, B)
+edgerep(A, B, plot = FALSE)
 }
 \arguments{
 \item{A}{An adjacency matrix of network A}
 
 \item{B}{An adjacency matrix of network B}
+
+\item{plot}{Should there be a plot of the replicated weights?
+Defaults to FALSE.
+Set to TRUE for a plot to be produced}
 }
 \value{
-Returns a list of the number of edges that replicate (replicated),
+Returns a list of the edges that replicated and their weights (replicatedEdges),
+number of edges that replicate (replicated),
 total number of edges (possibleA & possibleB),
 the percentage of edges that replicate (percentageA & percentageB),
 the density of edges (densityA & densityB),

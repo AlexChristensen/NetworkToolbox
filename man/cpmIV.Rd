@@ -6,14 +6,14 @@
 \usage{
 cpmIV(neuralarray, bstat, covar, thresh = 0.01, method = c("mean", "sum"),
   model = c("linear", "quadratic", "cubic"), corr = c("pearson",
-  "spearman"), shen = FALSE, depend = FALSE, progBar = TRUE)
+  "spearman"), shen = FALSE, progBar = TRUE)
 }
 \arguments{
 \item{neuralarray}{Array from \emph{convertConnBrainMat} function}
 
 \item{bstat}{Behavioral statistic for each participant with neural data (a vector)}
 
-\item{covar}{Covariates to be included in regression model.
+\item{covar}{Covariates to be included in predicting relevant edges (\strong{time consuming})
 \strong{Must} be input as a list() (see examples)}
 
 \item{thresh}{Sets an \strong{alpha} threshold for edge weights to be retained.
@@ -30,11 +30,6 @@ Defaults to "pearson"}
 
 \item{shen}{Are ROIs from Shen et al. 2013 atlas? Defaults to FALSE.
 Set to TRUE for canonical networks plot}
-
-\item{depend}{Is network a dependency (or directed) network?
-Defaults to FALSE.
-Set to TRUE to for dependency network analysis
-(output obtained from the \emph{depna} function)}
 
 \item{progBar}{Should progress bar be displayed?
 Defaults to TRUE.
