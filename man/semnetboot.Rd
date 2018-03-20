@@ -6,7 +6,7 @@
 \usage{
 semnetboot(data, method = c("PMFG", "TMFG", "LoGo", "MaST", "threshold"),
   normal = FALSE, nodes, iter = 1000, na.data = c("pairwise", "listwise",
-  "fiml"), seeds = NULL, ...)
+  "fiml", "none"), seeds = NULL, ...)
 }
 \arguments{
 \item{data}{A set of data}

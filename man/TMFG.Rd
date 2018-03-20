@@ -5,7 +5,7 @@
 \title{Triangulated Maximally Filtered Graph}
 \usage{
 TMFG(data, normal = FALSE, weighted = TRUE, depend = FALSE,
-  na.data = c("pairwise", "listwise", "fiml"))
+  partial = FALSE, na.data = c("pairwise", "listwise", "fiml", "none"))
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
@@ -24,6 +24,10 @@ Defaults to FALSE.
 Set to TRUE to generate a TMFG-filtered dependency network
 (output obtained from the \emph{depend} function)}
 
+\item{partial}{Should partial correlations between two nodes given all other nodes be used?
+Defaults to FALSE.
+Set to TRUE to generate a network of fully regressed coefficients.}
+
 \item{na.data}{How should missing data be handled?
 For "pairwise" deletion \emph{na.rm} is applied.
 For "listwise" deletion the \emph{na.omit} fucntion is applied.
@@ -31,7 +35,8 @@ Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 }
 \value{
-Returns a list of the adjacency matrix (A), separators (separators), and cliques (cliques)
+Returns a list of the adjacency matrix (A), separators (separators), and cliques (cliques).
+If partial = TRUE, then shrinkage lambda is also output (lambda)
 }
 \description{
 Applies the Triangulated Maximally Filtered Graph (TMFG) filtering method
@@ -45,6 +50,10 @@ unweighted_TMFGnetwork<-TMFG(neoOpen,weighted=FALSE)
 
 }
 \references{
+Christensen, A. P., Kenett, Y. N., Aste, T., Silvia, P. J., & Kwapil, T. R. (2018).
+Network structure of the Wisconsin Schizotypy Scales-Short Forms: Examining psychometric network filtering approaches.
+\emph{Behavior Research Methods}, 1-20, doi:10.3758/s13428-018-1032-9
+
 Massara, G. P., Di Matteo, T., & Aste, T. (2016).
 Network filtering for big data: Triangulated maximally filtered graph.
 \emph{Journal of Complex Networks}, \emph{5}(2), 161-178.

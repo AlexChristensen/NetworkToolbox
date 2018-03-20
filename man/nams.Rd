@@ -5,8 +5,9 @@
 \title{Network Adjusted Mean/Sum}
 \usage{
 nams(data, A, adjusted = c("mean", "sum"), factors = c("walktrap",
-  "louvain"), method = c("TMFG", "LoGo", "PMFG", "threshold", "none"),
-  normal = FALSE, na.data = c("pairwise", "listwise", "fiml"), ...)
+  "louvain"), standardize = TRUE, method = c("TMFG", "LoGo", "PMFG",
+  "threshold", "none"), normal = FALSE, na.data = c("pairwise", "listwise",
+  "fiml", "none"), ...)
 }
 \arguments{
 \item{data}{Must be a dataset}
@@ -22,6 +23,10 @@ Set to "sum" for sum scores}
 Defaults to 1 factor.
 Set to "walktrap" for the walktrap algortihm.
 Set to "louvain" for louvain community detection}
+
+\item{standardize}{Should mean/sum scores be standardized?
+Defaults to TRUE.
+Set to FALSE for unstandardized mean/sum scores}
 
 \item{method}{A network filtering method.
 Defaults to "TMFG".
@@ -59,7 +64,7 @@ sumadj <- nams(neoOpen, adjusted = "sum")
 knownfactors <- nams(neoOpen, method = "threshold",
 factors = c(rep(1,6),rep(2,6),rep(3,6),rep(4,6),rep(5,6),rep(6,6)))
 
-walkadj <- nams(neoOpen, method = "none", factors = "walktrap")
+walkadj <- nams(neoOpen, method="threshold", factors = "walktrap")
 
 }
 \author{

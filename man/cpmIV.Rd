@@ -6,7 +6,7 @@
 \usage{
 cpmIV(neuralarray, bstat, covar, thresh = 0.01, method = c("mean", "sum"),
   model = c("linear", "quadratic", "cubic"), corr = c("pearson",
-  "spearman"), shen = FALSE, progBar = TRUE)
+  "spearman"), shen = FALSE, cores, progBar = TRUE)
 }
 \arguments{
 \item{neuralarray}{Array from \emph{convertConnBrainMat} function}
@@ -25,11 +25,16 @@ Defaults to "mean"}
 \item{model}{Regression model to use for fitting the data.
 Defaults to "linear"}
 
-\item{corr}{Correlation method for assessing the relatonship between the observed and predicted scores.
-Defaults to "pearson"}
+\item{corr}{Correlation method for assessing the relatonship between the behavioral measure and edges between ROIs.
+Defaults to "pearson".
+Set to "spearman" for non-linear or monotonic associations}
 
 \item{shen}{Are ROIs from Shen et al. 2013 atlas? Defaults to FALSE.
 Set to TRUE for canonical networks plot}
+
+\item{cores}{Number of computer processing cores to use when performing covariate analyses.
+Defaults to \emph{n} - 1 total number of cores.
+Set to any number between 1 and maxmimum amount of cores on your computer}
 
 \item{progBar}{Should progress bar be displayed?
 Defaults to TRUE.

@@ -5,7 +5,7 @@
 \title{Planar Maximally Filtered Graph}
 \usage{
 PMFG(data, sparseList = FALSE, normal = FALSE, weighted = TRUE,
-  na.data = c("pairwise", "listwise", "fiml"), progBar = TRUE)
+  na.data = c("pairwise", "listwise", "fiml", "none"), progBar = TRUE)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}

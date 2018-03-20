@@ -5,7 +5,7 @@
 \title{Maximum Spanning Tree}
 \usage{
 MaST(data, normal = FALSE, weighted = TRUE, depend = FALSE,
-  na.data = c("pairwise", "listwise", "fiml"))
+  na.data = c("pairwise", "listwise", "fiml", "none"))
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}

@@ -6,8 +6,8 @@
 \usage{
 commboot(data, normal = FALSE, n = nrow(data), iter = 100,
   filter = c("TMFG", "threshold"), method = c("louvain", "walktrap"),
-  na.data = c("pairwise", "listwise", "fiml"), steps = 4, seeds = NULL,
-  ...)
+  na.data = c("pairwise", "listwise", "fiml", "none"), steps = 4,
+  seeds = NULL, ...)
 }
 \arguments{
 \item{data}{A set of data}

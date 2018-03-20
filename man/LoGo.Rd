@@ -5,7 +5,7 @@
 \title{Local/Global Sparse Inverse Covariance Matrix}
 \usage{
 LoGo(data, partial = FALSE, normal = FALSE, na.data = c("pairwise",
-  "listwise", "fiml"))
+  "listwise", "fiml", "none"), graphical = FALSE)
 }
 \arguments{
 \item{data}{Must be a dataset}
@@ -24,10 +24,15 @@ For "pairwise" deletion \emph{na.rm} is applied.
 For "listwise" deletion the \emph{na.omit} fucntion is applied.
 Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
+
+\item{graphical}{Should network be checked for graphical modeling?
+Defaults to FALSE.
+Set to TRUE to determine if model is graphical}
 }
 \value{
 Returns a list containing the TMFG-filtered matrix (tmfg)
-and the sparse TMFG-filtered inverse covariance matrix (logo)
+and the sparse TMFG-filtered inverse covariance matrix (logo).
+If normal = TRUE, then shrinkage lambda is also output (lambda)
 }
 \description{
 Applies the Local/Global method to estimate the sparse inverse covariance matrix using a TMFG-filtered network

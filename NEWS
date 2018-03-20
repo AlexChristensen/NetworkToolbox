@@ -2,9 +2,13 @@ Changes in Version 1.1.0
 
 o new data files: NEO-PI-3 data for psychometric network analysis, verbal fluency files for semantic network analysis, behavioral NEO-PI-3 and an associated brain connectivity array for brain network analysis
 
-o bootgen: no longer produces plots and a seeds argument can now be used to replicate the previous analysis using the Seeds output
+o TMFG: fully regressed coefficients (partial correlations) can now be computed--uses corpcor's invcov.shrink when argument normal = TRUE
+
+o bootgen: no longer produces plots; added is.graphical function to automatically check if network is graphical when method = "LoGo" or additional argument partial = TRUE is used
 
 o bootgenPlot: output from the bootgen function can now be input into a separate function to obtain plots. Contains an argument to also plot the bootstrapped network generalization method
+
+o bootstrapping functions all include a seeds argument, which can be used to replicate the previous analysis using the Seeds output
 
 o PMFG: now outputs a list to be used in Cytoscape visualization software (sparseList)
 
@@ -16,6 +20,14 @@ o hybrid: added an option for "standard", "random", or "average" betweenness cen
 
 o cpmIV: parallel processing now available for covariate estimation (defaults to max(cores) - 1)
 
-o LoGo: if network is not positive definite, then partial correlations given all others is associated with the network structure (usually positive definite)
+o LoGo: corpcor's cov.shrink is now used for covariance estimation when argument normal = TRUE; added argument to check if network is graphical
 
-o edgerep: includes a list of the replicated edges and their respective weights in each network. A plot for this information is also available (defaults to FALSE)
+o edgerep: includes a list of the replicated edges and their respective weights in each network. A plot for this information is also available (defaults to FALSE). Also includes an argument "corr" which allows the researcher to select different correlations for examining replicated edge weight relations
+
+o is.graphical: function to check whether the network is graphical
+
+o cor2cov: function to convert correlation matrix into a covariance matrix
+
+o depend: fixed Fisher's z significance test
+
+o kld: removed function

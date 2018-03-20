@@ -5,9 +5,9 @@
 \title{Bootstrapped Network Generalization}
 \usage{
 bootgen(data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold"),
-  bootThresh = c("adaptive", "BF"), bootAlpha = 0.05, n = nrow(data),
-  iter = 1000, normal = FALSE, na.data = c("pairwise", "listwise",
-  "fiml"), seeds = NULL, ...)
+  alpha = 0.05, n = nrow(data), iter = 100, normal = FALSE,
+  na.data = c("pairwise", "listwise", "fiml", "none"), seeds = NULL, cores,
+  progBar = TRUE, ...)
 }
 \arguments{
 \item{data}{A set of data}
@@ -15,14 +15,8 @@ bootgen(data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold"),
 \item{method}{A network filtering method.
 Defaults to "TMFG"}
 
-\item{bootThresh}{Threshold to remove less reliable and small correlations.
-Defaults to "adaptive," alters the alpha value based on sample size (generally recommended).
-Set to "BF" for Bayes factor (see and cite Ly et al., 2016 and Wagenmakers et al., 2016).
-If set to "BF", then a Bayes factor is used}
-
-\item{bootAlpha}{Alpha threshold hold for "adaptive" (Perez & Pericchi, 2014)
-and Bayes factor for "BF" (Ly et al., 2016; Wagenmakers et al., 2016).
-Defaults to .05 for "adaptive" and 3 for "BF"}
+\item{alpha}{Alpha threshold hold for "adaptive" (Perez & Pericchi, 2014).
+Defaults to .05 for "adaptive"}
 
 \item{n}{Number of people to use in the bootstrap.
 Defaults to full sample size}
@@ -46,6 +40,14 @@ Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 \item{seeds}{Seeds to use for random number generation.
 Defaults to NULL.
 Input seeds from previous run (\strong{see examples})}
+
+\item{cores}{Number of computer processing cores to use for bootstrapping samples.
+Defaults to \emph{n} - 1 total number of cores.
+Set to any number between 1 and maxmimum amount of cores on your computer}
+
+\item{progBar}{Should progress bar be displayed?
+Defaults to TRUE.
+Set to FALSE for no progress bar}
 
 \item{...}{Additional arguments for filtering methods}
 }
@@ -73,10 +75,6 @@ bootThreshold<-bootgen(neoOpen,method="threshold")
 }
 }
 \references{
-Ly, A., Verhagen, A. J., & Wagenmakers, E.-J. (2016).
-Harold Jeffreys's default Bayes factor hypothesis tests: Explanation, extension, and application in psychology.
-\emph{Journal of Mathematical Psychology}, \emph{72}, 19-32
-
 Perez, M. E., & Pericchi, L. R. (2014).
 Changing statistical significance with the amount of information: The adaptive \emph{a} significance level.
 \emph{Statistics & Probability Letters}, \emph{85}, 20-24.
@@ -84,10 +82,6 @@ Changing statistical significance with the amount of information: The adaptive \
 Tumminello, M., Coronnello, C., Lillo, F., Micciche, S., & Mantegna, R. N. (2007).
 Spanning trees and bootstrap reliability estimation in correlation-based networks.
 \emph{International Journal of Bifurcation and Chaos}, \emph{17}(7), 2319-2329.
-
-Wagenmakers, E. J., Verhagen, J., & Ly, A. (2016).
-How to quantify the evidence for the absence of a correlation.
-\emph{Behavior Research Methods}, \emph{48}(2), 413-426.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

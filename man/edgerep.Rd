@@ -4,12 +4,17 @@
 \alias{edgerep}
 \title{Edge Replication}
 \usage{
-edgerep(A, B, plot = FALSE)
+edgerep(A, B, corr = c("pearson", "spearman", "kendall"), plot = FALSE)
 }
 \arguments{
 \item{A}{An adjacency matrix of network A}
 
 \item{B}{An adjacency matrix of network B}
+
+\item{corr}{Correlation method for assessing the relatonship between the replicated edge weights.
+Defaults to "pearson".
+Set to "spearman" for non-linear or monotonic associations.
+Set to "kendall" for rank-order correlations}
 
 \item{plot}{Should there be a plot of the replicated weights?
 Defaults to FALSE.

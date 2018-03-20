@@ -6,7 +6,7 @@
 \usage{
 threshold(data, a, thresh = c("alpha", "adaptive", "bonferroni", "FDR",
   "proportional"), n = nrow(data), normal = FALSE, na.data = c("pairwise",
-  "listwise", "fiml"))
+  "listwise", "fiml", "none"))
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
