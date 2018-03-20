@@ -95,7 +95,7 @@ TMFG <-function (data, normal = FALSE, weighted = TRUE, depend = FALSE,
         
         capt<-capture.output(inv<-corpcor::invcov.shrink(invS))
         
-        corr<--cov2cor(inv)
+        corr<-cov2cor(inv)
         diag(corr)<-1
         
         tcormat<-corr
@@ -332,8 +332,6 @@ LoGo <- function (data, partial = FALSE, normal = FALSE,
         cormat<-data
         S<-cor2cov(cormat,data)
     }else if(normal){
-        cormat<-qgraph::cor_auto(data)
-        
         #shrinkage covariance
         S<-cor2cov(cormat,data)
         capt<-capture.output(S<-corpcor::cov.shrink(S))
@@ -6024,38 +6022,6 @@ is.graphical <- function (A, data)
 #' @examples 
 #' data(animals)
 "animals"
-#----
-#Resting-state Brain Data----
-#'Resting-state Brain Data
-#' 
-#' Resting-state brain data associated with NEO-PI-3's Openness to Experience (\emph{n} = 144).
-#' 
-#' A correlation connectivity array of brain data (rmats).
-#' Shen et al.'s (2013) brain atlas is used.
-#' 
-#' @docType data
-#' 
-#' @usage data(restOpen)
-#' 
-#' @format restOpen (268 x 268 x 144 array)
-#' 
-#' @keywords datasets
-#' 
-#' @references
-#' Beaty, R. E., Chen, Q., Christensen, A. P., Qiu, J., Silvia, P. J., & Schacter, D. L. (2018).
-#' Brain networks of the imaginative mind: Dynamic functional connectivity of default and cognitive control networks relates to Openness to Experience.
-#' \emph{Human Brain Mapping}, \emph{39}(2), 811-821.
-#' 
-#' Beaty, R. E., Kenett, Y. N., Christensen, A. P., Rosenberg, M. D., Benedek, M., Chen, Q., ... & Silvia, P. J. (2018).
-#' Robust prediction of individual creative ability from brain functional connectivity.
-#' \emph{Proceedings of the National Academy of Sciences}, 201713532.
-#' 
-#' Shen, X., Tokoglu, F., Papademetris, X., & Constable, R. T. (2013).
-#' Groupwise whole-brain parcellation from resting-state fMRI data for network node identification.
-#' \emph{Neuroimage}, \emph{82}, 403-415.
-#' @examples 
-#' data(restOpen)
-"restOpen"
 #----
 #NEO-PI-3 for Resting-state Data----
 #'NEO-PI-3 for Resting-state Data
