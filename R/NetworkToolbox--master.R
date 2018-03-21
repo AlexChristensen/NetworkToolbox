@@ -15,16 +15,12 @@
 #' Defaults to FALSE.
 #' Set to TRUE to generate a TMFG-filtered dependency network
 #' (output obtained from the \emph{depend} function)
-#' @param partial Should partial correlations between two nodes given all other nodes be used?
-#' Defaults to FALSE.
-#' Set to TRUE to generate a network of fully regressed coefficients.
 #' @param na.data How should missing data be handled?
 #' For "pairwise" deletion \emph{na.rm} is applied.
 #' For "listwise" deletion the \emph{na.omit} fucntion is applied.
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
-#' @return Returns a list of the adjacency matrix (A), separators (separators), and cliques (cliques).
-#' If partial = TRUE, then shrinkage lambda is also output (lambda)
+#' @return Returns a list of the adjacency matrix (A), separators (separators), and cliques (cliques)
 #' @examples
 #' weighted_TMFGnetwork<-TMFG(neoOpen)
 #' 
@@ -45,7 +41,7 @@
 #' @export
 #TMFG Filtering Method----
 TMFG <-function (data, normal = FALSE, weighted = TRUE, depend = FALSE,
-                 partial = FALSE, na.data = c("pairwise","listwise","fiml","none"))
+                 na.data = c("pairwise","listwise","fiml","none"))
 {
     #missing data handling
     if(missing(na.data))
@@ -85,22 +81,9 @@ TMFG <-function (data, normal = FALSE, weighted = TRUE, depend = FALSE,
     
     n<-ncol(cormat)
     
-    if(!partial)
-    {
         tcormat<-cormat
         cormat<-abs(cormat)
-    }else{
-        S<-cor2cov(cormat,data)
-        invS<-solve(S)
         
-        capt<-capture.output(inv<-corpcor::invcov.shrink(invS))
-        
-        corr<-cov2cor(inv)
-        diag(corr)<-1
-        
-        tcormat<-corr
-        cormat<-abs(tcormat)
-    }
     if(n<9){print("Matrix is too small")}
     #nodeTO<-array()
     #nodeFROM<-array()
@@ -248,9 +231,7 @@ TMFG <-function (data, normal = FALSE, weighted = TRUE, depend = FALSE,
     colnames(x)<-colnames(cormat)
     rownames(x)<-colnames(cormat)
     
-    if(!partial)
-    {return(list(A=x, separators=separators, cliques=cliques))
-    }else{return(list(A=x, separators=separators, cliques=cliques, lambda=noquote(capt[c(1,3)])))}
+    return(list(A=x, separators=separators, cliques=cliques))
 }
 #----
 #' Local/Global Sparse Inverse Covariance Matrix
@@ -2786,28 +2767,13 @@ bootgen <- function (data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold
     }else if(normal){cormat<-qgraph::cor_auto(data)
     }else{cormat<-cor(data)}
     
-    args <- list(...)
-    exist <- "partial" %in% names(args)
-    if(exist)
-    {
-        realmatC<-cormat
-        
-        S<-cor2cov(cormat,data)
-        
-        capt<-capture.output(covmat<-corpcor::cov.shrink(S))
-        
-        corr<--cov2cor(solve(covmat))
-        diag(corr)<-1
-        
-        realmat<-corr
-        
-    }else{realmat<-cormat}
+    realmat<-cormat
     
     #general bootstrapping    
     ##########################################################
     sampslist<-list() #initialize sample list
     
-    if(method=="LoGo"||exist) #partial correlation sample list
+    if(method=="LoGo") #partial correlation sample list
     {tsampslist<-list()}
     
     #Seeds
@@ -2872,13 +2838,7 @@ bootgen <- function (data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold
         }else{cormat<-cor(mat)}
         
         if(method=="TMFG")
-        {
-            if(!exist)
-            {samps<-fish(TMFG(cormat)$A)
-            }else{
-                    samps<-fish(TMFG(cormat,partial=TRUE)$A) #partial correlation
-                    tsamps<-fish(TMFG(cormat)$A)    #full correlation
-                }
+        {samps<-fish(TMFG(cormat)$A)
         }else if(method=="LoGo")
         {
             samps<-fish(suppressWarnings(LoGo(mat,partial=TRUE)$logo))
@@ -2891,7 +2851,7 @@ bootgen <- function (data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold
         {samps<-fish(threshold(cormat,...)$A)
         }else{stop("Method not available")}
         
-        if(method=="LoGo"||exist)
+        if(method=="LoGo")
         {return(list(samps=samps,tsamps=tsamps))
         }else{return(list(samps=samps))}
         
@@ -2903,10 +2863,7 @@ bootgen <- function (data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold
     
     #Original Networks
         if(method=="TMFG")
-        {
-            if(!exist)
-            {tru<-TMFG(data)$A
-            }else{tru<-TMFG(cormat,partial=TRUE)$A}
+        {tru<-TMFG(data)$A
         }else if(method=="LoGo")
         {tru<-LoGo(data,partial=TRUE)$logo
         diag(tru)<-0
@@ -2929,7 +2886,7 @@ bootgen <- function (data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold
     {samps[,,i]<-sampslist[[i]]$samps}
     
     #convert partial samples list from foreach
-    if(method=="LoGo"||exist)
+    if(method=="LoGo")
     {
         tsamps<-array(0,dim=c(nrow=nrow(realmat),ncol=ncol(realmat),iter))
         
@@ -2945,7 +2902,7 @@ bootgen <- function (data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold
         {meanmat[j,k]<-zw(samps[j,k,],iter)}
     
     #partial fisher mean matrix
-    if(method=="LoGo"||exist)
+    if(method=="LoGo")
     {
     tmeanmat<-matrix(0,nrow=nrow(realmat),ncol=ncol(realmat)) #Initialize Mean matrix
     for(j in 1:nrow(realmat))
@@ -2955,13 +2912,13 @@ bootgen <- function (data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold
     
     #convert fisher z to r
     meanmat<-psych::fisherz2r(meanmat)
-    if(method=="LoGo"||exist)
+    if(method=="LoGo")
     {tmeanmat<-psych::fisherz2r(tmeanmat)}
 
     #threshold value
         cvr<-critical.r(n,adapt(n,alpha))
         
-        if(method=="LoGo"||exist)
+        if(method=="LoGo")
         {
             tmeanmat<-ifelse(abs(tmeanmat)>=cvr,tmeanmat,0)
             meanmat<-ifelse(tmeanmat!=0,meanmat,0)
@@ -2993,7 +2950,7 @@ bootgen <- function (data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold
     if(!isSymmetric(bootmat))
     {bootmat<-as.matrix(Matrix::forceSymmetric(bootmat))}
     
-    if(method=="LoGo"||exist)
+    if(method=="LoGo")
     {is.graphical(bootmat,data)}
     
     return(list(orignet=tru,bootmat=bootmat,netrel=rel,Seeds=Seeds))
@@ -5938,7 +5895,7 @@ cor2cov <- function (cormat, data)
 #' @param data The dataset the correlation matrix is from
 #' @return Returns a covariance matrix
 #' @examples
-#' A <- TMFG(neoOpen, normal = TRUE, partial = TRUE)$A
+#' A <- LoGo(neoOpen, normal = TRUE, partial = TRUE)$logo
 #' 
 #' is.graphical(A, neoOpen)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>

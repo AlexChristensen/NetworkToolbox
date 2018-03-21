@@ -2,9 +2,7 @@ Changes in Version 1.1.0
 
 o new data files: NEO-PI-3 data for psychometric network analysis, verbal fluency files for semantic network analysis, behavioral NEO-PI-3 and an associated brain connectivity array for brain network analysis
 
-o TMFG: fully regressed coefficients (partial correlations) can now be computed--uses corpcor's invcov.shrink when argument normal = TRUE
-
-o bootgen: no longer produces plots; added is.graphical function to automatically check if network is graphical when method = "LoGo" or additional argument partial = TRUE is used
+o bootgen: no longer produces plots; added is.graphical function to automatically check if network is graphical when method = "LoGo"
 
 o bootgenPlot: output from the bootgen function can now be input into a separate function to obtain plots. Contains an argument to also plot the bootstrapped network generalization method
 

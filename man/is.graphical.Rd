@@ -20,7 +20,7 @@ Input must be a partial correlation network.
 Function assumes that partial correlations were computed from a multivariate normal distribution
 }
 \examples{
-A <- TMFG(neoOpen, normal = TRUE, partial = TRUE)$A
+A <- LoGo(neoOpen, normal = TRUE, partial = TRUE)$logo
 
 is.graphical(A, neoOpen)
 }
