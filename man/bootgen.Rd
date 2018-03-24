@@ -15,25 +15,22 @@ bootgen(data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold"),
 \item{method}{A network filtering method.
 Defaults to "TMFG"}
 
-\item{alpha}{Alpha threshold hold for "adaptive" (Perez & Pericchi, 2014).
-Defaults to .05 for "adaptive"}
+\item{alpha}{Alpha threshold bootstrapped network generalization network}
 
 \item{n}{Number of people to use in the bootstrap.
 Defaults to full sample size}
 
 \item{iter}{Number of bootstrap iterations.
-Defaults to 1000 iterations}
+Defaults to 100 iterations}
 
-\item{normal}{Should data be transform to a normal distribution?
+\item{normal}{Should data be transformed to a normal distribution?
 Defaults to FALSE.
 Data is not transformed to be normal.
 Set to TRUE if data should be transformed to be normal
-(computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)}
+(computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)}
 
 \item{na.data}{How should missing data be handled?
-For "pairwise" deletion \emph{na.rm} is applied.
-If normal is TRUE, then "pairwise" is used.
-For "listwise" deletion the \emph{na.omit} fucntion is applied.
+For "listwise" deletion the \emph{na.omit} function is applied.
 Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 
@@ -58,7 +55,9 @@ unfiltered reliabilities of all of the connections (netrel),
 seeds used in the random number generator (Seeds)
 }
 \description{
-Bootstraps the sample to identify the most stable correlations
+Bootstraps the sample to identify the most stable correlations.
+Also produces a network that is penalizes low reliability edges.
+This function is useful for overcoming the structural constraint of the IFN approach
 }
 \examples{
 \dontrun{

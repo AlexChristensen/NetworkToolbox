@@ -9,7 +9,8 @@ leverage(A, weighted = TRUE)
 \arguments{
 \item{A}{An adjacency matrix of network data}
 
-\item{weighted}{Is the network weighted? Defaults to TRUE.
+\item{weighted}{Is the network weighted?
+Defaults to TRUE.
 Set to FALSE for unweighted measure of leverage centrality}
 }
 \value{

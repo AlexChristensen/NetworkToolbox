@@ -24,7 +24,7 @@ A<-TMFG(neoOpen)$A
 
 weighted_centralitylist<-centlist(A)
 
-unweighted_centralitylist<-centlist(A,weighted=FALSE)
+unweighted_centralitylist<-centlist(A, weighted=FALSE)
 }
 \references{
 Rubinov, M., & Sporns, O. (2010). 

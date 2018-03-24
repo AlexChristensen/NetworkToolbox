@@ -1,3 +1,13 @@
+Changes in Version 1.1.1
+
+o LoGo: reversed sign bug fixed; cov.shrink no longer used for covariance matrix estimation
+
+o is.graphical: updated with more efficient (inverse) covariance check
+
+o bootgen: uses partial correlation significance from method = "LoGo"
+
+
+
 Changes in Version 1.1.0
 
 o new data files: NEO-PI-3 data for psychometric network analysis, verbal fluency files for semantic network analysis, behavioral NEO-PI-3 and an associated brain connectivity array for brain network analysis

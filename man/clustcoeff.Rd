@@ -24,7 +24,7 @@ A<-TMFG(neoOpen)$A
 
 unweighted_CC<-clustcoeff(A)
 
-weighted_CC<-clustcoeff(A,weighted=TRUE)
+weighted_CC<-clustcoeff(A, weighted=TRUE)
 }
 \references{
 Rubinov, M., & Sporns, O. (2010). 

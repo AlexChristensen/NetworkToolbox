@@ -27,15 +27,14 @@ and "proportional" for a fixed density of edges (keeps strongest correlations wi
 Defaults to the number of rows in the data.
 If input is a correlation matrix, then n \strong{must} be set}
 
-\item{normal}{Should data be transform to a normal distribution?
-Defaults to FALSE. Data is not transformed to be normal.
+\item{normal}{Should data be transformed to a normal distribution?
+Defaults to FALSE.
+Data is not transformed to be normal.
 Set to TRUE if data should be transformed to be normal
-(computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)}
+(computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)}
 
 \item{na.data}{How should missing data be handled?
-For "pairwise" deletion \emph{na.rm} is applied.
-If normal is TRUE, then "pairwise" is used.
-For "listwise" deletion the \emph{na.omit} fucntion is applied.
+For "listwise" deletion the \emph{na.omit} function is applied.
 Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 }

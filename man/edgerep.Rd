@@ -23,7 +23,7 @@ Set to TRUE for a plot to be produced}
 \value{
 Returns a list of the edges that replicated and their weights (replicatedEdges),
 number of edges that replicate (replicated),
-total number of edges (possibleA & possibleB),
+total number of edges (totalEdgesA & totalEdgesB),
 the percentage of edges that replicate (percentageA & percentageB),
 the density of edges (densityA & densityB),
 the mean difference between edges that replicate (meanDifference),

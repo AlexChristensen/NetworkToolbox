@@ -25,6 +25,7 @@ If you would like to simply import a connectivity array from Matlab, then see th
 \dontrun{
 neuralarray<-convertConnBrainMat()
 
+#Import correlation connectivity array from Matlab
 library(R.matlab)
 neuralarray<-readMat(file.choose())
 }

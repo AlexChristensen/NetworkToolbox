@@ -29,7 +29,7 @@ a plot of retained correlations on their reliability ("bootgen Network Correlati
 a frequency of the reliability of edges in both the original and bootgen network
 }
 \description{
-Bootstraps the sample to identify the most stable correlations (still in testing)
+Generates reliability plots from the \emph{bootgen} function
 }
 \examples{
 \dontrun{

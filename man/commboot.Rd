@@ -12,7 +12,7 @@ commboot(data, normal = FALSE, n = nrow(data), iter = 100,
 \arguments{
 \item{data}{A set of data}
 
-\item{normal}{Should data be transform to a normal distribution?
+\item{normal}{Should data be transformed to a normal distribution?
 Defaults to FALSE.
 Data is not transformed to be normal.
 Set to TRUE if data should be transformed to be normal}
@@ -30,9 +30,7 @@ Defaults to "TMFG"}
 Set to "louvain" for the louvain community detection algorithm}
 
 \item{na.data}{How should missing data be handled?
-For "pairwise" deletion \emph{na.rm} is applied.
-If normal is TRUE, then "pairwise" is used.
-For "listwise" deletion the \emph{na.omit} fucntion is applied.
+For "listwise" deletion the \emph{na.omit} function is applied.
 Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 

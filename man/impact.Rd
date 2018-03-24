@@ -14,12 +14,11 @@ Set to TRUE to see progress bar}
 }
 \value{
 A vector of node impact values for each node in the network
-(impact > 0, greater ASPL; impact < 0, lower ASPL)
+(impact > 0, greater ASPL when node is removed; impact < 0, lower ASPL when node is removed)
 }
 \description{
-Computes impact measure of each node in a network
-(how much the average distance in the network changes with that node removed; 
-Please see and cite Kenett et al., 2011)
+Computes impact measure or how much the average distance in the network changes with that node removed of each node in a network
+(Please see and cite Kenett et al., 2011. See also \code{\link[networktools]{impact}} for a separate but related measure)
 }
 \examples{
 A<-TMFG(neoOpen)$A

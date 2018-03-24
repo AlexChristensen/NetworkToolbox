@@ -19,7 +19,8 @@ Defaults to "mean".
 Set to "sum" for sum scores}
 
 \item{factors}{Can be a vector of factor assignments or community detection algorithms
-("walktrap" or "louvain")can be used to determine the number of factors.
+("walktrap" or "louvain") can be used to determine the number of factors
+(note that these factors must be at least 9 nodes or more for the TMFG method).
 Defaults to 1 factor.
 Set to "walktrap" for the walktrap algortihm.
 Set to "louvain" for louvain community detection}
@@ -35,14 +36,14 @@ To use additional arguments for "threshold", apply \emph{threshold} function wit
 desired arguments and set to "none".
 Use "none" for an adjacency matrix that has already been filtered}
 
-\item{normal}{Should data be transform to a normal distribution?
-Defaults to FALSE. Data is not transformed to be normal.
+\item{normal}{Should data be transformed to a normal distribution?
+Defaults to FALSE.
+Data is not transformed to be normal.
 Set to TRUE if data should be transformed to be normal
-(computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)}
+(computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)}
 
 \item{na.data}{How should missing data be handled?
-For "pairwise" deletion \emph{na.rm} is applied.
-For "listwise" deletion the \emph{na.omit} fucntion is applied.
+For "listwise" deletion the \emph{na.omit} function is applied.
 Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 

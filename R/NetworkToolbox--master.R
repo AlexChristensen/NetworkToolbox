@@ -4,10 +4,12 @@
 #' @description Applies the Triangulated Maximally Filtered Graph (TMFG) filtering method
 #' (Please see and cite Massara et al., 2016)
 #' @param data Can be a dataset or a correlation matrix
-#' @param normal Should data be transform to a normal distribution?
-#' Defaults to FALSE. Data is not transformed to be normal.
+#' @param normal Should data be transformed to a normal distribution?
+#' Input must be a dataset.
+#' Defaults to FALSE.
+#' Data is not transformed to be normal.
 #' Set to TRUE if data should be transformed to be normal
-#' (computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)
+#' (computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)
 #' @param weighted Should network be weighted?
 #' Defaults to TRUE.
 #' Set to FALSE to produce an unweighted (binary) network
@@ -16,8 +18,7 @@
 #' Set to TRUE to generate a TMFG-filtered dependency network
 #' (output obtained from the \emph{depend} function)
 #' @param na.data How should missing data be handled?
-#' For "pairwise" deletion \emph{na.rm} is applied.
-#' For "listwise" deletion the \emph{na.omit} fucntion is applied.
+#' For "listwise" deletion the \emph{na.omit} function is applied.
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
 #' @return Returns a list of the adjacency matrix (A), separators (separators), and cliques (cliques)
@@ -238,26 +239,25 @@ TMFG <-function (data, normal = FALSE, weighted = TRUE, depend = FALSE,
 #' @description Applies the Local/Global method to estimate the sparse inverse covariance matrix using a TMFG-filtered network
 #' (see and cite Barfuss et al., 2016)
 #' @param data Must be a dataset
-#' @param partial Should the network's connections be the partial correlation between two nodes given all other nodes?
+#' @param partial Should the output network's connections be the partial correlation between two nodes given all other nodes?
 #' Defaults to FALSE, which returns a sparse inverse covariance matrix.
-#' Set to TRUE for partial correlation matrix
-#' @param normal Should data be transform to a normal distribution?
-#' Defaults to FALSE. Data is not transformed to be normal.
+#' Set to TRUE for a partial correlation matrix
+#' @param normal Should data be transformed to a normal distribution?
+#' Defaults to FALSE.
+#' Data is not transformed to be normal.
 #' Set to TRUE if data should be transformed to be normal
-#' (computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)
+#' (computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)
 #' @param na.data How should missing data be handled?
-#' For "pairwise" deletion \emph{na.rm} is applied.
-#' For "listwise" deletion the \emph{na.omit} fucntion is applied.
+#' For "listwise" deletion the \emph{na.omit} function is applied.
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
 #' @param graphical Should network be checked for graphical modeling?
 #' Defaults to FALSE.
 #' Set to TRUE to determine if model is graphical
-#' @return Returns a list containing the TMFG-filtered matrix (tmfg)
-#' and the sparse TMFG-filtered inverse covariance matrix (logo).
-#' If normal = TRUE, then shrinkage lambda is also output (lambda)
+#' @return Returns a list containing the TMFG-filtered matrix (tmfg),
+#' and the sparse TMFG-filtered inverse covariance matrix (logo)
 #' @examples
-#' LoGonet<-LoGo(neoOpen)$logo
+#' LoGonet<-LoGo(neoOpen, partial = TRUE)$logo
 #' 
 #' TMFGnet<-LoGo(neoOpen)$tmfg
 #' @references 
@@ -315,7 +315,6 @@ LoGo <- function (data, partial = FALSE, normal = FALSE,
     }else if(normal){
         #shrinkage covariance
         S<-cor2cov(cormat,data)
-        capt<-capture.output(S<-corpcor::cov.shrink(S))
     }else{
         cormat<-cor(data)
         S<-cov(data)
@@ -340,7 +339,7 @@ LoGo <- function (data, partial = FALSE, normal = FALSE,
     {
         par<-(-cov2cor(Jlogo))
         diag(par)<-0
-        is.graphical(par,data)
+        is.graphical(par)
     }
     
         if(partial)
@@ -349,36 +348,36 @@ LoGo <- function (data, partial = FALSE, normal = FALSE,
             diag(Jlogo)<-0
             
             if(graphical)
-            {is.graphical(Jlogo,data)}
+            {is.graphical(Jlogo)}
         }
         
     colnames(Jlogo)<-colnames(data)
     row.names(Jlogo)<-colnames(data)
     
-    if(!normal)
-    {return(list(logo=Jlogo,tmfg=tmfg$A))
-    }else{return(list(logo=Jlogo,tmfg=tmfg$A,lambda=noquote(capt[c(1,3)])))}
+    if(!isSymmetric(Jlogo))
+    {Jlogo<-as.matrix(Matrix::forceSymmetric(Jlogo))}
+    
+    return(list(logo=Jlogo,tmfg=tmfg$A))
 }
 #----
 #' Planar Maximally Filtered Graph
 #' @description Applies the Planar Maximally Filtered Graph (PMFG) filtering method
 #' (see and cite Tumminello et al., 2005).
-#' Currently very slow! (efficiency updates soon to come)
+#' Currently very slow! (efficiency is being worked on)
 #' @param data Can be a dataset or a correlation matrix
 #' @param sparseList Should a sparse matrix be returned?
 #' Defaults to FALSE.
 #' Set to TRUE to return a sparse matrix list
-#' @param normal Should data be transform to a normal distribution?
-#' Defaults to FALSE. Data is not transformed to be normal.
+#' @param normal Should data be transformed to a normal distribution?
+#' Defaults to FALSE.
+#' Data is not transformed to be normal.
 #' Set to TRUE if data should be transformed to be normal
-#' (computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)
+#' (computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)
 #' @param weighted Should network be weighted?
 #' Defaults to TRUE.
 #' Set to FALSE to produce an unweighted (binary) network
 #' @param na.data How should missing data be handled?
-#' For "pairwise" deletion \emph{na.rm} is applied.
-#' If normal is TRUE, then "pairwise" is used.
-#' For "listwise" deletion the \emph{na.omit} fucntion is applied.
+#' For "listwise" deletion the \emph{na.omit} function is applied.
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
 #' @param progBar Should progress bar be displayed?
@@ -395,7 +394,6 @@ LoGo <- function (data, partial = FALSE, normal = FALSE,
 #' A tool for filtering information in complex systems.
 #' \emph{Proceedings of the National Academy of Sciences}, \emph{102}(30), 10421-10426.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
-#' @importFrom utils installed.packages
 #' @export
 #PMFG Filtering Method----
 PMFG <- function (data, sparseList = FALSE, normal = FALSE, weighted = TRUE,
@@ -591,10 +589,11 @@ PMFG <- function (data, sparseList = FALSE, normal = FALSE, weighted = TRUE,
 #' Maximum Spanning Tree
 #' @description Applies the Maximum Spanning Tree (MaST) filtering method
 #' @param data Can be a dataset or a correlation matrix
-#' @param normal Should data be transform to a normal distribution?
-#' Defaults to FALSE. Data is not transformed to be normal.
+#' @param normal Should data be transformed to a normal distribution?
+#' Defaults to FALSE.
+#' Data is not transformed to be normal.
 #' Set to TRUE if data should be transformed to be normal
-#' (computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)
+#' (computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)
 #' @param weighted Should network be weighted?
 #' Defaults to TRUE.
 #' Set to FALSE to produce an unweighted (binary) network
@@ -603,9 +602,7 @@ PMFG <- function (data, sparseList = FALSE, normal = FALSE, weighted = TRUE,
 #' Set TRUE to generate a MaST-filtered dependency network
 #' (output obtained from the \emph{depend} function)
 #' @param na.data How should missing data be handled?
-#' For "pairwise" deletion \emph{na.rm} is applied.
-#' If normal is TRUE, then "pairwise" is used.
-#' For "listwise" deletion the \emph{na.omit} fucntion is applied.
+#' For "listwise" deletion the \emph{na.omit} function is applied.
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
 #' @return A sparse association matrix
@@ -890,10 +887,11 @@ ECOplusMaST <- function (data, weighted = TRUE)
 #' @param n Number of participants in sample.
 #' Defaults to the number of rows in the data.
 #' If input is a correlation matrix, then n \strong{must} be set
-#' @param normal Should data be transform to a normal distribution?
-#' Defaults to FALSE. Data is not transformed to be normal.
+#' @param normal Should data be transformed to a normal distribution?
+#' Defaults to FALSE.
+#' Data is not transformed to be normal.
 #' Set to TRUE if data should be transformed to be normal
-#' (computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)
+#' (computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)
 #' @param a When thresh = "alpha", "adaptive", and "bonferroni" an alpha threshold is applied (defaults to \strong{.05}).
 #' For "adaptive", beta (Type II error) is set to \strong{a*5} for a medium effect size (\emph{r} = \strong{.3}).
 #' When thresh = "FDR", a q-value threshold is applied (defaults to \strong{.10}).
@@ -905,9 +903,7 @@ ECOplusMaST <- function (data, weighted = TRUE)
 #' "FDR" for local false discovery rate,
 #' and "proportional" for a fixed density of edges (keeps strongest correlations within density)
 #' @param na.data How should missing data be handled?
-#' For "pairwise" deletion \emph{na.rm} is applied.
-#' If normal is TRUE, then "pairwise" is used.
-#' For "listwise" deletion the \emph{na.omit} fucntion is applied.
+#' For "listwise" deletion the \emph{na.omit} function is applied.
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
 #' @return Returns a list containing a filtered adjacency matrix (A) and the critical r value (r.cv)
@@ -1414,7 +1410,8 @@ eigenvector <- function (A, weighted = TRUE)
 #' @description Computes leverage centrlaity of each node in a network (the degree of connected neighbors)
 #' (Please see and cite Joyce et al., 2010)
 #' @param A An adjacency matrix of network data
-#' @param weighted Is the network weighted? Defaults to TRUE.
+#' @param weighted Is the network weighted?
+#' Defaults to TRUE.
 #' Set to FALSE for unweighted measure of leverage centrality
 #' @return A vector of leverage centrality values for each node in the network
 #' @examples
@@ -1451,14 +1448,13 @@ leverage <- function (A, weighted = TRUE)
 }
 #----
 #' Node Impact
-#' @description Computes impact measure of each node in a network
-#' (how much the average distance in the network changes with that node removed; 
-#' Please see and cite Kenett et al., 2011)
+#' @description Computes impact measure or how much the average distance in the network changes with that node removed of each node in a network
+#' (Please see and cite Kenett et al., 2011. See also \code{\link[networktools]{impact}} for a separate but related measure)
 #' @param A An adjacency matrix of network data
 #' @param progBar Defaults to FALSE.
 #' Set to TRUE to see progress bar
 #' @return A vector of node impact values for each node in the network
-#' (impact > 0, greater ASPL; impact < 0, lower ASPL)
+#' (impact > 0, greater ASPL when node is removed; impact < 0, lower ASPL when node is removed)
 #' @examples
 #' A<-TMFG(neoOpen)$A
 #' 
@@ -1586,7 +1582,8 @@ hybrid <- function (A, BC = c("standard","random","average"), beta)
 #' Defaults to "mean".
 #' Set to "sum" for sum scores
 #' @param factors Can be a vector of factor assignments or community detection algorithms
-#' ("walktrap" or "louvain")can be used to determine the number of factors.
+#' ("walktrap" or "louvain") can be used to determine the number of factors
+#' (note that these factors must be at least 9 nodes or more for the TMFG method).
 #' Defaults to 1 factor.
 #' Set to "walktrap" for the walktrap algortihm.
 #' Set to "louvain" for louvain community detection
@@ -1599,13 +1596,13 @@ hybrid <- function (A, BC = c("standard","random","average"), beta)
 #' To use additional arguments for "threshold", apply \emph{threshold} function with
 #' desired arguments and set to "none".
 #' Use "none" for an adjacency matrix that has already been filtered
-#' @param normal Should data be transform to a normal distribution?
-#' Defaults to FALSE. Data is not transformed to be normal.
+#' @param normal Should data be transformed to a normal distribution?
+#' Defaults to FALSE.
+#' Data is not transformed to be normal.
 #' Set to TRUE if data should be transformed to be normal
-#' (computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)
+#' (computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)
 #' @param na.data How should missing data be handled?
-#' For "pairwise" deletion \emph{na.rm} is applied.
-#' For "listwise" deletion the \emph{na.omit} fucntion is applied.
+#' For "listwise" deletion the \emph{na.omit} function is applied.
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
 #' @param ... Additional arguments for community detection algorithms
@@ -1654,7 +1651,7 @@ nams <- function (data, A,
     if(method=="TMFG")
     {net<-TMFG(data,na.data=na.data,normal=normal)$A
     }else if(method=="LoGo")
-    {net<-TMFG(data,na.data=na.data,normal=normal)$A
+    {net<-LoGo(data,na.data=na.data,normal=normal,partial=TRUE)$A
     }else if(method=="PMFG")
     {net<-PMFG(data,na.data=na.data,normal=normal)$pmfg
     }else if(method=="threshold")
@@ -1681,7 +1678,7 @@ nams <- function (data, A,
         }else if(method=="PMFG")
         {Ah<-PMFG(net[which(facts==i),which(facts==i)])$pmfg
         }else if(method=="LoGo")
-        {Ah<-LoGo(net[which(facts==i),which(facts==i)])$logo
+        {Ah<-LoGo(net[which(facts==i),which(facts==i)],partial=TRUE)$logo
         }else if(method=="threshold")
         {Ah<-threshold(net[which(facts==i),which(facts==i)])$A
         }else if(method=="none")
@@ -1744,7 +1741,7 @@ nams <- function (data, A,
 #' 
 #' weighted_centralitylist<-centlist(A)
 #' 
-#' unweighted_centralitylist<-centlist(A,weighted=FALSE)
+#' unweighted_centralitylist<-centlist(A, weighted=FALSE)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
@@ -1784,7 +1781,7 @@ centlist <- function (A, weighted = TRUE)
 #' 
 #' unweighted_D<-distance(A)
 #' 
-#' weighted_D<-distance(A,weighted=TRUE)
+#' weighted_D<-distance(A, weighted=TRUE)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
@@ -1875,7 +1872,7 @@ distance<-function (A, weighted = FALSE)
 #' 
 #' unweighted_PL<-pathlengths(A)
 #' 
-#' weighted_PL<-pathlengths(A,weighted=TRUE)
+#' weighted_PL<-pathlengths(A, weighted=TRUE)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
@@ -1925,7 +1922,7 @@ pathlengths <- function (A, weighted = FALSE)
 #' 
 #' unweighted_CC<-clustcoeff(A)
 #' 
-#' weighted_CC<-clustcoeff(A,weighted=TRUE)
+#' weighted_CC<-clustcoeff(A, weighted=TRUE)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
@@ -1976,7 +1973,7 @@ clustcoeff <- function (A, weighted = FALSE)
 #' @examples
 #' A<-TMFG(neoOpen)$A
 #' 
-#' trans<-transitivity(A,weighted=TRUE)
+#' trans<-transitivity(A, weighted=TRUE)
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
@@ -2277,14 +2274,13 @@ semnetmeas <- function (A, iter)
 #' Otherwise accepts the number of the nodes to be included
 #' @param iter Number of bootstrap iterations.
 #' Defaults to 1000 iterations
-#' @param normal Should data be transform to a normal distribution?
-#' Defaults to FALSE. Data is not transformed to be normal.
+#' @param normal Should data be transformed to a normal distribution?
+#' Defaults to FALSE.
+#' Data is not transformed to be normal.
 #' Set to TRUE if data should be transformed to be normal
-#' (computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)
+#' (computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)
 #' @param na.data How should missing data be handled?
-#' For "pairwise" deletion \emph{na.rm} is applied.
-#' If normal is TRUE, then "pairwise" is used.
-#' For "listwise" deletion the \emph{na.omit} fucntion is applied.
+#' For "listwise" deletion the \emph{na.omit} function is applied.
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
 #' @param seeds Seeds to use for random number generation.
@@ -2459,7 +2455,7 @@ semnetboot <- function (data, method = c("PMFG","TMFG","LoGo","MaST","threshold"
 #' Set to TRUE for a plot to be produced
 #' @return Returns a list of the edges that replicated and their weights (replicatedEdges),
 #' number of edges that replicate (replicated),
-#' total number of edges (possibleA & possibleB),
+#' total number of edges (totalEdgesA & totalEdgesB),
 #' the percentage of edges that replicate (percentageA & percentageB),
 #' the density of edges (densityA & densityB),
 #' the mean difference between edges that replicate (meanDifference),
@@ -2520,7 +2516,17 @@ if(!isSymmetric(B))
   sinlist<-ord[seq(1,nrow(ord),2),]
   sinlist<-sinlist[order(sinlist[,1],sinlist[,2]),]
   
-  colnames(sinlist)<-c("node1","node2","weight in A","weight in B")
+  colnames(sinlist)<-c("nodeTo","nodeFrom","weight in A","weight in B")
+  for(i in 1:nrow(sinlist))
+      for(j in 1:length(colnames(A)))
+      {
+          if(sinlist[i,1]==j)
+          {sinlist[i,1]<-colnames(A)[j]}
+          if(sinlist[i,2]==j)
+          {sinlist[i,2]<-colnames(A)[j]}
+      }
+  sinlist<-noquote(sinlist)
+  sinlist[,c(3,4)]<-round(as.numeric(sinlist[,c(3,4)]),3)
   
   
   colnames(repmat)<-colnames(A)
@@ -2615,25 +2621,24 @@ conn <- function (A)
 }
 #----
 #' Bootstrapped Network Generalization
-#' @description Bootstraps the sample to identify the most stable correlations
+#' @description Bootstraps the sample to identify the most stable correlations.
+#' Also produces a network that is penalizes low reliability edges.
+#' This function is useful for overcoming the structural constraint of the IFN approach
 #' @param data A set of data
 #' @param method A network filtering method.
 #' Defaults to "TMFG"
-#' @param alpha Alpha threshold hold for "adaptive" (Perez & Pericchi, 2014).
-#' Defaults to .05 for "adaptive"
+#' @param alpha Alpha threshold bootstrapped network generalization network
 #' @param n Number of people to use in the bootstrap.
 #' Defaults to full sample size
 #' @param iter Number of bootstrap iterations.
-#' Defaults to 1000 iterations
-#' @param normal Should data be transform to a normal distribution?
+#' Defaults to 100 iterations
+#' @param normal Should data be transformed to a normal distribution?
 #' Defaults to FALSE.
 #' Data is not transformed to be normal.
 #' Set to TRUE if data should be transformed to be normal
-#' (computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)
+#' (computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)
 #' @param na.data How should missing data be handled?
-#' For "pairwise" deletion \emph{na.rm} is applied.
-#' If normal is TRUE, then "pairwise" is used.
-#' For "listwise" deletion the \emph{na.omit} fucntion is applied.
+#' For "listwise" deletion the \emph{na.omit} function is applied.
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
 #' @param seeds Seeds to use for random number generation.
@@ -2672,7 +2677,7 @@ conn <- function (A)
 #' Spanning trees and bootstrap reliability estimation in correlation-based networks.
 #' \emph{International Journal of Bifurcation and Chaos}, \emph{17}(7), 2319-2329.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
-#' @importFrom stats cov2cor
+#' @importFrom stats cov2cor pt
 #' @importFrom utils txtProgressBar setTxtProgressBar
 #' @export
 #Bootstrap Network Generalization----
@@ -2727,6 +2732,14 @@ bootgen <- function (data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold
         alpha<-a*(sqrt(pwr::pwr.r.test(r=.3,power=1-(a*5))$n*(log(pwr::pwr.r.test(r=.3,power=1-(a*5))$n)+qchisq((1-a),1))))/(sqrt(n*(log(n)+qchisq((1-a),1))))
         return(alpha)}
     
+    #pcor sig
+    psig <- function (pcor, n, gp=(ncol(data)-2))
+    {
+        statistic <- pcor*sqrt((n-2-gp)/(1-pcor^2))
+        p.value <- 2*pt(-abs(statistic),(n-2-gp))
+        return(p.value)
+    }
+    
     ##########################################################
     
     #missing data handling
@@ -2773,8 +2786,8 @@ bootgen <- function (data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold
     ##########################################################
     sampslist<-list() #initialize sample list
     
-    if(method=="LoGo") #partial correlation sample list
-    {tsampslist<-list()}
+    #if(method=="LoGo") #partial correlation sample list
+    #{tsampslist<-list()}
     
     #Seeds
     Seeds<-vector(mode="numeric",length=iter) #initialize seeds vector
@@ -2842,7 +2855,7 @@ bootgen <- function (data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold
         }else if(method=="LoGo")
         {
             samps<-fish(suppressWarnings(LoGo(mat,partial=TRUE)$logo))
-            tsamps<-fish(TMFG(cormat)$A)
+            #tsamps<-fish(TMFG(cormat)$A)
         }else if(method=="MaST")
         {samps<-fish(MaST(cormat,...))
         }else if(method=="PMFG")
@@ -2851,9 +2864,11 @@ bootgen <- function (data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold
         {samps<-fish(threshold(cormat,...)$A)
         }else{stop("Method not available")}
         
-        if(method=="LoGo")
-        {return(list(samps=samps,tsamps=tsamps))
-        }else{return(list(samps=samps))}
+        #if(method=="LoGo")
+        #{return(list(samps=samps,tsamps=tsamps))
+        #}else{
+            return(list(samps=samps))
+            #}
         
     }
     if(progBar)
@@ -2886,14 +2901,13 @@ bootgen <- function (data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold
     {samps[,,i]<-sampslist[[i]]$samps}
     
     #convert partial samples list from foreach
-    if(method=="LoGo")
-    {
-        tsamps<-array(0,dim=c(nrow=nrow(realmat),ncol=ncol(realmat),iter))
-        
-        for(i in 1:iter) #populate array
-        {tsamps[,,i]<-sampslist[[i]]$tsamps}
-        
-    }
+    #if(method=="LoGo")
+    #{
+    #    tsamps<-array(0,dim=c(nrow=nrow(realmat),ncol=ncol(realmat),iter))
+    #    
+    #    for(i in 1:iter) #populate array
+    #    {tsamps[,,i]<-sampslist[[i]]$tsamps}
+    #}
     
     #Mean fisher matrix
     meanmat<-matrix(0,nrow=nrow(realmat),ncol=ncol(realmat)) #Initialize Mean matrix
@@ -2902,26 +2916,35 @@ bootgen <- function (data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold
         {meanmat[j,k]<-zw(samps[j,k,],iter)}
     
     #partial fisher mean matrix
-    if(method=="LoGo")
-    {
-    tmeanmat<-matrix(0,nrow=nrow(realmat),ncol=ncol(realmat)) #Initialize Mean matrix
-    for(j in 1:nrow(realmat))
-        for(k in 1:ncol(realmat))
-        {tmeanmat[j,k]<-zw(tsamps[j,k,],iter)}
-    }
+    #if(method=="LoGo")
+    #{
+    #tmeanmat<-matrix(0,nrow=nrow(realmat),ncol=ncol(realmat)) #Initialize Mean matrix
+    #for(j in 1:nrow(realmat))
+    #    for(k in 1:ncol(realmat))
+    #    {tmeanmat[j,k]<-zw(tsamps[j,k,],iter)}
+    #}
     
     #convert fisher z to r
     meanmat<-psych::fisherz2r(meanmat)
-    if(method=="LoGo")
-    {tmeanmat<-psych::fisherz2r(tmeanmat)}
+    #if(method=="LoGo")
+    #{tmeanmat<-psych::fisherz2r(tmeanmat)}
 
     #threshold value
         cvr<-critical.r(n,adapt(n,alpha))
         
         if(method=="LoGo")
         {
-            tmeanmat<-ifelse(abs(tmeanmat)>=cvr,tmeanmat,0)
-            meanmat<-ifelse(tmeanmat!=0,meanmat,0)
+           sigmat<-meanmat
+            
+            a<-adapt(n,alpha)
+            
+            for(i in 1:nrow(meanmat))
+                for(j in 1:ncol(meanmat))
+                {sigmat[i,j]<-psig(meanmat[i,j],n)}
+            
+            #tmeanmat<-ifelse(abs(tmeanmat)>=cvr,tmeanmat,0)
+            #meanmat<-ifelse(tmeanmat!=0,meanmat,0) #use correlation critical value
+            meanmat<-ifelse(sigmat<=a,meanmat,0) #use partial critical value
         }else{meanmat<-ifelse(abs(meanmat)>=cvr,meanmat,0)}
     
     #return meanmat to bootmat
@@ -2951,13 +2974,13 @@ bootgen <- function (data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold
     {bootmat<-as.matrix(Matrix::forceSymmetric(bootmat))}
     
     if(method=="LoGo")
-    {is.graphical(bootmat,data)}
+    {is.graphical(bootmat)}
     
     return(list(orignet=tru,bootmat=bootmat,netrel=rel,Seeds=Seeds))
 }
 #----
 #' Bootstrapped Network Generalization Plots
-#' @description Bootstraps the sample to identify the most stable correlations (still in testing)
+#' @description Generates reliability plots from the \emph{bootgen} function
 #' @param object An output from the \emph{bootgen} function
 #' @param bootmat Should the bootstrap generalization matrix be included?
 #' Defaults to FALSE.
@@ -3114,7 +3137,7 @@ bootgenPlot <- function (object, bootmat = FALSE)
 #' Bootstrapped Communities Likelihood
 #' @description Bootstraps the sample with replace to compute walktrap reliability
 #' @param data A set of data
-#' @param normal Should data be transform to a normal distribution?
+#' @param normal Should data be transformed to a normal distribution?
 #' Defaults to FALSE.
 #' Data is not transformed to be normal.
 #' Set to TRUE if data should be transformed to be normal
@@ -3127,9 +3150,7 @@ bootgenPlot <- function (object, bootmat = FALSE)
 #' @param method Defaults to "walktrap".
 #' Set to "louvain" for the louvain community detection algorithm
 #' @param na.data How should missing data be handled?
-#' For "pairwise" deletion \emph{na.rm} is applied.
-#' If normal is TRUE, then "pairwise" is used.
-#' For "listwise" deletion the \emph{na.omit} fucntion is applied.
+#' For "listwise" deletion the \emph{na.omit} function is applied.
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
 #' @param steps Number of steps to use in the walktrap algorithm.
@@ -3296,14 +3317,12 @@ commboot <- function (data, normal = FALSE, n = nrow(data), iter = 100,
 #' Dependency Network Approach
 #' @description Generates a dependency matrix of the data (index argument is still in testing phase)
 #' @param data A set of data
-#' @param normal Should data be transform to a normal distribution?
+#' @param normal Should data be transformed to a normal distribution?
 #' Defaults to FALSE. Data is not transformed to be normal.
 #' Set to TRUE if data should be transformed to be normal
-#' (computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)
+#' (computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)
 #' @param na.data How should missing data be handled?
-#' For "pairwise" deletion \emph{na.rm} is applied.
-#' If normal is TRUE, then "pairwise" is used.
-#' For "listwise" deletion the \emph{na.omit} fucntion is applied.
+#' For "listwise" deletion the \emph{na.omit} function is applied.
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
 #' @param index Should correlation with the latent variable
@@ -3504,10 +3523,6 @@ depend <- function (data, normal = FALSE,
 #' and their respective sample sizes (trainSize and testSize)
 #' @examples
 #' splithalf<-splitsamp(neoOpen)
-#' @references 
-#' Forbes, M. K., Wright, A. G. C., Markon, K. E., & Krueger, R. F. (2017a).
-#' Evidence that psychopathology symptom networks do not replicate.
-#' \emph{Journal of Abnormal Psychology}, \emph{126}(7), 969-988.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Split samples----
@@ -3998,6 +4013,7 @@ convert2igraph <- function (A, neural = FALSE)
 #' \dontrun{
 #' neuralarray<-convertConnBrainMat()
 #' 
+#' #Import correlation connectivity array from Matlab
 #' library(R.matlab)
 #' neuralarray<-readMat(file.choose())
 #' }
@@ -4111,7 +4127,7 @@ depna <- function (neuralarray, pB = TRUE, ...)
 #' @examples
 #' \dontrun{neuralarray <- convertConnBrainMat()
 #' 
-#' filteredneuralarray <- neuralnetfilter(neuralarray, method = "threshold", thres = .50)
+#' filteredneuralarray <- neuralnetfilter(neuralarray, method = "threshold", thresh = .50)
 #' 
 #' dependencyarray <- depna(neuralarray)
 #' 
@@ -4704,7 +4720,7 @@ neuralcorrtest <- function (bstat, nstat)
 #' \strong{Please cite Finn et al., 2015; Rosenberg et al., 2016; Shen et al., 2017}
 #' @param neuralarray Array from \emph{convertConnBrainMat} function
 #' @param bstat Behavioral statistic for each participant with neural data (a vector)
-#' @param covar Covariates to be included in predicting relevant edges (\strong{time consuming})
+#' @param covar Covariates to be included in predicting relevant edges (\strong{time consuming}).
 #' \strong{Must} be input as a list() (see examples)
 #' @param thresh Sets an \strong{alpha} threshold for edge weights to be retained.
 #' Defaults to .01
@@ -4723,7 +4739,7 @@ neuralcorrtest <- function (bstat, nstat)
 #' @param progBar Should progress bar be displayed?
 #' Defaults to TRUE.
 #' Set to FALSE for no progress bar
-#' @return Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), mean absolute error (mae), root mean square error (rmse)).
+#' @return Returns a list containing a matrix (correlation coefficient (r), p-value (p), Bayes Factor (BF), mean absolute error (mae), root mean square error (rmse)).
 #' The list also contains the positive (posMask) and negative (negMask) masks, which can be visualized here: \url{http://bisweb.yale.edu/build/connviewer.html}
 #' @references 
 #' Finn, E. S., Shen, X., Scheinost, D., Rosenberg, M. D., Huang, J., Chun, M. M., Papademetris, X., Constable, R. T. (2015).
@@ -5240,7 +5256,7 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01, method = c("mean", "
     results[2,4]<-round(mae_neg,3)
     results[2,5]<-round(neg_rmse,3)
     
-    colnames(results)<-c("r","p-value","BF","mae","rmse")
+    colnames(results)<-c("r","p","BF","mae","rmse")
     row.names(results)<-c("positive","negative")
     
     return(list(results=results,posMask=posmask,negMask=negmask))
@@ -5892,43 +5908,45 @@ cor2cov <- function (cormat, data)
 #' Input must be a partial correlation network.
 #' Function assumes that partial correlations were computed from a multivariate normal distribution
 #' @param A A partial correlation network (adjacency matrix)
-#' @param data The dataset the correlation matrix is from
-#' @return Returns a covariance matrix
+#' @return Returns a TRUE/FALSE for whether network is graphical
 #' @examples
 #' A <- LoGo(neoOpen, normal = TRUE, partial = TRUE)$logo
 #' 
-#' is.graphical(A, neoOpen)
+#' is.graphical(A)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Is network graphical?----
-is.graphical <- function (A, data)
+is.graphical <- function (A)
 {
     #make diagonal 1
     diag(A)<-1
     
-    #covert partial correlations to correlations
-    corr<-suppressWarnings(corpcor::pcor2cor(A))
+    #covert partial correlations to covariance
+    I<-diag(1, dim(A)[1])
     
-    if(any(is.na(corr)))
-    {ret<-"FALSE"}
-    
-    #covert correlations to covariance
-    covv<-cor2cov(corr,data)
+    #compute covariance matrix
+    error<-try(solve(I-A)%*%t(solve(I-A)),silent=TRUE)
+    if(is.character(error))
+    {ret<-"FALSE"
+    }else{covmat<-solve(I-A)%*%t(solve(I-A))}
     
     #covert to inverse covariance
-    inv<-solve(covv)
+    error<-try(solve(covmat),silent=TRUE)
+    if(is.character(error))
+    {ret<-"FALSE"
+    }else{inv<-solve(covmat)
     
     #reduce small values to 0
     check<-zapsmall(inv)
     
     
-    error<-try(any(eigen(check)$values<0),silent=TRUE)
-    if(is.character(error))
-    {ret<-"FALSE"
-    }else if(any(eigen(check)$values<0))
-    {ret<-"FALSE"
-    }else{ret<-"TRUE"}
-    
+        error<-try(any(eigen(check)$values<0),silent=TRUE)
+        if(is.character(error))
+        {ret<-"FALSE"
+        }else if(any(eigen(check)$values<0))
+        {ret<-"FALSE"
+        }else{ret<-"TRUE"}
+    }
     cat("Is network graphical:",ret)
 }
 #----

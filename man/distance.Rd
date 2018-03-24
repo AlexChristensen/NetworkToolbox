@@ -24,7 +24,7 @@ A<-TMFG(neoOpen)$A
 
 unweighted_D<-distance(A)
 
-weighted_D<-distance(A,weighted=TRUE)
+weighted_D<-distance(A, weighted=TRUE)
 }
 \references{
 Rubinov, M., & Sporns, O. (2010). 

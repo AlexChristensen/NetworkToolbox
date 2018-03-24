@@ -13,7 +13,7 @@ cpmIV(neuralarray, bstat, covar, thresh = 0.01, method = c("mean", "sum"),
 
 \item{bstat}{Behavioral statistic for each participant with neural data (a vector)}
 
-\item{covar}{Covariates to be included in predicting relevant edges (\strong{time consuming})
+\item{covar}{Covariates to be included in predicting relevant edges (\strong{time consuming}).
 \strong{Must} be input as a list() (see examples)}
 
 \item{thresh}{Sets an \strong{alpha} threshold for edge weights to be retained.
@@ -41,7 +41,7 @@ Defaults to TRUE.
 Set to FALSE for no progress bar}
 }
 \value{
-Returns a list containing a matrix (r coefficient (r), p-value (p-value), Bayes Factor (BF), mean absolute error (mae), root mean square error (rmse)).
+Returns a list containing a matrix (correlation coefficient (r), p-value (p), Bayes Factor (BF), mean absolute error (mae), root mean square error (rmse)).
 The list also contains the positive (posMask) and negative (negMask) masks, which can be visualized here: \url{http://bisweb.yale.edu/build/connviewer.html}
 }
 \description{

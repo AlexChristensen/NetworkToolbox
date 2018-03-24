@@ -24,11 +24,6 @@ Randomly splits sample into equally divded sub-samples
 \examples{
 splithalf<-splitsamp(neoOpen)
 }
-\references{
-Forbes, M. K., Wright, A. G. C., Markon, K. E., & Krueger, R. F. (2017a).
-Evidence that psychopathology symptom networks do not replicate.
-\emph{Journal of Abnormal Psychology}, \emph{126}(7), 969-988.
-}
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>
 }

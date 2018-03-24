@@ -27,7 +27,7 @@ A<-TMFG(neoOpen)$A
 
 unweighted_PL<-pathlengths(A)
 
-weighted_PL<-pathlengths(A,weighted=TRUE)
+weighted_PL<-pathlengths(A, weighted=TRUE)
 }
 \references{
 Rubinov, M., & Sporns, O. (2010). 

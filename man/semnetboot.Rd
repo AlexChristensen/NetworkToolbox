@@ -14,10 +14,11 @@ semnetboot(data, method = c("PMFG", "TMFG", "LoGo", "MaST", "threshold"),
 \item{method}{A network filtering method.
 Defaults to "PMFG"}
 
-\item{normal}{Should data be transform to a normal distribution?
-Defaults to FALSE. Data is not transformed to be normal.
+\item{normal}{Should data be transformed to a normal distribution?
+Defaults to FALSE.
+Data is not transformed to be normal.
 Set to TRUE if data should be transformed to be normal
-(computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)}
+(computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)}
 
 \item{nodes}{Number of nodes (i.e., variables) to use in the bootstrap.
 Defaults to 50% of nodes in the network.
@@ -27,9 +28,7 @@ Otherwise accepts the number of the nodes to be included}
 Defaults to 1000 iterations}
 
 \item{na.data}{How should missing data be handled?
-For "pairwise" deletion \emph{na.rm} is applied.
-If normal is TRUE, then "pairwise" is used.
-For "listwise" deletion the \emph{na.omit} fucntion is applied.
+For "listwise" deletion the \emph{na.omit} function is applied.
 Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 

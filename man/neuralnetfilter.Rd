@@ -28,7 +28,7 @@ Removes edges from the neural network output from \emph{convertConnBrainMat} usi
 \examples{
 \dontrun{neuralarray <- convertConnBrainMat()
 
-filteredneuralarray <- neuralnetfilter(neuralarray, method = "threshold", thres = .50)
+filteredneuralarray <- neuralnetfilter(neuralarray, method = "threshold", thresh = .50)
 
 dependencyarray <- depna(neuralarray)
 

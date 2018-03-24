@@ -22,7 +22,7 @@ Computes transitivity of a network
 \examples{
 A<-TMFG(neoOpen)$A
 
-trans<-transitivity(A,weighted=TRUE)
+trans<-transitivity(A, weighted=TRUE)
 }
 \references{
 Rubinov, M., & Sporns, O. (2010). 

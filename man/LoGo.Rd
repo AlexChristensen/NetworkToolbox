@@ -10,18 +10,18 @@ LoGo(data, partial = FALSE, normal = FALSE, na.data = c("pairwise",
 \arguments{
 \item{data}{Must be a dataset}
 
-\item{partial}{Should the network's connections be the partial correlation between two nodes given all other nodes?
+\item{partial}{Should the output network's connections be the partial correlation between two nodes given all other nodes?
 Defaults to FALSE, which returns a sparse inverse covariance matrix.
-Set to TRUE for partial correlation matrix}
+Set to TRUE for a partial correlation matrix}
 
-\item{normal}{Should data be transform to a normal distribution?
-Defaults to FALSE. Data is not transformed to be normal.
+\item{normal}{Should data be transformed to a normal distribution?
+Defaults to FALSE.
+Data is not transformed to be normal.
 Set to TRUE if data should be transformed to be normal
-(computes correlations using the \emph{cor_auto} fucntion from the \emph{qgraph} package)}
+(computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)}
 
 \item{na.data}{How should missing data be handled?
-For "pairwise" deletion \emph{na.rm} is applied.
-For "listwise" deletion the \emph{na.omit} fucntion is applied.
+For "listwise" deletion the \emph{na.omit} function is applied.
 Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 
@@ -30,16 +30,15 @@ Defaults to FALSE.
 Set to TRUE to determine if model is graphical}
 }
 \value{
-Returns a list containing the TMFG-filtered matrix (tmfg)
-and the sparse TMFG-filtered inverse covariance matrix (logo).
-If normal = TRUE, then shrinkage lambda is also output (lambda)
+Returns a list containing the TMFG-filtered matrix (tmfg),
+and the sparse TMFG-filtered inverse covariance matrix (logo)
 }
 \description{
 Applies the Local/Global method to estimate the sparse inverse covariance matrix using a TMFG-filtered network
 (see and cite Barfuss et al., 2016)
 }
 \examples{
-LoGonet<-LoGo(neoOpen)$logo
+LoGonet<-LoGo(neoOpen, partial = TRUE)$logo
 
 TMFGnet<-LoGo(neoOpen)$tmfg
 }
