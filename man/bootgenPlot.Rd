@@ -4,7 +4,7 @@
 \alias{bootgenPlot}
 \title{Bootstrapped Network Generalization Plots}
 \usage{
-bootgenPlot(object, bootmat = FALSE)
+bootgenPlot(object, bootmat = FALSE, breaks = 20)
 }
 \arguments{
 \item{object}{An output from the \emph{bootgen} function}
@@ -12,6 +12,10 @@ bootgenPlot(object, bootmat = FALSE)
 \item{bootmat}{Should the bootstrap generalization matrix be included?
 Defaults to FALSE.
 Set to TRUE to plot the original and bootmat networks' reliablities}
+
+\item{breaks}{If bootmat = TRUE, then reliability comparison histogram is produced.
+The breaks may not appear as desired, so the researcher can adjust as needed.
+Defaults to 20 (try 10 if 20 isn't equivalent breaks)}
 }
 \value{
 Returns the following plots:

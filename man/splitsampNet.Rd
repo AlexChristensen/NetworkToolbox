@@ -4,7 +4,7 @@
 \alias{splitsampNet}
 \title{Network Construction for splitsamp}
 \usage{
-splitsampNet(object, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold"),
+splitsampNet(object, method = c("MaST", "TMFG", "LoGo", "threshold"),
   bootmat = FALSE, seeds = NULL, pB = TRUE, ...)
 }
 \arguments{

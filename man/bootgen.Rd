@@ -4,10 +4,9 @@
 \alias{bootgen}
 \title{Bootstrapped Network Generalization}
 \usage{
-bootgen(data, method = c("MaST", "PMFG", "TMFG", "LoGo", "threshold"),
-  alpha = 0.05, n = nrow(data), iter = 100, normal = FALSE,
-  na.data = c("pairwise", "listwise", "fiml", "none"), seeds = NULL, cores,
-  progBar = TRUE, ...)
+bootgen(data, method = c("MaST", "TMFG", "LoGo", "threshold"), alpha = 0.05,
+  n = nrow(data), iter = 1000, normal = FALSE, na.data = c("pairwise",
+  "listwise", "fiml", "none"), seeds = NULL, cores, progBar = TRUE, ...)
 }
 \arguments{
 \item{data}{A set of data}
@@ -21,7 +20,7 @@ Defaults to "TMFG"}
 Defaults to full sample size}
 
 \item{iter}{Number of bootstrap iterations.
-Defaults to 100 iterations}
+Defaults to 1000 iterations}
 
 \item{normal}{Should data be transformed to a normal distribution?
 Defaults to FALSE.

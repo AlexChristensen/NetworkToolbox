@@ -5,9 +5,9 @@
 \title{Network Adjusted Mean/Sum}
 \usage{
 nams(data, A, adjusted = c("mean", "sum"), factors = c("walktrap",
-  "louvain"), standardize = TRUE, method = c("TMFG", "LoGo", "PMFG",
-  "threshold", "none"), normal = FALSE, na.data = c("pairwise", "listwise",
-  "fiml", "none"), ...)
+  "louvain"), standardize = TRUE, method = c("TMFG", "LoGo", "threshold",
+  "none"), normal = FALSE, na.data = c("pairwise", "listwise", "fiml",
+  "none"), ...)
 }
 \arguments{
 \item{data}{Must be a dataset}
@@ -19,8 +19,7 @@ Defaults to "mean".
 Set to "sum" for sum scores}
 
 \item{factors}{Can be a vector of factor assignments or community detection algorithms
-("walktrap" or "louvain") can be used to determine the number of factors
-(note that these factors must be at least 9 nodes or more for the TMFG method).
+("walktrap" or "louvain") can be used to determine the number of factors.
 Defaults to 1 factor.
 Set to "walktrap" for the walktrap algortihm.
 Set to "louvain" for louvain community detection}
@@ -55,7 +54,7 @@ and the items associated with the specified or identified factors (FactorItems)
 }
 \description{
 The hybrid centrality is used to adjust the mean or sum score of participant's factor scores based on each node's centrality.
-Each participant's response values are multipled by the corresponding hybrid centrality value (uses "average" for BC argument).
+Each participant's response values are multipled by the corresponding hybrid centrality value (uses "random" for BC argument).
 In this way, more central nodes contribute a greater score and less central nodes contribute a lesser score
 }
 \examples{

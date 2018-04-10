@@ -4,7 +4,7 @@
 \alias{semnetboot}
 \title{Partial Bootstrapped Semantic Network Analysis}
 \usage{
-semnetboot(data, method = c("PMFG", "TMFG", "LoGo", "MaST", "threshold"),
+semnetboot(data, method = c("TMFG", "LoGo", "MaST", "threshold"),
   normal = FALSE, nodes, iter = 1000, na.data = c("pairwise", "listwise",
   "fiml", "none"), seeds = NULL, ...)
 }
