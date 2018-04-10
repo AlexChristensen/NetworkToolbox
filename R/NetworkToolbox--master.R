@@ -3916,7 +3916,7 @@ splitsampStats <- function (object, stats = c("edges","centralities"),
 #' @param n Number of cases in the simulated dataset
 #' @param pos Proportion of positive correlations in the simulated network
 #' @param ran Range of correlations in the simulated network
-#' @param nei Adjusts the number of connections each node has to neighboring nodes (see \link[igraph]{watts.strogatz.game})
+#' @param nei Adjusts the number of connections each node has to neighboring nodes (see \link[igraph]{sample_smallworld})
 #' @param p Adjusts the rewiring probability (default is .5).
 #' p > .5 rewires the simulated network closer to a random network.
 #' p < .5 rewires the simulated network closer to a lattice network
@@ -3939,7 +3939,7 @@ splitsampStats <- function (object, stats = c("edges","centralities"),
 #' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#Simulate small-world network
+#Simulate small-world network----
 sim.swn <- function (nodes, n, pos = .75, ran = c(.3,.7),
                      nei = 1, p = 0, corr = FALSE,
                      ordinal = FALSE, ordLevels = NULL)
