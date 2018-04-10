@@ -1,6 +1,6 @@
 Changes in version 1.1.2
 
-o bootgen: no longer uses partial correlation significance but maximizes correlations for method = "LoGo" and ensures graphical model
+o bootgen: ensures graphical model for method = "LoGo"
 
 o nams: adjusted algorithm
 
