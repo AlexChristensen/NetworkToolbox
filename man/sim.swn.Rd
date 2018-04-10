@@ -16,7 +16,7 @@ sim.swn(nodes, n, pos = 0.75, ran = c(0.3, 0.7), nei = 1, p = 0,
 
 \item{ran}{Range of correlations in the simulated network}
 
-\item{nei}{Adjusts the number of connections each node has to neighboring nodes (see \link[igraph]{watts.strogatz.game})}
+\item{nei}{Adjusts the number of connections each node has to neighboring nodes (see \link[igraph]{sample_smallworld})}
 
 \item{p}{Adjusts the rewiring probability (default is .5).
 p > .5 rewires the simulated network closer to a random network.
