@@ -1693,17 +1693,22 @@ nams <- function (data, A,
         fact[,i]<-adj
     }
     
+    if(max(facts)>1)
+    {fact <- cbind(fact,rowSums(fact))}
+    
     if(standardize)
-    {fact<-scale(fact)}
+    {fact <- scale(fact)}
     
     fact<-as.data.frame(fact)
     
     for(l in 1:nrow(data))
-    {row.names(fact)[l]<-paste("part",l,sep="")}
+    {row.names(fact)[l]<-paste("Part",l,sep="")}
     
     for(k in 1:max(facts))
-        colnames(fact)[k]<-paste("factor",k,sep="")
+    {colnames(fact)[k]<-paste("Factor",k,sep="")}
     
+    if(max(facts)>1)
+    {colnames(fact)[max(facts)+1]<-"Overall"}
     
     ufacts<-unique(facts)
     
@@ -1737,18 +1742,22 @@ nams <- function (data, A,
 #' 
 #' A <- TMFG(neoOpen)$A
 #' 
-#' pc <- partcoef(A, factors = factors)
+#' pc <- participation(A, factors = factors)
 #' 
 #' #walktrap factors
-#' wpc <- partcoef(A, factors = "walktrap")
+#' wpc <- participation(A, factors = "walktrap")
 #' @references
+#' Guimera, R., & Amaral, L. A. N. (2005).
+#' Functional cartography of complex metabolic networks.
+#' \emph{Nature}, \emph{433}(7028), 895-900.
+#' 
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
 #' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Participation Coefficient----
-partcoef <- function (A, factors = c("walktrap","louvain"))
+participation <- function (A, factors = c("walktrap","louvain"))
 {
     #nodes
     n <- ncol(A)
@@ -1796,6 +1805,185 @@ partcoef <- function (A, factors = c("walktrap","louvain"))
     neg <- pcoef(negwei, factors) #negative participation coefficient
     
     return(list(overall=overall,positive=pos,negative=neg))
+}
+#----
+#' Gateway Coefficient
+#' @description Computes the gateway coefficient for each node. The gateway
+#' coefficient measures a node's connections between its community and other communities.
+#' Nodes that are solely responsible for inter-community connectivity will
+#' have higher gateway coefficient values. Positive and negative signed weights
+#' for gateway coefficients are computed separately.
+#' @param A Network adjacency matrix
+#' @param factors A vector of corresponding to each item's factor.
+#' Defaults to "walktrap" for the walktrap community detection algorithm.
+#' Set to "louvain" for the louvain community detection algorithm.
+#' Can also be set to user-specified factors (see examples)
+#' @param type Centrality to community gateway coefficient.
+#' Defaults to "strength".
+#' Set to "betweenness" to use the betweenness centrality
+#' @return Returns a list of overall (signs not considered; overall),
+#' negative (negative), and positive (positive) gateway coefficients
+#' @examples
+#' #theoretical factors
+#' factors <- c(rep(1,8), rep(2,8), rep(3,8),
+#' + rep(4,8), rep(5,8), rep(6,8))
+#' 
+#' A <- TMFG(neoOpen)$A
+#' 
+#' gw <- gateway(A, factors = factors)
+#' 
+#' #walktrap factors
+#' wgw <- gateway(A, factors = "walktrap")
+#' @references
+#' Rubinov, M., & Sporns, O. (2010). 
+#' Complex network measures of brain connectivity: Uses and interpretations. 
+#' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
+#' 
+#' Vargas, E. R., & Wahl, L. M. (2014).
+#' The gateway coefficient: A novel metric for identifying critical connections in modular networks.
+#' \emph{The European Physical Journal B}, \emph{87}(161), 1-10.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Gateway Coefficient----
+gateway <- function (A, factors = c("walktrap","louvain"), type = c("strength","betweenness"))
+{
+    #nodes
+    n <- ncol(A)
+    
+    #set diagonal to zero
+    diag(A) <- 0
+    
+    #set communities
+    if(missing(factors))
+    {factors<-rep(1,n)
+    }else if(is.character(factors))
+    {factors<-match.arg(factors)
+    if(factors=="walktrap")
+    {factors <- igraph::walktrap.community(convert2igraph(A))$membership
+    }else if(factors=="louvain")
+    {factors <- louvain(A)$community}
+    }else{factors <- factors}
+    if(missing(type))
+    {type<-"strength"
+    }else{type<-match.arg(type)}
+    
+    gate <- function (W, t)
+    {
+        
+        S <- colSums(W)
+        Gc <- (W!=0)%*%diag(factors)
+        Sc2 <- vector(mode="numeric",length=n)
+        ksm <- vector(mode="numeric",length=n)
+        centm <- vector(mode="numeric",length=n)
+        
+        if(t=="strength")
+        {cent <- as.vector(S)
+        }else if(t=="betweenness")
+        {cent <- as.vector(as.matrix(betweenness(W)))}
+        
+        for(i in 1:max(factors))
+        {
+            ks <- rowSums(W*(Gc==i))
+            Sc2 <- Sc2 + (ks^2)
+            for(j in 1:max(factors))
+            {
+                ksm[factors==j] <- ksm[factors==j] + (ks[factors==j]/(sum(ks[factors==j])))
+            }
+            centm[factors==i] <- sum(cent[factors==i])
+        }
+        
+        centm <- centm/max(centm)
+        
+        gs <- (1-(ksm*centm))^2
+        
+        GW <- (vector(mode="numeric",n)+1) - (Sc2/(S^2)*gs)
+        GW[is.na(GW)]<-0
+        GW[!GW]<-0
+        
+        return(GW)
+    }
+    
+    GWpos <- gate(W=ifelse(A>0,A,0),t=type)
+    GWneg <- gate(W=ifelse(A<0,A,0),t=type)
+    GW <- gate(W=A,t=type)
+    
+    return(list(overall=GW,positive=GWpos,negative=GWneg))
+}
+#----
+#' Diversity Coefficient
+#' @description Computes the diversity coefficient for each node. The diversity
+#' coefficient measures a node's connections to communitites outside of its
+#' own community. Nodes that have many connections to other communities will
+#' have higher diversity coefficient values. Positive and negative signed weights
+#' for diversity coefficients are computed separately.
+#' @param A Network adjacency matrix
+#' @param factors A vector of corresponding to each item's factor.
+#' Defaults to "walktrap" for the walktrap community detection algorithm.
+#' Set to "louvain" for the louvain community detection algorithm.
+#' Can also be set to user-specified factors (see examples)
+#' @return Returns a list of overall (signs not considered; overall),
+#' negative (negative), and positive (positive) gateway coefficients
+#' @examples
+#' #theoretical factors
+#' factors <- c(rep(1,8), rep(2,8), rep(3,8),
+#' + rep(4,8), rep(5,8), rep(6,8))
+#' 
+#' A <- TMFG(neoOpen)$A
+#' 
+#' gdiv <- diversity(A, factors = factors)
+#' 
+#' #walktrap factors
+#' wdiv <- diversity(A, factors = "walktrap")
+#' @references
+#' Rubinov, M., & Sporns, O. (2010). 
+#' Complex network measures of brain connectivity: Uses and interpretations. 
+#' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Diversity Coefficient
+diversity <- function (A, factors = c("walktrap","louvain"))
+{
+    #nodes
+    n <- ncol(A)
+    
+    #set diagonal to zero
+    diag(A) <- 0
+    
+    #set communities
+    if(missing(factors))
+    {factors<-rep(1,n)
+    }else if(is.character(factors))
+    {factors<-match.arg(factors)
+    if(factors=="walktrap")
+    {factors <- igraph::walktrap.community(convert2igraph(A))$membership
+    }else if(factors=="louvain")
+    {factors <- louvain(A)$community}
+    }else{factors <- factors}
+    
+    #number of factors
+    m <- max(factors)
+    
+    ent <- function (A)
+    {
+        S <- colSums(A)
+        Snm <- matrix(0,nrow=n,ncol=m)
+        
+        for(i in 1:m)
+        {Snm[,i] <- rowSums(A[,factors==i])}
+        
+        pnm <- Snm/(S*matrix(1,nrow=n,ncol=m))
+        pnm[is.na(pnm)]<-0
+        pnm[!pnm]<-1
+        H <- -rowSums(pnm*log(pnm))/log(m)
+        
+        return(H)
+    }
+    
+    Hpos <- ent(ifelse(A>0,A,0))
+    Hneg <- ent(ifelse(A<0,A,0))
+    Hov <- ent(A)
+    
+    return(list(overall=Hov,positive=Hpos,negative=Hneg))
 }
 #----
 #' List of Centrality Measures
@@ -2574,8 +2762,8 @@ if(!isSymmetric(B))
   repmat[repedges]<-1
   count<-sum(repmat)/2
   
-  repmat[lower.tri(repmat)]<-A[lower.tri(A)]
-  repmat[upper.tri(repmat)]<-B[upper.tri(B)]
+  repmat[lower.tri(repmat)]<-A[lower.tri(A)]*repmat[lower.tri(repmat)]
+  repmat[upper.tri(repmat)]<-B[upper.tri(B)]*repmat[upper.tri(repmat)]
   
   i<-sort(c(rep(1:n,n)))
   j<-c(rep(1:n,n))
@@ -2613,12 +2801,14 @@ if(!isSymmetric(B))
   
   if(plot)
   {
+    ran<-range(repmat)  
+    
     if(ncol(A)<=20)
     {corrplot::corrplot(repmat,method="color",addgrid.col = "grey",
-                      tl.col="black",addCoef.col = "black",
+                      tl.col="black",addCoef.col = "black", cl.lim=ran,
                       title="A by B Edge Replcation",mar=c(3,4,2,2))
     }else{corrplot::corrplot(repmat,method="color",addgrid.col = "grey",
-                           tl.col="black",
+                           tl.col="black", cl.lim=ran,
                            title="A by B Edge Replcation",mar=c(3,4,2,2))}
   }
                 
@@ -2683,6 +2873,8 @@ if(!isSymmetric(B))
 #Network Connectivity----
 conn <- function (A)
 {
+    diag(A)<-0
+    
     weights<-0
     wc<-0
     B<-A[lower.tri(A)]
@@ -2864,6 +3056,7 @@ bootgen <- function (data, method = c("MaST", "TMFG", "LoGo", "threshold"),
     
     if(method=="LoGo")
     {
+        invmat<-cormat
         realmat<--cov2cor(solve(cor2cov(cormat,data)))
         diag(realmat)<-0
     }else{realmat<-cormat}
@@ -3024,15 +3217,15 @@ bootgen <- function (data, method = c("MaST", "TMFG", "LoGo", "threshold"),
             
             for(i in 1:nrow(meanmat))
                for(j in 1:ncol(meanmat))
-                {sigmat[i,j]<-psig(meanmat[i,j],n)}
-            
-            #tmeanmat<-ifelse(abs(tmeanmat)>=cvr,tmeanmat,0)
-            #bootmat<-ifelse(tmeanmat!=0,meanmat,0) #use correlation critical value
+               {sigmat[i,j]<-psig(meanmat[i,j],n)}
+    
             bootmat<-ifelse(sigmat<=alpha,meanmat,0) #use partial critical value
         }else{
                 cvr<-critical.r(n,adapt(n,alpha))
                 bootmat<-ifelse(abs(meanmat)>=cvr,meanmat,0)
-            }
+        }
+    
+    
     
     #ensure model is graphical
     if(method=="LoGo")
@@ -3061,6 +3254,15 @@ bootgen <- function (data, method = c("MaST", "TMFG", "LoGo", "threshold"),
     
     diag(bootmat)<-0
     
+    if(method=="LoGo")
+    {
+        diag(bootmat)<-1
+    
+        invmat<-solve(cov2cor(invmat))
+    
+        invmat<-ifelse(bootmat!=0,invmat,0)
+    }
+    
     if(!isSymmetric(bootmat))
     {bootmat<-as.matrix(Matrix::forceSymmetric(bootmat))}
     
@@ -3080,7 +3282,9 @@ bootgen <- function (data, method = c("MaST", "TMFG", "LoGo", "threshold"),
             rel[j,k]<-sum(samp[j,k,])/iter
     colnames(rel)<-colnames(data)
     
-    return(list(orignet=tru,bootmat=bootmat,netrel=rel,Seeds=Seeds))
+    if(method=="LoGo")
+    {return(list(orignet=tru,bootmat=bootmat,netrel=rel,Seeds=Seeds,invcov=invmat))
+    }else{return(list(orignet=tru,bootmat=bootmat,netrel=rel,Seeds=Seeds))}
 }
 #----
 #' Bootstrapped Network Generalization Plots
@@ -3911,7 +4115,7 @@ splitsampStats <- function (object, stats = c("edges","centralities"),
 #----
 #' Simulate Small-world Network
 #' @description Simulates a small-world network based on specified topological properties.
-#' Data will also be simulated based on the true network structure
+#' Data will also be simulated based on the true network structure (UNDER CONSTRUCTION)
 #' @param nodes Number of nodes in the simulated network
 #' @param n Number of cases in the simulated dataset
 #' @param pos Proportion of positive correlations in the simulated network
@@ -3923,6 +4127,9 @@ splitsampStats <- function (object, stats = c("edges","centralities"),
 #' @param corr Should the simualted network be a correlation network?
 #' Defaults to FALSE.
 #' Set to TRUE for a simulated correlation network
+#' @param noise Should noise be added to the dataset?
+#' Defaults to 0, which is no noise added.
+#' Values should be between 0 to 1 for noise addded to the true network
 #' @param ordinal Should simulated continuous data be converted to ordinal?
 #' Defaults to FALSE.
 #' Set to TRUE for simulated ordinal data
@@ -3934,14 +4141,14 @@ splitsampStats <- function (object, stats = c("edges","centralities"),
 #' @examples
 #' rand <- randnet(10,27)
 #' @references 
-#' Rubinov, M., & Sporns, O. (2010). 
-#' Complex network measures of brain connectivity: Uses and interpretations. 
-#' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
+#' Csardi, G., & Nepusz, T. (2006).
+#' The \emph{igraph} software package for complex network research.
+#' \emph{InterJournal, Complex Systems}, \emph{1695}(5), 1-9.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Simulate small-world network----
-sim.swn <- function (nodes, n, pos = .75, ran = c(.3,.7),
-                     nei = 1, p = 0, corr = FALSE,
+sim.swn <- function (nodes, n, pos = .80, ran = c(.3,.7),
+                     nei = 1, p = .5, corr = FALSE, noise = 0,
                      ordinal = FALSE, ordLevels = NULL)
 {
     posdefnet <- function (net, pos, ran)
@@ -3953,7 +4160,7 @@ sim.swn <- function (nodes, n, pos = .75, ran = c(.3,.7),
         
         net[lower.tri(net)]<-net[upper.tri(net)]*net[lower.tri(net)]
         
-        diag(net) <- rowSums(abs(net))
+        diag(net) <- rowSums(abs(net)) * 1
         diag(net) <- ifelse(diag(net)==0,1,diag(net))
         net <- net/diag(net)[row(net)]
         net <- (net + t(net)) / 2
@@ -3968,12 +4175,37 @@ sim.swn <- function (nodes, n, pos = .75, ran = c(.3,.7),
     
     net<-adj
     
-    graph<-posdefnet(net,pos,ran)
+    graph <- posdefnet(net,pos,ran)
+    ltri <- graph[lower.tri(graph)]
+    ntri <- ltri
     
-    I<-diag(1, dim(graph)[1])
+    upper <- ifelse(ltri!=0,ltri+noise,0)
+    lower <- ifelse(ltri!=0,ltri-noise,0)
+    
+    uplow <- sample(0:1,length(upper),replace=TRUE)
+    
+    for(i in 1:length(ltri))
+        {
+            
+            if(ltri[i]!=0)
+            {
+                if(uplow[i]==0)
+                {ntri[i] <- lower[i]
+                }else if(uplow[i]==1)
+                {ntri[i] <- lower[i]}
+            }
+        }
+    
+    ngraph <- matrix(0,nrow=nodes,ncol=nodes)
+    ngraph[lower.tri(ngraph)] <- ntri
+    ngraph <- ngraph + t(ngraph)
     
     #compute covariance matrix
-    covmat<-solve(I-graph)%*%t(solve(I-graph))
+    I<-diag(1, dim(ngraph)[1])
+    covmat<-solve(I-ngraph)%*%t(solve(I-ngraph))
+    
+    #from bootnet
+    #covmat<-solve(diag(nodes) - ngraph)
     
     #compute correlation matrix
     rho<-cov2cor(covmat)
@@ -3986,16 +4218,42 @@ sim.swn <- function (nodes, n, pos = .75, ran = c(.3,.7),
         
         graph<-posdefnet(net,pos,ran)
         
-        I<-diag(1, dim(graph)[1])
+        ltri <- graph[lower.tri(graph)]
+        ntri <- ltri
+        
+        upper <- ifelse(ltri!=0,ltri+noise,0)
+        lower <- ifelse(ltri!=0,ltri-noise,0)
+        
+        uplow <- sample(0:1,length(upper),replace=TRUE)
+        
+        for(i in 1:length(ltri))
+        {
+            
+            if(ltri[i]!=0)
+            {
+                if(uplow[i]==0)
+                {ntri[i] <- lower[i]
+                }else if(uplow[i]==1)
+                {ntri[i] <- lower[i]}
+            }
+        }
+        
+        ngraph <- matrix(0,nrow=nodes,ncol=nodes)
+        ngraph[lower.tri(ngraph)] <- ntri
+        ngraph <- ngraph + t(ngraph)
         
         #compute covariance matrix
-        covmat<-solve(I-graph)%*%t(solve(I-graph))
+        I<-diag(1, dim(ngraph)[1])
+        covmat<-solve(I-ngraph)%*%t(solve(I-ngraph))
+        
+        #from bootnet
+        #covmat<-solve(diag(nodes) - ngraph)
         
         #compute correlation matrix
         rho<-cov2cor(covmat)
     }
     
-    dat<-mvtnorm::rmvnorm(n, sigma=rho)  #generate data
+    dat<-psych::sim.correlation(R=rho,n=n,data=TRUE)  #generate data
     
     if(corr)
     {graph<-ifelse(abs(rho)>=min(ran)&abs(rho)<=max(ran),rho,0)}

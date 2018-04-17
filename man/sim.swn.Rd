@@ -4,8 +4,8 @@
 \alias{sim.swn}
 \title{Simulate Small-world Network}
 \usage{
-sim.swn(nodes, n, pos = 0.75, ran = c(0.3, 0.7), nei = 1, p = 0,
-  corr = FALSE, ordinal = FALSE, ordLevels = NULL)
+sim.swn(nodes, n, pos = 0.8, ran = c(0.3, 0.7), nei = 1, p = 0.5,
+  corr = FALSE, noise = 0, ordinal = FALSE, ordLevels = NULL)
 }
 \arguments{
 \item{nodes}{Number of nodes in the simulated network}
@@ -26,6 +26,10 @@ p < .5 rewires the simulated network closer to a lattice network}
 Defaults to FALSE.
 Set to TRUE for a simulated correlation network}
 
+\item{noise}{Should noise be added to the dataset?
+Defaults to 0, which is no noise added.
+Values should be between 0 to 1 for noise addded to the true network}
+
 \item{ordinal}{Should simulated continuous data be converted to ordinal?
 Defaults to FALSE.
 Set to TRUE for simulated ordinal data}
@@ -40,15 +44,15 @@ simulated data (simData), and simulated correlation matrix (simRho)
 }
 \description{
 Simulates a small-world network based on specified topological properties.
-Data will also be simulated based on the true network structure
+Data will also be simulated based on the true network structure (UNDER CONSTRUCTION)
 }
 \examples{
 rand <- randnet(10,27)
 }
 \references{
-Rubinov, M., & Sporns, O. (2010). 
-Complex network measures of brain connectivity: Uses and interpretations. 
-\emph{Neuroimage}, \emph{52}(3), 1059-1069.
+Csardi, G., & Nepusz, T. (2006).
+The \emph{igraph} software package for complex network research.
+\emph{InterJournal, Complex Systems}, \emph{1695}(5), 1-9.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

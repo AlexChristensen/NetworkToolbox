@@ -8,7 +8,15 @@ o sim.swn: added a function to simulate small-world networks and data
 
 o PMFG: removed function due to inefficiency
 
-o partcoef: added a function to measure the participation coefficient of each node
+o diversity: added a function to compute the diversity coefficient of nodes in the network
+
+o gateway: added a function to compute the gateway coefficient of nodes in the network
+
+o participation: added a function to compute the participation coefficient of nodes in the network
+
+o edgerep: fixed bug in plot to display the strength of the replicated edges only
+
+o nams: added output for an overall network adjusted mean/sum score
 
 
 Changes in Version 1.1.1
