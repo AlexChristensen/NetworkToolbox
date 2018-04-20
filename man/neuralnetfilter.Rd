@@ -8,7 +8,7 @@ neuralnetfilter(neuralarray, method = c("TMFG", "MaST", "ECOplusMaST", "ECO",
   "threshold"), progBar = TRUE, ...)
 }
 \arguments{
-\item{neuralarray}{Array from \emph{convertConnBrainMat} function}
+\item{neuralarray}{Array from \code{\link{convertConnBrainMat}} function}
 
 \item{method}{Filtering method to be applied}
 
@@ -23,7 +23,8 @@ Returns an array of n x n x m filtered matrices
 }
 \description{
 Applies a network filtering methodology to neural network array.
-Removes edges from the neural network output from \emph{convertConnBrainMat} using a network filtering approach
+Removes edges from the neural network output from \code{\link{convertConnBrainMat}} 
+using a network filtering approach
 }
 \examples{
 \dontrun{neuralarray <- convertConnBrainMat()

@@ -6,19 +6,19 @@
 \usage{
 semnetboot(data, method = c("TMFG", "LoGo", "MaST", "threshold"),
   normal = FALSE, nodes, iter = 1000, na.data = c("pairwise", "listwise",
-  "fiml", "none"), seeds = NULL, ...)
+  "fiml", "none"), ...)
 }
 \arguments{
 \item{data}{A set of data}
 
 \item{method}{A network filtering method.
-Defaults to "PMFG"}
+Defaults to "TMFG"}
 
 \item{normal}{Should data be transformed to a normal distribution?
 Defaults to FALSE.
 Data is not transformed to be normal.
 Set to TRUE if data should be transformed to be normal
-(computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)}
+(computes correlations using the \link[qgraph]{cor_auto} function)}
 
 \item{nodes}{Number of nodes (i.e., variables) to use in the bootstrap.
 Defaults to 50% of nodes in the network.
@@ -28,20 +28,15 @@ Otherwise accepts the number of the nodes to be included}
 Defaults to 1000 iterations}
 
 \item{na.data}{How should missing data be handled?
-For "listwise" deletion the \emph{na.omit} function is applied.
-Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
+For "listwise" deletion the \code{\link{na.omit}} function is applied.
+Set to "fiml" for Full Information Maxmimum Likelihood (\link[psych]{corFiml}).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
-
-\item{seeds}{Seeds to use for random number generation.
-Defaults to NULL.
-Input seeds from previous run (\strong{see examples})}
 
 \item{...}{Additional arguments for filtering methods}
 }
 \value{
 Returns a list that includes the original semantic network measures (origmeas; ASPL, CC, Q, S),
-the bootstrapped semantic network measures (bootmeas),
-and the seeds used in the random number generator (Seeds)
+and the bootstrapped semantic network measures (bootmeas)
 }
 \description{
 Bootstraps (without replacement) the nodes in the network and computes global network characteristics
@@ -50,10 +45,7 @@ Bootstraps (without replacement) the nodes in the network and computes global ne
 \dontrun{
 lowO <- subset(animals, Group==1)[-1]
 
-semPMFG<-semnetboot(lowO)
-
-#Replicates previous analysis
-repsemPMFG<-semnetboot(lowO, seeds = semPMFG$Seeds)
+semTMFG<-semnetboot(lowO)
 
 semLoGo<-semnetboot(lowO,method="LoGo")
 

@@ -6,7 +6,7 @@
 \usage{
 bootgen(data, method = c("MaST", "TMFG", "LoGo", "threshold"), alpha = 0.05,
   n = nrow(data), iter = 1000, normal = FALSE, na.data = c("pairwise",
-  "listwise", "fiml", "none"), seeds = NULL, cores, progBar = TRUE, ...)
+  "listwise", "fiml", "none"), cores, progBar = TRUE, ...)
 }
 \arguments{
 \item{data}{A set of data}
@@ -26,16 +26,12 @@ Defaults to 1000 iterations}
 Defaults to FALSE.
 Data is not transformed to be normal.
 Set to TRUE if data should be transformed to be normal
-(computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)}
+(computes correlations using the \link[qgraph]{cor_auto} function)}
 
 \item{na.data}{How should missing data be handled?
-For "listwise" deletion the \emph{na.omit} function is applied.
-Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
+For "listwise" deletion the \code{\link{na.omit}} function is applied.
+Set to "fiml" for Full Information Maxmimum Likelihood (\link[psych]{corFiml}).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
-
-\item{seeds}{Seeds to use for random number generation.
-Defaults to NULL.
-Input seeds from previous run (\strong{see examples})}
 
 \item{cores}{Number of computer processing cores to use for bootstrapping samples.
 Defaults to \emph{n} - 1 total number of cores.
@@ -50,8 +46,7 @@ Set to FALSE for no progress bar}
 \value{
 Returns a list that includes the original filtered network (orignet),
 correlation matrix of the mean bootstrapped network (bootmat),
-unfiltered reliabilities of all of the connections (netrel),
-seeds used in the random number generator (Seeds)
+and unfiltered reliabilities of all of the connections (netrel)
 }
 \description{
 Bootstraps the sample to identify the most stable correlations.
@@ -61,9 +56,6 @@ This function is useful for overcoming the structural constraint of the IFN appr
 \examples{
 \dontrun{
 bootTMFG<-bootgen(neoOpen)
-
-#Replicates previous analysis
-repbootTMFG<-bootgen(neoOpen, seeds = bootTMFG$Seeds)
 
 bootLoGo<-bootgen(neoOpen,method="LoGo")
 

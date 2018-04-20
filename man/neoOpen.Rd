@@ -10,15 +10,16 @@ data(neoOpen)
 }
 \description{
 A response matrix (n = 802) of NEO-PI-3's Openness to Experience
-from Christensen, Cotter, & Silvia (under review).
+from Christensen, Cotter, & Silvia (in press).
 }
 \examples{
-data(neoOpen)
+data("neoOpen")
 }
 \references{
-Christensen, A.P., Cotter, K.N., & Silvia, P.J. (under review).
+Christensen, A.P., Cotter, K.N., & Silvia, P.J. (in press).
 Reopening Openness to Experience:
 A network analysis of four Openness to Experience inventories.
+\emph{Journal of Personality Assessment}, doi: 10.1080/00223891.2018.1467428
 \url{http://doi.org/10.17605/OSF.IO/954A7}
 }
 \keyword{datasets}

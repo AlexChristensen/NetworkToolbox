@@ -24,7 +24,7 @@ and small-worldness (S; defaults to "rand")
 \dontrun{
 lowO <- subset(animals, Group==1)[-1]
 
-A<-PMFG(lowO)
+A<-TMFG(lowO)
 
 globmeas<-semnetmeas(A)
 }

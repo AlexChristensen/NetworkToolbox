@@ -7,10 +7,10 @@
 cpmFPperm(session1, session2, iter = 1000, progBar = TRUE)
 }
 \arguments{
-\item{session1}{Array from \emph{convertConnBrainMat} function
+\item{session1}{Array from \code{\link{convertConnBrainMat}} function
 (first session)}
 
-\item{session2}{Array from \emph{convertConnBrainMat} function
+\item{session2}{Array from \code{\link{convertConnBrainMat}} function
 (second session)}
 
 \item{iter}{Number of iterations to perform. Defaults to 1,000}

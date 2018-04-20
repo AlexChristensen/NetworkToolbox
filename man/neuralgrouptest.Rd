@@ -9,7 +9,7 @@ neuralgrouptest(groups, nstat, correction = c("bonferroni", "FDR"))
 \arguments{
 \item{groups}{Participant vector of desired groups (\strong{see examples})}
 
-\item{nstat}{A statistic vector (whole-network) or matrix (ROI) from the \emph{neuralstat} function}
+\item{nstat}{A statistic vector (whole-network) or matrix (ROI) from the \code{\link{neuralstat}} function}
 
 \item{correction}{Multiple comparisons correction for ROI testing.
 Defaults to local false discovery rate (i.e., "FDR")}

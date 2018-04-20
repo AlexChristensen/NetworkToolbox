@@ -10,7 +10,7 @@ neuralstat(filarray, statistic = c("CC", "ASPL", "Q", "S", "transitivity",
   progBar = TRUE, ...)
 }
 \arguments{
-\item{filarray}{Filtered array from \emph{neuralnetfilter} function}
+\item{filarray}{Filtered array from \code{\link{neuralnetfilter}} function}
 
 \item{statistic}{A statistic to compute}
 

@@ -5,18 +5,22 @@
 \title{Statistics for splitsamp Networks}
 \usage{
 splitsampStats(object, stats = c("edges", "centralities"),
-  edges = c("lower", "upper"))
+  edges = c("lower", "upper"), BC = c("standard", "random"))
 }
 \arguments{
-\item{object}{Object output from \emph{splitsampNet} function}
+\item{object}{Object output from \code{\link{splitsampNet}} function}
 
 \item{stats}{Which stats should be computed?
-"edges" will compute statistics for the \emph{edgerep} function.
+"edges" will compute statistics for the \code{\link{edgerep}} function.
 "centralities" will compute betweenness, closeness, and strength.
 Both options are allowed}
 
 \item{edges}{If stats = "edges, should the lower or upper replication percentage be used?
 Defaults to "lower".}
+
+\item{BC}{How should the betweenness centrality be computed?
+Defaults to "standard" betweenness centrlaity.
+Set to "random" for \code{\link{rspbc}}}
 }
 \value{
 Returns a list of statistics for edges (Edges), centralities (Centralities), or both

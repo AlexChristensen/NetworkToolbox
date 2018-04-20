@@ -13,11 +13,11 @@ depend(data, normal = FALSE, na.data = c("pairwise", "listwise", "fiml",
 \item{normal}{Should data be transformed to a normal distribution?
 Defaults to FALSE. Data is not transformed to be normal.
 Set to TRUE if data should be transformed to be normal
-(computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)}
+(computes correlations using the \link[qgraph]{cor_auto} function)}
 
 \item{na.data}{How should missing data be handled?
-For "listwise" deletion the \emph{na.omit} function is applied.
-Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
+For "listwise" deletion the \code{\link{na.omit}} function is applied.
+Set to "fiml" for Full Information Maxmimum Likelihood (\link[psych]{corFiml}).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 
 \item{index}{Should correlation with the latent variable

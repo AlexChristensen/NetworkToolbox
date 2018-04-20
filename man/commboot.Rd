@@ -4,10 +4,10 @@
 \alias{commboot}
 \title{Bootstrapped Communities Likelihood}
 \usage{
-commboot(data, normal = FALSE, n = nrow(data), iter = 100,
-  filter = c("TMFG", "threshold"), method = c("louvain", "walktrap"),
-  na.data = c("pairwise", "listwise", "fiml", "none"), steps = 4,
-  seeds = NULL, ...)
+commboot(data, normal = FALSE, n = nrow(data), iter = 1000,
+  filter = c("TMFG", "threshold", "EBICglasso", "IsingFit"),
+  method = c("louvain", "walktrap"), na.data = c("pairwise", "listwise",
+  "fiml", "none"), steps = 4, cores, ...)
 }
 \arguments{
 \item{data}{A set of data}
@@ -24,29 +24,29 @@ Defaults to full sample size}
 Defaults to 100 iterations}
 
 \item{filter}{Set filter method.
-Defaults to "TMFG"}
+Defaults to "TMFG".
+See \link[qgraph]{EBICglasso} and \code{\link{IsingFit}} for additional arguments}
 
 \item{method}{Defaults to "walktrap".
 Set to "louvain" for the louvain community detection algorithm}
 
 \item{na.data}{How should missing data be handled?
-For "listwise" deletion the \emph{na.omit} function is applied.
-Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
+For "listwise" deletion the \code{\link{na.omit}} function is applied.
+Set to "fiml" for Full Information Maxmimum Likelihood (\link[psych]{corFiml}).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 
 \item{steps}{Number of steps to use in the walktrap algorithm.
 Defaults to 4.
 Use a larger number of steps for smaller networks}
 
-\item{seeds}{Seeds to use for random number generation.
-Defaults to NULL.
-Input seeds from previous run (\strong{see examples})}
+\item{cores}{Number of computer processing cores to use for bootstrapping samples.
+Defaults to \emph{n} - 1 total number of cores.
+Set to any number between 1 and maxmimum amount of cores on your computer}
 
 \item{...}{Additional arguments for network filtering methods}
 }
 \value{
-Returns a list with the factors and their proportion found across bootstrapped samples
-(proportion; i.e., their likelihood) and the seeds used in the random number generator (Seeds)
+Returns the number of factors and their relative frequency found across bootstrapped samples
 }
 \description{
 Bootstraps the sample with replace to compute walktrap reliability
@@ -54,9 +54,6 @@ Bootstraps the sample with replace to compute walktrap reliability
 \examples{
 \dontrun{
 commTMFG<-commboot(neoOpen)
-
-#Replicates previous analysis
-repcommTMFG<-commboot(neoOpen, seeds = commTMFG$Seeds)
 
 commThreshold<-commboot(neoOpen,filter="threshold")
 }

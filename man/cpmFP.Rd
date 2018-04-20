@@ -7,10 +7,10 @@
 cpmFP(session1, session2, progBar = TRUE)
 }
 \arguments{
-\item{session1}{Array from \emph{convertConnBrainMat} function
+\item{session1}{Array from \code{\link{convertConnBrainMat}} function
 (first session)}
 
-\item{session2}{Array from \emph{convertConnBrainMat} function
+\item{session2}{Array from \code{\link{convertConnBrainMat}} function
 (second session)}
 
 \item{progBar}{Should progress bar be displayed?

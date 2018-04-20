@@ -18,6 +18,12 @@ o edgerep: fixed bug in plot to display the strength of the replicated edges onl
 
 o nams: added output for an overall network adjusted mean/sum score
 
+o improved documentation
+
+o added EBICglasso and Isingfit to bootgen and commboot function
+
+o added back the kld and rmse function
+
 
 Changes in Version 1.1.1
 

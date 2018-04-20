@@ -7,13 +7,13 @@
 depna(neuralarray, pB = TRUE, ...)
 }
 \arguments{
-\item{neuralarray}{Array from \emph{convertConnBrainMat} function}
+\item{neuralarray}{Array from \code{\link{convertConnBrainMat}} function}
 
 \item{pB}{Should progress bar be displayed?
 Defaults to TRUE.
 Set FALSE for no progress bar}
 
-\item{...}{Additional arguments from \emph{depend} function}
+\item{...}{Additional arguments from \code{\link{depend}} function}
 }
 \value{
 Returns an array of n x n x m dependency matrices

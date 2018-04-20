@@ -5,21 +5,17 @@
 \title{Network Construction for splitsamp}
 \usage{
 splitsampNet(object, method = c("MaST", "TMFG", "LoGo", "threshold"),
-  bootmat = FALSE, seeds = NULL, pB = TRUE, ...)
+  bootmat = FALSE, pB = TRUE, ...)
 }
 \arguments{
-\item{object}{Object output from \emph{splitsamp} function}
+\item{object}{Object output from \code{\link{splitsamp}} function}
 
 \item{method}{A network filtering method.
 Defaults to "TMFG"}
 
-\item{bootmat}{Should \emph{bootgen} function be used?
+\item{bootmat}{Should \code{\link{bootgen}} function be used?
 Defaults to FALSE.
 Set to TRUE to constuction bootgen networks}
-
-\item{seeds}{Seeds to use for bootmat.
-Defaults to NULL.
-Input seeds from previous bootgen run}
 
 \item{pB}{Should progress bar be displayed?
 Defaults to TRUE.

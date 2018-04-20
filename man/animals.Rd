@@ -17,7 +17,7 @@ A binary verbal fluency response matrix (n = 354) from
 Christensen, Kenett, Cotter, Beaty, & Silvia (under review).
 }
 \examples{
-data(animals)
+data("animals")
 }
 \references{
 Christensen, A.P., Kenett, Y. N., Cotter, K.N., Beaty, R. E., & Silvia, P.J. (under review).

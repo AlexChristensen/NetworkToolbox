@@ -35,15 +35,6 @@ WholeNetwork_corr <- neuralcorrtest(bstat, AverageShortestPathLength)
 ROI_corr <- neuralcorrtest(bstat, Degree)
 }
 }
-\references{
-Ly, A., Verhagen, A. J., & Wagenmakers, E.-J. (2016).
-Harold Jeffreys's default Bayes factor hypothesis tests: Explanation, extension, and application in psychology.
-\emph{Journal of Mathematical Psychology}, \emph{72}, 19-32.
-
-Wagenmakers, E. J., Verhagen, J., & Ly, A. (2016).
-How to quantify the evidence for the absence of a correlation.
-\emph{Behavior Research Methods}, \emph{48}(2), 413-426.
-}
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>
 }

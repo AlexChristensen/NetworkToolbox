@@ -7,18 +7,19 @@
 convert2igraph(A, neural = FALSE)
 }
 \arguments{
-\item{A}{Adjacency matrix (network matrix) or brain connectivity array (from \emph{convertConnBrainMat})}
+\item{A}{Adjacency matrix (network matrix) or brain connectivity array
+(from \code{\link{convertConnBrainMat}})}
 
 \item{neural}{Is input a brain connectivity array (i.e., m x m x n)?
 Defaults to FALSE.
 Set to TRUE to convert each brain connectivity matrix}
 }
 \value{
-Returns a network matrix in \emph{igraph}'s format or
-returns a list of brain connectivity matrices each of which have been convert to \emph{igraph}'s format
+Returns a network matrix in \code{\link{igraph}}'s format or
+returns a list of brain connectivity matrices each of which have been convert to \code{\link{igraph}}'s format
 }
 \description{
-Converts single or multiple networks into \emph{igraph}'s format for network analysis
+Converts single or multiple networks into \code{\link{igraph}}'s format for network analysis
 }
 \examples{
 A <- TMFG(neoOpen)$A

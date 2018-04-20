@@ -14,7 +14,7 @@ MaST(data, normal = FALSE, weighted = TRUE, depend = FALSE,
 Defaults to FALSE.
 Data is not transformed to be normal.
 Set to TRUE if data should be transformed to be normal
-(computes correlations using the \emph{cor_auto} function from the \emph{qgraph} package)}
+(computes correlations using the \link[qgraph]{cor_auto} function)}
 
 \item{weighted}{Should network be weighted?
 Defaults to TRUE.
@@ -23,11 +23,11 @@ Set to FALSE to produce an unweighted (binary) network}
 \item{depend}{Is network a dependency (or directed) network?
 Defaults to FALSE.
 Set TRUE to generate a MaST-filtered dependency network
-(output obtained from the \emph{depend} function)}
+(output obtained from the \code{\link{depend}} function)}
 
 \item{na.data}{How should missing data be handled?
-For "listwise" deletion the \emph{na.omit} function is applied.
-Set to "fiml" for Full Information Maxmimum Likelihood (\emph{psych} package).
+For "listwise" deletion the \code{\link{na.omit}} function is applied.
+Set to "fiml" for Full Information Maxmimum Likelihood (\link[psych]{corFiml}).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 }
 \value{

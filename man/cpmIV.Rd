@@ -9,7 +9,7 @@ cpmIV(neuralarray, bstat, covar, thresh = 0.01, method = c("mean", "sum"),
   "spearman"), shen = FALSE, cores, progBar = TRUE)
 }
 \arguments{
-\item{neuralarray}{Array from \emph{convertConnBrainMat} function}
+\item{neuralarray}{Array from \code{\link{convertConnBrainMat}} function}
 
 \item{bstat}{Behavioral statistic for each participant with neural data (a vector)}
 
@@ -41,7 +41,7 @@ Defaults to TRUE.
 Set to FALSE for no progress bar}
 }
 \value{
-Returns a list containing a matrix (correlation coefficient (r), p-value (p), Bayes Factor (BF), mean absolute error (mae), root mean square error (rmse)).
+Returns a list containing a matrix (correlation coefficient (r), p-value (p), mean absolute error (mae), root mean square error (rmse)).
 The list also contains the positive (posMask) and negative (negMask) masks, which can be visualized here: \url{http://bisweb.yale.edu/build/connviewer.html}
 }
 \description{
@@ -54,10 +54,6 @@ Finn, E. S., Shen, X., Scheinost, D., Rosenberg, M. D., Huang, J., Chun, M. M., 
 Functional connectome fingerprinting: Identifying individuals using patterns of brain connectivity.
 \emph{Nature Neuroscience}, \emph{18}(11), 1664-1671.
 
-Ly, A., Verhagen, A. J., & Wagenmakers, E.-J. (2016).
-Harold Jeffreys's default Bayes factor hypothesis tests: Explanation, extension, and application in psychology.
-\emph{Journal of Mathematical Psychology}, \emph{72}, 19-32.
-
 Rosenberg, M. D., Finn, E. S., Scheinost, D., Papademetris, X., Shen, X., Constable, R. T., Chun, M. M. (2016).
 A neuromarker of sustained attention from whole-brain functional connectivity.
 \emph{Nature Neuroscience}, \emph{19}(1), 165-171.
@@ -65,10 +61,6 @@ A neuromarker of sustained attention from whole-brain functional connectivity.
 Shen, X. Finn, E. S., Scheinost, D., Rosenberg, M. D., Chun, M. M., Papademetris, X., Constable, R. T. (2017).
 Using connectome-based predictive modeling to predict individual behavior from brain connectivity.
 \emph{Nature Protocols}, \emph{12}(3), 506-518.
-
-Wagenmakers, E. J., Verhagen, J., & Ly, A. (2016).
-How to quantify the evidence for the absence of a correlation.
-\emph{Behavior Research Methods}, \emph{48}(2), 413-426.
 
 Wei, T. & Simko, V.(2017).
 R package "corrplot": Visualization of a correlation matrix (Version 0.84).

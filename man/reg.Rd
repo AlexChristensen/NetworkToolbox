@@ -12,7 +12,7 @@ reg(data, family = c("binomial", "gaussian", "Gamma", "poisson"),
 
 \item{family}{Error distribution to be used in the regression model.
 Defaults to "logistic".
-Set to any family used in function \emph{glm} (see \code{\link{family}})}
+Set to any family used in function \link[stats]{family}}
 
 \item{symmetric}{Should matrix be symmetric?
 Defaults to TRUE, taking the mean of the two edge weights

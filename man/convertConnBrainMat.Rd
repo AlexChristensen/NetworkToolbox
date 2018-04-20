@@ -18,7 +18,8 @@ Set FALSE for no progress bar}
 Returns a list of correlation (rmat) and z-score (zmat) arrays of neural connectivity matrices (n x n x m)
 }
 \description{
-Converts a Matlab brain z-score connectivity array (n x n x m) where \strong{n} is the n x n connectivity matrices and \strong{m} is the participant.
+Converts a Matlab brain z-score connectivity array (n x n x m)
+where \strong{n} is the n x n connectivity matrices and \strong{m} is the participant.
 If you would like to simply import a connectivity array from Matlab, then see the examples
 }
 \examples{

@@ -5,7 +5,8 @@
 \title{Simulate Small-world Network}
 \usage{
 sim.swn(nodes, n, pos = 0.8, ran = c(0.3, 0.7), nei = 1, p = 0.5,
-  corr = FALSE, noise = 0, ordinal = FALSE, ordLevels = NULL)
+  corr = FALSE, noise = 0, replace = NULL, ordinal = FALSE,
+  ordLevels = NULL)
 }
 \arguments{
 \item{nodes}{Number of nodes in the simulated network}
@@ -26,9 +27,18 @@ p < .5 rewires the simulated network closer to a lattice network}
 Defaults to FALSE.
 Set to TRUE for a simulated correlation network}
 
-\item{noise}{Should noise be added to the dataset?
-Defaults to 0, which is no noise added.
-Values should be between 0 to 1 for noise addded to the true network}
+\item{noise}{Should noise be added to the simulated dataset?
+Defaults to 0 or no noise.
+Values 0 < noise < 1 can be used as input.
+The noise value is the proportion of participants sampled from a different
+simulated dataset of an equivalent size (i.e., n) to the simulated dataset.
+The second simulated dataset is randomly sampled (with or without replacemet)
+and participants are randomly introduced into the simulated dataset.}
+
+\item{replace}{If noise > 0, then should participants be sampled with replacement?
+Defaults to TRUE.
+Set to FALSE to not allow the potential for participants to be consecutively entered
+into the simulated dataset.}
 
 \item{ordinal}{Should simulated continuous data be converted to ordinal?
 Defaults to FALSE.
@@ -44,10 +54,15 @@ simulated data (simData), and simulated correlation matrix (simRho)
 }
 \description{
 Simulates a small-world network based on specified topological properties.
-Data will also be simulated based on the true network structure (UNDER CONSTRUCTION)
+Data will also be simulated based on the true network structure
 }
 \examples{
-rand <- randnet(10,27)
+sim.norm <- sim.swn(25, 500, nei = 3)
+
+sim.noise <- sim.swn(25, 500, nei = 3, noise = .3)
+
+sim.Likert <- sim.swn(25, 500, nei = 3, noise = .3,
+replace = TRUE, ordinal = TRUE, ordLevels = 5)
 }
 \references{
 Csardi, G., & Nepusz, T. (2006).

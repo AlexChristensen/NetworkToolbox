@@ -1,7 +1,7 @@
 Package: NetworkToolbox
 Title: Methods and Measures for Brain, Cognitive, and Psychometric Network Analysis
 Version: 1.1.2
-Date: 2018-04-16
+Date: 2018-04-20
 Author: Alexander Christensen
 Maintainer: Alexander Christensen <alexpaulchristensen@gmail.com>
 Description: Implements network analysis and graph theory measures used in neuroscience, cognitive science, and psychology. Methods include various filtering methods and approaches such as threshold, dependency (Kenett, Tumminello, Madi, Gur-Gershogoren, Mantegna, & Ben-Jacob, 2010 <doi:10.1371/journal.pone.0015032>), Information Filtering Networks (Barfuss, Massara, Di Matteo, & Aste, 2016 <doi:10.1103/PhysRevE.94.062306>), and Efficiency-Cost Optimization (Fallani, Latora, & Chavez, 2017 <doi:10.1371/journal.pcbi.1005305>). Brain methods include the recently developed Connectome Predictive Modeling (see references in package). Also implements several network measures including local network characteristics (e.g., centrality), global network characteristics (e.g., clustering coefficient), and various other measures associated with the reliability and reproducibility of network analysis. 
@@ -9,5 +9,5 @@ Depends: R (>= 3.3.0)
 License: GPL (>= 3.0)
 Encoding: UTF-8
 LazyData: true
-Imports: Matrix, psych, corrplot, fdrtool, R.matlab, MASS, hypergeo, pwr, igraph, qgraph, ppcor, parallel, foreach, doSNOW
+Imports: Matrix, psych, corrplot, fdrtool, R.matlab, MASS, pwr, igraph, qgraph, IsingFit, ppcor, parallel, foreach, doSNOW
 RoxygenNote: 6.0.1.9000
