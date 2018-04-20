@@ -3051,7 +3051,7 @@ bootgen <- function (data, method = c("MaST", "TMFG", "LoGo", "threshold"),
         opts <- list(progress = progress)
     }else{opts<-list()}
     
-    sampslist<-foreach::foreach(i=1:length(iter),
+    sampslist<-foreach::foreach(i=1:iter,
                          .packages = "NetworkToolbox",
                          .options.snow = opts)%dopar%
     {
@@ -3094,7 +3094,7 @@ bootgen <- function (data, method = c("MaST", "TMFG", "LoGo", "threshold"),
         {samps<-fish(threshold(cormat,...)$A)
         }else{stop("Method not available")}
         
-            return(list(samps=samps))
+            return(samps)
     }
     if(progBar)
     {close(pb)}
@@ -3121,7 +3121,7 @@ bootgen <- function (data, method = c("MaST", "TMFG", "LoGo", "threshold"),
     samps<-array(0,dim=c(nrow=nrow(realmat),ncol=ncol(realmat),iter))
     
     for(i in 1:iter) #populate array
-    {samps[,,i]<-sampslist[[i]]$samps}
+    {samps[,,i]<-sampslist[[i]]}
     
     #Mean fisher matrix
     meanmat<-matrix(0,nrow=nrow(realmat),ncol=ncol(realmat)) #Initialize Mean matrix
