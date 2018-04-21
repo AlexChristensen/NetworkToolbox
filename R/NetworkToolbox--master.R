@@ -3026,8 +3026,8 @@ bootgen <- function (data, method = c("MaST", "TMFG", "LoGo", "threshold"),
     
     if(method=="LoGo")
     {
-        invmat<-cormat
-        realmat<--cov2cor(solve(cor2cov(cormat,data)))
+        invmat<-solve(cov(data))
+        realmat<--cov2cor(invmat)
         diag(realmat)<-0
     }else{realmat<-cormat}
     
@@ -3179,8 +3179,6 @@ bootgen <- function (data, method = c("MaST", "TMFG", "LoGo", "threshold"),
     if(method=="LoGo")
     {
         diag(bootmat)<-1
-    
-        invmat<-solve(cov2cor(invmat))
     
         invmat<-ifelse(bootmat!=0,invmat,0)
     }
