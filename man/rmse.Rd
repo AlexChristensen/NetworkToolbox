@@ -20,7 +20,7 @@ Computes the root mean square error of a sparse model to a full model
 \examples{
 A1 <- solve(cov(neoOpen))
 
-A2 <- LoGo(neoOpen)$logo
+A2 <- LoGo(neoOpen)
 
 root <- rmse(A1, A2)
 

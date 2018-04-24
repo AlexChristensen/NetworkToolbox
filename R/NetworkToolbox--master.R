@@ -239,6 +239,10 @@ TMFG <-function (data, normal = FALSE, weighted = TRUE, depend = FALSE,
 #' @description Applies the Local/Global method to estimate the sparse inverse covariance matrix using a TMFG-filtered network
 #' (see and cite Barfuss et al., 2016)
 #' @param data Must be a dataset
+#' @param cliques Cliques defined in the network.
+#' Input can be a list or matrix
+#' @param separators Separators defined in the network.
+#' Input can be a list or matrix
 #' @param partial Should the output network's connections be the partial correlation between two nodes given all other nodes?
 #' Defaults to FALSE, which returns a sparse inverse covariance matrix.
 #' Set to TRUE for a partial correlation matrix
@@ -247,19 +251,17 @@ TMFG <-function (data, normal = FALSE, weighted = TRUE, depend = FALSE,
 #' Data is not transformed to be normal.
 #' Set to TRUE if data should be transformed to be normal
 #' (computes correlations using the \link[qgraph]{cor_auto} function)
+#' @param standardize Should inverse covariance matrix be standardized?
+#' Defaults to FALSE.
+#' Set to TRUE for inverse correlation matrix
 #' @param na.data How should missing data be handled?
 #' For "listwise" deletion the \code{\link{na.omit}} function is applied.
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\link[psych]{corFiml}).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
-#' @param graphical Should network be checked for graphical modeling?
-#' Defaults to FALSE.
-#' Set to TRUE to determine if model is graphical
-#' @return Returns a list containing the TMFG-filtered matrix (tmfg),
-#' and the sparse TMFG-filtered inverse covariance matrix (logo)
+#' @return Returns the sparse LoGo-filtered inverse covariance matrix (partial = FALSE)
+#' or LoGo-filtered partial correlation matrix (partial=TRUE)
 #' @examples
-#' LoGonet<-LoGo(neoOpen, partial = TRUE)$logo
-#' 
-#' TMFGnet<-LoGo(neoOpen)$tmfg
+#' LoGonet<-LoGo(neoOpen, partial = TRUE)
 #' @references 
 #' Barfuss, W., Massara, G. P., Di Matteo, T., & Aste, T. (2016).
 #' Parsimonious modeling with information filtering networks.
@@ -269,8 +271,9 @@ TMFG <-function (data, normal = FALSE, weighted = TRUE, depend = FALSE,
 #' @importFrom psych corFiml
 #' @export
 #LoGo Sparse Inverse Covariance Matrix----
-LoGo <- function (data, partial = FALSE, normal = FALSE, 
-                  na.data = c("pairwise","listwise","fiml","none"), graphical = FALSE)
+LoGo <- function (data, cliques, separators,
+                  partial = FALSE, normal = FALSE, standardize = FALSE,
+                  na.data = c("pairwise","listwise","fiml","none"))
 {
     #missing data handling
     if(missing(na.data))
@@ -311,44 +314,70 @@ LoGo <- function (data, partial = FALSE, normal = FALSE,
     #corrlation matrix
     if(nrow(data)==ncol(data)){
         cormat<-data
-        S<-cor2cov(cormat,data)
+        if(standardize)
+        {S<-cormat
+        }else{S<-cor2cov(cormat,data)}
     }else if(normal){
-        #shrinkage covariance
-        S<-cor2cov(cormat,data)
+        if(standardize)
+        {S<-cormat
+        }else{S<-cor2cov(cormat,data)}
     }else{
         cormat<-cor(data)
-        S<-cov(data)
+        if(standardize)
+        {S<-cormat
+        }else{S<-cov(data)}
     }
     
-    tmfg<-TMFG(cormat)
-    separators<-tmfg$separators
-    cliques<-tmfg$cliques
+    if(missing(separators))
+    {separators<-NULL}
+    
+    if(missing(cliques))
+    {cliques<-NULL}
+    
+    
+    if(is.null(separators)&is.null(cliques))
+    {
+        tmfg<-TMFG(cormat)
+        separators<-tmfg$separators
+        cliques<-tmfg$cliques
+    }
     
     n<-ncol(S)
     Jlogo<-matrix(0,nrow=n,ncol=n)
     
-    for(i in 1:nrow(cliques))
-    {v<-cliques[i,]
-    Jlogo[v,v]<-Jlogo[v,v]+solve(S[v,v])}
+    if(!is.list(cliques)&!is.list(separators))
+    {
+        for(i in 1:nrow(cliques))
+        {
+            v<-cliques[i,]
+            Jlogo[v,v]<-Jlogo[v,v]+solve(S[v,v])
+        }
     
         for(i in 1:nrow(separators))
-        {v<-separators[i,]
-        Jlogo[v,v]<-Jlogo[v,v]-solve(S[v,v])}
-    
-    if(graphical)
-    {
-        par<-(-cov2cor(Jlogo))
-        diag(par)<-0
-        is.graphical(par)
+        {
+            v<-separators[i,]
+            Jlogo[v,v]<-Jlogo[v,v]-solve(S[v,v])
+        }
+    }else{
+        for(i in 1:length(cliques))
+        {
+            v<-cliques[[i]]
+            Jlogo[v,v]<-Jlogo[v,v]+solve(S[v,v])
+        }
+        
+        for(i in 1:length(separators))
+        {
+            v<-separators[[i]]
+            Jlogo[v,v]<-Jlogo[v,v]-solve(S[v,v])
+        }
     }
     
         if(partial)
         {
             Jlogo<-(-cov2cor(Jlogo))
+            if(any(is.na(Jlogo)))
+            {Jlogo <- ifelse(is.na(Jlogo),0,Jlogo)}
             diag(Jlogo)<-0
-            
-            if(graphical)
-            {is.graphical(Jlogo)}
         }
         
     colnames(Jlogo)<-colnames(data)
@@ -357,7 +386,7 @@ LoGo <- function (data, partial = FALSE, normal = FALSE,
     if(!isSymmetric(Jlogo))
     {Jlogo<-as.matrix(Matrix::forceSymmetric(Jlogo))}
     
-    return(list(logo=Jlogo,tmfg=tmfg$A))
+    return(logo=Jlogo)
 }
 #----
 # Planar Maximally Filtered Graph
@@ -1652,7 +1681,7 @@ nams <- function (data, A,
     if(method=="TMFG")
     {net<-TMFG(data,na.data=na.data,normal=normal)$A
     }else if(method=="LoGo")
-    {net<-LoGo(data,na.data=na.data,normal=normal,partial=TRUE)$A
+    {net<-LoGo(data,na.data=na.data,normal=normal,partial=TRUE)
     #}else if(method=="PMFG")
     #{net<-PMFG(data,na.data=na.data,normal=normal)$pmfg
     }else if(method=="threshold")
@@ -2651,7 +2680,7 @@ semnetboot <- function (data, method = c("TMFG","LoGo","MaST","threshold"),
         if(method=="TMFG")
         {samps[i,]<-suppressWarnings(semnetmeas(binarize(TMFG(cormat)$A),iter=10)[1:4])
         }else if(method=="LoGo")
-        {l<-LoGo(mat,partial=TRUE)$logo
+        {l<-LoGo(mat,partial=TRUE)
         samps[i,]<-suppressWarnings(semnetmeas(binarize(l),iter=10)[1:4])
         }else if(method=="MaST")
         {samps[i,]<-suppressWarnings(semnetmeas(binarize(MaST(cormat,...)),iter=10)[1:4])
@@ -2669,7 +2698,7 @@ semnetboot <- function (data, method = c("TMFG","LoGo","MaST","threshold"),
     if(method=="TMFG")
     {tru<-suppressWarnings(semnetmeas(TMFG(data,...)$A))
     }else if(method=="LoGo")
-    {tru<-suppressWarnings(semnetmeas((-cov2cor(LoGo(data)$logo))))
+    {tru<-suppressWarnings(semnetmeas(LoGo(data,partial=TRUE)))
     }else if(method=="MaST")
     {tru<-suppressWarnings(semnetmeas(MaST(data,...)))
     #}else if(method=="PMFG")
@@ -2738,6 +2767,16 @@ if(!isSymmetric(B))
            
     n<-ncol(A)
     
+    if(plot)
+    {
+        nameA <- substitute(A)
+        nameB <- substitute(B)
+        
+        if(all(diag(round(A,3))==diag(round(B,3))))
+        {plotdiag <- diag(A)
+        }else(plotdiag <- vector(mode="numeric",length=n))
+    }
+    
     diag(A)<-0
     diag(B)<-0
   
@@ -2785,15 +2824,20 @@ if(!isSymmetric(B))
   
   if(plot)
   {
-    ran<-range(repmat)  
+    diag(repmat) <- plotdiag
+    
+    ran<-range(repmat)
+    
+    if(min(ran)<(-1)|max(ran)>1)
+    {ncor <- FALSE}
     
     if(ncol(A)<=20)
     {corrplot::corrplot(repmat,method="color",addgrid.col = "grey",
                       tl.col="black",addCoef.col = "black", cl.lim=ran,
-                      title="A by B Edge Replcation",mar=c(3,4,2,2))
+                      title=paste(nameA,"by",nameB,"Edge Replcation"),mar=c(3,4,2,2), is.corr = ncor)
     }else{corrplot::corrplot(repmat,method="color",addgrid.col = "grey",
                            tl.col="black", cl.lim=ran,
-                           title="A by B Edge Replcation",mar=c(3,4,2,2))}
+                           title="A by B Edge Replcation",mar=c(3,4,2,2), is.corr = ncor)}
   }
                 
                 
@@ -3087,7 +3131,7 @@ bootgen <- function (data, method = c("MaST", "TMFG", "LoGo", "threshold"),
         if(method=="TMFG")
         {samps<-fish(TMFG(cormat)$A)
         }else if(method=="LoGo")
-        {samps<-fish(suppressWarnings(LoGo(mat,partial=TRUE)$logo))
+        {samps<-fish(suppressWarnings(LoGo(mat,partial=TRUE)))
         }else if(method=="MaST")
         {samps<-fish(MaST(cormat,...))
         }else if(method=="threshold")
@@ -3105,7 +3149,7 @@ bootgen <- function (data, method = c("MaST", "TMFG", "LoGo", "threshold"),
         if(method=="TMFG")
         {tru<-TMFG(data)$A
         }else if(method=="LoGo")
-        {tru<-LoGo(data,partial=TRUE)$logo
+        {tru<-LoGo(data,partial=TRUE)
         diag(tru)<-0
         }else if(method=="MaST")
         {tru<-MaST(data,...)
@@ -3922,8 +3966,8 @@ splitsampNet <- function (object, method = c("MaST", "TMFG", "LoGo", "threshold"
                 test[[i]]<-TMFG(object$testSamples[[i]],...)$A
             }else if(method=="LoGo")
             {
-                train[[i]]<-LoGo(object$trainSamples[[i]],partial=TRUE,...)$logo
-                test[[i]]<-LoGo(object$testSamples[[i]],partial=TRUE,...)$logo
+                train[[i]]<-LoGo(object$trainSamples[[i]],partial=TRUE,...)
+                test[[i]]<-LoGo(object$testSamples[[i]],partial=TRUE,...)
             }else if(method=="threshold")
             {
                 train[[i]]<-threshold(object$trainSamples[[i]],...)$A
@@ -4218,7 +4262,7 @@ sim.swn <- function (nodes, n, pos = .80, ran = c(.3,.7),
 #' @examples
 #' A1 <- solve(cov(neoOpen))
 #' 
-#' A2 <- LoGo(neoOpen)$logo
+#' A2 <- LoGo(neoOpen)
 #' 
 #' kld_value <- kld(A1, A2)
 #' @references 
@@ -4227,7 +4271,7 @@ sim.swn <- function (nodes, n, pos = .80, ran = c(.3,.7),
 #' \emph{The Annals of Mathematical Statistics}, \emph{22}(1), 79-86.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#Kullback Leibler Divergence
+#Kullback Leibler Divergence----
 kld <- function (base, test)
 {
     if(nrow(base)!=ncol(base))
@@ -4251,7 +4295,7 @@ kld <- function (base, test)
 #' @examples
 #' A1 <- solve(cov(neoOpen))
 #' 
-#' A2 <- LoGo(neoOpen)$logo
+#' A2 <- LoGo(neoOpen)
 #' 
 #' root <- rmse(A1, A2)
 #' 
@@ -5147,6 +5191,7 @@ neuralcorrtest <- function (bstat, nstat)
 #' @importFrom graphics par
 #' @importFrom grDevices colorRampPalette dev.new
 #' @importFrom foreach %dopar%
+#' @importFrom utils menu
 #' @export
 #CPM Internal Validation----
 cpmIV <- function (neuralarray, bstat, covar, thresh = .01, method = c("mean", "sum"),
@@ -5474,6 +5519,10 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01, method = c("mean", "
         
         colnames(ldiffmat)<-c("PFC","Mot","Ins","Par","Tem","Occ","Lim","Cer","Sub","Bsm")
         row.names(ldiffmat)<-c("PFC","Mot","Ins","Par","Tem","Occ","Lim","Cer","Sub","Bsm")
+        colnames(poslobemat)<-c("PFC","Mot","Ins","Par","Tem","Occ","Lim","Cer","Sub","Bsm")
+        row.names(poslobemat)<-c("PFC","Mot","Ins","Par","Tem","Occ","Lim","Cer","Sub","Bsm")
+        colnames(neglobemat)<-c("PFC","Mot","Ins","Par","Tem","Occ","Lim","Cer","Sub","Bsm")
+        row.names(neglobemat)<-c("PFC","Mot","Ins","Par","Tem","Occ","Lim","Cer","Sub","Bsm")
         
         ldiffmat[upper.tri(ldiffmat)]<-0
         
@@ -5509,6 +5558,10 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01, method = c("mean", "
         
         colnames(diffmat)<-c("MF","FP","DM","SubC","MT","VI","VII","VA")
         row.names(diffmat)<-c("MF","FP","DM","SubC","MT","VI","VII","VA")
+        colnames(posnetmat)<-c("MF","FP","DM","SubC","MT","VI","VII","VA")
+        row.names(posnetmat)<-c("MF","FP","DM","SubC","MT","VI","VII","VA")
+        colnames(negnetmat)<-c("MF","FP","DM","SubC","MT","VI","VII","VA")
+        row.names(negnetmat)<-c("MF","FP","DM","SubC","MT","VI","VII","VA")
 
         diffmat[upper.tri(diffmat)]<-0
         
@@ -5533,7 +5586,6 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01, method = c("mean", "
     
     for(i in 1:length(bstat))
     {
-        
         perror[i] <- behav_pred_pos[i]-bstat[i]
         nerror[i] <- behav_pred_neg[i]-bstat[i]
         
@@ -5542,8 +5594,8 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01, method = c("mean", "
         mae_neg<-mean(abs(nerror))
         
         #rmse
-        pos_rmse<-sqrt(mean(perror))
-        neg_rmse<-sqrt(mean(nerror))
+        pos_rmse<-sqrt(mean(perror^2))
+        neg_rmse<-sqrt(mean(nerror^2))
     }
     
     results<-matrix(0,nrow=2,ncol=4)
@@ -5560,7 +5612,41 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01, method = c("mean", "
     colnames(results)<-c("r","p","mae","rmse")
     row.names(results)<-c("positive","negative")
     
-    return(list(results=results,posMask=posmask,negMask=negmask))
+    if(shen)
+    {
+        ans <- menu(c("Yes","No"),title="Visualize canonical and macro-scale regions connectivity?")
+        
+        if(ans==1)
+        {
+            dev.new()
+            qgraph::qgraph(posnetmat,title="Positive Canonical Connectivity",
+                           edge.color="darkorange2")
+            dev.new()
+            qgraph::qgraph(negnetmat,title="Negative Canonical Connectivity",
+                           edge.color="skyblue2")
+            dev.new()
+            diffmat <- (diffmat + t(diffmat))/2
+            qgraph::qgraph(diffmat,title="Difference Canonical Connectivity",
+                           posCol="darkorange2",negCol="skyblue2")
+            
+            dev.new()
+            qgraph::qgraph(poslobemat,title="Positive Macro-scale Regions Connectivity",
+                           edge.color="darkorange2")
+            dev.new()
+            qgraph::qgraph(neglobemat,title="Negative Macro-scale Regions Connectivity",
+                           edge.color="skyblue2")
+            dev.new()
+            ldiffmat <- (ldiffmat + t(ldiffmat))/2
+            qgraph::qgraph(ldiffmat,title="Difference Macro-scale Regions Connectivity",
+                           posCol="darkorange2",negCol="skyblue2")
+        }
+    }
+    
+    if(shen)
+    {return(list(results=results,posMask=posmask,negMask=negmask,
+                posCanon=posnetmat,negCanon=negnetmat,
+                posMacro=poslobemat,negMacro=neglobemat))
+    }else{return(list(results=results,posMask=posmask,negMask=negmask))}
 }
 #----
 #' Connectome-based Predictive Modeling--External Validation
@@ -6126,7 +6212,7 @@ cor2cov <- function (cormat, data)
 #' @param A A partial correlation network (adjacency matrix)
 #' @return Returns a TRUE/FALSE for whether network is graphical
 #' @examples
-#' A <- LoGo(neoOpen, normal = TRUE, partial = TRUE)$logo
+#' A <- LoGo(neoOpen, normal = TRUE, partial = TRUE)
 #' 
 #' is.graphical(A)
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>

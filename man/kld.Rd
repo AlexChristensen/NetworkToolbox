@@ -24,7 +24,7 @@ This is not a quantitative metric
 \examples{
 A1 <- solve(cov(neoOpen))
 
-A2 <- LoGo(neoOpen)$logo
+A2 <- LoGo(neoOpen)
 
 kld_value <- kld(A1, A2)
 }

@@ -4,11 +4,17 @@
 \alias{LoGo}
 \title{Local/Global Sparse Inverse Covariance Matrix}
 \usage{
-LoGo(data, partial = FALSE, normal = FALSE, na.data = c("pairwise",
-  "listwise", "fiml", "none"), graphical = FALSE)
+LoGo(data, cliques, separators, partial = FALSE, normal = FALSE,
+  standardize = FALSE, na.data = c("pairwise", "listwise", "fiml", "none"))
 }
 \arguments{
 \item{data}{Must be a dataset}
+
+\item{cliques}{Cliques defined in the network.
+Input can be a list or matrix}
+
+\item{separators}{Separators defined in the network.
+Input can be a list or matrix}
 
 \item{partial}{Should the output network's connections be the partial correlation between two nodes given all other nodes?
 Defaults to FALSE, which returns a sparse inverse covariance matrix.
@@ -20,27 +26,25 @@ Data is not transformed to be normal.
 Set to TRUE if data should be transformed to be normal
 (computes correlations using the \link[qgraph]{cor_auto} function)}
 
+\item{standardize}{Should inverse covariance matrix be standardized?
+Defaults to FALSE.
+Set to TRUE for inverse correlation matrix}
+
 \item{na.data}{How should missing data be handled?
 For "listwise" deletion the \code{\link{na.omit}} function is applied.
 Set to "fiml" for Full Information Maxmimum Likelihood (\link[psych]{corFiml}).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
-
-\item{graphical}{Should network be checked for graphical modeling?
-Defaults to FALSE.
-Set to TRUE to determine if model is graphical}
 }
 \value{
-Returns a list containing the TMFG-filtered matrix (tmfg),
-and the sparse TMFG-filtered inverse covariance matrix (logo)
+Returns the sparse LoGo-filtered inverse covariance matrix (partial = FALSE)
+or LoGo-filtered partial correlation matrix (partial=TRUE)
 }
 \description{
 Applies the Local/Global method to estimate the sparse inverse covariance matrix using a TMFG-filtered network
 (see and cite Barfuss et al., 2016)
 }
 \examples{
-LoGonet<-LoGo(neoOpen, partial = TRUE)$logo
-
-TMFGnet<-LoGo(neoOpen)$tmfg
+LoGonet<-LoGo(neoOpen, partial = TRUE)
 }
 \references{
 Barfuss, W., Massara, G. P., Di Matteo, T., & Aste, T. (2016).

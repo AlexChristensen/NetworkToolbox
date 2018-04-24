@@ -14,7 +14,7 @@ o gateway: added a function to compute the gateway coefficient of nodes in the n
 
 o participation: added a function to compute the participation coefficient of nodes in the network
 
-o edgerep: fixed bug in plot to display the strength of the replicated edges only
+o edgerep: fixed bug in plot to display the strength of the replicated edges only and will display diagonal if diagonals are equivalent between the two matrices
 
 o nams: added output for an overall network adjusted mean/sum score
 
@@ -23,6 +23,10 @@ o improved documentation
 o added EBICglasso and Isingfit to bootgen and commboot function
 
 o added back the kld and rmse function
+
+o added network visualization of canonical and macro-scale region connectivity to cpmIV function
+
+o LoGo: no longer outputs a list (only a matrix) and added a standardize argument for inverse correlation matrix as output (does not change partial correlation output)
 
 
 Changes in Version 1.1.1
