@@ -4,15 +4,25 @@
 \alias{nams}
 \title{Network Adjusted Mean/Sum}
 \usage{
-nams(data, A, adjusted = c("mean", "sum"), factors = c("walktrap",
-  "louvain"), standardize = TRUE, method = c("TMFG", "LoGo", "threshold",
-  "none"), normal = FALSE, na.data = c("pairwise", "listwise", "fiml",
-  "none"), ...)
+nams(data, A, normal = FALSE, standardize = TRUE, adjusted = c("mean",
+  "sum"), factors = c("walktrap", "louvain"), method = c("TMFG", "LoGo",
+  "EBICglasso", "IsingFit", "threshold"), na.data = c("pairwise", "listwise",
+  "fiml", "none"), ...)
 }
 \arguments{
 \item{data}{Must be a dataset}
 
 \item{A}{Adjacency matrix that has already been filtered}
+
+\item{normal}{Should data be transformed to a normal distribution?
+Defaults to FALSE.
+Data is not transformed to be normal.
+Set to TRUE if data should be transformed to be normal
+(computes correlations using the \link[qgraph]{cor_auto} function)}
+
+\item{standardize}{Should mean/sum scores be standardized?
+Defaults to TRUE.
+Set to FALSE for unstandardized mean/sum scores}
 
 \item{adjusted}{Should adjusted values be the mean or sum score?
 Defaults to "mean".
@@ -24,22 +34,11 @@ Defaults to 1 factor.
 Set to "walktrap" for the walktrap algortihm.
 Set to "louvain" for louvain community detection}
 
-\item{standardize}{Should mean/sum scores be standardized?
-Defaults to TRUE.
-Set to FALSE for unstandardized mean/sum scores}
-
 \item{method}{A network filtering method.
 Defaults to "TMFG".
 The "threshold" option is set to the default arguments (thresh = "alpha", a = .05).
 To use additional arguments for "threshold", apply \emph{threshold} function with
-desired arguments and set to "none".
-Use "none" for an adjacency matrix that has already been filtered}
-
-\item{normal}{Should data be transformed to a normal distribution?
-Defaults to FALSE.
-Data is not transformed to be normal.
-Set to TRUE if data should be transformed to be normal
-(computes correlations using the \link[qgraph]{cor_auto} function)}
+desired arguments and input into argument \strong{A}}
 
 \item{na.data}{How should missing data be handled?
 For "listwise" deletion the \code{\link{na.omit}} function is applied.
@@ -61,8 +60,8 @@ In this way, more central nodes contribute a greater score and less central node
 
 sumadj <- nams(neoOpen, adjusted = "sum")
 
-knownfactors <- nams(neoOpen, method = "threshold",
-factors = c(rep(1,6),rep(2,6),rep(3,6),rep(4,6),rep(5,6),rep(6,6)))
+knownfactors <- nams(neoOpen,
+factors = c(rep(1,8),rep(2,8),rep(3,8),rep(4,8),rep(5,8),rep(6,8)))
 
 walkadj <- nams(neoOpen, method="threshold", factors = "walktrap")
 

@@ -13,6 +13,9 @@
 #' @param weighted Should network be weighted?
 #' Defaults to TRUE.
 #' Set to FALSE to produce an unweighted (binary) network
+#' @param neg Should negative weights be included?
+#' Defaults to TRUE.
+#' Set to FALSE for only positive weights
 #' @param depend Is network a dependency (or directed) network?
 #' Defaults to FALSE.
 #' Set to TRUE to generate a TMFG-filtered dependency network
@@ -41,7 +44,7 @@
 #' @importFrom utils capture.output
 #' @export
 #TMFG Filtering Method----
-TMFG <-function (data, normal = FALSE, weighted = TRUE, depend = FALSE,
+TMFG <-function (data, normal = FALSE, weighted = TRUE, neg = TRUE, depend = FALSE,
                  na.data = c("pairwise","listwise","fiml","none"))
 {
     #missing data handling
@@ -83,7 +86,8 @@ TMFG <-function (data, normal = FALSE, weighted = TRUE, depend = FALSE,
     n<-ncol(cormat)
     
         tcormat<-cormat
-        cormat<-abs(cormat)
+        if(neg)
+        {cormat<-abs(cormat)}
         
     if(n<9){print("Matrix is too small")}
     #nodeTO<-array()
@@ -259,7 +263,7 @@ TMFG <-function (data, normal = FALSE, weighted = TRUE, depend = FALSE,
 #' Set to "fiml" for Full Information Maxmimum Likelihood (\link[psych]{corFiml}).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
 #' @return Returns the sparse LoGo-filtered inverse covariance matrix (partial = FALSE)
-#' or LoGo-filtered partial correlation matrix (partial=TRUE)
+#' or LoGo-filtered partial correlation matrix (partial = TRUE)
 #' @examples
 #' LoGonet<-LoGo(neoOpen, partial = TRUE)
 #' @references 
@@ -1624,8 +1628,7 @@ hybrid <- function (A, BC = c("standard","random","average"), beta)
 #' Defaults to "TMFG".
 #' The "threshold" option is set to the default arguments (thresh = "alpha", a = .05).
 #' To use additional arguments for "threshold", apply \emph{threshold} function with
-#' desired arguments and set to "none".
-#' Use "none" for an adjacency matrix that has already been filtered
+#' desired arguments and input into argument \strong{A}
 #' @param normal Should data be transformed to a normal distribution?
 #' Defaults to FALSE.
 #' Data is not transformed to be normal.
@@ -1642,19 +1645,18 @@ hybrid <- function (A, BC = c("standard","random","average"), beta)
 #' 
 #' sumadj <- nams(neoOpen, adjusted = "sum")
 #' 
-#' knownfactors <- nams(neoOpen, method = "threshold",
-#' factors = c(rep(1,6),rep(2,6),rep(3,6),rep(4,6),rep(5,6),rep(6,6)))
+#' knownfactors <- nams(neoOpen,
+#' factors = c(rep(1,8),rep(2,8),rep(3,8),rep(4,8),rep(5,8),rep(6,8)))
 #' 
 #' walkadj <- nams(neoOpen, method="threshold", factors = "walktrap")
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Network Adjusted Mean/Sum----
-nams <- function (data, A,
-                  adjusted = c("mean","sum"),
-                  factors = c("walktrap","louvain"), standardize = TRUE,
-                  method = c("TMFG","LoGo","threshold","none"),
-                  normal = FALSE, na.data = c("pairwise","listwise","fiml","none"), ...)
+nams <- function (data, A, normal = FALSE, standardize = TRUE,
+                  adjusted = c("mean","sum"), factors = c("walktrap","louvain"),
+                  method = c("TMFG","LoGo","EBICglasso","IsingFit","threshold"),
+                  na.data = c("pairwise","listwise","fiml","none"), ...)
 {
     if(missing(data))
     {stop("Dataset is required for analysis")}
@@ -1677,17 +1679,20 @@ nams <- function (data, A,
     {na.data<-"none"
     }else{na.data<-match.arg(na.data)}
     
-    
-    if(method=="TMFG")
-    {net<-TMFG(data,na.data=na.data,normal=normal)$A
-    }else if(method=="LoGo")
-    {net<-LoGo(data,na.data=na.data,normal=normal,partial=TRUE)
-    #}else if(method=="PMFG")
-    #{net<-PMFG(data,na.data=na.data,normal=normal)$pmfg
-    }else if(method=="threshold")
-    {net<-threshold(data,na.data=na.data,normal=normal)$A
-    }else if(method=="none")
-    {net<-A}
+    if(is.null(A))
+    {
+        if(method=="TMFG")
+        {net<-TMFG(data,na.data=na.data,normal=normal)$A
+        }else if(method=="LoGo")
+        {net<-LoGo(data,na.data=na.data,normal=normal,partial=TRUE)
+        }else if(method=="threshold")
+        {net<-threshold(data,na.data=na.data,normal=normal)$A
+        }else if(method=="EBICglasso")
+        {net<-qgraph::EBICglasso(cov(data),n=nrow(data))
+        }else if(method=="IsingFit")
+        {net<-IsingFit::IsingFit(data)$weiadj
+        }
+    }else{net<-A}
     
     if(!is.numeric(factors))
     {
@@ -1695,37 +1700,75 @@ nams <- function (data, A,
         {facts<-igraph::walktrap.community(convert2igraph(net))$membership
         }else if(factors=="louvain")
         {facts<-louvain(net,...)$community}
-        
     }else{facts<-factors}
     
-    fact<-matrix(0,nrow=nrow(data),ncol=max(facts))
+    if(max(facts)>1)
+    {fact<-matrix(0,nrow=nrow(data),ncol=(max(facts)+1))
+    }else{fact<-matrix(0,nrow=nrow(data),ncol=max(facts))}
+    
+    fullhyb <- hybrid(net,BC="random")
     
     for(i in 1:max(facts))
     {
-        
         Ah<-net[which(facts==i),which(facts==i)]
         
         hyb<-hybrid(Ah,BC="random")
+        
+        fh <- fullhyb[which(facts==i)]
+        
+        comb <- fh+hyb
         
         tdata<-t(data[,which(facts==i)])
         
         mat<-matrix(0,nrow=nrow(tdata),ncol=ncol(tdata))
         
         for(j in 1:ncol(tdata))
-        {mat[,j]<-hyb*tdata[,j]}
+        {mat[,j]<-comb*tdata[,j]}
         
         if(adjusted=="mean")
         {wei<-colMeans(mat)
         }else if(adjusted=="sum")
         {wei<-colSums(mat)}
         
-        adj<-wei/mean(hyb)
+        adj<-wei/mean(comb)
         
         fact[,i]<-adj
     }
     
     if(max(facts)>1)
-    {fact <- cbind(fact,rowSums(fact))}
+    {
+        tdata<-t(data)
+        
+        mat<-matrix(0,nrow=nrow(tdata),ncol=ncol(tdata))
+        
+        for(j in 1:ncol(tdata))
+        {mat[,j]<-fullhyb*tdata[,j]}
+        
+        if(adjusted=="mean")
+        {wei<-colMeans(mat)
+        }else if(adjusted=="sum")
+        {wei<-colSums(mat)}
+        
+        adj<-wei/mean(fullhyb)
+        
+        fact[,(max(facts)+1)] <- adj
+        
+        for(i in 1:nrow(fact))
+            for(j in (ncol(fact)-1))
+        {
+                if(adjusted=="mean")
+                {
+                    diff <- fact[i,(j+1)] - mean(fact[i,1:j])
+                    chan <- diff/j
+                    fact[i,1:j] <- fact[i,1:j] + chan
+                }else if(adjusted=="sum")
+                {
+                    diff <- fact[i,(j+1)] - sum(fact[i,1:j])
+                    chan <- diff/j
+                    fact[i,1:j] <- fact[i,1:j] + chan
+                }
+        }
+    }
     
     if(standardize)
     {fact <- scale(fact)}
@@ -1735,11 +1778,12 @@ nams <- function (data, A,
     for(l in 1:nrow(data))
     {row.names(fact)[l]<-paste("Part",l,sep="")}
     
-    for(k in 1:max(facts))
-    {colnames(fact)[k]<-paste("Factor",k,sep="")}
-    
     if(max(facts)>1)
-    {colnames(fact)[max(facts)+1]<-"Overall"}
+    {
+        for(k in 1:max(facts))
+        {colnames(fact)[k]<-paste("Factor",k,sep="")}
+        colnames(fact)[max(facts)+1]<-"Overall"
+    }else{colnames(fact)<-"Overall"}
     
     ufacts<-unique(facts)
     
@@ -1755,6 +1799,168 @@ nams <- function (data, A,
     return(list(NetAdjScore=fact,FactorItems=matf))
 }
 #----
+#' Stabilizing Nodes
+#' @description Computes the within-community centrality for each node in the network
+#' @param A An adjacency matrix of network data
+#' @param factors Can be a vector of factor assignments or community detection algorithms
+#' ("walktrap" or "louvain") can be used to determine the number of factors.
+#' Defaults to "walktrap".
+#' Set to "louvain" for louvain community detection
+#' @param cent Centrality measure to be used.
+#' Defaults to "strength".
+#' @param ... Additional arguments for community detection algorithms
+#' @return A matrix containing the within-community centrality value for each node
+#' @examples
+#' A<-TMFG(neoOpen)$A
+#' 
+#' stabilizing <- stable(A, factors = "walktrap")
+#' @references 
+#' Blanken, T. F., Deserno, M. K., Dalege, J., Borsboom, D., Blanken, P., Kerkhof, G. A., & Cramer, A. O. (2018).
+#' The role of stabilizing and communicating symptoms given overlapping communities in psychopathology networks.
+#' \emph{Scientific Reports}, \emph{8}(1), 5854.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Stabilizing----
+stable <- function (A, factors = c("walktrap","louvain"),
+                    cent = c("betweenness","rspbc","strength","degree","hybrid"), ...)
+{
+    #nodes
+    n <- ncol(A)
+    
+    #set diagonal to zero
+    diag(A) <- 0
+    
+    if(missing(cent))
+    {cent<-"strength"
+    }else{cent<-match.arg(cent)}
+    
+    #set communities
+    if(missing(factors))
+    {factors<-"walktrap"
+    }else{factors<-factors}
+    
+    if(!is.numeric(factors))
+    {
+        if(factors=="walktrap")
+        {facts<-igraph::walktrap.community(convert2igraph(A),...)$membership
+        }else if(factors=="louvain")
+        {facts<-louvain(A,...)$community}
+    }else{facts<-factors}
+    
+    keepord<-cbind(rep(1:ncol(A)),facts)
+    ord<-keepord[order(keepord[,2]),]
+    
+    fact<-list()
+    
+    for(i in 1:max(facts))
+    {
+        Ah<-A[which(facts==i),which(facts==i)]
+        
+        if(cent=="betweenness")
+        {stab<-betweenness(Ah)
+        }else if(cent=="rspbc")
+        {stab<-rspbc(Ah)
+        }else if(cent=="strength")
+        {stab<-strength(Ah)
+        }else if(cent=="degree")
+        {stab<-degree(Ah)}
+        
+        fact[[i]]<-stab
+    }
+    
+    stabil<-unlist(fact)
+    
+    bind<-cbind(ord,stabil)
+    
+    stabord<-bind[order(bind[,1]),]
+    
+    stabmat<-matrix(stabord[,3],nrow=nrow(stabord),ncol=1)
+    
+    row.names(stabmat)<-colnames(A)
+    colnames(stabmat)<-"Stabilizing"
+    
+    return(stabmat)
+}
+#----
+#' Communicating Nodes
+#' @description Computes the between-community strength for each node in the network
+#' @param A An adjacency matrix of network data
+#' @param factors Can be a vector of factor assignments or community detection algorithms
+#' ("walktrap" or "louvain") can be used to determine the number of factors.
+#' Defaults to "walktrap".
+#' Set to "louvain" for louvain community detection
+#' @param cent Centrality measure to be used.
+#' Defaults to "strength".
+#' @param ... Additional arguments for community detection algorithms
+#' @return A matrix containing the between-community strength value for each node
+#' @examples
+#' A<-TMFG(neoOpen)$A
+#' 
+#' communicating <- comcat(A, factors = "walktrap")
+#' @references 
+#' Blanken, T. F., Deserno, M. K., Dalege, J., Borsboom, D., Blanken, P., Kerkhof, G. A., & Cramer, A. O. (2018).
+#' The role of stabilizing and communicating symptoms given overlapping communities in psychopathology networks.
+#' \emph{Scientific Reports}, \emph{8}(1), 5854.
+#' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' @export
+#Communicating----
+comcat <- function (A, factors = c("walktrap","louvain"),
+                    cent = c("strength","degree"), ...)
+{
+    #nodes
+    n <- ncol(A)
+    
+    #set diagonal to zero
+    diag(A) <- 0
+    
+    if(missing(cent))
+    {cent<-"strength"
+    }else{cent<-match.arg(cent)}
+    
+    #set communities
+    if(missing(factors))
+    {factors<-"walktrap"
+    }else{factors<-factors}
+    
+    if(!is.numeric(factors))
+    {
+        if(factors=="walktrap")
+        {facts<-igraph::walktrap.community(convert2igraph(A),...)$membership
+        }else if(factors=="louvain")
+        {facts<-louvain(A,...)$community}
+    }else{facts<-factors}
+    
+    keepord<-cbind(rep(1:ncol(A)),facts)
+    ord<-keepord[order(keepord[,2]),]
+    
+    fact<-list()
+    
+    for(i in 1:max(facts))
+    {
+        Ah<-A[which(facts!=i),which(facts==i)]
+        
+        if(cent=="degree")
+        {com<-colSums(ifelse(Ah!=0,1,0))
+        }else if(cent=="strength")
+        {com<-colSums(Ah)}
+        
+        fact[[i]]<-com
+    }
+    
+    commn<-unlist(fact)
+    
+    bind<-cbind(ord,commn)
+    
+    commord<-bind[order(bind[,1]),]
+    
+    commmat<-matrix(commord[,3],nrow=nrow(commord),ncol=1)
+    
+    row.names(commmat)<-colnames(A)
+    colnames(commmat)<-"Communicating"
+    
+    return(commmat)
+}
+#----
 #' Participation Coefficient
 #' @description Computes the participation coefficient for each node. The participation
 #' coefficient measures the strength of a node's connections within its community. Positive
@@ -1765,11 +1971,12 @@ nams <- function (data, A,
 #' Set to "louvain" for the louvain community detection algorithm.
 #' Can also be set to user-specified factors (see examples)
 #' @return Returns a list of overall (signs not considered; overall),
-#' negative (negative), and positive (positive) participation coefficient
+#' negative (negative), and positive (positive) participation coefficient.
+#' Values closer to 1 suggest greater within-community connectivity and 
+#' values closer to 0 suggest greater between-community connectivity
 #' @examples
 #' #theoretical factors
-#' factors <- c(rep(1,8), rep(2,8), rep(3,8),
-#' + rep(4,8), rep(5,8), rep(6,8))
+#' factors <- c(rep(1,8), rep(2,8), rep(3,8), rep(4,8), rep(5,8), rep(6,8))
 #' 
 #' A <- TMFG(neoOpen)$A
 #' 
@@ -1798,20 +2005,23 @@ participation <- function (A, factors = c("walktrap","louvain"))
     
     #set communities
     if(missing(factors))
-    {factors<-rep(1,n)
-    }else if(is.character(factors))
-    {factors<-match.arg(factors)
-    if(factors=="walktrap")
-    {factors <- igraph::walktrap.community(convert2igraph(A))$membership
-    }else if(factors=="louvain")
-    {factors <- louvain(A)$community}
-    }else{factors <- factors}
+    {factors<-"walktrap"
+    }else{factors<-factors}
+    
+    if(is.numeric(factors))
+    {facts <- factors
+    }else{
+        if(factors=="walktrap")
+        {facts <- igraph::walktrap.community(convert2igraph(A))$membership
+        }else if(factors=="louvain")
+        {facts <- louvain(A)$community}
+    }
     
     #participation coefficient
-    pcoef <- function (A, factors)
+    pcoef <- function (A, facts)
     {
         k <- colSums(A) #strength
-        Gc <- factors #communities
+        Gc <- facts #communities
         Kc2 <- vector(mode="numeric",length=n)  
         
         for(i in 1:max(Gc))
@@ -1826,14 +2036,18 @@ participation <- function (A, factors = c("walktrap","louvain"))
         return(P)
     }
     
-    overall <- pcoef(A, factors) #overall participation coefficient
+    overall <- 1- pcoef(A, facts) #overall participation coefficient
     
     #signed participation coefficient
     poswei <- ifelse(A>=0,A,0) #positive weights
     negwei <- ifelse(A<=0,A,0) #negative weights
     
-    pos <- pcoef(poswei, factors) #positive  participation coefficient
-    neg <- pcoef(negwei, factors) #negative participation coefficient
+    pos <- 1 - pcoef(poswei, facts) #positive  participation coefficient
+    if(all(pos==1))
+    {pos<-1-pos}
+    neg <- 1 - pcoef(negwei, facts) #negative participation coefficient
+    if(all(neg==1))
+    {neg<-1-neg}
     
     return(list(overall=overall,positive=pos,negative=neg))
 }
@@ -1849,15 +2063,14 @@ participation <- function (A, factors = c("walktrap","louvain"))
 #' Defaults to "walktrap" for the walktrap community detection algorithm.
 #' Set to "louvain" for the louvain community detection algorithm.
 #' Can also be set to user-specified factors (see examples)
-#' @param type Centrality to community gateway coefficient.
+#' @param cent Centrality to community gateway coefficient.
 #' Defaults to "strength".
 #' Set to "betweenness" to use the betweenness centrality
 #' @return Returns a list of overall (signs not considered; overall),
 #' negative (negative), and positive (positive) gateway coefficients
 #' @examples
 #' #theoretical factors
-#' factors <- c(rep(1,8), rep(2,8), rep(3,8),
-#' + rep(4,8), rep(5,8), rep(6,8))
+#' factors <- c(rep(1,8), rep(2,8), rep(3,8), rep(4,8), rep(5,8), rep(6,8))
 #' 
 #' A <- TMFG(neoOpen)$A
 #' 
@@ -1876,7 +2089,8 @@ participation <- function (A, factors = c("walktrap","louvain"))
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
 #Gateway Coefficient----
-gateway <- function (A, factors = c("walktrap","louvain"), type = c("strength","betweenness"))
+gateway <- function (A, factors = c("walktrap","louvain"),
+                     cent = c("strength","betweenness"))
 {
     #nodes
     n <- ncol(A)
@@ -1886,41 +2100,44 @@ gateway <- function (A, factors = c("walktrap","louvain"), type = c("strength","
     
     #set communities
     if(missing(factors))
-    {factors<-rep(1,n)
-    }else if(is.character(factors))
-    {factors<-match.arg(factors)
-    if(factors=="walktrap")
-    {factors <- igraph::walktrap.community(convert2igraph(A))$membership
-    }else if(factors=="louvain")
-    {factors <- louvain(A)$community}
-    }else{factors <- factors}
-    if(missing(type))
-    {type<-"strength"
-    }else{type<-match.arg(type)}
+    {factors<-"walktrap"
+    }else{factors<-factors}
+    
+    if(is.numeric(factors))
+    {facts <- factors
+    }else{
+        if(factors=="walktrap")
+        {facts <- igraph::walktrap.community(convert2igraph(A))$membership
+        }else if(factors=="louvain")
+        {facts <- louvain(A)$community}
+    }
+
+    if(missing(cent))
+    {cent<-"strength"
+    }else{cent<-match.arg(cent)}
     
     gate <- function (W, t)
     {
-        
         S <- colSums(W)
-        Gc <- (W!=0)%*%diag(factors)
+        Gc <- (W!=0)%*%diag(facts)
         Sc2 <- vector(mode="numeric",length=n)
         ksm <- vector(mode="numeric",length=n)
         centm <- vector(mode="numeric",length=n)
         
         if(t=="strength")
-        {cent <- as.vector(S)
+        {cents <- as.vector(S)
         }else if(t=="betweenness")
-        {cent <- as.vector(as.matrix(betweenness(W)))}
+        {cents <- as.vector(as.matrix(betweenness(W)))}
         
-        for(i in 1:max(factors))
+        for(i in 1:max(facts))
         {
             ks <- rowSums(W*(Gc==i))
             Sc2 <- Sc2 + (ks^2)
-            for(j in 1:max(factors))
+            for(j in 1:max(facts))
             {
-                ksm[factors==j] <- ksm[factors==j] + (ks[factors==j]/(sum(ks[factors==j])))
+                ksm[facts==j] <- ksm[facts==j] + (ks[facts==j]/(sum(ks[facts==j])))
             }
-            centm[factors==i] <- sum(cent[factors==i])
+            centm[facts==i] <- sum(cents[facts==i])
         }
         
         centm <- centm/max(centm)
@@ -1934,9 +2151,9 @@ gateway <- function (A, factors = c("walktrap","louvain"), type = c("strength","
         return(GW)
     }
     
-    GWpos <- gate(W=ifelse(A>0,A,0),t=type)
-    GWneg <- gate(W=ifelse(A<0,A,0),t=type)
-    GW <- gate(W=A,t=type)
+    GWpos <- gate(W=ifelse(A>0,A,0),t=cent)
+    GWneg <- gate(W=ifelse(A<0,A,0),t=cent)
+    GW <- gate(W=A,t=cent)
     
     return(list(overall=GW,positive=GWpos,negative=GWneg))
 }
@@ -1956,8 +2173,7 @@ gateway <- function (A, factors = c("walktrap","louvain"), type = c("strength","
 #' negative (negative), and positive (positive) gateway coefficients
 #' @examples
 #' #theoretical factors
-#' factors <- c(rep(1,8), rep(2,8), rep(3,8),
-#' + rep(4,8), rep(5,8), rep(6,8))
+#' factors <- c(rep(1,8), rep(2,8), rep(3,8), rep(4,8), rep(5,8), rep(6,8))
 #' 
 #' A <- TMFG(neoOpen)$A
 #' 
@@ -1971,7 +2187,7 @@ gateway <- function (A, factors = c("walktrap","louvain"), type = c("strength","
 #' \emph{Neuroimage}, \emph{52}(3), 1059-1069.
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' @export
-#Diversity Coefficient
+#Diversity Coefficient----
 diversity <- function (A, factors = c("walktrap","louvain"))
 {
     #nodes
@@ -1982,25 +2198,28 @@ diversity <- function (A, factors = c("walktrap","louvain"))
     
     #set communities
     if(missing(factors))
-    {factors<-rep(1,n)
-    }else if(is.character(factors))
-    {factors<-match.arg(factors)
-    if(factors=="walktrap")
-    {factors <- igraph::walktrap.community(convert2igraph(A))$membership
-    }else if(factors=="louvain")
-    {factors <- louvain(A)$community}
-    }else{factors <- factors}
+    {factors<-"walktrap"
+    }else{factors<-factors}
+
+    if(is.numeric(factors))
+    {facts <- factors
+    }else{
+        if(factors=="walktrap")
+        {facts <- igraph::walktrap.community(convert2igraph(A))$membership
+        }else if(factors=="louvain")
+        {facts <- louvain(A)$community}
+    }
     
     #number of factors
-    m <- max(factors)
+    m <- max(facts)
     
-    ent <- function (A)
+    ent <- function (A, facts)
     {
         S <- colSums(A)
         Snm <- matrix(0,nrow=n,ncol=m)
         
         for(i in 1:m)
-        {Snm[,i] <- rowSums(A[,factors==i])}
+        {Snm[,i] <- rowSums(A[,facts==i])}
         
         pnm <- Snm/(S*matrix(1,nrow=n,ncol=m))
         pnm[is.na(pnm)]<-0
@@ -2010,9 +2229,9 @@ diversity <- function (A, factors = c("walktrap","louvain"))
         return(H)
     }
     
-    Hpos <- ent(ifelse(A>0,A,0))
-    Hneg <- ent(ifelse(A<0,A,0))
-    Hov <- ent(A)
+    Hpos <- ent(ifelse(A>0,A,0),facts)
+    Hneg <- ent(ifelse(A<0,A,0),facts)
+    Hov <- ent(A,facts)
     
     return(list(overall=Hov,positive=Hpos,negative=Hneg))
 }
@@ -2749,12 +2968,15 @@ edgerep <- function (A, B, corr = c("pearson", "spearman", "kendall"), plot = FA
     {corr<-"pearson"
     }else{corr<-match.arg(corr)}
     
+        nameA <- deparse(substitute(A))
+        nameB <- deparse(substitute(B))
+    
 if(!isSymmetric(A))
 {
     if(all(rowSums(A)==colSums(A)))
     {A<-as.matrix(Matrix::forceSymmetric(A))
     }else{A<-A+t(A)
-    warning("Adjacency matrix A was made to be symmetric")}
+    warning(paste("Adjacency matrix",nameA,"was made to be symmetric"))}
 }
  
 if(!isSymmetric(B))
@@ -2762,16 +2984,13 @@ if(!isSymmetric(B))
     if(all(rowSums(B)==colSums(B)))
     {B<-as.matrix(Matrix::forceSymmetric(B))
     }else{B<-B+t(B)
-    warning("Adjacency matrix B was made to be symmetric")}
+    warning(paste("Adjacency matrix",nameB,"was made to be symmetric"))}
 }
            
     n<-ncol(A)
     
     if(plot)
     {
-        nameA <- substitute(A)
-        nameB <- substitute(B)
-        
         if(all(diag(round(A,3))==diag(round(B,3))))
         {plotdiag <- diag(A)
         }else(plotdiag <- vector(mode="numeric",length=n))
@@ -2799,7 +3018,7 @@ if(!isSymmetric(B))
   sinlist<-ord[seq(1,nrow(ord),2),]
   sinlist<-sinlist[order(sinlist[,1],sinlist[,2]),]
   
-  colnames(sinlist)<-c("nodeTo","nodeFrom","weight in A","weight in B")
+  colnames(sinlist)<-c("nodeTo","nodeFrom",paste("weight in",nameA),paste("weight in",nameB))
   
   if(!is.null(colnames(A)))
      {
@@ -2813,7 +3032,7 @@ if(!isSymmetric(B))
           if(sinlist[i,2]==j)
           {sinlist[i,2]<-colnames(A)[j]}
       }
-  sinlist<-noquote(sinlist)
+  sinlist[,c(1,2)]<-as.character(sinlist[,c(1,2)])
   sinlist[,c(3,4)]<-round(as.numeric(sinlist[,c(3,4)]),3)
          }
   }
@@ -2837,7 +3056,7 @@ if(!isSymmetric(B))
                       title=paste(nameA,"by",nameB,"Edge Replcation"),mar=c(3,4,2,2), is.corr = ncor)
     }else{corrplot::corrplot(repmat,method="color",addgrid.col = "grey",
                            tl.col="black", cl.lim=ran,
-                           title="A by B Edge Replcation",mar=c(3,4,2,2), is.corr = ncor)}
+                           title=paste(nameA,"by",nameB,"Edge Replcation"),mar=c(3,4,2,2), is.corr = ncor)}
   }
                 
                 
@@ -3096,7 +3315,7 @@ bootgen <- function (data, method = c("MaST", "TMFG", "LoGo", "threshold"),
     }else{opts<-list()}
     
     sampslist<-foreach::foreach(i=1:iter,
-                         .packages = "NetworkToolbox",
+                         .packages = c("NetworkToolbox","psych","qgraph"),
                          .options.snow = opts)%dopar%
     {
         mat<-data[sample(1:n,replace=TRUE),]
@@ -3423,6 +3642,9 @@ bootgenPlot <- function (object, bootmat = FALSE, breaks = 20)
 #' @param filter Set filter method.
 #' Defaults to "TMFG".
 #' See \link[qgraph]{EBICglasso} and \code{\link{IsingFit}} for additional arguments
+#' @param weighted Should network be weighted?
+#' Defaults to TRUE.
+#' Set to FALSE to produce an unweighted (binary) network
 #' @param method Defaults to "walktrap".
 #' Set to "louvain" for the louvain community detection algorithm
 #' @param na.data How should missing data be handled?
@@ -3456,6 +3678,7 @@ bootgenPlot <- function (object, bootmat = FALSE, breaks = 20)
 #Bootstrapped Community Reliability----
 commboot <- function (data, normal = FALSE, n = nrow(data), iter = 1000,
                       filter = c("TMFG","threshold","EBICglasso","IsingFit"),
+                      weighted = FALSE,
                       method = c("louvain","walktrap"),
                       na.data = c("pairwise","listwise","fiml","none"),
                       steps = 4, cores, ...)
@@ -3524,7 +3747,7 @@ commboot <- function (data, normal = FALSE, n = nrow(data), iter = 1000,
     opts <- list(progress = progress)
     
     comm<-foreach::foreach(i=1:iter,
-                                .packages = "NetworkToolbox",
+                                .packages = c("NetworkToolbox","psych","qgraph"),
                                 .options.snow = opts)%dopar%
     {
         mat<-data[sample(1:n,replace=TRUE),]
@@ -3560,23 +3783,48 @@ commboot <- function (data, normal = FALSE, n = nrow(data), iter = 1000,
         
         if(method=="walktrap")
         {
-            if(filter=="TMFG")
-            {com<-max(igraph::walktrap.community(convert2igraph(TMFG(cormat)$A),steps=steps)$membership)
-            }else if(filter=="threshold")
-            {com<-max(igraph::walktrap.community(convert2igraph(threshold(cormat,...)$A),steps=steps)$membership)
-            }else if(filter=="EBICglasso")
-            {com<-max(igraph::walktrap.community(igraph::as.igraph(qgraph::EBICglasso(cov(mat),...)),steps=steps)$community)
-            }else if(filter=="IsingFit")
-            {com<-max(igraph::walktrap.community(convert2igraph(IsingFit::IsingFit(mat,...)$weiadj),steps=steps)$membership)}
+            if(weighted)
+            {
+                if(filter=="TMFG")
+                {com<-max(igraph::walktrap.community(convert2igraph(TMFG(cormat)$A),steps=steps)$membership)
+                }else if(filter=="threshold")
+                {com<-max(igraph::walktrap.community(convert2igraph(threshold(cormat,...)$A),steps=steps)$membership)
+                }else if(filter=="EBICglasso")
+                {com<-max(igraph::walktrap.community(igraph::as.igraph(qgraph::EBICglasso(cov(mat),...)),steps=steps)$community)
+                }else if(filter=="IsingFit")
+                {com<-max(igraph::walktrap.community(convert2igraph(IsingFit::IsingFit(mat,...)$weiadj),steps=steps)$membership)}
+            }else{
+                if(filter=="TMFG")
+                {com<-max(igraph::walktrap.community(convert2igraph(binarize(TMFG(cormat)$A)),steps=steps)$membership)
+                }else if(filter=="threshold")
+                {com<-max(igraph::walktrap.community(convert2igraph(binarize(threshold(cormat,...)$A)),steps=steps)$membership)
+                }else if(filter=="EBICglasso")
+                {com<-max(igraph::walktrap.community(igraph::as.igraph(binarize(qgraph::EBICglasso(cov(mat),...))),steps=steps)$community)
+                }else if(filter=="IsingFit")
+                {com<-max(igraph::walktrap.community(convert2igraph(binarize(IsingFit::IsingFit(mat,...)$weiadj)),steps=steps)$membership)}
+            }
         }else if(method=="louvain")
-        {if(filter=="TMFG")
-        {com<-max(suppressWarnings(louvain(TMFG(cormat,...)$A)$community))
-        }else if(filter=="threshold")
-        {com<-max(suppressWarnings(louvain(threshold(cormat,...)$A)$community))
-        }else if(filter=="EBICglasso")
-        {com<-max(suppressWarnings(louvain(qgraph::EBICglasso(cov(mat),...))$community))
-        }else if(filter=="IsingFit")
-        {com<-max(suppressWarnings(louvain(IsingFit::IsingFit(mat,...)$weiadj)$community))}
+        {
+            if(weighted)
+            {
+                if(filter=="TMFG")
+                {com<-max(suppressWarnings(louvain(TMFG(cormat,...)$A)$community))
+                }else if(filter=="threshold")
+                {com<-max(suppressWarnings(louvain(threshold(cormat,...)$A)$community))
+                }else if(filter=="EBICglasso")
+                {com<-max(suppressWarnings(louvain(qgraph::EBICglasso(cov(mat),...))$community))
+                }else if(filter=="IsingFit")
+                {com<-max(suppressWarnings(louvain(IsingFit::IsingFit(mat,...)$weiadj)$community))}
+            }else{
+                if(filter=="TMFG")
+                {com<-max(suppressWarnings(louvain(binarize(TMFG(cormat,...)$A))$community))
+                }else if(filter=="threshold")
+                {com<-max(suppressWarnings(louvain(binarize(threshold(cormat,...)$A))$community))
+                }else if(filter=="EBICglasso")
+                {com<-max(suppressWarnings(louvain(binarize(qgraph::EBICglasso(cov(mat),...)))$community))
+                }else if(filter=="IsingFit")
+                {com<-max(suppressWarnings(louvain(binarize(IsingFit::IsingFit(mat,...)$weiadj))$community))}
+            }
         }
         
         return(list(com=com))
@@ -4108,13 +4356,6 @@ splitsampStats <- function (object, stats = c("edges", "centralities"),
 #' @param corr Should the simualted network be a correlation network?
 #' Defaults to FALSE.
 #' Set to TRUE for a simulated correlation network
-#' @param noise Should noise be added to the simulated dataset?
-#' Defaults to 0 or no noise.
-#' Values 0 < noise < 1 can be used as input.
-#' The noise value is the proportion of participants sampled from a different
-#' simulated dataset of an equivalent size (i.e., n) to the simulated dataset.
-#' The second simulated dataset is randomly sampled (with or without replacemet)
-#' and participants are randomly introduced into the simulated dataset.
 #' @param replace If noise > 0, then should participants be sampled with replacement?
 #' Defaults to TRUE.
 #' Set to FALSE to not allow the potential for participants to be consecutively entered
@@ -4129,10 +4370,8 @@ splitsampStats <- function (object, stats = c("edges", "centralities"),
 #' simulated data (simData), and simulated correlation matrix (simRho)
 #' @examples
 #' sim.norm <- sim.swn(25, 500, nei = 3)
-#' 
-#' sim.noise <- sim.swn(25, 500, nei = 3, noise = .3)
-#' 
-#' sim.Likert <- sim.swn(25, 500, nei = 3, noise = .3,
+#'
+#' sim.Likert <- sim.swn(25, 500, nei = 3,
 #' replace = TRUE, ordinal = TRUE, ordLevels = 5)
 #' @references 
 #' Csardi, G., & Nepusz, T. (2006).
@@ -4143,7 +4382,7 @@ splitsampStats <- function (object, stats = c("edges", "centralities"),
 #Simulate small-world network----
 sim.swn <- function (nodes, n, pos = .80, ran = c(.3,.7),
                      nei = 1, p = .5, corr = FALSE,
-                     noise = 0, replace = NULL,
+                     replace = NULL,
                      ordinal = FALSE, ordLevels = NULL)
 {
     posdefnet <- function (net, pos, ran)
@@ -4216,33 +4455,10 @@ sim.swn <- function (nodes, n, pos = .80, ran = c(.3,.7),
         rho<-cov2cor(covmat)
     }
     
-    if(noise>0&noise<1)
-    {
-        if(is.null(replace))
-        {replace <- TRUE}
-        
-        dat<-psych::sim.correlation(R=rho,n=n,data=TRUE)
-        dat2<-psych::sim.correlation(R=rho,n=n,data=TRUE)
-        
+    #generate data
+    dat<-psych::sim.correlation(R=rho,n=n,data=TRUE)
         if(ordinal)
-        {
-            dat <- ordData(dat,ordLevels)
-            dat2 <- ordData(dat2,ordLevels)
-        }
-        
-        noisy <- noise*n
-        
-        swapdat <- sample(1:n,noisy,replace=replace)
-        
-        swapdat1 <- sample(1:n,noisy,replace=replace)
-        
-        dat[swapdat,] <- dat2[swapdat1,]
-        
-    }else{
-        dat<-psych::sim.correlation(R=rho,n=n,data=TRUE)
-            if(ordinal)
-            {dat<-ordData(dat,ordLevels)}
-        }  #generate data
+        {dat<-ordData(dat,ordLevels)}
     
     if(corr)
     {graph<-ifelse(abs(rho)>=min(ran)&abs(rho)<=max(ran),rho,0)}
@@ -4304,11 +4520,8 @@ kld <- function (base, test)
 #Root Mean Square Error----
 rmse <- function (base, test)
 {
-    if(nrow(base)!=ncol(base))
-    {base <- solve(cov(base))}
-    
-    if(nrow(test)!=ncol(test))
-    {stop("Test must be an adjacency matrix")}
+    base <- as.vector(base)
+    test <- as.vector(test)
     
     error <- base - test
     

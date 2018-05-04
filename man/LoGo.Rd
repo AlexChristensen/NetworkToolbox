@@ -37,7 +37,7 @@ Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 }
 \value{
 Returns the sparse LoGo-filtered inverse covariance matrix (partial = FALSE)
-or LoGo-filtered partial correlation matrix (partial=TRUE)
+or LoGo-filtered partial correlation matrix (partial = TRUE)
 }
 \description{
 Applies the Local/Global method to estimate the sparse inverse covariance matrix using a TMFG-filtered network

@@ -6,8 +6,9 @@
 \usage{
 commboot(data, normal = FALSE, n = nrow(data), iter = 1000,
   filter = c("TMFG", "threshold", "EBICglasso", "IsingFit"),
-  method = c("louvain", "walktrap"), na.data = c("pairwise", "listwise",
-  "fiml", "none"), steps = 4, cores, ...)
+  weighted = FALSE, method = c("louvain", "walktrap"),
+  na.data = c("pairwise", "listwise", "fiml", "none"), steps = 4, cores,
+  ...)
 }
 \arguments{
 \item{data}{A set of data}
@@ -26,6 +27,10 @@ Defaults to 100 iterations}
 \item{filter}{Set filter method.
 Defaults to "TMFG".
 See \link[qgraph]{EBICglasso} and \code{\link{IsingFit}} for additional arguments}
+
+\item{weighted}{Should network be weighted?
+Defaults to TRUE.
+Set to FALSE to produce an unweighted (binary) network}
 
 \item{method}{Defaults to "walktrap".
 Set to "louvain" for the louvain community detection algorithm}

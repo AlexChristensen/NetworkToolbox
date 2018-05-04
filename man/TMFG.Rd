@@ -4,7 +4,7 @@
 \alias{TMFG}
 \title{Triangulated Maximally Filtered Graph}
 \usage{
-TMFG(data, normal = FALSE, weighted = TRUE, depend = FALSE,
+TMFG(data, normal = FALSE, weighted = TRUE, neg = TRUE, depend = FALSE,
   na.data = c("pairwise", "listwise", "fiml", "none"))
 }
 \arguments{
@@ -20,6 +20,10 @@ Set to TRUE if data should be transformed to be normal
 \item{weighted}{Should network be weighted?
 Defaults to TRUE.
 Set to FALSE to produce an unweighted (binary) network}
+
+\item{neg}{Should negative weights be included?
+Defaults to TRUE.
+Set to FALSE for only positive weights}
 
 \item{depend}{Is network a dependency (or directed) network?
 Defaults to FALSE.

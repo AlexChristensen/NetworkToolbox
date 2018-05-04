@@ -4,7 +4,7 @@
 \alias{gateway}
 \title{Gateway Coefficient}
 \usage{
-gateway(A, factors = c("walktrap", "louvain"), type = c("strength",
+gateway(A, factors = c("walktrap", "louvain"), cent = c("strength",
   "betweenness"))
 }
 \arguments{
@@ -15,7 +15,7 @@ Defaults to "walktrap" for the walktrap community detection algorithm.
 Set to "louvain" for the louvain community detection algorithm.
 Can also be set to user-specified factors (see examples)}
 
-\item{type}{Centrality to community gateway coefficient.
+\item{cent}{Centrality to community gateway coefficient.
 Defaults to "strength".
 Set to "betweenness" to use the betweenness centrality}
 }
@@ -32,8 +32,7 @@ for gateway coefficients are computed separately.
 }
 \examples{
 #theoretical factors
-factors <- c(rep(1,8), rep(2,8), rep(3,8),
-+ rep(4,8), rep(5,8), rep(6,8))
+factors <- c(rep(1,8), rep(2,8), rep(3,8), rep(4,8), rep(5,8), rep(6,8))
 
 A <- TMFG(neoOpen)$A
 

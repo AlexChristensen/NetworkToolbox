@@ -16,7 +16,9 @@ Can also be set to user-specified factors (see examples)}
 }
 \value{
 Returns a list of overall (signs not considered; overall),
-negative (negative), and positive (positive) participation coefficient
+negative (negative), and positive (positive) participation coefficient.
+Values closer to 1 suggest greater within-community connectivity and 
+values closer to 0 suggest greater between-community connectivity
 }
 \description{
 Computes the participation coefficient for each node. The participation
@@ -25,8 +27,7 @@ and negative signed weights for participation coefficients are computed separate
 }
 \examples{
 #theoretical factors
-factors <- c(rep(1,8), rep(2,8), rep(3,8),
-+ rep(4,8), rep(5,8), rep(6,8))
+factors <- c(rep(1,8), rep(2,8), rep(3,8), rep(4,8), rep(5,8), rep(6,8))
 
 A <- TMFG(neoOpen)$A
 

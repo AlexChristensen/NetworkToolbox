@@ -11,7 +11,7 @@
 #' @references
 #' Christensen, A. P. (2018).
 #' NetworkToolbox: Methods and measures for brain, cognitive, and psychometric network analysis.
-#' R package version 1.1.2. Available from \url{https://github.com/AlexChristensen/NetworkToolbox}
+#' R package version 1.1.3. Available from \url{https://github.com/AlexChristensen/NetworkToolbox}
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 "_PACKAGE"
 #> [1] "_PACKAGE"
