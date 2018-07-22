@@ -1,3 +1,30 @@
+Changes in version 1.2.0
+
+o net.coverage: a function to examine the coverage of a subset of nodes in the network
+
+o comm.cent: a function to estimate the centrality of communities in the network
+
+o comm.eigen: a function to estimate the eigenvector centrality of communities in the network (based on the flow.frac function)
+
+o flow.frac: a function to estimate the eigenvector centrality of communities in the network
+
+o core.items: a function to automatically determine core, intermediate, and peripheral items in the network
+
+o commboot: removed
+
+o removed splitsamp functions (will be brought back in a future update)
+
+o removed options for weighted argument in network construction functions
+
+o bootgenPlot changed to bootgen.plot
+
+o significantly improved documentation and descriptions of all functions
+
+o improved functionality of several functions
+
+o updated citation
+
+
 Changes in version 1.1.3
 
 o nams: facet means are now adjusted relative to the overall score--improves estimate and makes adjusted means/sums equivalent to overall adjusted score
@@ -7,6 +34,14 @@ o edgerep: node label bug fixed
 o bootstrapped functions: na.data argument bug fixed
 
 o commboot: unweighted network option added
+
+o updated citation
+
+o semnetboot: removed and moved to package SemNetToolbox
+
+o semnetmeas: removed and moved to package SemNetToolbox
+
+o na.data bugs fixed throughout package
 
 
 Changes in version 1.1.2
