@@ -6,7 +6,7 @@ o comm.cent: a function to estimate the centrality of communities in the network
 
 o comm.eigen: a function to estimate the eigenvector centrality of communities in the network (based on the flow.frac function)
 
-o flow.frac: a function to estimate the eigenvector centrality of communities in the network
+o flow.frac: a function to estimate the eigenvector centrality of a subset of nodes in the network
 
 o core.items: a function to automatically determine core, intermediate, and peripheral items in the network
 
