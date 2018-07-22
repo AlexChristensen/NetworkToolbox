@@ -8,11 +8,15 @@
 #' (e.g., centrality), global network characteristics (e.g., clustering coefficient),
 #' and various other measures associated with the reliability and
 #' reproducibility of network analysis. 
+#' 
 #' @references
 #' Christensen, A. P. (2018).
-#' NetworkToolbox: Methods and measures for brain, cognitive, and psychometric network analysis.
-#' R package version 1.1.3. Available from \url{https://github.com/AlexChristensen/NetworkToolbox}
+#' NetworkToolbox: Methods and measures for brain, cognitive, and psychometric network analysis in R.
+#' \emph{PsyArXiv}.
+#' doi: \href{https://doi.org/10.31234/osf.io/6kmav}{10.31234/osf.io/6kmav}
+#' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
+#' 
 "_PACKAGE"
 #> [1] "_PACKAGE"
 #NetworkToolbox----
