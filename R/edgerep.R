@@ -154,7 +154,7 @@ edgerep <- function (A, B,
     res <- list()
     
     #Between networks
-    res$replicatedEdges <- sinlist
+    res$replicatedEdges <- as.data.frame(sinlist)
     res$replicated <- count
     res$meanDiff <- mvec
     res$sdDiff <- svec
