@@ -38,9 +38,9 @@
 #' 
 #' \item{simNetwork}{Adjacency matrix of the simulated network}
 #' 
-#' \item{simData}{Simulated data from \link[pkg:psych]{sim.correlation} based on the simulated network}
+#' \item{simData}{Simulated data from \link[psych]{sim.correlation} based on the simulated network}
 #' 
-#' \item{simRho}{Simulated correlation from \link[pkg:psych]{sim.correlation}}
+#' \item{simRho}{Simulated correlation from \link[psych]{sim.correlation}}
 #' 
 #' @examples
 #' #Continuous data

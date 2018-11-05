@@ -4,10 +4,6 @@
 #' 
 #' @param data Can be a dataset or a correlation matrix
 #' 
-#' @param n Number of participants in sample.
-#' Defaults to the number of rows in the data.
-#' If input is a correlation matrix, then n \strong{must} be set
-#' 
 #' @param normal Should data be transformed to a normal distribution?
 #' Defaults to FALSE.
 #' Data is not transformed to be normal.
@@ -61,7 +57,7 @@
 #Threshold filtering----
 threshold <- function (data, a,
                        thresh = c("alpha","adaptive","bonferroni","FDR","proportional"),
-                       n = nrow(data), normal = FALSE,
+                       normal = FALSE,
                        na.data = c("pairwise","listwise","fiml","none"), ...)
 {
     if(missing(thresh))

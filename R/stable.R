@@ -31,7 +31,8 @@
 #' @export
 #Stabilizing----
 stable <- function (A, comm = c("walktrap","louvain"),
-                    cent = c("betweenness","rspbc","strength","degree","hybrid"), ...)
+                    cent = c("betweenness","rspbc","closeness",
+                             "strength","degree","hybrid"), ...)
 {
     #nodes
     n <- ncol(A)
@@ -69,6 +70,8 @@ stable <- function (A, comm = c("walktrap","louvain"),
         {stab<-betweenness(Ah)
         }else if(cent=="rspbc")
         {stab<-rspbc(Ah)
+        }else if(cent=="closeness")
+        {stab<-closeness(Ah)
         }else if(cent=="strength")
         {stab<-strength(Ah)
         }else if(cent=="degree")

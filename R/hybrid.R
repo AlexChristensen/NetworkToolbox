@@ -6,7 +6,6 @@
 #' @param BC How should the betweenness centrality be computed?
 #' Defaults to "standard".
 #' Set to "random" for rspbc.
-#' Set to "average" for the average of "standard" and "random"
 #' 
 #' @param beta Beta parameter to be passed to the \emph{rspbc} function
 #' 
@@ -33,9 +32,10 @@
 #' 
 #' @export
 #Hybrid Centality----
-hybrid <- function (A, BC = c("standard","random","average"), beta)
+hybrid <- function (A, BC = c("standard","random"), beta)
 {
     A <- abs(A)
+    A <- as.matrix(A)
     
     if(missing(BC))
     {BC<-"standard"
@@ -55,17 +55,14 @@ hybrid <- function (A, BC = c("standard","random","average"), beta)
     {
         BCu<-rspbc(binarize(A),beta=beta)
         BCw<-rspbc(A,beta=beta)
-    }else if(BC=="average")
-    {
-        BCu<-rowMeans(cbind(betweenness(A,weighted=FALSE),rspbc(binarize(A))))
-        BCw<-rowMeans(cbind(betweenness(A),rspbc(A)))
     }
+
     CCu<-closeness(A,weighted=FALSE)
     CCw<-closeness(A)
-    if(isSymmetric(A))
+    if(isSym(A))
     {Deg<-degree(A)
     }else{Deg<-degree(A)$outDeg}
-    if(isSymmetric(A))
+    if(isSym(A))
     {Str<-strength(A)
     }else{Str<-strength(A)$outStr}
     ECu<-eigenvector(A,weighted=FALSE)
@@ -75,7 +72,7 @@ hybrid <- function (A, BC = c("standard","random","average"), beta)
     #Eu<-PathLengths(A,weighted=FALSE)$ecc
     #Ew<-PathLengths(A)$ecc
     
-    hybrid<-((rank(BCu,ties.method="max")+
+    hyb<-((rank(BCu,ties.method="max")+
                   rank(BCw,ties.method="max")+
                   rank(CCu,ties.method="max")+
                   rank(CCw,ties.method="max")+
@@ -89,10 +86,10 @@ hybrid <- function (A, BC = c("standard","random","average"), beta)
                   #rev(rank(Ew,ties.method="max"))-
                   8)/(8*((ncol(A))-1)))
     
-    hybrid<-round(as.vector(hybrid),3)
+    hyb<-round(as.vector(hyb),3)
     
-    names(hybrid) <- colnames(A)
+    names(hyb) <- colnames(A)
     
-    return(hybrid)
+    return(hyb)
 }
 #----

@@ -46,6 +46,8 @@
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 
+#' @importFrom utils txtProgressBar setTxtProgressBar
+#' 
 #' @export
 #Dependency----
 depend <- function (data, normal = FALSE,

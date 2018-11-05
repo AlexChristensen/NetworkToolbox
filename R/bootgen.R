@@ -30,10 +30,6 @@
 #' Defaults to \emph{n} - 1 total number of cores.
 #' Set to any number between 1 and maxmimum amount of cores on your computer
 #' 
-#' @param progBar Should progress bar be displayed?
-#' Defaults to TRUE.
-#' Set to FALSE for no progress bar
-#' 
 #' @param ... Additional arguments for filtering methods
 #' 
 #' @return Returns a list that includes:
@@ -69,14 +65,13 @@
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 
 #' @importFrom stats cov2cor pt
-#' @importFrom utils txtProgressBar setTxtProgressBar
 #' 
 #' @export
 #Bootstrap Network Generalization----
 bootgen <- function (data, method = c("MaST", "TMFG", "LoGo", "threshold"),
                      n = nrow(data), iter = 1000, normal = FALSE,
                      na.data = c("pairwise", "listwise", "fiml","none"),
-                     cores, progBar = TRUE, ...)
+                     cores, ...)
 {
     
     #arguments
@@ -157,19 +152,11 @@ bootgen <- function (data, method = c("MaST", "TMFG", "LoGo", "threshold"),
     sampslist<-list() #initialize sample list
     
     #Parallel processing
-    cl <- snow::makeCluster(cores)
-    doSNOW::registerDoSNOW(cl)
-    
-    if(progBar)
-    {
-        pb <- txtProgressBar(max=iter, style = 3) #progress bar
-        progress <- function(num) setTxtProgressBar(pb, num)
-        opts <- list(progress = progress)
-    }else{opts<-list()}
+    cl <- parallel::makeCluster(cores)
+    doParallel::registerDoParallel(cl)
     
     sampslist<-foreach::foreach(i=1:iter,
-                                .packages = c("NetworkToolbox","psych","qgraph"),
-                                .options.snow = opts)%dopar%
+                                .packages = c("NetworkToolbox","psych","qgraph"))%dopar%
                                 {
                                     mat<-data[sample(1:n,replace=TRUE),]
                                     
@@ -211,9 +198,7 @@ bootgen <- function (data, method = c("MaST", "TMFG", "LoGo", "threshold"),
                                     
                                     return(samps)
                                 }
-    if(progBar)
-    {close(pb)}
-    snow::stopCluster(cl)
+    parallel::stopCluster(cl)
     ##########################################################
     
     #Original Networks

@@ -48,11 +48,14 @@ edgerep <- function (A, B,
     nameA <- deparse(substitute(A))
     nameB <- deparse(substitute(B))
     
+    A <- as.matrix(A)
+    B <- as.matrix(B)
+    
     if(missing(corr))
     {corr<-"pearson"
     }else{corr<-match.arg(corr)}
 
-    if(!isSymmetric(A))
+    if(!isSym(A))
     {
         if(all(rowSums(A)==colSums(A)))
         {A<-as.matrix(Matrix::forceSymmetric(A))
@@ -60,7 +63,7 @@ edgerep <- function (A, B,
         warning(paste("Adjacency matrix",nameA,"was made to be symmetric"))}
     }
     
-    if(!isSymmetric(B))
+    if(!isSym(B))
     {
         if(all(rowSums(B)==colSums(B)))
         {B<-as.matrix(Matrix::forceSymmetric(B))

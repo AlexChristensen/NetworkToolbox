@@ -8,6 +8,10 @@
 #' @param comm A vector or matrix corresponding to the
 #' community each node belongs to
 #' 
+#' @param weighted Is the network weighted?
+#' Defaults to TRUE.
+#' Set to FALSE for weighted measures
+#' 
 #' @return A vector of community eigenvector centrality values for
 #' each specified community in the network
 #' (larger values suggest more central positioning)
@@ -29,7 +33,7 @@
 #' 
 #' @export
 #Community EC
-comm.eigen <- function (A, comm)
+comm.eigen <- function (A, comm, weighted = TRUE)
 {
     if(is.null(comm))
     {stop("comm must be input")}
@@ -43,6 +47,9 @@ comm.eigen <- function (A, comm)
     len <- length(uniq)
     
     commEC <- vector("numeric",length=len)
+    
+    if(!weighted)
+    {A <- binarize(A)}
     
     for(i in 1:len)
     {commEC[i] <- flow.frac(A, which(comm==uniq[i]))}

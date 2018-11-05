@@ -159,8 +159,8 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01, method = c("mean", "
         
         if(is.list(covar))
         {
-            cl <- snow::makeCluster(cores)
-            doSNOW::registerDoSNOW(cl)
+            cl <- parallel::makeCluster(cores)
+            doParallel::registerDoParallel(cl)
             
             pcorr<-suppressWarnings(
                 foreach::foreach(i=1:ncol(train_vcts))%dopar%
@@ -169,7 +169,7 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01, method = c("mean", "
                     ppcor::pcor.test(temp[,1],temp[,2],temp[,c(seq(from=3,to=2+ncol(cvars)))])
                 }
             )
-            snow::stopCluster(cl)
+            parallel::stopCluster(cl)
             
             for(i in 1:length(pcorr))
             {

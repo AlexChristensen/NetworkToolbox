@@ -26,6 +26,8 @@
 #' Defaults to TRUE, which returns a partial correlation matrix.
 #' Set to FALSE for a sparse inverse covariance matrix
 #' 
+#' @param ... Additional arguments (deprecated arguments)
+#' 
 #' @return Returns the sparse LoGo-filtered inverse covariance matrix (partial = FALSE)
 #' or LoGo-filtered partial correlation matrix (partial = TRUE)
 #' 
@@ -48,7 +50,7 @@
 LoGo <- function (data, cliques, separators,
                   normal = FALSE, 
                   na.data = c("pairwise","listwise","fiml","none"),
-                  partial = TRUE)
+                  partial = TRUE, ...)
 {
     #missing data handling
     if(missing(na.data))
@@ -87,6 +89,9 @@ LoGo <- function (data, cliques, separators,
     }
     
     #covariance matrix
+    standardize <- TRUE
+    
+    
     S <- cormat
     
     if(missing(separators))

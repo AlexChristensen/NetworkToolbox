@@ -34,6 +34,7 @@ betweenness <- function (A, weighted = TRUE)
     {stop("Input not an adjacency matrix")}
     
     A <- abs(A)
+    A <- as.matrix(A)
     
     if(!weighted)
     {

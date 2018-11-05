@@ -34,6 +34,7 @@ rspbc <- function (A, beta = 0.01)
     {stop("Input not an adjacency matrix")}
     
     A <- abs(A)
+    A <- as.matrix(A)
     
     n<-ncol(A)
     e<-matrix(1,nrow=n,ncol=1)

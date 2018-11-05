@@ -33,6 +33,8 @@
 #Clustering Coefficient----
 clustcoeff <- function (A, weighted = FALSE)
 {
+    diag(A) <- 0
+    
     if(nrow(A)!=ncol(A))
     {stop("Input not an adjacency matrix")}
     if(!weighted)

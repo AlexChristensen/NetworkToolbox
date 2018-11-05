@@ -8,9 +8,11 @@
 #' @return Returns a TRUE/FALSE for whether network is graphical
 #' 
 #' @examples
+#' \dontrun{
 #' A <- LoGo(neoOpen, normal = TRUE, partial = TRUE)
 #' 
 #' is.graphical(A)
+#' }
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 

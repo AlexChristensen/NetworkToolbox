@@ -44,8 +44,9 @@ degree <- function (A)
     {stop("Input not an adjacency matrix")}
     
     A <- abs(A)
+    A <- as.matrix(A)
     
-    if(isSymmetric(A)==TRUE)
+    if(isSym(A)==TRUE)
     {A <- binarize(A)
     Deg <- as.vector(colSums(A))
     names(Deg) <- colnames(A)

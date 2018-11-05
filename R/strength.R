@@ -44,8 +44,9 @@ strength <- function (A)
     {stop("Input not an adjacency matrix")}
     
     A <- abs(A)
+    A <- as.matrix(A)
     
-    if(isSymmetric(A)==TRUE)
+    if(isSym(A)==TRUE)
     {
         Str <- round(as.vector(colSums(A)),2)
         names(Str) <- colnames(A)
