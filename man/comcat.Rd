@@ -4,8 +4,8 @@
 \alias{comcat}
 \title{Communicating Nodes}
 \usage{
-comcat(A, comm = c("walktrap", "louvain"), cent = c("strength", "degree"),
-  ...)
+comcat(A, comm = c("walktrap", "louvain"), cent = c("strength",
+  "degree"), metric = c("across", "each"), ...)
 }
 \arguments{
 \item{A}{An adjacency matrix of network data}
@@ -18,6 +18,11 @@ Set to "louvain" for louvain community detection}
 \item{cent}{Centrality measure to be used.
 Defaults to "strength".}
 
+\item{metric}{Whether the metric should be compute for across the communities
+(a single value) or for each community (a value for each community).
+Defaults to "across".
+Set to "each" for values for each community}
+
 \item{...}{Additional arguments for community detection algorithms}
 }
 \value{
@@ -29,7 +34,7 @@ Computes the between-community strength for each node in the network
 \examples{
 A <- TMFG(neoOpen)$A
 
-communicating <- comcat(A, comm = "walktrap")
+communicating <- comcat(A, comm = "walktrap", cent = "strength", metric = "across")
 
 }
 \references{

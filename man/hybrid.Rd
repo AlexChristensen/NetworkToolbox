@@ -4,15 +4,14 @@
 \alias{hybrid}
 \title{Hybrid Centrality}
 \usage{
-hybrid(A, BC = c("standard", "random", "average"), beta)
+hybrid(A, BC = c("standard", "random"), beta)
 }
 \arguments{
 \item{A}{An adjacency matrix of network data}
 
 \item{BC}{How should the betweenness centrality be computed?
 Defaults to "standard".
-Set to "random" for rspbc.
-Set to "average" for the average of "standard" and "random"}
+Set to "random" for rspbc.}
 
 \item{beta}{Beta parameter to be passed to the \emph{rspbc} function}
 }

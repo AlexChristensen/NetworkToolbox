@@ -18,9 +18,11 @@ Input must be a partial correlation network.
 Function assumes that partial correlations were computed from a multivariate normal distribution
 }
 \examples{
+\dontrun{
 A <- LoGo(neoOpen, normal = TRUE, partial = TRUE)
 
 is.graphical(A)
+}
 
 }
 \author{

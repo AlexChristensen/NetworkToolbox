@@ -4,12 +4,16 @@
 \alias{net.coverage}
 \title{Network Coverage}
 \usage{
-net.coverage(A, nodes)
+net.coverage(A, nodes, weighted = FALSE)
 }
 \arguments{
 \item{A}{An adjacency matrix}
 
 \item{nodes}{Subset of nodes to examine the coverage of the network}
+
+\item{weighted}{Is the network weighted?
+Defaults to FALSE.
+Set to TRUE for weighted measures}
 }
 \value{
 Returns a list containing:
@@ -32,6 +36,12 @@ nodes <- c(1,3,5,7,11,13,17,19,23,29,31,37,41,43,47)
 
 result <- net.coverage(A, nodes)
 
+}
+\references{
+Christensen, A. P., Cotter, K. N., Silvia, P. J., & Benedek, M. (2018)
+Scale development via network analysis: A comprehensive and concise measure of Openness to Experience
+\emph{PsyArXiv}, 1-40.
+doi: \href{https://doi.org/10.31234/osf.io/3raxt}{10.31234/osf.io/3raxt}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

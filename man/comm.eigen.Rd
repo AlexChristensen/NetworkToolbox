@@ -4,13 +4,17 @@
 \alias{comm.eigen}
 \title{Community Eigenvector Centrality}
 \usage{
-comm.eigen(A, comm)
+comm.eigen(A, comm, weighted = TRUE)
 }
 \arguments{
 \item{A}{An adjacency matrix}
 
 \item{comm}{A vector or matrix corresponding to the
 community each node belongs to}
+
+\item{weighted}{Is the network weighted?
+Defaults to TRUE.
+Set to FALSE for weighted measures}
 }
 \value{
 A vector of community eigenvector centrality values for

@@ -1,10 +1,33 @@
+Changes in version 1.2.2
+
+o comcat: added functionality to compute connectivity across communities or for each community
+
+o stable: added closeness centrality
+
+o desc: descriptive statistics function for a single variable
+
+o desc.all: descriptive statistics function for a dataset
+
+
+Changes in version 1.2.1
+
+o updated comm.close algorithm: takes the reciprocal of the mean ASPL of each community
+
+o LoGo: removed some arguments, added "..." for deprecated arguments (e.g., standardize)
+
+o rep.resp: function to detect repetitive responding
+
+
+
 Changes in version 1.2.0
 
 o net.coverage: a function to examine the coverage of a subset of nodes in the network
 
-o comm.cent: a function to estimate the centrality of communities in the network
+o comm.close: a function to estimate the closeness centrality of communities in the network
 
 o comm.eigen: a function to estimate the eigenvector centrality of communities in the network (based on the flow.frac function)
+
+o comm.str: a function to estimate the strength/degree centrality of communities in the network
 
 o flow.frac: a function to estimate the eigenvector centrality of a subset of nodes in the network
 

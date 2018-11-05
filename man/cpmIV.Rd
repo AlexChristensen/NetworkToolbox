@@ -4,9 +4,10 @@
 \alias{cpmIV}
 \title{Connectome-based Predictive Modeling--Internal Validation}
 \usage{
-cpmIV(neuralarray, bstat, covar, thresh = 0.01, method = c("mean", "sum"),
-  model = c("linear", "quadratic", "cubic"), corr = c("pearson",
-  "spearman"), shen = FALSE, cores, progBar = TRUE)
+cpmIV(neuralarray, bstat, covar, thresh = 0.01, method = c("mean",
+  "sum"), model = c("linear", "quadratic", "cubic"),
+  corr = c("pearson", "spearman"), shen = FALSE, cores,
+  progBar = TRUE)
 }
 \arguments{
 \item{neuralarray}{Array from \code{\link{convertConnBrainMat}} function}

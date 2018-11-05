@@ -5,8 +5,8 @@
 \title{Threshold Filter}
 \usage{
 threshold(data, a, thresh = c("alpha", "adaptive", "bonferroni", "FDR",
-  "proportional"), n = nrow(data), normal = FALSE, na.data = c("pairwise",
-  "listwise", "fiml", "none"), ...)
+  "proportional"), normal = FALSE, na.data = c("pairwise", "listwise",
+  "fiml", "none"), ...)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
@@ -22,10 +22,6 @@ Set to any value 0> \emph{r} >1 to retain values greater than set value,
 "bonferroni" for the bonferroni correction on alpha,
 "FDR" for local false discovery rate,
 and "proportional" for a fixed density of edges (keeps strongest correlations within density)}
-
-\item{n}{Number of participants in sample.
-Defaults to the number of rows in the data.
-If input is a correlation matrix, then n \strong{must} be set}
 
 \item{normal}{Should data be transformed to a normal distribution?
 Defaults to FALSE.

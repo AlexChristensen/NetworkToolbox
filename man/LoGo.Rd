@@ -5,7 +5,7 @@
 \title{Local/Global Sparse Inverse Covariance Matrix}
 \usage{
 LoGo(data, cliques, separators, normal = FALSE, na.data = c("pairwise",
-  "listwise", "fiml", "none"), partial = TRUE)
+  "listwise", "fiml", "none"), partial = TRUE, ...)
 }
 \arguments{
 \item{data}{Must be a dataset}
@@ -30,6 +30,8 @@ Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 \item{partial}{Should the output network's connections be the partial correlation between two nodes given all other nodes?
 Defaults to TRUE, which returns a partial correlation matrix.
 Set to FALSE for a sparse inverse covariance matrix}
+
+\item{...}{Additional arguments (deprecated arguments)}
 }
 \value{
 Returns the sparse LoGo-filtered inverse covariance matrix (partial = FALSE)

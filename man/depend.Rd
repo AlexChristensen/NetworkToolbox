@@ -4,8 +4,8 @@
 \alias{depend}
 \title{Dependency Network Approach}
 \usage{
-depend(data, normal = FALSE, na.data = c("pairwise", "listwise", "fiml",
-  "none"), index = FALSE, fisher = FALSE, progBar = TRUE)
+depend(data, normal = FALSE, na.data = c("pairwise", "listwise",
+  "fiml", "none"), index = FALSE, fisher = FALSE, progBar = TRUE)
 }
 \arguments{
 \item{data}{A set of data}

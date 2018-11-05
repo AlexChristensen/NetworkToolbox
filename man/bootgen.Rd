@@ -5,8 +5,8 @@
 \title{Bootstrapped Network Generalization}
 \usage{
 bootgen(data, method = c("MaST", "TMFG", "LoGo", "threshold"),
-  n = nrow(data), iter = 1000, normal = FALSE, na.data = c("pairwise",
-  "listwise", "fiml", "none"), cores, progBar = TRUE, ...)
+  n = nrow(data), iter = 1000, normal = FALSE,
+  na.data = c("pairwise", "listwise", "fiml", "none"), cores, ...)
 }
 \arguments{
 \item{data}{A set of data}
@@ -34,10 +34,6 @@ Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 \item{cores}{Number of computer processing cores to use for bootstrapping samples.
 Defaults to \emph{n} - 1 total number of cores.
 Set to any number between 1 and maxmimum amount of cores on your computer}
-
-\item{progBar}{Should progress bar be displayed?
-Defaults to TRUE.
-Set to FALSE for no progress bar}
 
 \item{...}{Additional arguments for filtering methods}
 }

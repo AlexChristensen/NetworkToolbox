@@ -4,17 +4,13 @@
 \alias{nams}
 \title{Network Adjusted Mean/Sum}
 \usage{
-nams(data, A, standardize = TRUE, adjusted = c("mean", "sum"),
-  comm = c("walktrap", "louvain"), ...)
+nams(data, A, adjusted = c("mean", "sum"), comm = c("walktrap",
+  "louvain"), ...)
 }
 \arguments{
 \item{data}{Must be a dataset}
 
 \item{A}{Adjacency matrix that has already been filtered}
-
-\item{standardize}{Should mean/sum scores be standardized?
-Defaults to TRUE.
-Set to FALSE for unstandardized mean/sum scores}
 
 \item{adjusted}{Should adjusted values be the mean or sum score?
 Defaults to "mean".
@@ -31,7 +27,9 @@ Set to "louvain" for louvain community detection}
 \value{
 Returns a list containing:
 
-\item{NetAdjScore}{The network adjusted score}
+\item{Standardized}{The standardized network adjusted score for each participant}
+
+\item{Unstandardized}{The unstandardized network adjusted score (mean or sum) for each participant}
 
 \item{CommItems}{The items associated with the specified or identified communities}
 

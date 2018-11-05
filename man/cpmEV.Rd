@@ -4,8 +4,8 @@
 \alias{cpmEV}
 \title{Connectome-based Predictive Modeling--External Validation}
 \usage{
-cpmEV(train_na, train_b, valid_na, valid_b, thresh = 0.01, overlap = FALSE,
-  progBar = TRUE)
+cpmEV(train_na, train_b, valid_na, valid_b, thresh = 0.01,
+  overlap = FALSE, progBar = TRUE)
 }
 \arguments{
 \item{train_na}{Training dataset
