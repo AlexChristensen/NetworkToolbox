@@ -1,3 +1,10 @@
+Changes in version 1.2.3
+
+o removed isSym function
+
+o fixed bugs in degree, strength, hybrid, and edgerep functions (symmetric check is fixed)
+
+
 Changes in version 1.2.2
 
 o comcat: added functionality to compute connectivity across communities or for each community
