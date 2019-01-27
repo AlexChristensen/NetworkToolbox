@@ -40,13 +40,15 @@
 #Node Strength----
 strength <- function (A)
 {
-    if(nrow(A)!=ncol(A))
+    if(is.vector(A))
+    {return(0)
+    }else if(nrow(A)!=ncol(A))
     {stop("Input not an adjacency matrix")}
     
     A <- abs(A)
     A <- as.matrix(A)
     
-    if(isSym(A)==TRUE)
+    if(isSymmetric(A, check.attributes = FALSE))
     {
         Str <- round(as.vector(colSums(A)),2)
         names(Str) <- colnames(A)

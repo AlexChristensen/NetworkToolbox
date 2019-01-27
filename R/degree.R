@@ -46,7 +46,7 @@ degree <- function (A)
     A <- abs(A)
     A <- as.matrix(A)
     
-    if(isSym(A)==TRUE)
+    if(isSymmetric(A, check.attributes = FALSE))
     {A <- binarize(A)
     Deg <- as.vector(colSums(A))
     names(Deg) <- colnames(A)
