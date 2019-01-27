@@ -59,10 +59,10 @@ hybrid <- function (A, BC = c("standard","random"), beta)
 
     CCu<-closeness(A,weighted=FALSE)
     CCw<-closeness(A)
-    if(isSym(A))
+    if(isSymmetric(A, check.attributes = FALSE))
     {Deg<-degree(A)
     }else{Deg<-degree(A)$outDeg}
-    if(isSym(A))
+    if(isSymmetric(A, check.attributes = FALSE))
     {Str<-strength(A)
     }else{Str<-strength(A)$outStr}
     ECu<-eigenvector(A,weighted=FALSE)
