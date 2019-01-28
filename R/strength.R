@@ -64,7 +64,7 @@ strength <- function (A)
         relinf <- as.vector((outStr-inStr)/(outStr+inStr))
         names(relinf) <- colnames(A)
             
-            if(all(inStr==outStr))
+            if(relinf<.001)
             {Str <- round(as.vector(colSums(A)),2)
             names(Str) <- colnames(A)
             return(Str)

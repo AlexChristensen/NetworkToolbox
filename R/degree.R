@@ -63,7 +63,7 @@ degree <- function (A)
     relinf <- as.vector((outDeg-inDeg)/(outDeg+inDeg))
     names(relinf) <- colnames(A)
     
-    if(all(inDeg==outDeg))
+    if(relif<.001)
     {Deg <- as.vector(inDeg)
     names(Deg) <- colnames(A)
     return(Deg)
