@@ -108,25 +108,31 @@ comcat <- function (A, comm = c("walktrap","louvain"),
         
         commat <- matrix(NA,nrow=nrow(A),ncol=length(uniq))
         
+        colnames(commat) <- paste(uniq)
+        
         for(i in 1:ncol(A))
         {
             Ah <- A[,i]
             
-            for(j in uniq[which(uniq!=facts[i])])
+            uniq.no <- uniq[which(uniq!=facts[i])]
+            
+            for(j in 1:length(uniq.no))
             {
-                Aha <- Ah[which(facts==j)]
+                Aha <- Ah[which(facts==uniq.no[j])]
                 
                 if(cent=="degree")
                 {com<-sum(ifelse(Aha!=0,1,0))
                 }else if(cent=="strength")
                 {com<-sum(Aha)}
                 
-                commat[i,j] <- com
+                commat[i,paste(uniq.no[j])] <- com
             }
         }
         
-        colnames(commat) <- uniq[order(uniq)]
+        commat[,paste(uniq[order(uniq)])]
         row.names(commat) <- colnames(A)
+        
+        commat <- commat[,order(colnames(commat))]
         
         return(commat)
     }
