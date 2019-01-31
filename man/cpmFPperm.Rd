@@ -14,11 +14,11 @@ cpmFPperm(session1, session2, iter = 1000, progBar = TRUE)
 (second session)}
 
 \item{iter}{Number of iterations to perform.
-Defaults to 1,000}
+Defaults to \code{1000}}
 
 \item{progBar}{Should progress bar be displayed?
-Defaults to TRUE.
-Set to FALSE for no progress bar}
+Defaults to \code{TRUE}.
+Set to \code{FALSE} for no progress bar}
 }
 \value{
 Returns a matrix containing the percentage and

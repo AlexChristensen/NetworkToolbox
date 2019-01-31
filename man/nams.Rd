@@ -13,16 +13,17 @@ nams(data, A, adjusted = c("mean", "sum"), comm = c("walktrap",
 \item{A}{Adjacency matrix that has already been filtered}
 
 \item{adjusted}{Should adjusted values be the mean or sum score?
-Defaults to "mean".
-Set to "sum" for sum scores}
+Defaults to \code{"mean"}.
+Set to \code{"sum"} for sum scores}
 
 \item{comm}{Can be a vector of community assignments or community detection algorithms
-("walktrap" or "louvain") can be used to determine the number of communities.
-Defaults to 1 community.
-Set to "walktrap" for the walktrap algortihm.
-Set to "louvain" for louvain community detection}
+(\code{"walktrap"} or \code{"louvain"}) can be used to determine the number of communities.
+Defaults to \code{1} community.
+Set to \code{"walktrap"} for the \code{\link[igraph]{cluster_walktrap}} algortihm.
+Set to \code{"louvain"} for \code{\link[NetworkToolbox]{louvain}} community detection}
 
-\item{...}{Additional arguments for community detection algorithms}
+\item{...}{Additional arguments for \code{\link[igraph]{cluster_walktrap}}
+and \code{\link[NetworkToolbox]{louvain}} community detection algorithms}
 }
 \value{
 Returns a list containing:
@@ -36,9 +37,14 @@ Returns a list containing:
 \item{CommCor}{Correlations between the specified or identified communities}
 }
 \description{
-The hybrid centrality is used to adjust the mean or sum score of participant's community scores based on each node's centrality.
-Each participant's response values are multipled by the corresponding hybrid centrality value (uses "random" for BC argument).
-In this way, more central nodes contribute a greater score and less central nodes contribute a lesser score
+The \code{\link[NetworkToolbox]{hybrid}} centrality is used to
+adjust the mean or sum score of participant's community scores based on each
+node's centrality. Each participant's response values are multipled by
+the corresponding \code{\link[NetworkToolbox]{hybrid}}
+centrality value (uses "random" for BC argument).
+In this way, more central nodes contribute a greater score
+and less central nodes contribute a lesser score.
+See Christensen (in press) for more details
 }
 \examples{
 A <- TMFG(neoOpen)$A

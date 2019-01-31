@@ -2,7 +2,7 @@
 % Please edit documentation in R/threshold.R
 \name{threshold}
 \alias{threshold}
-\title{Threshold Filter}
+\title{Threshold Network Estimation Methods}
 \usage{
 threshold(data, a, thresh = c("alpha", "adaptive", "bonferroni", "FDR",
   "proportional"), normal = FALSE, na.data = c("pairwise", "listwise",
@@ -11,17 +11,18 @@ threshold(data, a, thresh = c("alpha", "adaptive", "bonferroni", "FDR",
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
 
-\item{a}{When thresh = "alpha", "adaptive", and "bonferroni" an alpha threshold is applied (defaults to \strong{.05}).
-For "adaptive", beta (Type II error) is set to \strong{a*5} for a medium effect size (\emph{r} = \strong{.3}).
-When thresh = "FDR", a q-value threshold is applied (defaults to \strong{.10}).
-When thresh = "proportional", a density threshold is applied (defaults to \strong{.15})}
+\item{a}{When \code{thresh = "alpha"}, \code{"adaptive"}, and \code{"bonferroni"}
+an \eqn{\alpha} threshold is applied (defaults to \code{.05}).
+For \code{"adaptive"}, beta (Type II error) is set to \eqn{\alpha*5} for a medium effect size (\emph{r} = .3).
+When \code{thresh = "FDR"}, a q-value threshold is applied (defaults to \code{.10}).
+When \code{thresh = "proportional"}, a density threshold is applied (defaults to \code{.15})}
 
-\item{thresh}{Sets threshold. Defaults to "alpha".
+\item{thresh}{Sets threshold. Defaults to \code{"alpha"}.
 Set to any value 0> \emph{r} >1 to retain values greater than set value,
-"adaptive" for an adapative alpha based on sample size (Perez & Pericchi, 2014),
-"bonferroni" for the bonferroni correction on alpha,
-"FDR" for local false discovery rate,
-and "proportional" for a fixed density of edges (keeps strongest correlations within density)}
+\code{"adaptive"} for an \code{\link{adapt.a}} based on sample size (Perez & Pericchi, 2014),
+\code{"bonferroni"} for the bonferroni correction on alpha,
+\code{"FDR"} for local false discovery rate,
+and \code{"proportional"} for a fixed density of edges (keeps strongest correlations within density)}
 
 \item{normal}{Should data be transformed to a normal distribution?
 Defaults to FALSE.
@@ -30,11 +31,11 @@ Set to TRUE if data should be transformed to be normal
 (computes correlations using the \link[qgraph]{cor_auto} function)}
 
 \item{na.data}{How should missing data be handled?
-For "listwise" deletion the \code{\link{na.omit}} function is applied.
-Set to "fiml" for Full Information Maxmimum Likelihood (\link[psych]{corFiml}).
+For \code{"listwise"} deletion the \code{\link{na.omit}} function is applied.
+Set to \code{"fiml"} for Full Information Maxmimum Likelihood (\code{\link[psych]{corFiml}}).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 
-\item{...}{Additional arguments for \link[fdrtool]{fdrtool} and \link[NetworkToolbox]{adapt.a}}
+\item{...}{Additional arguments for \code{\link[fdrtool]{fdrtool}} and \code{\link[NetworkToolbox]{adapt.a}}}
 }
 \value{
 Returns a list containing:

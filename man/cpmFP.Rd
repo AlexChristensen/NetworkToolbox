@@ -14,8 +14,8 @@ cpmFP(session1, session2, progBar = TRUE)
 (second session)}
 
 \item{progBar}{Should progress bar be displayed?
-Defaults to TRUE.
-Set to FALSE for no progress bar}
+Defaults to \code{TRUE}.
+Set to \code{FALSE} for no progress bar}
 }
 \value{
 Returns a matrix containing the percentage

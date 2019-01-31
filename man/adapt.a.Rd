@@ -12,26 +12,31 @@ adapt.a(test = c("anova", "chisq", "cor", "one.sample", "two.sample",
 \item{test}{Type of statistical test being used.
 Can be any of the tests listed}
 
-\item{ref.n}{If sample size was determined a priori, then the reference
+\item{ref.n}{\emph{n0} in the above equation.
+Reference sample size.
+If sample size was determined a priori, then the reference
 number of participants can be set. This removes the calculation of sample
 size based on power}
 
-\item{n}{Number of participants in the experiment sample (or per group)}
+\item{n}{\emph{n*} in the above equation.
+Number of participants in the experiment sample (or per group)}
 
-\item{alpha}{Alpha value to adjust.
-Defaults to .05}
+\item{alpha}{\eqn{\alpha} in the above equation.
+Alpha value to adjust.
+Defaults to \code{.05}}
 
-\item{power}{Desired to be used to estimate the reference sample size
-Defaults to .80}
+\item{power}{Power (\eqn{1 - \beta}) value.
+Used to estimate the reference sample size (n0).
+Defaults to \code{.80}}
 
 \item{efxize}{Effect size to be used to estimate the reference sample size.
 Effect sizes are based on Cohen (1992).
 Numeric values can be used.
-Defaults to "medium"}
+Defaults to \code{"medium"}}
 
-\item{groups}{Number of groups (only for \emph{test = "anova"})}
+\item{groups}{Number of groups (only for \code{test = "anova"})}
 
-\item{df}{Number of degrees of freedom (only for \emph{test = "chisq"})}
+\item{df}{Number of degrees of freedom (only for \code{test = "chisq"})}
 }
 \value{
 A list containing the following objects:
@@ -52,8 +57,10 @@ A list containing the following objects:
 }
 \description{
 Compute an alpha value adjusted for sample size. The adjusted value is based on
-Perez and Pericchi's (2014) formula (equation 11) using a reference sample, which can be
+Perez and Pericchi's (2014) formula (equation 11, see below) using a reference sample, which can be
 defined a priori or estimated using the sample size calculation from power.
+
+\deqn{\frac{\alpha * \sqrt{n_0 \times (log(n_0) + \chi^{2}_{\alpha}(1))}}{\sqrt{n^* \times (log(n^*) + \chi^{2}_{\alpha}(1))}}}{\alpha * \sqrt(n0 times (log(n0) + \chi^2_\alpha(1))) / \sqrt(n* times (log(n*) + \chi^2_\alpha(1)))}
 }
 \examples{
 #ANOVA
@@ -79,7 +86,7 @@ adapt.paired <- adapt.a(test = "paired", n = 200, alpha = .05, power = .80, efxi
 Cohen, J. (1992).
 A power primer.
 \emph{Psychological Bulletin}, \emph{112}, 155-159.
-doi:\href{http://dx.doi.org/10.1037/0033-2909.112.1.155}{10.1037/0033-2909.112.1.155}
+doi:\href{https://psycnet.apa.org/doiLanding?doi=10.1037\%2F0033-2909.112.1.155}{10.1037/0033-2909.112.1.155}
 
 Perez, M. E., & Pericchi, L. R. (2014).
 Changing statistical significance with the amount of information: The adaptive \emph{a} significance level.

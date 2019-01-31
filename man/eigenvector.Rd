@@ -10,8 +10,8 @@ eigenvector(A, weighted = TRUE)
 \item{A}{An adjacency matrix of network data}
 
 \item{weighted}{Is the network weighted?
-Defaults to TRUE.
-Set to FALSE for unweighted measure of eigenvector centrality}
+Defaults to \code{TRUE}.
+Set to \code{FALSE} for unweighted measure of eigenvector centrality}
 }
 \value{
 A vector of eigenvector centrality values for each node in the network

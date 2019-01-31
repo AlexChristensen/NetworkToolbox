@@ -12,8 +12,8 @@ net.coverage(A, nodes, weighted = FALSE)
 \item{nodes}{Subset of nodes to examine the coverage of the network}
 
 \item{weighted}{Is the network weighted?
-Defaults to FALSE.
-Set to TRUE for weighted measures}
+Defaults to \code{FALSE}.
+Set to \code{TRUE} for weighted measures}
 }
 \value{
 Returns a list containing:

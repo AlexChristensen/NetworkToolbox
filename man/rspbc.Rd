@@ -10,7 +10,7 @@ rspbc(A, beta = 0.01)
 \item{A}{An adjacency matrix of network data}
 
 \item{beta}{Sets the beta parameter.
-Defaults to 0.01 (recommended).
+Defaults to \code{0.01} (recommended).
 Beta > 0.01 measure gets closer to weighted
 betweenness centrality (10) and beta < 0.01
 measure gets closer to degree (.0001)}

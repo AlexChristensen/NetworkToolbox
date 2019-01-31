@@ -2,9 +2,9 @@
 % Please edit documentation in R/LoGo.R
 \name{LoGo}
 \alias{LoGo}
-\title{Local/Global Sparse Inverse Covariance Matrix}
+\title{Local/Global Inversion Method (GGM of \code{\link[NetworkToolbox]{TMFG}})}
 \usage{
-LoGo(data, cliques, separators, normal = FALSE, na.data = c("pairwise",
+LoGo(data, cliques, separators, normal = TRUE, na.data = c("pairwise",
   "listwise", "fiml", "none"), partial = TRUE, ...)
 }
 \arguments{
@@ -17,33 +17,33 @@ Input can be a list or matrix}
 Input can be a list or matrix}
 
 \item{normal}{Should data be transformed to a normal distribution?
-Defaults to FALSE.
-Data is not transformed to be normal.
-Set to TRUE if data should be transformed to be normal
-(computes correlations using the \link[qgraph]{cor_auto} function)}
+Defaults to \code{TRUE} (computes correlations using the \code{\link[qgraph]{cor_auto}} function).
+Set to \code{FALSE} for Pearson's correlations}
 
 \item{na.data}{How should missing data be handled?
-For "listwise" deletion the \code{\link{na.omit}} function is applied.
-Set to "fiml" for Full Information Maxmimum Likelihood (\link[psych]{corFiml}).
+For \code{"listwise"} deletion the \code{\link{na.omit}} function is applied.
+Set to \code{"fiml"} for Full Information Maxmimum Likelihood (\code{\link[psych]{corFiml}}).
 Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
 
 \item{partial}{Should the output network's connections be the partial correlation between two nodes given all other nodes?
-Defaults to TRUE, which returns a partial correlation matrix.
-Set to FALSE for a sparse inverse covariance matrix}
+Defaults to \code{TRUE}, which returns a partial correlation matrix.
+Set to \code{FALSE} for a sparse inverse covariance matrix}
 
 \item{...}{Additional arguments (deprecated arguments)}
 }
 \value{
-Returns the sparse LoGo-filtered inverse covariance matrix (partial = FALSE)
-or LoGo-filtered partial correlation matrix (partial = TRUE)
+Returns the sparse LoGo-filtered inverse covariance matrix (\code{partial = FALSE})
+or LoGo-filtered partial correlation matrix (\code{partial = TRUE})
 }
 \description{
 Applies the Local/Global method to estimate
-the sparse inverse covariance matrix using a TMFG-filtered network
+a Gaussian Graphical Model (GGM) using a \code{\link[NetworkToolbox]{TMFG}}-filtered network
 (\strong{see and cite Barfuss et al., 2016})
 }
 \examples{
+\dontrun{
 LoGonet <- LoGo(neoOpen, partial = TRUE)
+}
 
 }
 \references{

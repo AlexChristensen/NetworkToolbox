@@ -11,14 +11,15 @@ stable(A, comm = c("walktrap", "louvain"), cent = c("betweenness",
 \item{A}{An adjacency matrix of network data}
 
 \item{comm}{Can be a vector of community assignments or community detection algorithms
-("walktrap" or "louvain") can be used to determine the number of factors.
-Defaults to "walktrap".
-Set to "louvain" for louvain community detection}
+(\code{"walktrap"} or \code{"louvain"}) can be used to determine the number of factors.
+Defaults to \code{"walktrap"}.
+Set to \code{"louvain"} for \code{\link[NetworkToolbox]{louvain}} community detection}
 
 \item{cent}{Centrality measure to be used.
-Defaults to "strength".}
+Defaults to \code{"strength"}.}
 
-\item{...}{Additional arguments for community detection algorithms}
+\item{...}{Additional arguments for \code{\link[igraph]{cluster_walktrap}}
+and \code{\link[NetworkToolbox]{louvain}} community detection algorithms}
 }
 \value{
 A matrix containing the within-community centrality value for each node

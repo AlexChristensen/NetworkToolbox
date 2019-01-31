@@ -13,8 +13,8 @@ ECOplusMaST(data)
 A sparse association matrix
 }
 \description{
-Applies the \link[NetworkToolbox]{ECO} neural network filtering method
-combined with the \link[NetworkToolbox]{MaST} filtering method
+Applies the \code{\link[NetworkToolbox]{ECO}} neural network filtering method
+combined with the \code{\link[NetworkToolbox]{MaST}} filtering method
 }
 \examples{
 ECOplusMaST.net <- ECOplusMaST(neoOpen)

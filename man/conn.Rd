@@ -7,7 +7,7 @@
 conn(A)
 }
 \arguments{
-\item{A}{An adjacency matrix of network A}
+\item{A}{An adjacency matrix of a network}
 }
 \value{
 Returns a list containing:

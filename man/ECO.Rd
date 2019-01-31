@@ -10,8 +10,8 @@ ECO(data, directed = FALSE)
 \item{data}{Can be a dataset or a correlation matrix}
 
 \item{directed}{Is the network directed?
-Defaults to FALSE.
-Set TRUE if the network is directed}
+Defaults to \code{FALSE}.
+Set \code{TRUE} if the network is directed}
 }
 \value{
 A sparse association matrix

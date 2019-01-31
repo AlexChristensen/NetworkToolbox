@@ -32,11 +32,13 @@ A <- TMFG(neoOpen)$A
 deg <- degree(A)
 
 #Directed network
+\dontrun{
 dep <- depend(neoOpen)
 
 Adep <- TMFG(dep, depend = TRUE)$A
 
 deg <- degree(Adep)
+}
 
 }
 \references{

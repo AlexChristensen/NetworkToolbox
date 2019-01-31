@@ -10,8 +10,8 @@ depna(neuralarray, pB = TRUE, ...)
 \item{neuralarray}{Array from \code{\link{convertConnBrainMat}} function}
 
 \item{pB}{Should progress bar be displayed?
-Defaults to TRUE.
-Set FALSE for no progress bar}
+Defaults to \code{TRUE}.
+Set \code{FALSE} for no progress bar}
 
 \item{...}{Additional arguments from \code{\link{depend}} function}
 }

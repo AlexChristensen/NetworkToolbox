@@ -12,9 +12,9 @@ edgerep(A, B, corr = c("pearson", "spearman", "kendall"))
 \item{B}{An adjacency matrix of network B}
 
 \item{corr}{Correlation method for assessing the relatonship between the replicated edge weights.
-Defaults to "pearson".
-Set to "spearman" for non-linear or monotonic associations.
-Set to "kendall" for rank-order correlations}
+Defaults to \code{"pearson"}.
+Set to \code{"spearman"} for non-linear or monotonic associations.
+Set to \code{"kendall"} for rank-order correlations}
 }
 \value{
 Returns a list containing:

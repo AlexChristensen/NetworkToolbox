@@ -26,7 +26,7 @@ Can be TRUE/FALSE or 1/0 (reversed/not reversed)}
 \item{freq.prop}{Frequency proportion of the response values.
 Allows the researcher to determine the maximum frequency proportion
 of a certain response value is suspicious.
-The default is set to .80 (or 80 percent responses are a single value)}
+The default is set to \code{.80} (or 80 percent responses are a single value)}
 }
 \value{
 Returns a matrix when \code{scale.lens = NULL} and a

@@ -32,11 +32,13 @@ A <- TMFG(neoOpen)$A
 str <- strength(A)
 
 #Directed network
+\dontrun{
 dep <- depend(neoOpen)
 
 Adep <- TMFG(dep, depend = TRUE)$A
 
 str <- strength(Adep)
+}
 
 }
 \references{

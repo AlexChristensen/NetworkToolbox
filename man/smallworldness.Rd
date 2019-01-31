@@ -13,12 +13,12 @@ smallworldness(A, iter = 100, progBar = FALSE, method = c("HG",
 \item{iter}{Number of random (or lattice) networks to generate,
 which are used to calculate the mean random ASPL and CC (or lattice)}
 
-\item{progBar}{Defaults to FALSE.
-Set to TRUE to see progress bar}
+\item{progBar}{Defaults to \code{FALSE}.
+Set to \code{TRUE} to see progress bar}
 
-\item{method}{Defaults to "HG" (Humphries & Gurney, 2008).
-Set to "rand" for the CC to be calculated using a random network or
-set to "TJHBL" for (Telesford et al., 2011) where CC is calculated from a lattice network}
+\item{method}{Defaults to \code{"HG"} (Humphries & Gurney, 2008).
+Set to \code{"rand"} for the CC to be calculated using a random network or
+set to \code{"TJHBL"} for (Telesford et al., 2011) where CC is calculated from a lattice network}
 }
 \value{
 Returns a list containing:
@@ -27,17 +27,17 @@ Returns a list containing:
 
 \item{rASPL}{Global average shortest path length from random network}
 
-\item{lrCCt}{When "rand", clustering coefficient from a random network.
-When "HG", transitivity from a random network.
-When "TJHBL", clustering coefficient from a lattice network}
+\item{lrCCt}{When \code{"rand"}, clustering coefficient from a random network.
+When \code{"HG"}, transitivity from a random network.
+When \code{"TJHBL"}, clustering coefficient from a lattice network}
 }
 \description{
 Computes the small-worldness measure of a network
 }
 \details{
-For "rand", values > 1 indicate a small-world network.
-For "HG", values > 3 indicate a small-world network.
-For "TJHBL" values near 0 indicate a small-world network,
+For \code{"rand"}, values > 1 indicate a small-world network.
+For \code{"HG"}, values > 3 indicate a small-world network.
+For \code{"TJHBL"}, values near 0 indicate a small-world network,
 while < 0 indicates a more regular network and > 0 indicates a more random network
 }
 \examples{

@@ -14,15 +14,15 @@ desc(data, column, histplot = TRUE)
 \item{histplot}{A histogram plot of the variable}
 }
 \value{
-A data frame containing values for n (number of cases),
-missing (number of missing cases), mean, sd, min, and max. normal?
+A data frame containing values for \code{n} (number of cases),
+\code{missing} (number of missing cases), \code{mean}, \code{sd}, \code{min}, and \code{max}. \code{normal?}
 will contain yes/no for whether the variable is normally distributed based
-on the (\code{\link{shapiro.test}})
+on the \code{\link{shapiro.test}} for a variable
 }
 \description{
-Computes mean, standard deviaiton (sd), minimum value (min),
-maximum value (max),
-and univariate normal statistics (normal?) for a variable
+Computes \code{mean}, standard deviaiton (\code{sd}), minimum value (\code{min}),
+maximum value (\code{max}),
+and univariate normal statistics (\code{normal?}) for a variable
 }
 \examples{
 

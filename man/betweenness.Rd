@@ -2,7 +2,7 @@
 % Please edit documentation in R/betweenness.R
 \name{betweenness}
 \alias{betweenness}
-\title{Betwenness Centrality}
+\title{Betweenness Centrality}
 \usage{
 betweenness(A, weighted = TRUE)
 }
@@ -10,8 +10,8 @@ betweenness(A, weighted = TRUE)
 \item{A}{An adjacency matrix of network data}
 
 \item{weighted}{Is the network weighted?
-Defaults to TRUE.
-Set to FALSE for unweighted measure of betwenness centrality}
+Defaults to \code{TRUE}.
+Set to \code{FALSE} for unweighted measure of betwenness centrality}
 }
 \value{
 A vector of betweenness centrality values for each node in the network

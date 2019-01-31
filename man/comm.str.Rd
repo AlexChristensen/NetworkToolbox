@@ -9,12 +9,12 @@ comm.str(A, comm, weighted = TRUE)
 \arguments{
 \item{A}{An adjacency matrix of network data}
 
-\item{comm}{A vector or matrix corresponding to the
+\item{comm}{A vector corresponding to the
 community each node belongs to}
 
 \item{weighted}{Is the network weighted?
-Defaults to TRUE.
-Set to FALSE for weighted measures}
+Defaults to \code{TRUE}.
+Set to \code{FALSE} for weighted measures}
 }
 \value{
 A vector of community strength/degree centrality values for each specified

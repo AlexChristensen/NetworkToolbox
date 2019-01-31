@@ -11,8 +11,8 @@ convertConnBrainMat(MatlabData, progBar = TRUE)
 Defaults to interactive file choice}
 
 \item{progBar}{Should progress bar be displayed?
-Defaults to TRUE.
-Set FALSE for no progress bar}
+Defaults to \code{TRUE}.
+Set \code{FALSE} for no progress bar}
 }
 \value{
 Returns a list containing:

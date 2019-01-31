@@ -11,13 +11,13 @@ gateway(A, comm = c("walktrap", "louvain"), cent = c("strength",
 \item{A}{Network adjacency matrix}
 
 \item{comm}{A vector of corresponding to each item's community.
-Defaults to "walktrap" for the walktrap community detection algorithm.
-Set to "louvain" for the louvain community detection algorithm.
+Defaults to \code{"walktrap"} for the \code{\link[igraph]{cluster_walktrap}} community detection algorithm.
+Set to \code{"louvain"} for the \code{\link[NetworkToolbox]{louvain}} community detection algorithm.
 Can also be set to user-specified communities (see examples)}
 
 \item{cent}{Centrality to community gateway coefficient.
-Defaults to "strength".
-Set to "betweenness" to use the betweenness centrality}
+Defaults to \code{"strength"}.
+Set to \code{"betweenness"} to use the \code{\link[NetworkToolbox]{betweenness}} centrality}
 }
 \value{
 Returns a list containing:

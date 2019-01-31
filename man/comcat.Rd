@@ -11,19 +11,20 @@ comcat(A, comm = c("walktrap", "louvain"), cent = c("strength",
 \item{A}{An adjacency matrix of network data}
 
 \item{comm}{Can be a vector of community assignments or community detection algorithms
-("walktrap" or "louvain") can be used to determine the number of factors.
-Defaults to "walktrap".
-Set to "louvain" for louvain community detection}
+(\code{"walktrap"} or \code{"louvain"}) can be used to determine the number of factors.
+Defaults to \code{"walktrap"}.
+Set to \code{"louvain"} for \code{\link[NetworkToolbox]{louvain}} community detection}
 
 \item{cent}{Centrality measure to be used.
-Defaults to "strength".}
+Defaults to \code{"strength"}.}
 
-\item{metric}{Whether the metric should be compute for across the communities
+\item{metric}{Whether the metric should be compute for across all of the communities
 (a single value) or for each community (a value for each community).
-Defaults to "across".
-Set to "each" for values for each community}
+Defaults to \code{"across"}.
+Set to \code{"each"} for values for each community}
 
-\item{...}{Additional arguments for community detection algorithms}
+\item{...}{Additional arguments for \code{\link[igraph]{cluster_walktrap}}
+and \code{\link[NetworkToolbox]{louvain}} community detection algorithms}
 }
 \value{
 A vector containing the between-community strength value for each node

@@ -10,25 +10,25 @@ centlist(A, weighted = TRUE)
 \item{A}{An adjacency matrix of network data}
 
 \item{weighted}{Is the network weighted?
-Defaults to TRUE.
-Set to FALSE for unweighted list of centrality measures}
+Defaults to \code{TRUE}.
+Set to \code{FALSE} for unweighted list of centrality measures}
 }
 \value{
 Returns a list containing:
 
-\item{BC}{Betweenness centrality}
+\item{BC}{\code{\link[NetworkToolbox]{betweenness}} centrality}
 
-\item{LC}{Closeness centrality}
+\item{LC}{\code{\link[NetworkToolbox]{closeness}} centrality}
 
-\item{k}{Degree (weighted = FALSE)}
+\item{k}{\code{\link[NetworkToolbox]{degree}} (\code{weighted = FALSE})}
 
-\item{Str}{Strength (weighted = TRUE)}
+\item{Str}{\code{\link[NetworkToolbox]{strength}} (\code{weighted = TRUE})}
 
-\item{EC}{Eigenvector centrality}
+\item{EC}{\code{\link[NetworkToolbox]{eigenvector}} centrality}
 
-\item{lev}{Leverage centrality}
+\item{lev}{\code{\link[NetworkToolbox]{leverage}} centrality}
 
-\item{HC}{Hybrid centrality (weighted = TRUE)}
+\item{HC}{\code{\link[NetworkToolbox]{hybrid}} centrality (\code{weighted = TRUE})}
 }
 \description{
 Computes centrality measures of the network

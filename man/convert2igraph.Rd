@@ -11,8 +11,8 @@ convert2igraph(A, neural = FALSE)
 (from \code{\link{convertConnBrainMat}})}
 
 \item{neural}{Is input a brain connectivity array (i.e., m x m x n)?
-Defaults to FALSE.
-Set to TRUE to convert each brain connectivity matrix}
+Defaults to \code{FALSE}.
+Set to \code{TRUE} to convert each brain connectivity matrix}
 }
 \value{
 Returns a network matrix in \code{\link{igraph}}'s format or

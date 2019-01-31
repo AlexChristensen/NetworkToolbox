@@ -12,8 +12,8 @@ core.items(A, comm, by = c("network", "communities"))
 \item{comm}{A vector or matrix corresponding to the community each node belongs to}
 
 \item{by}{Should the core items be defined by network or communities?
-Defaults to "network".
-Set to "communities" to define core items within communities}
+Defaults to \code{"network"}.
+Set to \code{"communities"} to define core items within communities}
 }
 \value{
 Returns a list containing:
@@ -26,7 +26,8 @@ Returns a list containing:
 }
 \description{
 Automatically determines core, intermediary, and peripheral items in the network.
-The entire network or within-community gradations can be determined
+The entire network or within-community gradations can be determined. Based on the
+\code{\link[NetworkToolbox]{hybrid}} centrality
 }
 \examples{
 #network

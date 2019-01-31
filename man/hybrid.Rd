@@ -10,10 +10,11 @@ hybrid(A, BC = c("standard", "random"), beta)
 \item{A}{An adjacency matrix of network data}
 
 \item{BC}{How should the betweenness centrality be computed?
-Defaults to "standard".
-Set to "random" for rspbc.}
+Defaults to \code{"random"}.
+Set to \code{"standard"} for standard \code{\link[NetworkToolbox]{betweenness}}.}
 
-\item{beta}{Beta parameter to be passed to the \emph{rspbc} function}
+\item{beta}{Beta parameter to be passed to the \code{\link[NetworkToolbox]{rspbc}} function
+Defaults to .01}
 }
 \value{
 A vector of hybrid centrality values for each node in the network

@@ -13,10 +13,10 @@ neuralnetfilter(neuralarray, method = c("TMFG", "MaST", "ECOplusMaST",
 \item{method}{Filtering method to be applied}
 
 \item{progBar}{Should progress bar be displayed?
-Defaults to TRUE.
-Set FALSE for no progress bar}
+Defaults to \code{TRUE}.
+Set \code{FALSE} for no progress bar}
 
-\item{...}{Additional arguments from filtering methods}
+\item{...}{Additional arguments from network filtering methods}
 }
 \value{
 Returns an array of n x n x m filtered matrices

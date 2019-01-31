@@ -19,14 +19,16 @@ Smaller values suggest the probablity distribution of the reduced model is near 
 Estimates the Kullback-Leibler Divergence which measures how one probability distribution
 diverges from the original distribution (equivalent means are assumed)
 Matrices \strong{must} be positive definite inverse covariance matrix for accurate measurement.
-This is not a quantitative metric
+This is a \strong{relative} metric
 }
 \examples{
 A1 <- solve(cov(neoOpen))
 
+\dontrun{
 A2 <- LoGo(neoOpen)
 
 kld_value <- kld(A1, A2)
+}
 
 }
 \references{

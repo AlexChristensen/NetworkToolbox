@@ -10,8 +10,8 @@ pathlengths(A, weighted = FALSE)
 \item{A}{An adjacency matrix of network data}
 
 \item{weighted}{Is the network weighted?
-Defaults to FALSE.
-Set to TRUE for weighted measures}
+Defaults to \code{FALSE}.
+Set to \code{TRUE} for weighted measures}
 }
 \value{
 Returns a list containing:

@@ -10,15 +10,15 @@ clustcoeff(A, weighted = FALSE)
 \item{A}{An adjacency matrix of network data}
 
 \item{weighted}{Is the network weighted?
-Defaults to FALSE.
-Set to TRUE for weighted measures of CC and CCi}
+Defaults to \code{FALSE}.
+Set to \code{TRUE} for weighted measures of CC and CCi}
 }
 \value{
 Returns a list containing:
 
-\item{CC}{Global clustering coefficient}
+\item{CC}{Global clustering coefficient. The average clustering cooefficient for each node in the network}
 
-\item{CCi}{Local clustering coefficient}
+\item{CCi}{Local clustering coefficient. The clustering coefficient for each node in the network}
 }
 \description{
 Computes global clustering coefficient (CC) and local clustering coefficient (CCi)

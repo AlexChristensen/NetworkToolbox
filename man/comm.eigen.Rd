@@ -13,8 +13,8 @@ comm.eigen(A, comm, weighted = TRUE)
 community each node belongs to}
 
 \item{weighted}{Is the network weighted?
-Defaults to TRUE.
-Set to FALSE for weighted measures}
+Defaults to \code{TRUE}.
+Set to \code{FALSE} for weighted measures}
 }
 \value{
 A vector of community eigenvector centrality values for
