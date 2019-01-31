@@ -1,8 +1,19 @@
+Changes in version 1.2.4
+
+o additional updates to documentation
+
+
 Changes in version 1.2.3
 
 o removed isSym function
 
-o fixed bugs in degree, strength, hybrid, and edgerep functions (symmetric check is fixed)
+o fixed bugs in degree, strength, hybrid, and edgerep functions (symmetric matrix check is fixed)
+
+o naming order bug fix in comcat
+
+o removed bootgen and bootgen.plot functions (experimental funcitons that may return later)
+
+o updated several functions' documentation
 
 
 Changes in version 1.2.2
