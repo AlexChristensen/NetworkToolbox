@@ -5,6 +5,7 @@ citEntry(
 	title = "{NetworkToolbox}: Methods and Measures for Brain, Cognitive, and Psychometric Network Analysis in R",
 	author = personList(as.person("Alexander P. Christensen")),
 	journal = "The R Journal",
+        pages = "1-18",
 	year = "in press",
 	doi = "10.31234/osf.io/6kmav",
 
@@ -12,7 +13,7 @@ citEntry(
   paste(
 	"Christensen, A. P. (in press).",
         "NetworkToolbox: Methods and measures for brain, cognitive, and psychometric network analysis in R.",
-	"The R Journal.",
+	"The R Journal, 1-18.",
 	"doi: 10.31234/osf.io/6kmav"
 	)
 )
