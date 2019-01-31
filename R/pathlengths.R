@@ -6,8 +6,8 @@
 #' @param A An adjacency matrix of network data
 #' 
 #' @param weighted Is the network weighted?
-#' Defaults to FALSE.
-#' Set to TRUE for weighted measures
+#' Defaults to \code{FALSE}.
+#' Set to \code{TRUE} for weighted measures
 #' 
 #' @return Returns a list containing:
 #' 

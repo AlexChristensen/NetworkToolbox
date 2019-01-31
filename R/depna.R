@@ -4,8 +4,8 @@
 #' @param neuralarray Array from \code{\link{convertConnBrainMat}} function
 #' 
 #' @param pB Should progress bar be displayed?
-#' Defaults to TRUE.
-#' Set FALSE for no progress bar
+#' Defaults to \code{TRUE}.
+#' Set \code{FALSE} for no progress bar
 #' 
 #' @param ... Additional arguments from \code{\link{depend}} function
 #' 

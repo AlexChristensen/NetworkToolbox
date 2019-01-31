@@ -1,35 +1,43 @@
 #' Triangulated Maximally Filtered Graph
 #' @description Applies the Triangulated Maximally Filtered Graph (TMFG) filtering method
-#' (\strong{Please see and cite Massara et al., 2016})
+#' (\strong{Please see and cite Massara et al., 2016}). The TMFG method uses a structural
+#' constraint that limits the number of zero-order correlations included in the network
+#' (3n - 6; where \emph{n} is the number of variables). The TMFG algorithm begins by
+#' identifying four variables which have the largest sum of correlations to all other
+#' variables. Then, it iteratively adds each variable with the largest sum of three
+#' correlations to nodes already in the network until all variables have been added to
+#' the network. This structure can be associated with the inverse correlation matrix
+#' (i.e., precision matrix) to be turned into a GGM (i.e., partial correlation network)
+#' by using \code{\link[NetworkToolbox]{LoGo}}.
 #' 
 #' @param data Can be a dataset or a correlation matrix
 #' 
 #' @param normal Should data be transformed to a normal distribution?
 #' Input must be a dataset.
-#' Defaults to FALSE.
+#' Defaults to \code{FALSE}.
 #' Data is not transformed to be normal.
-#' Set to TRUE if data should be transformed to be normal
-#' (computes correlations using the \link[qgraph]{cor_auto} function)
+#' Set to \code{TRUE} if data should be transformed to be normal
+#' (computes correlations using the \code{\link[qgraph]{cor_auto}} function)
 #' 
 #' @param na.data How should missing data be handled?
-#' For "listwise" deletion the \code{\link{na.omit}} function is applied.
-#' Set to "fiml" for Full Information Maxmimum Likelihood (\link[psych]{corFiml}).
+#' For \code{"listwise"} deletion the \code{\link{na.omit}} function is applied.
+#' Set to \code{"fiml"} for Full Information Maxmimum Likelihood (\code{\link[psych]{corFiml}}).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
 #' 
 #' @param depend Is network a dependency (or directed) network?
-#' Defaults to FALSE.
-#' Set to TRUE to generate a TMFG-filtered dependency network
-#' (output obtained from the \code{\link{depend}} function)
+#' Defaults to \code{FALSE}.
+#' Set to \code{TRUE} to generate a TMFG-filtered dependency network
+#' (output obtained from the \code{\link[NetworkToolbox]{depend}} function)
 #' 
 #' @return Returns a list containing:
 #' 
 #' \item{A}{The filtered adjacency matrix}
 #' 
 #' \item{separators}{The separators (3-cliques) in the network
-#' (wrapper output for \link[NetworkToolbox]{LoGo})}
+#' (wrapper output for \code{\link[NetworkToolbox]{LoGo}})}
 #' 
 #' \item{cliques}{The cliques (4-cliques) in the network
-#' (wrapper output for \link[NetworkToolbox]{LoGo})}
+#' (wrapper output for \code{\link[NetworkToolbox]{LoGo}})}
 #' 
 #' @examples
 #' TMFG.net <- TMFG(neoOpen)

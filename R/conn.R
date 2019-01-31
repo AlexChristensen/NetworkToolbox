@@ -1,7 +1,7 @@
 #' Network Connectivity
 #' @description Computes the average and standard deviation of the weights in the network
 #' 
-#' @param A An adjacency matrix of network A
+#' @param A An adjacency matrix of a network
 #' 
 #' @return Returns a list containing:
 #' 

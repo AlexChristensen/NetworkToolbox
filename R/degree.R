@@ -22,11 +22,13 @@
 #' deg <- degree(A)
 #' 
 #' #Directed network
+#' \dontrun{
 #' dep <- depend(neoOpen)
 #' 
 #' Adep <- TMFG(dep, depend = TRUE)$A
 #' 
 #' deg <- degree(Adep)
+#' }
 #' 
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
@@ -45,25 +47,28 @@ degree <- function (A)
     
     A <- abs(A)
     A <- as.matrix(A)
+    A <- binarize(A)
     
     if(isSymmetric(A, check.attributes = FALSE))
-    {A <- binarize(A)
-    Deg <- as.vector(colSums(A))
-    names(Deg) <- colnames(A)
-    return(Deg)
+    {
+        Deg <- as.vector(colSums(A))
+        names(Deg) <- colnames(A)
+        return(Deg)
     }else
-    {A<-binarize(A)
-    #In-degree
-    inDeg <- as.vector(colSums(A))
-    names(inDeg) <- colnames(A)
-    #Out-degree
-    outDeg <- as.vector(rowSums(A))
-    names(outDeg) <- colnames(A)
-    #Relative influence
-    relinf <- as.vector((outDeg-inDeg)/(outDeg+inDeg))
-    names(relinf) <- colnames(A)
+    {
+        #In-degree
+        inDeg <- as.vector(colSums(A))
+        names(inDeg) <- colnames(A)
+        
+        #Out-degree
+        outDeg <- as.vector(rowSums(A))
+        names(outDeg) <- colnames(A)
+        
+        #Relative influence
+        relinf <- as.vector((outDeg-inDeg)/(outDeg+inDeg))
+        names(relinf) <- colnames(A)
     
-    if(relif<.001)
+    if(all(relinf<.001))
     {Deg <- as.vector(inDeg)
     names(Deg) <- colnames(A)
     return(Deg)

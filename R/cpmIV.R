@@ -8,36 +8,37 @@
 #' @param bstat Behavioral statistic for each participant with neural data (a vector)
 #' 
 #' @param covar Covariates to be included in predicting relevant edges (\strong{time consuming}).
-#' \strong{Must} be input as a list() (see examples)
+#' \strong{Must} be input as a \code{list()} (see examples)
 #' 
-#' @param thresh Sets an \strong{alpha} threshold for edge weights to be retained.
-#' Defaults to .01
+#' @param thresh Sets an \eqn{\alpha} threshold for edge weights to be retained.
+#' Defaults to \code{.01}
 #' 
-#' @param method Use "mean" or "sum" of edge strengths in the positive and negative connectomes.
-#' Defaults to "mean"
+#' @param method Use \code{"mean"} or \code{"sum"} of edge strengths in the positive and negative connectomes.
+#' Defaults to \code{"mean"}
 #' 
 #' @param model Regression model to use for fitting the data.
-#' Defaults to "linear"
+#' Defaults to \code{"linear"}
 #' 
 #' @param corr Correlation method for assessing the relatonship between the behavioral measure and edges between ROIs.
-#' Defaults to "pearson".
-#' Set to "spearman" for non-linear or monotonic associations
+#' Defaults to \code{"pearson"}.
+#' Set to \code{"spearman"} for non-linear or monotonic associations
 #' 
-#' @param shen Are ROIs from Shen et al. 2013 atlas? Defaults to FALSE.
-#' Set to TRUE for canonical networks plot
+#' @param shen Are ROIs from Shen et al. 2013 atlas?
+#' Defaults to \code{FALSE}.
+#' Set to \code{TRUE} for canonical networks plot
 #' 
 #' @param cores Number of computer processing cores to use when performing covariate analyses.
 #' Defaults to \emph{n} - 1 total number of cores.
 #' Set to any number between 1 and maxmimum amount of cores on your computer
 #' 
 #' @param progBar Should progress bar be displayed?
-#' Defaults to TRUE.
-#' Set to FALSE for no progress bar
+#' Defaults to \code{TRUE}.
+#' Set to \code{FALSE} for no progress bar
 #' 
 #' @return Returns a list containing: 
 #'
-#' \item{results}{A matrix contaning: r coefficient (r), p-value (p-value),
-#' mean absolute error (mae), root mean square error (rmse)}
+#' \item{results}{A matrix contaning: r coefficient (\code{r}), p-value (\code{p-value}),
+#' mean absolute error (\code{mae}), root mean square error (\code{rmse})}
 #' 
 #' \item{posMask}{Positive connectivity for input in
 #' \href{https://bioimagesuiteweb.github.io/webapp/connviewer.html}{BioImage Suite Connectivity Viewer}}
@@ -67,11 +68,11 @@
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 
-#' @importFrom graphics par
+#' @importFrom graphics par abline hist plot text
 #' @importFrom grDevices colorRampPalette dev.new
 #' @importFrom foreach %dopar%
 #' @importFrom utils menu
-#' @importFrom stats cor.test coef
+#' @importFrom stats cor.test coef cov2cor lm na.omit
 #' 
 #' @export
 #CPM Internal Validation----

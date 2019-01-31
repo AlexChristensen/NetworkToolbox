@@ -1,14 +1,14 @@
 #' Dataset Descriptive Statisitcs
-#' @description Computes mean, standard deviaiton (sd), minimum value (min),
-#' maximum value (max),
-#' and univariate normal statistics (normal?) for the entire dataset
+#' @description Computes \code{mean}, standard deviaiton (\code{sd}), minimum value (\code{min}),
+#' maximum value (\code{max}),
+#' and univariate normal statistics (\code{normal?}) for the entire dataset
 #' 
 #' @param data A matrix or data frame
 #' 
-#' @return A data frame containing values for n (number of cases),
-#' missing (number of missing cases), mean, sd, min, and max. normal?
+#' @return A data frame containing values for \code{n} (number of cases),
+#' \code{missing} (number of missing cases), \code{mean}, \code{sd}, \code{min}, and \code{max}. \code{normal?}
 #' will contain yes/no for whether the variable is normally distributed based
-#' on the (\code{\link{shapiro.test}}) for the entire dataset
+#' on the \code{\link{shapiro.test}} for the entire dataset
 #' 
 #' @examples
 #' 

@@ -8,10 +8,10 @@
 #' @param method Filtering method to be applied
 #' 
 #' @param progBar Should progress bar be displayed?
-#' Defaults to TRUE.
-#' Set FALSE for no progress bar
+#' Defaults to \code{TRUE}.
+#' Set \code{FALSE} for no progress bar
 #' 
-#' @param ... Additional arguments from filtering methods
+#' @param ... Additional arguments from network filtering methods
 #' 
 #' @return Returns an array of n x n x m filtered matrices
 #' 

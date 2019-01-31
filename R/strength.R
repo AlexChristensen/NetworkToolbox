@@ -22,11 +22,13 @@
 #' str <- strength(A)
 #' 
 #' #Directed network
+#' \dontrun{
 #' dep <- depend(neoOpen)
 #' 
 #' Adep <- TMFG(dep, depend = TRUE)$A
 #' 
 #' str <- strength(Adep)
+#' }
 #' 
 #' @references 
 #' Rubinov, M., & Sporns, O. (2010). 
@@ -64,7 +66,7 @@ strength <- function (A)
         relinf <- as.vector((outStr-inStr)/(outStr+inStr))
         names(relinf) <- colnames(A)
             
-            if(relinf<.001)
+            if(all(relinf<.001))
             {Str <- round(as.vector(colSums(A)),2)
             names(Str) <- colnames(A)
             return(Str)

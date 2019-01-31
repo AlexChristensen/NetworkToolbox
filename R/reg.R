@@ -4,16 +4,17 @@
 #' @param data A dataset
 #' 
 #' @param family Error distribution to be used in the regression model.
-#' Defaults to "logistic".
-#' Set to any family used in function \link[stats]{family}
+#' Defaults to \code{"logistic"}.
+#' Set to any family used in function \code{\link[stats]{family}}
 #' 
 #' @param symmetric Should matrix be symmetric?
-#' Defaults to TRUE, taking the mean of the two edge weights
-#' (i.e., [\emph{i},\emph{j}] and [\emph{j},\emph{i}])
-#' Set to FALSE for asymmwtric weights
-#' (i.e., [\emph{i},\emph{j}] does not equal [\emph{j},\emph{i}])
+#' Defaults to \code{TRUE}, taking the mean of the two edge weights
+#' (i.e., \code{[i,j]} and \code{[j,i]})
+#' Set to \code{FALSE} for asymmwtric weights
+#' (i.e., \code{[i,j]} does not equal \code{[j,i]})
 #' 
-#' @return A matrix of fully regressed coefficients where one variable is regressed over all others
+#' @return A matrix of fully regressed coefficients where
+#' one variable is regressed over all others
 #' 
 #' @examples
 #' #binarize responses

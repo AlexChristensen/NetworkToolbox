@@ -4,8 +4,8 @@
 #' @param A An adjacency matrix of network data
 #' 
 #' @param weighted Is the network weighted?
-#' Defaults to FALSE.
-#' Set to TRUE for weighted measure of distance
+#' Defaults to \code{FALSE}.
+#' Set to \code{TRUE} for weighted measure of distance
 #' 
 #' @return A distance matrix of the network
 #' 

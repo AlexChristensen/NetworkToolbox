@@ -5,8 +5,8 @@
 #' (from \code{\link{convertConnBrainMat}})
 #' 
 #' @param neural Is input a brain connectivity array (i.e., m x m x n)?
-#' Defaults to FALSE.
-#' Set to TRUE to convert each brain connectivity matrix
+#' Defaults to \code{FALSE}.
+#' Set to \code{TRUE} to convert each brain connectivity matrix
 #' 
 #' @return Returns a network matrix in \code{\link{igraph}}'s format or
 #' returns a list of brain connectivity matrices each of which have been

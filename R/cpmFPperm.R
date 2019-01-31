@@ -10,11 +10,11 @@
 #' (second session)
 #' 
 #' @param iter Number of iterations to perform.
-#' Defaults to 1,000
+#' Defaults to \code{1000}
 #' 
 #' @param progBar Should progress bar be displayed?
-#' Defaults to TRUE.
-#' Set to FALSE for no progress bar
+#' Defaults to \code{TRUE}.
+#' Set to \code{FALSE} for no progress bar
 #' 
 #' @return Returns a matrix containing the percentage and
 #' number of correctly identified subjects for sessions 1 and 2

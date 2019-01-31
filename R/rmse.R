@@ -1,5 +1,5 @@
 #' Root Mean Square Error
-#' @description Computes the root mean square error of a sparse model to a full model
+#' @description Computes the root mean square error (RMSE) of a sparse model to a full model
 #' 
 #' @param base Base (or full) model to be evaulated against
 #' 
@@ -10,9 +10,11 @@
 #' @examples
 #' A1 <- solve(cov(neoOpen))
 #' 
+#' \dontrun{
 #' A2 <- LoGo(neoOpen)
 #' 
 #' root <- rmse(A1, A2)
+#' }
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 

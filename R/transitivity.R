@@ -4,8 +4,8 @@
 #' @param A An adjacency matrix of network data
 #' 
 #' @param weighted Is the network weighted?
-#' Defaults to FALSE.
-#' Set to TRUE for a weighted measure of transitivity
+#' Defaults to \code{FALSE}.
+#' Set to \code{TRUE} for a weighted measure of transitivity
 #' 
 #' @return Returns a value of transitivity
 #' 

@@ -3,10 +3,11 @@
 #' 
 #' @param A An adjacency matrix of network data
 #' 
-#' @param gamma Defaults to 1.
-#' Set to gamma > 1 to detect smaller modules and gamma < 1 for larger modules
+#' @param gamma Defaults to \code{1}.
+#' Set to \code{gamma} > 1 to detect smaller modules and \code{gamma} < 1 for larger modules
+#' 
 #' @param M0 Input can be an initial community vector.
-#' Defaults to none
+#' Defaults to \code{NULL}
 #' 
 #' @return Returns a list containing:
 #' 
@@ -18,6 +19,7 @@
 #' A <- TMFG(neoOpen)$A
 #' 
 #' modularity <- louvain(A)
+#' 
 #' @references
 #' Blondel, V. D., Guillaume, J. L., Lambiotte, R., & Lefebvre, E. (2008).
 #' Fast unfolding of communities in large networks. 

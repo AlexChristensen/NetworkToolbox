@@ -1,7 +1,7 @@
 #NEO-PI-3 Openness to Experience Data----
 #'NEO-PI-3 Openness to Experience Data
 #' 
-#' A response matrix (n = 802) of NEO-PI-3's Openness to Experience
+#' A response matrix (\emph{n} = 802) of NEO-PI-3's Openness to Experience
 #' from Christensen, Cotter, & Silvia (2018).
 #' 
 #' @name neoOpen

@@ -8,8 +8,8 @@
 #' @param A Network adjacency matrix
 #' 
 #' @param comm A vector of corresponding to each item's community.
-#' Defaults to "walktrap" for the walktrap community detection algorithm.
-#' Set to "louvain" for the louvain community detection algorithm.
+#' Defaults to \code{"walktrap"} for the \code{\link[igraph]{cluster_walktrap}} community detection algorithm.
+#' Set to \code{"louvain"} for the \code{\link[NetworkToolbox]{louvain}} community detection algorithm.
 #' Can also be set to user-specified communities (see examples)
 #' 
 #' @return Returns a list containing:

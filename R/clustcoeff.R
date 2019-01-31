@@ -4,13 +4,13 @@
 #' @param A An adjacency matrix of network data
 #' 
 #' @param weighted Is the network weighted?
-#' Defaults to FALSE.
-#' Set to TRUE for weighted measures of CC and CCi
+#' Defaults to \code{FALSE}.
+#' Set to \code{TRUE} for weighted measures of CC and CCi
 #' @return Returns a list containing:
 #' 
-#' \item{CC}{Global clustering coefficient}
+#' \item{CC}{Global clustering coefficient. The average clustering cooefficient for each node in the network}
 #' 
-#' \item{CCi}{Local clustering coefficient}
+#' \item{CCi}{Local clustering coefficient. The clustering coefficient for each node in the network}
 #' 
 #' @examples
 #' A <- TMFG(neoOpen)$A

@@ -6,9 +6,9 @@
 #' @param B An adjacency matrix of network B
 #' 
 #' @param corr Correlation method for assessing the relatonship between the replicated edge weights.
-#' Defaults to "pearson".
-#' Set to "spearman" for non-linear or monotonic associations.
-#' Set to "kendall" for rank-order correlations
+#' Defaults to \code{"pearson"}.
+#' Set to \code{"spearman"} for non-linear or monotonic associations.
+#' Set to \code{"kendall"} for rank-order correlations
 #' 
 #' @return Returns a list containing:
 #' 

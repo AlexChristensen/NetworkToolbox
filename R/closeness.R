@@ -4,8 +4,8 @@
 #' @param A An adjacency matrix of network data
 #' 
 #' @param weighted Is the network weighted?
-#' Defaults to TRUE.
-#' Set to FALSE for unweighted measure of closeness centrality
+#' Defaults to \code{TRUE}.
+#' Set to \code{FALSE} for unweighted measure of closeness centrality
 #' 
 #' @return A vector of closeness centrality values for each node in the network
 #' 

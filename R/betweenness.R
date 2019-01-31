@@ -1,11 +1,11 @@
-#' Betwenness Centrality
+#' Betweenness Centrality
 #' @description Computes betweenness centrlaity of each node in a network
 #' 
 #' @param A An adjacency matrix of network data
 #' 
 #' @param weighted Is the network weighted?
-#' Defaults to TRUE.
-#' Set to FALSE for unweighted measure of betwenness centrality
+#' Defaults to \code{TRUE}.
+#' Set to \code{FALSE} for unweighted measure of betwenness centrality
 #' 
 #' @return A vector of betweenness centrality values for each node in the network
 #' 

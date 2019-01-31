@@ -4,10 +4,11 @@
 #' @param A An adjacency matrix of network data
 #' 
 #' @param BC How should the betweenness centrality be computed?
-#' Defaults to "standard".
-#' Set to "random" for rspbc.
+#' Defaults to \code{"random"}.
+#' Set to \code{"standard"} for standard \code{\link[NetworkToolbox]{betweenness}}.
 #' 
-#' @param beta Beta parameter to be passed to the \emph{rspbc} function
+#' @param beta Beta parameter to be passed to the \code{\link[NetworkToolbox]{rspbc}} function
+#' Defaults to .01
 #' 
 #' @return A vector of hybrid centrality values for each node in the network
 #' (higher values are more central, lower values are more peripheral)
@@ -38,7 +39,7 @@ hybrid <- function (A, BC = c("standard","random"), beta)
     A <- as.matrix(A)
     
     if(missing(BC))
-    {BC<-"standard"
+    {BC<-"random"
     }else{BC<-match.arg(BC)}
     
     if(missing(beta))

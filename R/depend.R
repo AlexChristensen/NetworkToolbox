@@ -4,35 +4,36 @@
 #' @param data A set of data
 #' 
 #' @param normal Should data be transformed to a normal distribution?
-#' Defaults to FALSE. Data is not transformed to be normal.
-#' Set to TRUE if data should be transformed to be normal
+#' Defaults to \code{FALSE}. Data is not transformed to be normal.
+#' Set to \code{TRUE} if data should be transformed to be normal
 #' (computes correlations using the \link[qgraph]{cor_auto} function)
 #' 
 #' @param na.data How should missing data be handled?
-#' For "listwise" deletion the \code{\link{na.omit}} function is applied.
-#' Set to "fiml" for Full Information Maxmimum Likelihood (\link[psych]{corFiml}).
+#' For \code{"listwise"} deletion the \code{\link{na.omit}} function is applied.
+#' Set to \code{"fiml"} for Full Information Maxmimum Likelihood (\link[psych]{corFiml}).
 #' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
 #' 
 #' @param index Should correlation with the latent variable
 #' (i.e., weighted average of all variables) be removed?
-#' Defaults to FALSE.
-#' Set to TRUE to remove common latent factor
+#' Defaults to \code{FALSE}.
+#' Set to \code{TRUE} to remove common latent factor
 #' 
 #' @param fisher Should Fisher's Z-test be used to keep significantly higher influences (index only)?
-#' Defaults to FALSE.
-#' Set to TRUE to remove non-significant influences
+#' Defaults to \code{FALSE}.
+#' Set to \code{TRUE} to remove non-significant influences
 #' 
 #' @param progBar Should progress bar be displayed?
-#' Defaults to TRUE.
-#' Set to FALSE for no progress bar
+#' Defaults to \code{TRUE}.
+#' Set to \code{FALSE} for no progress bar
 #' 
 #' @return Returns an adjacency matrix of dependencies
 #' 
 #' @examples
+#' \dontrun{
 #' D <- depend(neoOpen)
 #' 
 #' Dindex <- depend(neoOpen, index = TRUE)
-#' 
+#' }
 #' @references
 #' Kenett, D. Y., Tumminello, M., Madi, A., Gur-Gershgoren, G., Mantegna, R. N., & Ben-Jacob, E. (2010).
 #' Dominating clasp of the financial sector revealed by partial correlation analysis of the stock market.

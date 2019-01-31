@@ -4,19 +4,20 @@
 #' @param A An adjacency matrix of network data
 #' 
 #' @param comm Can be a vector of community assignments or community detection algorithms
-#' ("walktrap" or "louvain") can be used to determine the number of factors.
-#' Defaults to "walktrap".
-#' Set to "louvain" for louvain community detection
+#' (\code{"walktrap"} or \code{"louvain"}) can be used to determine the number of factors.
+#' Defaults to \code{"walktrap"}.
+#' Set to \code{"louvain"} for \code{\link[NetworkToolbox]{louvain}} community detection
 #' 
 #' @param cent Centrality measure to be used.
-#' Defaults to "strength".
+#' Defaults to \code{"strength"}.
 #' 
-#' @param metric Whether the metric should be compute for across the communities
+#' @param metric Whether the metric should be compute for across all of the communities
 #' (a single value) or for each community (a value for each community).
-#' Defaults to "across".
-#' Set to "each" for values for each community
+#' Defaults to \code{"across"}.
+#' Set to \code{"each"} for values for each community
 #' 
-#' @param ... Additional arguments for community detection algorithms
+#' @param ... Additional arguments for \code{\link[igraph]{cluster_walktrap}}
+#' and \code{\link[NetworkToolbox]{louvain}} community detection algorithms
 #' 
 #' @return A vector containing the between-community strength value for each node
 #' 

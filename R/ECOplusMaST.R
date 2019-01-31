@@ -1,6 +1,6 @@
 #' ECO+MaST Network Filter
-#' @description Applies the \link[NetworkToolbox]{ECO} neural network filtering method
-#' combined with the \link[NetworkToolbox]{MaST} filtering method
+#' @description Applies the \code{\link[NetworkToolbox]{ECO}} neural network filtering method
+#' combined with the \code{\link[NetworkToolbox]{MaST}} filtering method
 #' 
 #' @param data Can be a dataset or a correlation matrix
 #' 

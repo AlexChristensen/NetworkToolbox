@@ -9,8 +9,8 @@
 #' community each node belongs to
 #' 
 #' @param weighted Is the network weighted?
-#' Defaults to TRUE.
-#' Set to FALSE for weighted measures
+#' Defaults to \code{TRUE}.
+#' Set to \code{FALSE} for weighted measures
 #' 
 #' @return A vector of community eigenvector centrality values for
 #' each specified community in the network

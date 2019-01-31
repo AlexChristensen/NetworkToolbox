@@ -4,8 +4,8 @@
 #' @param A An adjacency matrix of network data
 #' 
 #' @param weighted Is the network weighted?
-#' Defaults to TRUE.
-#' Set to FALSE for unweighted measure of eigenvector centrality
+#' Defaults to \code{TRUE}.
+#' Set to \code{FALSE} for unweighted measure of eigenvector centrality
 #' 
 #' @return A vector of eigenvector centrality values for each node in the network
 #' 

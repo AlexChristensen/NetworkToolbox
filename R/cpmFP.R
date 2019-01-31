@@ -10,8 +10,8 @@
 #' (second session)
 #' 
 #' @param progBar Should progress bar be displayed?
-#' Defaults to TRUE.
-#' Set to FALSE for no progress bar
+#' Defaults to \code{TRUE}.
+#' Set to \code{FALSE} for no progress bar
 #' 
 #' @return Returns a matrix containing the percentage
 #' and number of correctly identified subjects for sessions 1 and 2

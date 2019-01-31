@@ -8,8 +8,8 @@
 #' community each node belongs to
 #' 
 #' @param weighted Is the network weighted?
-#' Defaults to FALSE.
-#' Set to TRUE for weighted measures
+#' Defaults to \code{FALSE}.
+#' Set to \code{TRUE} for weighted measures
 #' 
 #' @return A vector of community closeness centrality values for each specified
 #' community in the network
@@ -27,6 +27,10 @@
 #' result <- comm.close(A, comm, weighted = FALSE)
 #'
 #' @references 
+#' Christensen, A. P. (in press).
+#' NetworkToolbox: Methods and measures for brain, cognitive, and psychometric network analysis in R.
+#' \emph{The R Journal}, 1-18. doi: 10.31234/osf.io/6kmav
+#' 
 #' Christensen, A. P., Cotter, K. N., Silvia, P. J., & Benedek, M. (2018)
 #' Scale development via network analysis: A comprehensive and concise measure of Openness to Experience
 #' \emph{PsyArXiv}, 1-40.
@@ -47,6 +51,7 @@ comm.close <- function (A, comm, weighted = FALSE)
     {stop("length of comm does not match nodes in matrix")}
     
     uniq <- unique(comm)
+    uniq <- uniq[order(uniq)]
     len <- length(uniq)
     
     allP <- pathlengths(A, weighted = weighted)$ASPLi

@@ -1,5 +1,5 @@
 #' Flow Fraction
-#' @description Computes eigenvector centrality over nodes in a subset of nodes
+#' @description Computes \code{\link[NetworkToolbox]{eigenvector}} centrality over nodes in a subset of nodes
 #' in the network. This measure generalizes across any subset of nodes and
 #' is not specific to communities
 #' 

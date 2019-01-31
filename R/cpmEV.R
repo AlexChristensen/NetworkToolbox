@@ -15,16 +15,16 @@
 #' 
 #' @param valid_b Behavioral statistic for each participant for the \strong{validation} neural data (a vector)
 #' 
-#' @param thresh Sets an \strong{alpha} threshold for edge weights to be retained.
-#' Defaults to .01
+#' @param thresh Sets an \eqn{\alpha} threshold for edge weights to be retained.
+#' Defaults to \code{.01}
 #' 
 #' @param overlap Should leave-one-out cross-validation be used?
-#' Defaults to FALSE (use full dataset, no leave-one-out).
-#' Set to TRUE to select edges that appear in every leave-one-out cross-validation network (\emph{time consuming})
+#' Defaults to \code{FALSE} (use full dataset, no leave-one-out).
+#' Set to \code{TRUE} to select edges that appear in every leave-one-out cross-validation network (\emph{time consuming})
 #' 
 #' @param progBar Should progress bar be displayed?
-#' Defaults to TRUE.
-#' Set to FALSE for no progress bar
+#' Defaults to \code{TRUE}.
+#' Set to \code{FALSE} for no progress bar
 #' 
 #' @return Returns a list containing: 
 #'

@@ -4,12 +4,12 @@
 #' 
 #' @param A An adjacency matrix of network data
 #' 
-#' @param comm A vector or matrix corresponding to the
+#' @param comm A vector corresponding to the
 #' community each node belongs to
 #' 
 #' @param weighted Is the network weighted?
-#' Defaults to TRUE.
-#' Set to FALSE for weighted measures
+#' Defaults to \code{TRUE}.
+#' Set to \code{FALSE} for weighted measures
 #' 
 #' @return A vector of community strength/degree centrality values for each specified
 #' community in the network
@@ -49,11 +49,12 @@ comm.str <- function (A, comm, weighted = TRUE)
     {
         rem <- which(comm==uniq[j])
         
-        if(weighted)
-        {remove[j,] <- sum(colSums(A[,rem]))
-        }else{
-            remove[j,] <- sum(colSums(binarize(A)[,rem]))
-        }
+        if(length(rem)!=1)
+        {
+            if(weighted)
+            {remove[j,] <- sum(colSums(A[,rem]))
+            }else{remove[j,] <- sum(colSums(binarize(A)[,rem]))}
+        }else{remove[j,] <- 0}
     }
     
     norm <- as.vector(round(remove,3))

@@ -4,8 +4,8 @@
 #' @param data Can be a dataset or a correlation matrix
 #' 
 #' @param directed Is the network directed?
-#' Defaults to FALSE.
-#' Set TRUE if the network is directed
+#' Defaults to \code{FALSE}.
+#' Set \code{TRUE} if the network is directed
 #' 
 #' @return A sparse association matrix
 #' 

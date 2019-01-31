@@ -1,11 +1,12 @@
 #' Leverage Centrality
 #' @description Computes leverage centrlaity of each node in a network
 #' (the degree of connected neighbors; \strong{Please see and cite Joyce et al., 2010})
+#' 
 #' @param A An adjacency matrix of network data
 #' 
 #' @param weighted Is the network weighted?
-#' Defaults to TRUE.
-#' Set to FALSE for unweighted measure of leverage centrality
+#' Defaults to \code{TRUE}.
+#' Set to \code{FALSE} for unweighted measure of leverage centrality
 #' 
 #' @return A vector of leverage centrality values for each node in the network
 #' 

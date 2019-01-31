@@ -1,23 +1,29 @@
 #' Network Adjusted Mean/Sum
-#' @description The hybrid centrality is used to adjust the mean or sum score of participant's community scores based on each node's centrality.
-#' Each participant's response values are multipled by the corresponding hybrid centrality value (uses "random" for BC argument).
-#' In this way, more central nodes contribute a greater score and less central nodes contribute a lesser score
+#' @description The \code{\link[NetworkToolbox]{hybrid}} centrality is used to
+#' adjust the mean or sum score of participant's community scores based on each
+#' node's centrality. Each participant's response values are multipled by
+#' the corresponding \code{\link[NetworkToolbox]{hybrid}}
+#' centrality value (uses "random" for BC argument).
+#' In this way, more central nodes contribute a greater score
+#' and less central nodes contribute a lesser score.
+#' See Christensen (in press) for more details
 #' 
 #' @param data Must be a dataset
 #' 
 #' @param A Adjacency matrix that has already been filtered
 #' 
 #' @param adjusted Should adjusted values be the mean or sum score?
-#' Defaults to "mean".
-#' Set to "sum" for sum scores
+#' Defaults to \code{"mean"}.
+#' Set to \code{"sum"} for sum scores
 #' 
 #' @param comm Can be a vector of community assignments or community detection algorithms
-#' ("walktrap" or "louvain") can be used to determine the number of communities.
-#' Defaults to 1 community.
-#' Set to "walktrap" for the walktrap algortihm.
-#' Set to "louvain" for louvain community detection
+#' (\code{"walktrap"} or \code{"louvain"}) can be used to determine the number of communities.
+#' Defaults to \code{1} community.
+#' Set to \code{"walktrap"} for the \code{\link[igraph]{cluster_walktrap}} algortihm.
+#' Set to \code{"louvain"} for \code{\link[NetworkToolbox]{louvain}} community detection
 #' 
-#' @param ... Additional arguments for community detection algorithms
+#' @param ... Additional arguments for \code{\link[igraph]{cluster_walktrap}}
+#' and \code{\link[NetworkToolbox]{louvain}} community detection algorithms
 #' 
 #' @return Returns a list containing:
 #' 
@@ -43,9 +49,9 @@
 #' walkadj <- nams(neoOpen, A, adjusted = "sum", comm = "walktrap")
 #' 
 #' @references
-#' Christensen, A. P. (2018).
+#' Christensen, A. P. (in press).
 #' NetworkToolbox: Methods and measures for brain, cognitive, and psychometric network analysis in R.
-#' \emph{PsyArXiv}.
+#' \emph{The R Journal}, 1-18.
 #' doi: \href{https://doi.org/10.31234/osf.io/6kmav}{10.31234/osf.io/6kmav}
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
