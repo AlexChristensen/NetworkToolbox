@@ -72,68 +72,76 @@ comcat <- function (A, comm = c("walktrap","louvain"),
     
     fact<-list()
     
-    if(metric=="across")
+    if(length(unique(comm))!=1)
     {
-        
-        for(i in 1:max(facts))
+        if(metric=="across")
         {
-            Ah <- A[which(facts!=i),which(facts==i)]
-        
+            
+            for(i in 1:max(facts))
+            {
+                Ah <- A[which(facts!=i),which(facts==i)]
+                
                 if(cent=="degree")
                 {com<-colSums(ifelse(Ah!=0,1,0))
                 }else if(cent=="strength")
                 {com<-colSums(Ah)}
-            
+                
                 fact[[i]]<-com
-        }
-    
-        commn<-unlist(fact)
-    
-        bind<-cbind(ord,commn)
-    
-        commord<-bind[order(bind[,1]),]
-    
-        commmat<-matrix(commord[,3],nrow=nrow(commord),ncol=1)
-    
-        commmat <- as.vector(commmat)
-    
-        names(commmat) <- colnames(A)
-    
-        return(commmat)
-    }else if(metric=="each")
-    {
-        
-        uniq <- unique(facts)
-        
-        item <- list()
-        
-        commat <- matrix(NA,nrow=nrow(A),ncol=length(uniq))
-        
-        colnames(commat) <- paste(uniq)
-        
-        for(i in 1:ncol(A))
-        {
-            Ah <- A[,i]
-            
-            uniq.no <- uniq[which(uniq!=facts[i])]
-            
-            for(j in 1:length(uniq.no))
-            {
-                Aha <- Ah[which(facts==uniq.no[j])]
-                
-                if(cent=="degree")
-                {com<-sum(ifelse(Aha!=0,1,0))
-                }else if(cent=="strength")
-                {com<-sum(Aha)}
-                
-                commat[i,paste(uniq.no[j])] <- com
             }
+            
+            commn<-unlist(fact)
+            
+            bind<-cbind(ord,commn)
+            
+            commord<-bind[order(bind[,1]),]
+            
+            commmat<-matrix(commord[,3],nrow=nrow(commord),ncol=1)
+            
+            commmat <- as.vector(commmat)
+            
+            names(commmat) <- colnames(A)
+            
+            return(commmat)
+        }else if(metric=="each")
+        {
+            
+            uniq <- unique(facts)
+            
+            item <- list()
+            
+            commat <- matrix(NA,nrow=nrow(A),ncol=length(uniq))
+            
+            colnames(commat) <- paste(uniq)
+            
+            for(i in 1:ncol(A))
+            {
+                Ah <- A[,i]
+                
+                uniq.no <- uniq[which(uniq!=facts[i])]
+                
+                for(j in 1:length(uniq.no))
+                {
+                    Aha <- Ah[which(facts==uniq.no[j])]
+                    
+                    if(cent=="degree")
+                    {com<-sum(ifelse(Aha!=0,1,0))
+                    }else if(cent=="strength")
+                    {com<-sum(Aha)}
+                    
+                    commat[i,paste(uniq.no[j])] <- com
+                }
+            }
+            
+            commat[,paste(uniq[order(uniq)])]
+            row.names(commat) <- colnames(A)
+            
+            commat <- commat[,order(colnames(commat))]
+            
+            return(commat)
         }
-        
-        commat[,paste(uniq[order(uniq)])]
-        row.names(commat) <- colnames(A)
-        
-        commat <- commat[,order(colnames(commat))]
+    }else{
+        commat <- as.matrix(rep(0,ncol(A)),ncol=1)
+        colnames(commat) <- paste(unique(comm))
         
         return(commat)
     }
