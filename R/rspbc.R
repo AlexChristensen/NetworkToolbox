@@ -72,8 +72,8 @@ rspbc <- function (A, beta = 0.01)
     bet<-round(as.data.frame(bet),0)
     minimum <- min(bet) - 1
     bet <- bet - minimum
-    rownames(bet)<-colnames(A)
-    bet<-as.matrix(bet)
+    bet<-as.vector(as.matrix(bet))
+    names(bet)<-colnames(A)
     return(bet)
 }
 #----

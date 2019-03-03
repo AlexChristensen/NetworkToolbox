@@ -3,6 +3,10 @@
 #' 
 #' @param A An adjacency matrix of network data
 #' 
+#' @param absolute Should network use absolute weights?
+#' Defaults to \code{TRUE}.
+#' Set to \code{FALSE} for signed weights
+#' 
 #' @return A vector of strength values for each node in the network.
 #' 
 #' If directed network, returns a list containing:
@@ -40,14 +44,15 @@
 #' 
 #' @export
 #Node Strength----
-strength <- function (A)
+strength <- function (A, absolute = TRUE)
 {
     if(is.vector(A))
     {return(0)
     }else if(nrow(A)!=ncol(A))
     {stop("Input not an adjacency matrix")}
     
-    A <- abs(A)
+    if(absolute)
+    {A <- abs(A)}
     A <- as.matrix(A)
     
     if(isSymmetric(A, check.attributes = FALSE))

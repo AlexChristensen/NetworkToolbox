@@ -50,10 +50,13 @@ pathlengths <- function (A, weighted = FALSE)
             if(is.infinite(D[j,i]))
             {D[j,i]<-0}
     if(any(colSums(D)==0))
-    {D<-D[,-(which(colSums(D)==0))]}
+    {
+        newD <- D
+        newD[,(which(colSums(D)==0))] <- rep(NA,length(which(colSums(D)==0)))
+    }else{newD <- D}
     
-    aspli<-colSums(D*(D!=0))/(ncol(D)-1)
-    aspl<-mean(aspli)
+    aspli<-colSums(newD*(newD!=0))/(ncol(newD)-1)
+    aspl<-mean(aspli,na.rm=TRUE)
     
     Emat<-(D*(D!=0))
     

@@ -11,6 +11,10 @@
 #' @param cent Centrality measure to be used.
 #' Defaults to \code{"strength"}.
 #' 
+#' @param absolute Should network use absolute weights?
+#' Defaults to \code{TRUE}.
+#' Set to \code{FALSE} for signed weights
+#' 
 #' @param ... Additional arguments for \code{\link[igraph]{cluster_walktrap}}
 #' and \code{\link[NetworkToolbox]{louvain}} community detection algorithms
 #' 
@@ -33,7 +37,8 @@
 #Stabilizing----
 stable <- function (A, comm = c("walktrap","louvain"),
                     cent = c("betweenness","rspbc","closeness",
-                             "strength","degree","hybrid"), ...)
+                             "strength","degree","hybrid"), 
+                    absolute = TRUE, ...)
 {
     #nodes
     n <- ncol(A)
@@ -74,7 +79,7 @@ stable <- function (A, comm = c("walktrap","louvain"),
         }else if(cent=="closeness")
         {stab<-closeness(Ah)
         }else if(cent=="strength")
-        {stab<-strength(Ah)
+        {stab<-strength(Ah,absolute)
         }else if(cent=="degree")
         {stab<-degree(Ah)}
         
