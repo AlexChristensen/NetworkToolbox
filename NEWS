@@ -1,6 +1,14 @@
 Changes in version 1.2.4
 
+o added function 'strength.dim' to identify within and between dimension node strength
+
+o added 'absolute' argument for 'strength' and 'stable' functions (extension for EGA package)
+
 o additional updates to documentation
+
+o bug fix for one dimension in comcat function
+
+o made 'rspbc' output a vector
 
 
 Changes in version 1.2.3
