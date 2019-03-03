@@ -5,7 +5,8 @@
 \title{Stabilizing Nodes}
 \usage{
 stable(A, comm = c("walktrap", "louvain"), cent = c("betweenness",
-  "rspbc", "closeness", "strength", "degree", "hybrid"), ...)
+  "rspbc", "closeness", "strength", "degree", "hybrid"), absolute = TRUE,
+  ...)
 }
 \arguments{
 \item{A}{An adjacency matrix of network data}
@@ -17,6 +18,10 @@ Set to \code{"louvain"} for \code{\link[NetworkToolbox]{louvain}} community dete
 
 \item{cent}{Centrality measure to be used.
 Defaults to \code{"strength"}.}
+
+\item{absolute}{Should network use absolute weights?
+Defaults to \code{TRUE}.
+Set to \code{FALSE} for signed weights}
 
 \item{...}{Additional arguments for \code{\link[igraph]{cluster_walktrap}}
 and \code{\link[NetworkToolbox]{louvain}} community detection algorithms}

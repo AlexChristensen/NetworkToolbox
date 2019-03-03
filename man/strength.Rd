@@ -4,10 +4,14 @@
 \alias{strength}
 \title{Node Strength}
 \usage{
-strength(A)
+strength(A, absolute = TRUE)
 }
 \arguments{
 \item{A}{An adjacency matrix of network data}
+
+\item{absolute}{Should network use absolute weights?
+Defaults to \code{TRUE}.
+Set to \code{FALSE} for signed weights}
 }
 \value{
 A vector of strength values for each node in the network.

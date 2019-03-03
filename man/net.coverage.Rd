@@ -44,6 +44,6 @@ Scale development via network analysis: A comprehensive and concise measure of O
 doi: \href{https://doi.org/10.31234/osf.io/3raxt}{10.31234/osf.io/3raxt}
 }
 \author{
-Alexander Christensen <alexpaulchristensen@gmail.com>
+Alexander Christensen <alexpaulchristensen@gmail.com> and
 Mathias Benedek <mathias.benedek@uni-graz.at>
 }

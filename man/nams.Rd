@@ -61,9 +61,9 @@ walkadj <- nams(neoOpen, A, adjusted = "sum", comm = "walktrap")
 
 }
 \references{
-Christensen, A. P. (2018).
+Christensen, A. P. (in press).
 NetworkToolbox: Methods and measures for brain, cognitive, and psychometric network analysis in R.
-\emph{PsyArXiv}.
+\emph{The R Journal}, 1-18.
 doi: \href{https://doi.org/10.31234/osf.io/6kmav}{10.31234/osf.io/6kmav}
 }
 \author{
