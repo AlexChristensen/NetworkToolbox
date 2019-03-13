@@ -9,5 +9,5 @@ Depends: R (>= 3.3.0)
 License: GPL (>= 3.0)
 Encoding: UTF-8
 LazyData: true
-Imports: Matrix, psych, corrplot, fdrtool, R.matlab, MASS, pwr, igraph, qgraph, ppcor, parallel, foreach, doParallel
+Imports: Matrix, psych, corrplot, fdrtool, R.matlab, MASS, pwr, igraph, qgraph, ppcor, parallel, foreach, doParallel, wTO
 RoxygenNote: 6.1.1
