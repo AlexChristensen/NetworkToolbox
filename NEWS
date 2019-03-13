@@ -1,5 +1,7 @@
 Changes in version 1.2.4
 
+o added function 'item.overlap' to detect redundant nodes in a network
+
 o added function 'strength.dim' to identify within and between dimension node strength
 
 o added 'absolute' argument for 'strength' and 'stable' functions (extension for EGA package)
