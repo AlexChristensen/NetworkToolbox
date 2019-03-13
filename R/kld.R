@@ -38,9 +38,10 @@ kld <- function (base, test)
     if(nrow(test)!=ncol(test))
     {stop("Test must be an adjacency matrix")}
     
-    kl <- sum(diag(solve(base)%*%test)) - log(det(solve(base)%*%test)) - ncol(base)
+    kl1 <- sum(diag(solve(base)%*%test)) - log(det(solve(base)%*%test)) - ncol(base)
+    kl2 <- sum(diag(solve(test)%*%base)) - log(det(solve(test)%*%base)) - ncol(test)
     
-    kl <- log(kl)
+    kl <- log(kl1 + kl2)
     
     return(kl)
 }
