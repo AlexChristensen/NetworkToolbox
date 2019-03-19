@@ -4,9 +4,7 @@
 #' each node and every other node in the network. The weighted topological
 #' overlap is implemented using the method from Nowick et al. (2009; see references)
 #' and the function \link[wTO]{wTO} from the wTO package. Computes the zero-order
-#' correlation between highly topological similar nodes. Computes the proportion
-#' of non-significant correlations of the two nodes with all other nodes
-#' (see \link[networktools]{goldbricker}). Computes the Jaccard similarity for the
+#' correlation between highly topological similar nodes. Computes the Jaccard similarity for the
 #' overlap of the connections between two nodes. In sum, these indices offer an
 #' array of similarity measures that can be used to determine node redundancy
 #' 
@@ -43,8 +41,7 @@
 #' 
 #' \item{overlap}{A table with the nodes with the highest topological similarity
 #' (\code{Topo. Similarity}; ordered from most to least).
-#' Also includes the zero-order correlation between nodes (\code{Zero-order}),
-#' proportion of non-significant correlations with other nodes (\code{n.s. Prop.}), and
+#' Also includes the zero-order correlation between nodes (\code{Zero-order}), and
 #' Jaccard similarity (\code{Jaccard}).}
 #' 
 #' \item{items}{A matrix containing the names of items that have high overlap}
@@ -54,11 +51,6 @@
 #' result <- node.overlap(neoOpen)
 #' 
 #' @references
-#' #goldbricker
-#' Jones, P. (2018). networktools: tools for identifying important nodes in networks.
-#' R package version 1.2.0.
-#' Retrieved form https://CRAN.R-project.org/package=networktools
-#'   
 #' #wTO
 #' Nowick, K., Gernat, T., Almaas, E., & Stubbs, L. (2009).
 #' Differences in human and chimpanzee gene expression patterns define an evolving network of transcription factors in brain.
@@ -240,13 +232,14 @@ node.overlap <- function(data = NULL, A, percentile = c(.90,.95,.99), method = c
         res.list <- strsplit(result[,1],split="--")
         
         #non-zero comparison vector
-        nz.comp.vec <- vector("numeric",length=len)
+        #nz.comp.vec <- vector("numeric",length=len)
+        #goldbricker#
         
         #zero-order correlations vector
-        zo.vec <- nz.comp.vec
+        zo.vec <- vector("numeric",length=len)
         
         #jaccard vector
-        jac.vec <- nz.comp.vec
+        jac.vec <- vector("numeric",length=len)
         
         ##compare correlations
         for(l in 1:len)
@@ -264,17 +257,19 @@ node.overlap <- function(data = NULL, A, percentile = c(.90,.95,.99), method = c
             #identify correlation between them
             shared.cor <- zo.cor[target.nodes[1],target.nodes[2]]
             
+            #goldbricker
             #number of rows for comparison
-            comp.len <- nrow(target.cor)
+            #comp.len <- nrow(target.cor)
             
             #compute corrs
-            target.vec <- vector("numeric",length=comp.len)
+            #target.vec <- vector("numeric",length=comp.len)
             
-            for(r in 1:comp.len)
-            {target.vec[r] <- suppressWarnings(cocor::cocor.dep.groups.overlap(target.cor[r,1],target.cor[r,2],shared.cor, n = n)@steiger1980$p.value)}
+            #for(r in 1:comp.len)
+            #{target.vec[r] <- suppressWarnings(cocor::cocor.dep.groups.overlap(target.cor[r,1],target.cor[r,2],shared.cor, n = n)@steiger1980$p.value)}
             
             #number of non-significant non-zero relations
-            nz.comp.vec[l] <- round(sum(ifelse(target.vec<.05,0,1))/comp.len,3)
+            #nz.comp.vec[l] <- round(sum(ifelse(target.vec<.05,0,1))/comp.len,3)
+            #goldbricker
             
             #zero-order correlations
             zo.vec[l] <- round(shared.cor,3)
@@ -284,10 +279,10 @@ node.overlap <- function(data = NULL, A, percentile = c(.90,.95,.99), method = c
         }
         
         #tack on nz.comp.vec to results
-        result <- cbind(result,zo.vec,nz.comp.vec,jac.vec)
+        result <- cbind(result,zo.vec,jac.vec)
         
         #name columns
-        colnames(result) <- c("Nodes", "Topo. Similarity", "Zero-order", "n.s. Prop.","Jaccard")
+        colnames(result) <- c("Nodes", "Topo. Similarity", "Zero-order", "Jaccard")
     }else{colnames(result) <- c("Nodes", "Topo. Similarity")}
     
     #input into list
