@@ -43,8 +43,7 @@ Produces a list containing:
 
 \item{overlap}{A table with the nodes with the highest topological similarity
 (\code{Topo. Similarity}; ordered from most to least).
-Also includes the zero-order correlation between nodes (\code{Zero-order}),
-proportion of non-significant correlations with other nodes (\code{n.s. Prop.}), and
+Also includes the zero-order correlation between nodes (\code{Zero-order}), and
 Jaccard similarity (\code{Jaccard}).}
 
 \item{items}{A matrix containing the names of items that have high overlap}
@@ -55,9 +54,7 @@ measures. Computes the weighted topological overlap between
 each node and every other node in the network. The weighted topological
 overlap is implemented using the method from Nowick et al. (2009; see references)
 and the function \link[wTO]{wTO} from the wTO package. Computes the zero-order
-correlation between highly topological similar nodes. Computes the proportion
-of non-significant correlations of the two nodes with all other nodes
-(see \link[networktools]{goldbricker}). Computes the Jaccard similarity for the
+correlation between highly topological similar nodes. Computes the Jaccard similarity for the
 overlap of the connections between two nodes. In sum, these indices offer an
 array of similarity measures that can be used to determine node redundancy
 }
@@ -67,11 +64,6 @@ result <- node.overlap(neoOpen)
 
 }
 \references{
-#goldbricker
-Jones, P. (2018). networktools: tools for identifying important nodes in networks.
-R package version 1.2.0.
-Retrieved form https://CRAN.R-project.org/package=networktools
-  
 #wTO
 Nowick, K., Gernat, T., Almaas, E., & Stubbs, L. (2009).
 Differences in human and chimpanzee gene expression patterns define an evolving network of transcription factors in brain.
