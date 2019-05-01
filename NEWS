@@ -1,5 +1,11 @@
 Changes in version 1.2.4
 
+o changed name of function 'strength.dim' to 'lnet.loads' and updated documentation
+
+o added information about 'NetworkToolbox' on package load
+
+o changed name of function 'nams' to 'lnet.score', optimized function to be more efficient with large datasets, and updated documentation
+
 o added function 'item.overlap' to detect redundant nodes in a network
 
 o added function 'strength.dim' to identify within and between dimension node strength
