@@ -11,6 +11,11 @@
 #' betweenness centrality (10) and beta < 0.01
 #' measure gets closer to degree (.0001)
 #' 
+#' @param comm Vector.
+#' Community vector containing a value for each node.
+#' Computes "bridge" RSPBC, where the number of times
+#' a node is used on a random path between to another community
+#' 
 #' @return A vector of randomized shortest paths betweenness
 #' centrality values for each node in the network
 #' 
@@ -29,12 +34,15 @@
 #' 
 #' @export
 #Randomized Shortest Paths Betweennesss Centrality----
-rspbc <- function (A, beta = 0.01)
+rspbc <- function (A, beta = 0.01, comm = NULL)
 {
     if(nrow(A)!=ncol(A))
     {stop("Input not an adjacency matrix")}
     
-    A <- abs(A)
+    if(is.null(comm))
+    {A <- abs(A)
+    }else{A[A<0] <- 0}
+    
     A <- as.matrix(A)
     
     n<-ncol(A)
@@ -58,8 +66,18 @@ rspbc <- function (A, beta = 0.01)
     C<-as.matrix(C)
     C[is.infinite(C)]<-0
     W<-Pref*exp(-(beta)*C)
-    rsums<-rowSums(W)
     
+    #Bridge RSPBC
+    if(!is.null(comm))
+    {
+        for(i in 1:length(unique(comm)))
+        {
+            combos <- t(combn(which(comm==unique(comm)[i]),2))
+            
+            for(j in 1:nrow(combos))
+            {W[c(combos[j,]),c(combos[j,])] <- 0}
+        }
+    }
     
     Y<-I-W
     Z<-solve(Y,I)

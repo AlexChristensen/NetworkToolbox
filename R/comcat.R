@@ -11,10 +11,17 @@
 #' @param cent Centrality measure to be used.
 #' Defaults to \code{"strength"}.
 #' 
+#' @param absolute Should network use absolute weights?
+#' Defaults to \code{TRUE}.
+#' Set to \code{FALSE} for signed weights
+#' 
 #' @param metric Whether the metric should be compute for across all of the communities
 #' (a single value) or for each community (a value for each community).
 #' Defaults to \code{"across"}.
 #' Set to \code{"each"} for values for each community
+#' 
+#' @param diagonal Sets the diagonal values of the \code{A} input.
+#' Defaults to \code{0}
 #' 
 #' @param ... Additional arguments for \code{\link[igraph]{cluster_walktrap}}
 #' and \code{\link[NetworkToolbox]{louvain}} community detection algorithms
@@ -38,13 +45,17 @@
 #Communicating----
 comcat <- function (A, comm = c("walktrap","louvain"),
                     cent = c("strength","degree"),
-                    metric = c("across","each"), ...)
+                    absolute = TRUE,
+                    metric = c("across","each"),
+                    diagonal = 0, ...)
 {
     #nodes
     n <- ncol(A)
     
-    #set diagonal to zero
-    diag(A) <- 0
+    #change diagonal values if necessary
+    if(missing(diagonal))
+    {diagonal <- 0
+    }else{diagonal <- diagonal}
     
     if(missing(cent))
     {cent<-"strength"
@@ -82,9 +93,9 @@ comcat <- function (A, comm = c("walktrap","louvain"),
                 Ah <- A[which(facts!=i),which(facts==i)]
                 
                 if(cent=="degree")
-                {com<-colSums(ifelse(Ah!=0,1,0))
+                {com<-degree(Ah)
                 }else if(cent=="strength")
-                {com<-colSums(Ah)}
+                {com<-strength(Ah,absolute)}
                 
                 fact[[i]]<-com
             }

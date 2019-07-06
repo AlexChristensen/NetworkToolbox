@@ -44,6 +44,7 @@ comm.eigen <- function (A, comm, weighted = TRUE)
     {stop("length of comm does not match nodes in matrix")}
     
     uniq <- unique(comm)
+    uniq <- uniq[order(uniq)]
     len <- length(uniq)
     
     commEC <- vector("numeric",length=len)

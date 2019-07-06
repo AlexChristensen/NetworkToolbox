@@ -16,7 +16,7 @@
 #' @param A An adjacency matrix of network data
 #' 
 #' @param percentile Sets the number of overlapping nodes to show.
-#' Defaults to \code{.99} or the nodes in the top 1% of redundancy.
+#' Defaults to \code{.99} or the nodes in the top 1\% of redundancy.
 #' Set lower to identify more overlapping nodes
 #' 
 #' @param method Sets whether edges should be consider with absolute
@@ -33,22 +33,26 @@
 #' @param network Network estimation method for bootstrap.
 #' Defaults to \code{"glasso"}
 #' 
-#' @param ... Additional arguments to be passed to the network estimation
-#' method.
-#' See \link[qgraph]{EBICglasso} and \link[NetworkToolbox]{TMFG} for more details
+#' @param ... Arguments to be passed onto \code{\link[qgraph]{EBICglasso}}
+#' or \code{\link[NetworkToolbox]{TMFG}}
 #' 
 #' @return Produces a list containing:
 #' 
 #' \item{overlap}{A table with the nodes with the highest topological similarity
 #' (\code{Topo. Similarity}; ordered from most to least).
-#' Also includes the zero-order correlation between nodes (\code{Zero-order}), and
+#' 
+#' If \code{data} is input, then the standard deviations of each item pair (i.e., 
+#' \code{Node1} and \code{Node2}) are provided. Nodes with larger standard deviations
+#' are preferred. Also includes the zero-order correlation between nodes (\code{Zero-order}), and
 #' Jaccard similarity (\code{Jaccard}).}
 #' 
 #' \item{items}{A matrix containing the names of items that have high overlap}
 #'  
 #' @examples
 #' 
-#' result <- node.overlap(neoOpen)
+#' net <- TMFG(neoOpen, normal = FALSE)$A
+#' 
+#' result <- node.overlap(A = net, normal = FALSE)
 #' 
 #' @references
 #' #wTO
@@ -83,6 +87,9 @@ node.overlap <- function(data = NULL, A, percentile = c(.90,.95,.99), method = c
     }
     
     #missing argument values
+    if(!is.null(data))
+    {data <- as.data.frame(data)}
+    
     if(missing(A))
     {
         nodes <- ncol(data)
@@ -101,9 +108,6 @@ node.overlap <- function(data = NULL, A, percentile = c(.90,.95,.99), method = c
     {network <- "glasso"
     }else{network <- match.arg(network)}
     
-    #correlations
-    normal <- TRUE
-    
     #bootstrap
     if(bootstrap)
     {
@@ -119,30 +123,32 @@ node.overlap <- function(data = NULL, A, percentile = c(.90,.95,.99), method = c
         }
         
         #initialize count
-        count <- 1
+        count <- 0
         
         #initialize progress bar
-        pb <- txtProgressBar(min=0,max=iter+1,style=3)
+        pb <- txtProgressBar(min=0,max=iter,style=3)
         
         #initialize data stores
         boot.net <- list()
         wto.mat <- matrix(NA,nrow=((nodes*nodes-nodes)/2),ncol=iter)
+        sd.mat <- matrix(NA,nrow=nodes,ncol=iter)
         
         #repeat analysis
         repeat{
+            #increase count
+            count <- count+1
+            
             #resample data
             rand.dat <- data[sample(n,n,replace=TRUE),]
             
             #correlations
-            if(normal)
-            {zo.cor <- qgraph::cor_auto(rand.dat)
-            }else{zo.cor <- cor(rand.dat)}
+            zo.cor <- cor(rand.dat)
             
             #apply network estimation method
             if(network=="glasso")
-            {boot.net[[count]] <- invisible(qgraph::EBICglasso(zo.cor,n=n, ...))
+            {boot.net[[count]] <- invisible(qgraph::EBICglasso(zo.cor,n=n))
             }else if(network == "TMFG")
-            {boot.net[[count]] <- TMFG(zo.cor, ...)$A}
+            {boot.net[[count]] <- TMFG(zo.cor,...)$A}
             
             #compute wTO
             tom <- wTO::wTO(boot.net[[count]],sign=method)
@@ -151,14 +157,13 @@ node.overlap <- function(data = NULL, A, percentile = c(.90,.95,.99), method = c
             #put wTO in matrix
             wto.mat[,count] <- tom[lower.tri(tom)]
             
-            #increase count
-            count <- count+1
+            sd.mat[,count] <- apply(rand.dat,2,sd)
             
             #increase progress bar
             setTxtProgressBar(pb,count)
             
             #break when iterations is met
-            if(count==iter+1)
+            if(count==iter)
             {break}
         }
         
@@ -167,6 +172,8 @@ node.overlap <- function(data = NULL, A, percentile = c(.90,.95,.99), method = c
         
         #get means of bootstrap wTO
         lower <- apply(wto.mat,1,mean)
+        sd.vec <- apply(sd.mat,1,mean)
+        names(sd.vec) <- colnames(data)
     }else{
         
         #apply network estimation method
@@ -175,14 +182,12 @@ node.overlap <- function(data = NULL, A, percentile = c(.90,.95,.99), method = c
             if(!is.null(data))
             {
                 #correlations
-                if(normal)
-                {zo.cor <- qgraph::cor_auto(data)
-                }else{zo.cor <- cor(data)}
+                zo.cor <- qgraph::cor_auto(data)
                 
                 if(network=="glasso")
-                {A <- invisible(qgraph::EBICglasso(zo.cor,n=n, ...))
+                {A <- invisible(qgraph::EBICglasso(zo.cor,n=n,...))
                 }else if(network == "TMFG")
-                {A <- TMFG(zo.cor, ...)$A}
+                {A <- TMFG(zo.cor,...)$A}
             }else{stop("Argument 'A' or 'data' must have input")}
         }
         
@@ -192,6 +197,13 @@ node.overlap <- function(data = NULL, A, percentile = c(.90,.95,.99), method = c
         
         #lower triangle of TOM
         lower <- tom[lower.tri(tom)]
+        
+        #standard deviation vector
+        if(!is.null(data))
+        {
+            sd.vec <- apply(data,2,sd)
+            names(sd.vec) <- colnames(data)
+        }
     }
     
     #grab names for lower triangle
@@ -214,7 +226,20 @@ node.overlap <- function(data = NULL, A, percentile = c(.90,.95,.99), method = c
     
     #overlap matrix
     top.items <- which(lower>=above)
-    overlap.items <- matrix(NA,nrow=length(top.items),ncol=2)
+    
+    res.list <- strsplit(names(top.items),split="--")
+    
+    if(!is.null(data))
+    {
+        overlap.items <- matrix(NA,nrow=length(top.items),ncol=4)
+        
+        #input sds
+        for(i in 1:length(res.list))
+        {
+            overlap.items[i,3] <- round(sd.vec[res.list[[i]][1]],3)
+            overlap.items[i,4] <- round(sd.vec[res.list[[i]][2]],3)
+        }
+    }else{overlap.items <- matrix(NA,nrow=length(top.items),ncol=2)}
     
     overlap.items[,1] <- names(top.items)
     overlap.items[,2] <- lower[top.items]
@@ -224,65 +249,68 @@ node.overlap <- function(data = NULL, A, percentile = c(.90,.95,.99), method = c
     
     if(!is.null(data))
     {
-        #compute correlations between edges
-        ##number of rows for result
-        len <- nrow(result)
-        
-        ##grab nodes
-        res.list <- strsplit(result[,1],split="--")
-        
-        #non-zero comparison vector
-        #nz.comp.vec <- vector("numeric",length=len)
-        #goldbricker#
-        
-        #zero-order correlations vector
-        zo.vec <- vector("numeric",length=len)
-        
-        #jaccard vector
-        jac.vec <- vector("numeric",length=len)
-        
-        ##compare correlations
-        for(l in 1:len)
+        if(!bootstrap)
         {
-            #identify target nodes
-            target.nodes <- match(res.list[[l]],colnames(A))
+            #compute correlations between edges
+            ##number of rows for result
+            len <- nrow(result)
+
+            #non-zero comparison vector
+            #nz.comp.vec <- vector("numeric",length=len)
+            #goldbricker#
             
-            #identify correlations that are not between them
-            target.cor <- zo.cor[-target.nodes,target.nodes]
-            target.net <- A[-target.nodes,target.nodes]
+            #zero-order correlations vector
+            zo.vec <- vector("numeric",length=len)
             
-            #jaccard similarity
-            target.jac <- jaccard(target.net)
+            #jaccard vector
+            jac.vec <- vector("numeric",length=len)
             
-            #identify correlation between them
-            shared.cor <- zo.cor[target.nodes[1],target.nodes[2]]
+            #sd vectors
+            sd.vecs <- matrix(NA,nrow=len,ncol=2)
             
-            #goldbricker
-            #number of rows for comparison
-            #comp.len <- nrow(target.cor)
+            ##compare correlations
+            for(l in 1:len)
+            {
+                #identify target nodes
+                target.nodes <- match(res.list[[l]],colnames(A))
+                
+                #identify correlations that are not between them
+                target.cor <- zo.cor[-target.nodes,target.nodes]
+                target.net <- A[-target.nodes,target.nodes]
+                
+                #jaccard similarity
+                target.jac <- jaccard(target.net)
+                
+                #identify correlation between them
+                shared.cor <- zo.cor[target.nodes[1],target.nodes[2]]
+                
+                #goldbricker
+                #number of rows for comparison
+                #comp.len <- nrow(target.cor)
+                
+                #compute corrs
+                #target.vec <- vector("numeric",length=comp.len)
+                
+                #for(r in 1:comp.len)
+                #{target.vec[r] <- suppressWarnings(cocor::cocor.dep.groups.overlap(target.cor[r,1],target.cor[r,2],shared.cor, n = n)@steiger1980$p.value)}
+                
+                #number of non-significant non-zero relations
+                #nz.comp.vec[l] <- round(sum(ifelse(target.vec<.05,0,1))/comp.len,3)
+                #goldbricker
+                
+                #zero-order correlations
+                zo.vec[l] <- round(shared.cor,3)
+                
+                #jaccard
+                jac.vec[l] <- round(target.jac,3)
+            }
             
-            #compute corrs
-            #target.vec <- vector("numeric",length=comp.len)
+            #tack on nz.comp.vec to results
+            result <- cbind(result,zo.vec,jac.vec)
             
-            #for(r in 1:comp.len)
-            #{target.vec[r] <- suppressWarnings(cocor::cocor.dep.groups.overlap(target.cor[r,1],target.cor[r,2],shared.cor, n = n)@steiger1980$p.value)}
-            
-            #number of non-significant non-zero relations
-            #nz.comp.vec[l] <- round(sum(ifelse(target.vec<.05,0,1))/comp.len,3)
-            #goldbricker
-            
-            #zero-order correlations
-            zo.vec[l] <- round(shared.cor,3)
-            
-            #jaccard
-            jac.vec[l] <- round(target.jac,3)
-        }
-        
-        #tack on nz.comp.vec to results
-        result <- cbind(result,zo.vec,jac.vec)
-        
-        #name columns
-        colnames(result) <- c("Nodes", "Topo. Similarity", "Zero-order", "Jaccard")
+            #name columns
+            colnames(result) <- c("Nodes", "Topo. Similarity", "sd.Node1", "sd.Node2", "Zero-order", "Jaccard")
+        }else{colnames(result) <- c("Nodes", "Topo. Similarity", "sd.Node1", "sd.Node2")}
     }else{colnames(result) <- c("Nodes", "Topo. Similarity")}
     
     #input into list

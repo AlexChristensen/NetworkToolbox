@@ -100,83 +100,107 @@ TMFG <-function (data, normal = FALSE,
         }else{cormat<-cor(data)}
     }
     
-    n<-ncol(cormat)
+    # Number of nodes
+    n <- ncol(cormat)
     
-    tcormat<-cormat
-    #cormat<-abs(cormat)
+    # Signed correlations
+    tcormat <- cormat
     
-    if(n<9){print("Matrix is too small")}
-    #nodeTO<-array()
-    #nodeFROM<-array()
-    #nodeWEIGHT<-array()
-    #count<-0
-    #for(i in 1:nrow(cormat))
-    #    for(j in 1:ncol(cormat))
-    #        if(cormat[i,j] != 0)
-    #        {
-    #            count<-count+1
-    #            nodeTO[count]<-i
-    #            nodeFROM[count]<-j
-    #            nodeWEIGHT[count]<-cormat[i,j]
-    #        }
-    ###vectorized improvement
-    nodeTO<-sort(c(rep(1:n,n)))
-    nodeFROM<-c(rep(1:n,n))
-    nodeWEIGHT<-as.vector(cormat)
+    # Only positive correlations
+    #tcormat <- abs(cormat)
     
-    M<-cbind(nodeTO,nodeFROM,nodeWEIGHT) #create node-weight matrix
-    in_v<-matrix(nrow=nrow(cormat),ncol=1) #initialize inserted vertices
-    ou_v<-matrix(nrow=nrow(cormat),ncol=1) #initialize not yet inserted vertices
-    tri<-matrix(nrow=((2*n)-4),ncol=3) #initializaes triangles
-    separators<-matrix(nrow=n-4,ncol=3)#initialize list of 3-cliques (non-face triangles)
-    #find 3 vertices with largest strength
-    #s<-colSums(cormat*(cormat>mean(matrix(cormat,nrow=1)))*1) ##old s
-    s<-rowSums(cormat*(cormat>mean(matrix(unlist(cormat),nrow=1)))*1)
-    in_v[1:4]<-order(s,decreasing=TRUE)[1:4]
-    ou_v<-setdiff(1:nrow(in_v),in_v)
-    #build tetrahedron with the largest strength
+    # Let user know matrix is too small for TMFG estimation
+    # It is still okay to proceed
+    if(n < 9)
+    {print("Matrix is too small")}
+
+    # Initialize sparse edge matrix
+    nodeTO <- sort(c(rep(1:n,n)))
+    nodeFROM <- c(rep(1:n,n))
+    nodeWEIGHT <- as.vector(cormat)
+    
+    # Initialize matrices
+    M <- cbind(nodeTO, nodeFROM, nodeWEIGHT) # sparse node-weight matrix
+    in_v <- matrix(nrow=nrow(cormat), ncol=1) # inserted vertices matrix
+    ou_v <- matrix(nrow=nrow(cormat), ncol=1) # not yet inserted vertices matrix
+    tri <- matrix(nrow=((2*n)-4), ncol=3) # triangles matrix
+    separators <- matrix(nrow=n-4, ncol=3) # matrix of 3-cliques (non-face triangles)
+    
+    # Find 3 vertices with largest strength
+    s <- rowSums(cormat*(cormat > mean(matrix(unlist(cormat), nrow=1)))*1)
+    
+    # Order vertices with largest strength
+    # and grab the top 4
+    in_v[1:4] <- order(s,decreasing=TRUE)[1:4]
+    
+    # Set aside nodes that are not in the top 4
+    ou_v <- setdiff(1:nrow(in_v),in_v)
+    
+    # Build tetrahedron with the largest strength
+    ## Insert triangles
     tri[1,]<-in_v[1:3,]
     tri[2,]<-in_v[2:4,]
     tri[3,]<-in_v[c(1,2,4),]
     tri[4,]<-in_v[c(1,3,4),]
-    S<-matrix(nrow=(3*nrow(cormat)-6),ncol=3) #initialize sparse matrix
-    if(!depend){S[1,]<-c(in_v[1],in_v[2],1)
-    S[2,]<-c(in_v[1],in_v[3],1)
-    S[3,]<-c(in_v[1],in_v[4],1)
-    S[4,]<-c(in_v[2],in_v[3],1)
-    S[5,]<-c(in_v[2],in_v[4],1)
-    S[6,]<-c(in_v[3],in_v[4],1)
-    }else{if(cormat[in_v[1],in_v[2]]>cormat[in_v[2],in_v[1]])
-    {S[1,]<-c(in_v[1],in_v[2],1)
-    }else{S[1,]<-c(in_v[2],in_v[1],1)}
+    
+    # Initialize sparse TMFG matrix
+    S <- matrix(nrow=(3*nrow(cormat)-6),ncol=3)
+    
+    # Algorithm for traditional or dependency network
+    if(!depend)
+    {
+        S[1,] <- c(in_v[1],in_v[2],1)
+        S[2,] <- c(in_v[1],in_v[3],1)
+        S[3,] <- c(in_v[1],in_v[4],1)
+        S[4,] <- c(in_v[2],in_v[3],1)
+        S[5,] <- c(in_v[2],in_v[4],1)
+        S[6,] <- c(in_v[3],in_v[4],1)
+    }else{
+        
+        # Determine appropriate order for directionality in dependency network
+        ## Node 1 and 2
+        if(cormat[in_v[1],in_v[2]]>cormat[in_v[2],in_v[1]])
+            {S[1,]<-c(in_v[1],in_v[2],1)
+        }else{S[1,]<-c(in_v[2],in_v[1],1)}
+        
+        ## Node 1 and 3
         if(cormat[in_v[1],in_v[3]]>cormat[in_v[3],in_v[1]])
         {S[2,]<-c(in_v[1],in_v[3],1)
         }else{S[2,]<-c(in_v[3],in_v[1],1)}
+        
+        ## Node 1 and 4
         if(cormat[in_v[1],in_v[4]]>cormat[in_v[4],in_v[1]])
         {S[3,]<-c(in_v[1],in_v[4],1)
         }else{S[3,]<-c(in_v[4],in_v[1],1)}
+        
+        ## Node 2 and 3
         if(cormat[in_v[2],in_v[3]]>cormat[in_v[3],in_v[2]])
         {S[4,]<-c(in_v[2],in_v[3],1)
         }else{S[4,]<-c(in_v[3],in_v[2],1)}
+        
+        ## Node 2 and 4
         if(cormat[in_v[2],in_v[4]]>cormat[in_v[4],in_v[2]])
         {S[5,]<-c(in_v[2],in_v[4],1)
         }else{S[5,]<-c(in_v[4],in_v[2],1)}
+        
+        ## Node 3 and 4
         if(cormat[in_v[3],in_v[4]]>cormat[in_v[4],in_v[3]])
         {S[6,]<-c(in_v[3],in_v[4],1)
         }else{S[6,]<-c(in_v[4],in_v[3],1)}
     }
-    #build initial gain table
-    gain<-matrix(-Inf,nrow=n,ncol=(2*(n-2)))
-    gain[ou_v,1]<-rowSums(cormat[ou_v,(tri[1,])])
-    gain[ou_v,2]<-rowSums(cormat[ou_v,(tri[2,])])
-    gain[ou_v,3]<-rowSums(cormat[ou_v,(tri[3,])])
-    gain[ou_v,4]<-rowSums(cormat[ou_v,(tri[4,])])
     
-    ntri<-4 #number of triangles
-    gij<-matrix(nrow=1,ncol=ncol(gain))
-    v<-matrix(nrow=1,ncol=ncol(gain))
-    ve<-array()
-    tr<-0
+    #build initial gain table
+    gain <- matrix(-Inf,nrow=n,ncol=(2*(n-2)))
+    gain[ou_v,1] <- rowSums(cormat[ou_v,(tri[1,])])
+    gain[ou_v,2] <- rowSums(cormat[ou_v,(tri[2,])])
+    gain[ou_v,3] <- rowSums(cormat[ou_v,(tri[3,])])
+    gain[ou_v,4] <- rowSums(cormat[ou_v,(tri[4,])])
+    
+    ntri <- 4 #number of triangles
+    gij <- matrix(nrow=1,ncol=ncol(gain))
+    v <- matrix(nrow=1,ncol=ncol(gain))
+    ve <- array()
+    tr <- 0
     for(e in 5:n)
     {
         if(length(ou_v)==1){
@@ -187,16 +211,19 @@ TMFG <-function (data, normal = FALSE,
         }else{
             for(q in 1:ncol(gain))
             {
-                gij[,q]<-max(gain[ou_v,q])
-                v[,q]<-which.max(gain[ou_v,q])
-                tr<-which.max(gij)
+                gij[,q] <- max(gain[ou_v,q])
+                v[,q] <- which.max(gain[ou_v,q])
+                tr <- which.max(gij)
             }
-            ve<-ou_v[v[tr]]
-            w<-v[tr]
+            
+            ve <- ou_v[v[tr]]
+            w <- v[tr]
         }
+        
         #update vertex lists
         ou_v<-ou_v[-w]
         in_v[e]<-ve
+        
         #update adjacency matrix
         for(u in 1:length(tri[tr,]))
         {
@@ -207,6 +234,7 @@ TMFG <-function (data, normal = FALSE,
                 }else{S[cou,]<-cbind(tri[tr,u],ve,1)}}else
                     S[cou,]<-cbind(ve,tri[tr,u],1)
         }
+        
         #update 3-clique list
         separators[e-4,]<-tri[tr,]
         #update triangle list replacing 1 and adding 2 triangles

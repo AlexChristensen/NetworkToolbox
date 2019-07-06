@@ -17,6 +17,8 @@
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 
+#' @importFrom utils packageDescription
+#' 
 "_PACKAGE"
 #> [1] "_PACKAGE"
 #NetworkToolbox----

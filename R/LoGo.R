@@ -1,7 +1,11 @@
-#' Local/Global Inversion Method (GGM of \code{\link[NetworkToolbox]{TMFG}})
+#' Local/Global Inversion Method
+#' 
 #' @description Applies the Local/Global method to estimate
 #' a Gaussian Graphical Model (GGM) using a \code{\link[NetworkToolbox]{TMFG}}-filtered network
-#' (\strong{see and cite Barfuss et al., 2016})
+#' (\strong{see and cite Barfuss et al., 2016}). Also used to 
+#' convert clique and separator structure from
+#' \code{\link[NetworkToolbox]{MFCF}} into partial correlation
+#' and precision matrices
 #' 
 #' @param data Must be a dataset
 #' 

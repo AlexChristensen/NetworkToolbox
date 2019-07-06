@@ -18,6 +18,9 @@
 #' @param ... Additional arguments for \code{\link[igraph]{cluster_walktrap}}
 #' and \code{\link[NetworkToolbox]{louvain}} community detection algorithms
 #' 
+#' @param diagonal Sets the diagonal values of the \code{A} input.
+#' Defaults to \code{0}
+#' 
 #' @return A matrix containing the within-community centrality value for each node
 #' 
 #' @examples
@@ -38,13 +41,15 @@
 stable <- function (A, comm = c("walktrap","louvain"),
                     cent = c("betweenness","rspbc","closeness",
                              "strength","degree","hybrid"), 
-                    absolute = TRUE, ...)
+                    absolute = TRUE, diagonal = 0, ...)
 {
     #nodes
     n <- ncol(A)
     
-    #set diagonal to zero
-    diag(A) <- 0
+    #change diagonal values if necessary
+    if(missing(diagonal))
+    {diagonal <- 0
+    }else{diagonal <- diagonal}
     
     if(missing(cent))
     {cent<-"strength"

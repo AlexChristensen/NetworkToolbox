@@ -11,7 +11,7 @@
 #' @param ran Range of correlations in the simulated network
 #' 
 #' @param nei Adjusts the number of connections each node has to
-#' neighboring nodes (see \link[igraph]{sample_smallworld})
+#' neighboring nodes (see \code{\link[igraph]{sample_smallworld}})
 #' 
 #' @param p Adjusts the rewiring probability (default is .5).
 #' p > .5 rewires the simulated network closer to a random network.
@@ -38,19 +38,20 @@
 #' 
 #' \item{simNetwork}{Adjacency matrix of the simulated network}
 #' 
-#' \item{simData}{Simulated data from \link[psych]{sim.correlation} based on the simulated network}
+#' \item{simData}{Simulated data from sim.correlation in the \code{\link{psych}} package
+#' based on the simulated network}
 #' 
-#' \item{simRho}{Simulated correlation from \link[psych]{sim.correlation}}
+#' \item{simRho}{Simulated correlation from sim.correlation in the \code{\link{psych}} package}
 #' 
 #' @examples
 #' #Continuous data
-#' sim.norm <- sim.swn(25, 500, nei = 3)
+#' sim.Norm <- sim.swn(25, 500, nei = 3)
 #'
 #' #Ordinal data
 #' sim.Likert <- sim.swn(25, 500, nei = 3, replace = TRUE, ordinal = TRUE, ordLevels = 5)
 #' 
 #' #Dichotomous data
-#' sim.Likert <- sim.swn(25, 500, nei = 3, replace = TRUE, ordinal = TRUE, ordLevels = 2)
+#' sim.Binary <- sim.swn(25, 500, nei = 3, replace = TRUE, ordinal = TRUE, ordLevels = 2)
 #' 
 #' @references 
 #' Csardi, G., & Nepusz, T. (2006).
@@ -85,21 +86,6 @@ sim.swn <- function (nodes, n, pos = .80, ran = c(.3,.7),
         diag(cornet)<-0
         
         return(cornet)
-    }
-    
-    if(ordinal)
-    {
-        ordData <- function(data,ordLevels)
-        {
-            if(is.null(ordLevels))  #set number of ordinal levels
-            {ordLevels<-5
-            }else{ordLevels<-ordLevels}
-            
-            for (i in 1:ncol(data))
-            {data[,i] <- as.numeric(cut(data[,i],ordLevels))}
-            
-            return(data)
-        }
     }
     
     adj<-igraph::as_adj(igraph::sample_smallworld(1,nodes,nei=nei,p=p),sparse=FALSE)
@@ -138,9 +124,26 @@ sim.swn <- function (nodes, n, pos = .80, ran = c(.3,.7),
     }
     
     #generate data
-    dat<-psych::sim.correlation(R=rho,n=n,data=TRUE)
+    dat <- psych::sim.correlation(R=rho,n=n,data=TRUE)
+    
     if(ordinal)
-    {dat<-ordData(dat,ordLevels)}
+    {
+        ordData <- function(data,ordLevels)
+        {
+            if(is.null(ordLevels))  #set number of ordinal levels
+            {
+                ordLevels<-5
+                message("Default of 5 ordinal levels was used")
+            }else{ordLevels<-ordLevels}
+            
+            for (i in 1:ncol(data))
+            {data[,i] <- as.numeric(cut(data[,i],ordLevels))}
+            
+            return(data)
+        }
+        
+        dat <- ordData(dat,ordLevels)
+    }
     
     if(corr)
     {graph<-ifelse(abs(rho)>=min(ran)&abs(rho)<=max(ran),rho,0)}

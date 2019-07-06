@@ -2,7 +2,7 @@
 #' @description Converts single or multiple networks into \code{\link{igraph}}'s format for network analysis
 #' 
 #' @param A Adjacency matrix (network matrix) or brain connectivity array
-#' (from \code{\link{convertConnBrainMat}})
+#' (from \code{\link[NetworkToolbox]{convertConnBrainMat}})
 #' 
 #' @param neural Is input a brain connectivity array (i.e., m x m x n)?
 #' Defaults to \code{FALSE}.
