@@ -5,7 +5,8 @@
 \title{Communicating Nodes}
 \usage{
 comcat(A, comm = c("walktrap", "louvain"), cent = c("strength",
-  "degree"), metric = c("across", "each"), ...)
+  "degree"), absolute = TRUE, metric = c("across", "each"),
+  diagonal = 0, ...)
 }
 \arguments{
 \item{A}{An adjacency matrix of network data}
@@ -18,10 +19,17 @@ Set to \code{"louvain"} for \code{\link[NetworkToolbox]{louvain}} community dete
 \item{cent}{Centrality measure to be used.
 Defaults to \code{"strength"}.}
 
+\item{absolute}{Should network use absolute weights?
+Defaults to \code{TRUE}.
+Set to \code{FALSE} for signed weights}
+
 \item{metric}{Whether the metric should be compute for across all of the communities
 (a single value) or for each community (a value for each community).
 Defaults to \code{"across"}.
 Set to \code{"each"} for values for each community}
+
+\item{diagonal}{Sets the diagonal values of the \code{A} input.
+Defaults to \code{0}}
 
 \item{...}{Additional arguments for \code{\link[igraph]{cluster_walktrap}}
 and \code{\link[NetworkToolbox]{louvain}} community detection algorithms}

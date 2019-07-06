@@ -6,7 +6,7 @@
 \usage{
 stable(A, comm = c("walktrap", "louvain"), cent = c("betweenness",
   "rspbc", "closeness", "strength", "degree", "hybrid"), absolute = TRUE,
-  ...)
+  diagonal = 0, ...)
 }
 \arguments{
 \item{A}{An adjacency matrix of network data}
@@ -22,6 +22,9 @@ Defaults to \code{"strength"}.}
 \item{absolute}{Should network use absolute weights?
 Defaults to \code{TRUE}.
 Set to \code{FALSE} for signed weights}
+
+\item{diagonal}{Sets the diagonal values of the \code{A} input.
+Defaults to \code{0}}
 
 \item{...}{Additional arguments for \code{\link[igraph]{cluster_walktrap}}
 and \code{\link[NetworkToolbox]{louvain}} community detection algorithms}

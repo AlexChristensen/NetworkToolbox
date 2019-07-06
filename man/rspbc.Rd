@@ -4,7 +4,7 @@
 \alias{rspbc}
 \title{Randomized Shortest Paths Betweenness Centrality}
 \usage{
-rspbc(A, beta = 0.01)
+rspbc(A, beta = 0.01, comm = NULL)
 }
 \arguments{
 \item{A}{An adjacency matrix of network data}
@@ -14,6 +14,11 @@ Defaults to \code{0.01} (recommended).
 Beta > 0.01 measure gets closer to weighted
 betweenness centrality (10) and beta < 0.01
 measure gets closer to degree (.0001)}
+
+\item{comm}{Vector.
+Community vector containing a value for each node.
+Computes "bridge" RSPBC, where the number of times
+a node is used on a random path between to another community}
 }
 \value{
 A vector of randomized shortest paths betweenness

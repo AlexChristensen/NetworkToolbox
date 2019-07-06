@@ -2,7 +2,7 @@
 % Please edit documentation in R/LoGo.R
 \name{LoGo}
 \alias{LoGo}
-\title{Local/Global Inversion Method (GGM of \code{\link[NetworkToolbox]{TMFG}})}
+\title{Local/Global Inversion Method}
 \usage{
 LoGo(data, cliques, separators, normal = TRUE, na.data = c("pairwise",
   "listwise", "fiml", "none"), partial = TRUE, ...)
@@ -38,7 +38,10 @@ or LoGo-filtered partial correlation matrix (\code{partial = TRUE})
 \description{
 Applies the Local/Global method to estimate
 a Gaussian Graphical Model (GGM) using a \code{\link[NetworkToolbox]{TMFG}}-filtered network
-(\strong{see and cite Barfuss et al., 2016})
+(\strong{see and cite Barfuss et al., 2016}). Also used to 
+convert clique and separator structure from
+\code{\link[NetworkToolbox]{MFCF}} into partial correlation
+and precision matrices
 }
 \examples{
 \dontrun{

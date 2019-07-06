@@ -17,7 +17,7 @@ Input data as a matrix or data frame}
 \item{A}{An adjacency matrix of network data}
 
 \item{percentile}{Sets the number of overlapping nodes to show.
-Defaults to \code{.99} or the nodes in the top 1% of redundancy.
+Defaults to \code{.99} or the nodes in the top 1\% of redundancy.
 Set lower to identify more overlapping nodes}
 
 \item{method}{Sets whether edges should be consider with absolute
@@ -34,16 +34,18 @@ Set to \code{TRUE} to bootstrap}
 \item{network}{Network estimation method for bootstrap.
 Defaults to \code{"glasso"}}
 
-\item{...}{Additional arguments to be passed to the network estimation
-method.
-See \link[qgraph]{EBICglasso} and \link[NetworkToolbox]{TMFG} for more details}
+\item{...}{Arguments to be passed onto \code{\link[qgraph]{EBICglasso}}
+or \code{\link[NetworkToolbox]{TMFG}}}
 }
 \value{
 Produces a list containing:
 
 \item{overlap}{A table with the nodes with the highest topological similarity
 (\code{Topo. Similarity}; ordered from most to least).
-Also includes the zero-order correlation between nodes (\code{Zero-order}), and
+
+If \code{data} is input, then the standard deviations of each item pair (i.e., 
+\code{Node1} and \code{Node2}) are provided. Nodes with larger standard deviations
+are preferred. Also includes the zero-order correlation between nodes (\code{Zero-order}), and
 Jaccard similarity (\code{Jaccard}).}
 
 \item{items}{A matrix containing the names of items that have high overlap}
@@ -60,7 +62,9 @@ array of similarity measures that can be used to determine node redundancy
 }
 \examples{
 
-result <- node.overlap(neoOpen)
+net <- TMFG(neoOpen, normal = FALSE)$A
+
+result <- node.overlap(A = net, normal = FALSE)
 
 }
 \references{

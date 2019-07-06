@@ -17,7 +17,7 @@ sim.swn(nodes, n, pos = 0.8, ran = c(0.3, 0.7), nei = 1, p = 0.5,
 \item{ran}{Range of correlations in the simulated network}
 
 \item{nei}{Adjusts the number of connections each node has to
-neighboring nodes (see \link[igraph]{sample_smallworld})}
+neighboring nodes (see \code{\link[igraph]{sample_smallworld}})}
 
 \item{p}{Adjusts the rewiring probability (default is .5).
 p > .5 rewires the simulated network closer to a random network.
@@ -45,9 +45,10 @@ Returns a list containing:
 
 \item{simNetwork}{Adjacency matrix of the simulated network}
 
-\item{simData}{Simulated data from \link[psych]{sim.correlation} based on the simulated network}
+\item{simData}{Simulated data from sim.correlation in the \code{\link{psych}} package
+based on the simulated network}
 
-\item{simRho}{Simulated correlation from \link[psych]{sim.correlation}}
+\item{simRho}{Simulated correlation from sim.correlation in the \code{\link{psych}} package}
 }
 \description{
 Simulates a small-world network based on specified topological properties.
@@ -55,13 +56,13 @@ Data will also be simulated based on the true network structure
 }
 \examples{
 #Continuous data
-sim.norm <- sim.swn(25, 500, nei = 3)
+sim.Norm <- sim.swn(25, 500, nei = 3)
 
 #Ordinal data
 sim.Likert <- sim.swn(25, 500, nei = 3, replace = TRUE, ordinal = TRUE, ordLevels = 5)
 
 #Dichotomous data
-sim.Likert <- sim.swn(25, 500, nei = 3, replace = TRUE, ordinal = TRUE, ordLevels = 2)
+sim.Binary <- sim.swn(25, 500, nei = 3, replace = TRUE, ordinal = TRUE, ordLevels = 2)
 
 }
 \references{

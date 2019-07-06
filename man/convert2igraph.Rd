@@ -8,7 +8,7 @@ convert2igraph(A, neural = FALSE)
 }
 \arguments{
 \item{A}{Adjacency matrix (network matrix) or brain connectivity array
-(from \code{\link{convertConnBrainMat}})}
+(from \code{\link[NetworkToolbox]{convertConnBrainMat}})}
 
 \item{neural}{Is input a brain connectivity array (i.e., m x m x n)?
 Defaults to \code{FALSE}.
