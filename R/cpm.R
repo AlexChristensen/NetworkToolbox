@@ -1041,7 +1041,6 @@ cpmPlot <- function (cpm.obj, visual.nets = FALSE)
         ########################
         
         # 17-Network Parcellation
-        # 7-Network Parcellation
         ltlobenets <- c(rep("VisCent",11),rep("VisPeri",9),rep("SomMotA",15),rep("SomMotB",12),
                         rep("DorsAttnA",8),rep("DorsAttnB",8),rep("SalVentAttnA",10),
                         rep("SalVentAttnB",6),rep("Limbic",9),rep("ContA",12),rep("ContB",6),
