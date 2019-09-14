@@ -25,7 +25,7 @@ A vector of randomized shortest paths betweenness
 centrality values for each node in the network
 }
 \description{
-Computes betweenness centrlaity based on randomized shortest paths
+Computes betweenness centrality based on randomized shortest paths
 of each node in a network
 (\strong{Please see and cite Kivimaki et al., 2016})
 }

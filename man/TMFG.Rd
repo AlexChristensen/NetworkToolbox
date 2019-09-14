@@ -48,13 +48,39 @@ variables. Then, it iteratively adds each variable with the largest sum of three
 correlations to nodes already in the network until all variables have been added to
 the network. This structure can be associated with the inverse correlation matrix
 (i.e., precision matrix) to be turned into a GGM (i.e., partial correlation network)
-by using \code{\link[NetworkToolbox]{LoGo}}.
+by using \code{\link[NetworkToolbox]{LoGo}}. See Details for more information on this
+network estimation method.
+}
+\details{
+The TMFG method applies a structural constraint on the network,
+which restrains the network to retain a certain number of edges (3\emph{n}-6, where \emph{n}
+is the number of nodes; Massara et al., 2016). The network is also composed of 3- and 4-node
+cliques (i.e., sets of connected nodes; a triangle and tetrahedron, respectively). The
+TMFG method constructs a network using zero-order correlations and the resulting network
+can be associated with the inverse covariance matrix
+(yielding a GGM; Barfuss, Massara, Di Matteo, & Aste, 2016).
+Notably, the TMFG can use any association measure and thus does not assume the data is multivariate normal.
+
+Construction begins by forming a tetrahedron of the four nodes that have
+the highest sum of correlations that are greater than the average correlation in the
+correlation matrix. Next, the algorithm iteratively identifies the node that maximizes
+its sum of correlations to a connected set of three nodes (triangles) already included
+in the network and then adds that node to the network. The process is completed once
+every node is connected in the network. In this process, the network automatically
+generates what’s called a planar network. A planar network is a network that could be
+drawn on a sphere with no edges crossing (often, however, the networks are depicted
+with edges crossing; Tumminello, Aste, Di Matteo, & Mantegna, 2005).
 }
 \examples{
 TMFG.net <- TMFG(neoOpen)
 
 }
 \references{
+Barfuss, W., Massara, G. P., Di Matteo, T., & Aste, T. (2016).
+Parsimonious modeling with information filtering networks.
+\emph{Physical Review E}, \emph{94}, 062306.
+doi: \href{https://doi.org/10.1103/PhysRevE.94.062306}{10.1103/PhysRevE.94.062306}
+
 Christensen, A. P., Kenett, Y. N., Aste, T., Silvia, P. J., & Kwapil, T. R. (2018).
 Network structure of the Wisconsin Schizotypy Scales-Short Forms: Examining psychometric network filtering approaches.
 \emph{Behavior Research Methods}, 1-20.
@@ -64,6 +90,11 @@ Massara, G. P., Di Matteo, T., & Aste, T. (2016).
 Network filtering for big data: Triangulated maximally filtered graph.
 \emph{Journal of Complex Networks}, \emph{5}, 161-178.
 doi: \href{https://doi.org/10.1093/comnet/cnw015}{10.1093/comnet/cnw015}
+
+Tumminello, M., Aste, T., Di Matteo, T., & Mantegna, R. N. (2005).
+A tool for filtering information in complex systems.
+\emph{Proceedings of the National Academy of Sciences}, \emph{102}, 10421-10426.
+doi: \href{https://doi.org/10.1073/pnas.0500298102}{10.1073/pnas.0500298102}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

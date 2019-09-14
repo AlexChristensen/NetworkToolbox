@@ -13,7 +13,7 @@ kld(base, test)
 }
 \value{
 A value greater than 0.
-Smaller values suggest the probablity distribution of the reduced model is near the full model
+Smaller values suggest the probability distribution of the reduced model is near the full model
 }
 \description{
 Estimates the Kullback-Leibler Divergence which measures how one probability distribution

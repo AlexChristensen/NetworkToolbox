@@ -23,7 +23,7 @@ neighboring nodes (see \code{\link[igraph]{sample_smallworld}})}
 p > .5 rewires the simulated network closer to a random network.
 p < .5 rewires the simulated network closer to a lattice network}
 
-\item{corr}{Should the simualted network be a correlation network?
+\item{corr}{Should the simulated network be a correlation network?
 Defaults to FALSE.
 Set to TRUE for a simulated correlation network}
 

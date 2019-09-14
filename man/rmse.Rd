@@ -7,7 +7,7 @@
 rmse(base, test)
 }
 \arguments{
-\item{base}{Base (or full) model to be evaulated against}
+\item{base}{Base (or full) model to be evaluated against}
 
 \item{test}{Reduced (or testing) model (e.g., a sparse correlation or covariance matrix)}
 }

@@ -10,7 +10,7 @@ binarize(A)
 \item{A}{An adjacency matrix of network data (or an array of matrices)}
 }
 \value{
-Returns an adjancency matrix of 1's and 0's
+Returns an adjacency matrix of 1's and 0's
 }
 \description{
 Converts weighted adjacency matrix to a binarized adjacency matrix

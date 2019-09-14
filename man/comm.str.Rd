@@ -4,7 +4,7 @@
 \alias{comm.str}
 \title{Community Strength/Degree Centrality}
 \usage{
-comm.str(A, comm, weighted = TRUE)
+comm.str(A, comm, weighted = TRUE, measure = c("within", "between"))
 }
 \arguments{
 \item{A}{An adjacency matrix of network data}
@@ -15,6 +15,20 @@ community each node belongs to}
 \item{weighted}{Is the network weighted?
 Defaults to \code{TRUE}.
 Set to \code{FALSE} for weighted measures}
+
+\item{measure}{Type of measure to compute:
+
+\itemize{
+
+\item{\code{"within"}}
+{Computes the community strength or degree of nodes within
+its own community}
+
+\item{\code{"between"}}
+{Computes the community strength or degree of nodes outside
+of its own community}
+
+}}
 }
 \value{
 A vector of community strength/degree centrality values for each specified
@@ -22,8 +36,11 @@ community in the network
 (larger values suggest more central positioning)
 }
 \description{
-Computes the community strength/degree centrality measure of each
-community in a network
+Computes the community
+\code{\link[NetworkToolbox]{strength}}/\code{\link[NetworkToolbox]{degree}}
+centrality measure of each community in a network \code{} or computes the
+\code{\link[NetworkToolbox]{strength}}/\code{\link[NetworkToolbox]{degree}}
+centrality measure of each community's connections to the other communities
 }
 \examples{
 A <- TMFG(neoOpen)$A
@@ -31,10 +48,12 @@ A <- TMFG(neoOpen)$A
 comm <- igraph::walktrap.community(convert2igraph(abs(A)))$membership
 
 #Strength
-result <- comm.str(A, comm)
+within.ns <- comm.str(A, comm, measure = "within")
+between.ns <- comm.str(A, comm, measure = "between")
 
 #Degree
-result <- comm.str(A, comm, weighted = FALSE)
+within.deg <- comm.str(A, comm, weighted = FALSE, measure = "within")
+between.deg <- comm.str(A, comm, weighted = FALSE, measure = "between")
 
 }
 \author{

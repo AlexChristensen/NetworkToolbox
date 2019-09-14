@@ -2,7 +2,7 @@
 % Please edit documentation in R/desc.all.R
 \name{desc.all}
 \alias{desc.all}
-\title{Dataset Descriptive Statisitcs}
+\title{Dataset Descriptive Statistics}
 \usage{
 desc.all(data)
 }
@@ -16,7 +16,7 @@ will contain yes/no for whether the variable is normally distributed based
 on the \code{\link{shapiro.test}} for the entire dataset
 }
 \description{
-Computes \code{mean}, standard deviaiton (\code{sd}), minimum value (\code{min}),
+Computes \code{mean}, standard deviation (\code{sd}), minimum value (\code{min}),
 maximum value (\code{max}),
 and univariate normal statistics (\code{normal?}) for the entire dataset
 }

@@ -17,7 +17,7 @@ Set to \code{FALSE} for unweighted measure of leverage centrality}
 A vector of leverage centrality values for each node in the network
 }
 \description{
-Computes leverage centrlaity of each node in a network
+Computes leverage centrality of each node in a network
 (the degree of connected neighbors; \strong{Please see and cite Joyce et al., 2010})
 }
 \examples{

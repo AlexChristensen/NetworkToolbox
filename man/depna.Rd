@@ -37,7 +37,7 @@ doi: \href{https://doi.org/10.1038/srep27444}{10.1038/srep27444}
 
 Kenett, D. Y., Tumminello, M., Madi, A., Gur-Gershgoren, G., Mantegna, R. N., & Ben-Jacob, E. (2010).
 Dominating clasp of the financial sector revealed by partial correlation analysis of the stock market.
-\emph{PloS one}, \emph{5}, e15032.
+\emph{PLoS one}, \emph{5}, e15032.
 doi: \href{https://doi.org/10.1371/journal.pone.0015032}{10.1371/journal.pone.0015032}
 }
 \author{

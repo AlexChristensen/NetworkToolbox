@@ -2,7 +2,7 @@
 % Please edit documentation in R/desc.R
 \name{desc}
 \alias{desc}
-\title{Variable Descriptive Statisitcs}
+\title{Variable Descriptive Statistics}
 \usage{
 desc(data, column, histplot = TRUE)
 }
@@ -20,7 +20,7 @@ will contain yes/no for whether the variable is normally distributed based
 on the \code{\link{shapiro.test}} for a variable
 }
 \description{
-Computes \code{mean}, standard deviaiton (\code{sd}), minimum value (\code{min}),
+Computes \code{mean}, standard deviation (\code{sd}), minimum value (\code{min}),
 maximum value (\code{max}),
 and univariate normal statistics (\code{normal?}) for a variable
 }

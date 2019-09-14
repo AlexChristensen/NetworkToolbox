@@ -17,7 +17,7 @@ Set to \code{FALSE} for unweighted measure of betwenness centrality}
 A vector of betweenness centrality values for each node in the network
 }
 \description{
-Computes betweenness centrlaity of each node in a network
+Computes betweenness centrality of each node in a network
 }
 \examples{
 A <- TMFG(neoOpen)$A

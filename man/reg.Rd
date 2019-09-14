@@ -17,7 +17,7 @@ Set to any family used in function \code{\link[stats]{family}}}
 \item{symmetric}{Should matrix be symmetric?
 Defaults to \code{TRUE}, taking the mean of the two edge weights
 (i.e., \code{[i,j]} and \code{[j,i]})
-Set to \code{FALSE} for asymmwtric weights
+Set to \code{FALSE} for asymmetric weights
 (i.e., \code{[i,j]} does not equal \code{[j,i]})}
 }
 \value{

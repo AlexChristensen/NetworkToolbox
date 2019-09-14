@@ -17,7 +17,7 @@ Set to \code{FALSE} for unweighted measure of closeness centrality}
 A vector of closeness centrality values for each node in the network
 }
 \description{
-Computes closeness centrlaity of each node in a network
+Computes closeness centrality of each node in a network
 }
 \examples{
 A <- TMFG(neoOpen)$A
