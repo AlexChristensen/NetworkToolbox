@@ -79,7 +79,7 @@
 #' @param model Regression model to use for fitting the data.
 #' Defaults to \code{"linear"}
 #' 
-#' @param corr Correlation method for assessing the relatonship between the behavioral measure and edges between ROIs.
+#' @param corr Correlation method for assessing the relationship between the behavioral measure and edges between ROIs.
 #' Defaults to \code{"pearson"}.
 #' Set to \code{"spearman"} for non-linear or monotonic associations
 #' 
@@ -132,7 +132,7 @@
 #' 
 #' Returns a list containing:
 #'
-#' \item{results}{A matrix contaning: r coefficient (\code{r}), p-value (\code{p-value}),
+#' \item{results}{A matrix containing: r coefficient (\code{r}), p-value (\code{p-value}),
 #' mean absolute error (\code{mae}), root mean square error (\code{rmse})}
 #' 
 #' \item{posMask}{Positive connectivity for input in

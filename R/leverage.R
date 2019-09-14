@@ -1,5 +1,5 @@
 #' Leverage Centrality
-#' @description Computes leverage centrlaity of each node in a network
+#' @description Computes leverage centrality of each node in a network
 #' (the degree of connected neighbors; \strong{Please see and cite Joyce et al., 2010})
 #' 
 #' @param A An adjacency matrix of network data

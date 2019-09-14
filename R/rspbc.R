@@ -1,5 +1,5 @@
 #' Randomized Shortest Paths Betweenness Centrality
-#' @description Computes betweenness centrlaity based on randomized shortest paths
+#' @description Computes betweenness centrality based on randomized shortest paths
 #' of each node in a network
 #' (\strong{Please see and cite Kivimaki et al., 2016})
 #' 

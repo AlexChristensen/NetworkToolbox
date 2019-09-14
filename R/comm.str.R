@@ -1,6 +1,9 @@
 #' Community Strength/Degree Centrality
-#' @description Computes the community strength/degree centrality measure of each
-#' community in a network
+#' @description Computes the community
+#' \code{\link[NetworkToolbox]{strength}}/\code{\link[NetworkToolbox]{degree}}
+#' centrality measure of each community in a network \code{} or computes the
+#' \code{\link[NetworkToolbox]{strength}}/\code{\link[NetworkToolbox]{degree}}
+#' centrality measure of each community's connections to the other communities 
 #' 
 #' @param A An adjacency matrix of network data
 #' 
@@ -10,6 +13,20 @@
 #' @param weighted Is the network weighted?
 #' Defaults to \code{TRUE}.
 #' Set to \code{FALSE} for weighted measures
+#' 
+#' @param measure Type of measure to compute:
+#' 
+#' \itemize{
+#' 
+#' \item{\code{"within"}}
+#' {Computes the community strength or degree of nodes within
+#' its own community}
+#' 
+#' \item{\code{"between"}}
+#' {Computes the community strength or degree of nodes outside
+#' of its own community}
+#' 
+#' }
 #' 
 #' @return A vector of community strength/degree centrality values for each specified
 #' community in the network
@@ -21,19 +38,26 @@
 #' comm <- igraph::walktrap.community(convert2igraph(abs(A)))$membership
 #' 
 #' #Strength
-#' result <- comm.str(A, comm)
+#' within.ns <- comm.str(A, comm, measure = "within")
+#' between.ns <- comm.str(A, comm, measure = "between")
 #' 
 #' #Degree
-#' result <- comm.str(A, comm, weighted = FALSE)
+#' within.deg <- comm.str(A, comm, weighted = FALSE, measure = "within")
+#' between.deg <- comm.str(A, comm, weighted = FALSE, measure = "between")
 #'
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 
 #' @export
 #Community Strength/Degree Centrality
-comm.str <- function (A, comm, weighted = TRUE)
+comm.str <- function (A, comm, weighted = TRUE,
+                      measure = c("within","between"))
 {
     if(is.null(comm))
     {stop("comm must be input")}
+    
+    if(missing(measure))
+    {measure <- "between"
+    }else{measure <- match.arg(measure)}
     
     comm <- as.vector(comm)
     
@@ -51,9 +75,19 @@ comm.str <- function (A, comm, weighted = TRUE)
         
         if(length(rem)!=1)
         {
-            if(weighted)
-            {remove[j,] <- sum(colSums(A[,rem]))
-            }else{remove[j,] <- sum(colSums(binarize(A)[,rem]))}
+            if(measure == "within")
+            {
+                if(weighted)
+                {remove[j,] <- sum(colSums(A[,rem]))
+                }else{remove[j,] <- sum(colSums(binarize(A)[,rem]))}
+            }else if(measure == "between")
+            {
+                if(weighted)
+                {remove[j,] <- sum(colSums(A[,-rem]))
+                }else{remove[j,] <- sum(colSums(binarize(A)[,-rem]))}
+            }
+            
+            
         }else{remove[j,] <- 0}
     }
     
@@ -61,6 +95,8 @@ comm.str <- function (A, comm, weighted = TRUE)
     
     names(norm) <- uniq
     
-    return(norm)
+    res <- norm[sort(names(norm))]
+    
+    return(res)
 }
 #----

@@ -41,7 +41,7 @@
 #' @references 
 #' Humphries, M. D., & Gurney, K. (2008).
 #' Network 'small-world-ness': A quantitative method for determining canonical network equivalence.
-#' \emph{PloS one}, \emph{3}, e0002051.
+#' \emph{PLoS one}, \emph{3}, e0002051.
 #' doi: \href{https://doi.org/10.1371/journal.pone.0002051}{10.1371/journal.pone.0002051}
 #' 
 #' Telesford, Q. K., Joyce, K. E., Hayasaka, S., Burdette, J. H., & Laurienti, P. J. (2011).

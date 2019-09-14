@@ -8,7 +8,7 @@
 #' Set to \code{TRUE} for weighted measures of CC and CCi
 #' @return Returns a list containing:
 #' 
-#' \item{CC}{Global clustering coefficient. The average clustering cooefficient for each node in the network}
+#' \item{CC}{Global clustering coefficient. The average clustering coefficient for each node in the network}
 #' 
 #' \item{CCi}{Local clustering coefficient. The clustering coefficient for each node in the network}
 #' 

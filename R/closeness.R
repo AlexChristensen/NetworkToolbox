@@ -1,5 +1,5 @@
 #' Closeness Centrality
-#' @description Computes closeness centrlaity of each node in a network
+#' @description Computes closeness centrality of each node in a network
 #' 
 #' @param A An adjacency matrix of network data
 #' 

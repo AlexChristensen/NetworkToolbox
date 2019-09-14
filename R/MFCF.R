@@ -71,7 +71,7 @@
 #' 
 #' \item{A}{MFCF filtered partial correlation network (adjacency matrix)}
 #' 
-#' \item{J}{MFCF filtered inverse covariance matrix (precision matix)}
+#' \item{J}{MFCF filtered inverse covariance matrix (precision matrix)}
 #' 
 #' \item{cliques}{Cliques in the network
 #' (output for \code{\link[NetworkToolbox]{LoGo}})}

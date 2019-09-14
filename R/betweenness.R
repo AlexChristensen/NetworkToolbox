@@ -1,5 +1,5 @@
 #' Betweenness Centrality
-#' @description Computes betweenness centrlaity of each node in a network
+#' @description Computes betweenness centrality of each node in a network
 #' 
 #' @param A An adjacency matrix of network data
 #' 

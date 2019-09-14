@@ -18,10 +18,11 @@
 #' Cotter, K. N., Christensen, A. P., & Silvia, P. J. (in press).
 #' Understanding inner music: A dimensional approach to musical imagery.
 #' \emph{Psychology of Aesthetics, Creativity, and the Arts}.
+#' doi: \href{http://dx.doi.org/10.1037/aca0000195}{10.1037/aca0000195}
 #' 
 #' Kenett, Y. N., Kenett, D. Y., Ben-Jacob, E., & Faust, M. (2011).
 #' Global and local features of semantic networks: Evidence from the Hebrew mental lexicon.
-#' \emph{PloS one}, \emph{6}, e23912.
+#' \emph{PLoS one}, \emph{6}, e23912.
 #' doi: \href{https://doi.org/10.1371/journal.pone.0023912}{10.1371/journal.pone.0023912}
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>

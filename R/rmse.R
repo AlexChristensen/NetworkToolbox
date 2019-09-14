@@ -1,7 +1,7 @@
 #' Root Mean Square Error
 #' @description Computes the root mean square error (RMSE) of a sparse model to a full model
 #' 
-#' @param base Base (or full) model to be evaulated against
+#' @param base Base (or full) model to be evaluated against
 #' 
 #' @param test Reduced (or testing) model (e.g., a sparse correlation or covariance matrix)
 #' 

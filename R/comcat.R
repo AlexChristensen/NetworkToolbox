@@ -88,14 +88,14 @@ comcat <- function (A, comm = c("walktrap","louvain"),
         if(metric=="across")
         {
             
-            for(i in 1:max(facts))
+            for(i in 1:max(facts, na.rm = TRUE))
             {
                 Ah <- A[which(facts!=i),which(facts==i)]
                 
                 if(cent=="degree")
-                {com<-degree(Ah)
+                {com<-colSums(binarize(Ah))
                 }else if(cent=="strength")
-                {com<-strength(Ah,absolute)}
+                {com<-colSums(Ah,absolute)}
                 
                 fact[[i]]<-com
             }

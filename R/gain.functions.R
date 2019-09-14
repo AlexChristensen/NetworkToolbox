@@ -33,7 +33,7 @@
 #' the clique nodes with a regression coefficient significantly different
 #' from zero are added to the separator / new clique. The gain is different from 
 #' zero only if the F-values is significant, It assumed that the \code{data} 
-#' matrix is a dataset of realisations (i.e., \code{p}
+#' matrix is a dataset of realizations (i.e., \code{p}
 #' variables and \code{n} observations).} 
 #' 
 #' } 
@@ -80,7 +80,7 @@
 #' to include in a clique. Defaults to \code{.05}}
 #' 
 #' \item{\code{pen}}
-#' {Numeric. Multiplies the number of edges added to penalise 
+#' {Numeric. Multiplies the number of edges added to penalize 
 #' complex models. Similar to the penalty term in AIC}
 #' 
 #' \item{\code{drop_sep}}

@@ -73,7 +73,7 @@ stable <- function (A, comm = c("walktrap","louvain"),
     
     fact<-list()
     
-    for(i in 1:max(facts))
+    for(i in 1:max(facts, na.rm = TRUE))
     {
         Ah<-A[which(facts==i),which(facts==i)]
         
@@ -93,9 +93,9 @@ stable <- function (A, comm = c("walktrap","louvain"),
     
     stabil<-unlist(fact)
     
-    bind<-cbind(ord,stabil)
+    bind <- suppressWarnings(cbind(ord,stabil))
     
-    stabord<-bind[order(bind[,1]),]
+    stabord <- bind[order(bind[,1]),]
     
     stabmat<-matrix(stabord[,3],nrow=nrow(stabord),ncol=1)
     

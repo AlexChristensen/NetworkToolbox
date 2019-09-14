@@ -1,5 +1,5 @@
-#' Dataset Descriptive Statisitcs
-#' @description Computes \code{mean}, standard deviaiton (\code{sd}), minimum value (\code{min}),
+#' Dataset Descriptive Statistics
+#' @description Computes \code{mean}, standard deviation (\code{sd}), minimum value (\code{min}),
 #' maximum value (\code{max}),
 #' and univariate normal statistics (\code{normal?}) for the entire dataset
 #' 
