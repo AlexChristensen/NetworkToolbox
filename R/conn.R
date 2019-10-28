@@ -14,7 +14,8 @@
 #' \item{total}{The sum total of the edge weights in the network}
 #' 
 #' @examples
-#' A <- TMFG(neoOpen)$A
+#' # Pearson's correlation only for CRAN checks
+#' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
 #' connectivity <- conn(A)
 #' 

@@ -6,7 +6,8 @@
 #' and the function \link[wTO]{wTO} from the wTO package. 
 #' 
 #' @param A Matrix or data frame.
-#' An adjacency matrix of network data
+#' An adjacency matrix of network data (if \code{type = "wTO"}).
+#' Dataset (if \code{type = "pcor"})
 #' 
 #' @param sig Numeric.
 #' \emph{p}-value for significance of overlap (defaults to \code{.05}).
@@ -29,10 +30,14 @@
 #' to redundant nodes with the name of object in the list
 #' 
 #' @examples
-#' 
+#' # normal set to FALSE for CRAN tests
 #' net <- TMFG(neoOpen, normal = FALSE)$A
 #' 
-#' result <- node.redundant(A = net, method = "adapt")
+#' # weighted topological overlap
+#' result <- node.redundant(A = net, method = "adapt", type = "wTO")
+#' 
+#' # partial correlation
+#' result <- node.redundant(A = neoOpen, method = "adapt", type = "pcor")
 #' 
 #' @references
 #' #wTO
@@ -54,13 +59,17 @@ node.redundant <- function (A, sig, type = c("wTO", "pcor"),
     {method <- "adapt"
     }else{method <- match.arg(method)}
     
+    if(missing("type"))
+    {type <- "pcor"
+    }else{method <- match.arg(type)}
+    
     #number of nodes
     nodes <- ncol(A)
     
     #compute type of overlap method
     if(type == "wTO")
     {tom <- wTO::wTO(A,sign="sign")
-    }else if (type == "pcor")
+    }else if(type == "pcor")
     {
         tom <- qgraph::cor_auto(A)
         tom <- -cov2cor(solve(tom))

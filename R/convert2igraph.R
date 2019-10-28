@@ -13,7 +13,8 @@
 #' convert to \code{\link{igraph}}'s format
 #' 
 #' @examples
-#' A <- TMFG(neoOpen)$A
+#' # Pearson's correlation only for CRAN checks
+#' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
 #' igraphNetwork <- convert2igraph(A)
 #' 

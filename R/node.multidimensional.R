@@ -14,8 +14,8 @@
 #' @return Produces a list containing:
 #' 
 #' @examples
-#' # Uses Pearson's correlation 
-#' tmfg <- TMFG(neoOpen)$A
+#' # Pearson's correlation only for CRAN checks
+#' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
 #' \dontrun{
 #' # Better to use polychoric correlations with this dataset

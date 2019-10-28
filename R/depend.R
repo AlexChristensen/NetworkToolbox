@@ -10,8 +10,8 @@
 #' 
 #' @param na.data How should missing data be handled?
 #' For \code{"listwise"} deletion the \code{\link{na.omit}} function is applied.
-#' Set to \code{"fiml"} for Full Information Maxmimum Likelihood (\link[psych]{corFiml}).
-#' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
+#' Set to \code{"fiml"} for Full Information Maximum Likelihood (\link[psych]{corFiml}).
+#' Full Information Maximum Likelihood is \strong{recommended} but time consuming
 #' 
 #' @param index Should correlation with the latent variable
 #' (i.e., weighted average of all variables) be removed?

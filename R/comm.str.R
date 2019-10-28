@@ -33,7 +33,8 @@
 #' (larger values suggest more central positioning)
 #' 
 #' @examples
-#' A <- TMFG(neoOpen)$A
+#' # Pearson's correlation only for CRAN checks
+#' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
 #' comm <- igraph::walktrap.community(convert2igraph(abs(A)))$membership
 #' 

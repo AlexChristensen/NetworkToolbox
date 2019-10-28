@@ -29,7 +29,8 @@
 #' @return A vector containing the between-community strength value for each node
 #' 
 #' @examples
-#' A <- TMFG(neoOpen)$A
+#' # Pearson's correlation only for CRAN checks
+#' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
 #' communicating <- comcat(A, comm = "walktrap", cent = "strength", metric = "across")
 #' 

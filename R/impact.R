@@ -10,7 +10,8 @@
 #' lower ASPL when node is removed)
 #' 
 #' @examples
-#' A <- TMFG(neoOpen)$A
+#' # normal set to FALSE for CRAN tests
+#' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
 #' nodeimpact <- impact(A)
 #' 

@@ -4,15 +4,15 @@
 #' @param data Can be a dataset or a correlation matrix
 #' 
 #' @param normal Should data be transformed to a normal distribution?
-#' Defaults to \code{FALSE}.
-#' Data is not transformed to be normal.
-#' Set to \code{TRUE} if data should be transformed to be normal
-#' (computes correlations using the \code{\link[qgraph]{cor_auto}} function)
+#' Input must be a dataset.
+#' Defaults to \code{TRUE}.
+#' Computes correlations using the \code{\link[qgraph]{cor_auto}} function.
+#' Set to \code{FALSE} for Pearson's correlation
 #' 
 #' @param na.data How should missing data be handled?
 #' For \code{"listwise"} deletion the \code{\link{na.omit}} function is applied.
-#' Set to \code{"fiml"} for Full Information Maxmimum Likelihood (\code{\link[psych]{corFiml}}).
-#' Full Information Maxmimum Likelihood is \strong{recommended} but time consuming
+#' Set to \code{"fiml"} for Full Information Maximum Likelihood (\code{\link[psych]{corFiml}}).
+#' Full Information Maximum Likelihood is \strong{recommended} but time consuming
 #' 
 #' @param depend Is network a dependency (or directed) network?
 #' Defaults to \code{FALSE}.
@@ -22,7 +22,8 @@
 #' @return A sparse association matrix
 #' 
 #' @examples
-#' MaST.net <- MaST(neoOpen)
+#' # Pearson's correlation only for CRAN checks
+#' MaST.net <- MaST(neoOpen, normal = FALSE)
 #' 
 #' @references 
 #' Adapted from: \url{https://www.mathworks.com/matlabcentral/fileexchange/23276-maximum-weight-spanning-tree--undirected}
@@ -31,7 +32,7 @@
 #' 
 #' @export
 #Maximum Spanning Tree----
-MaST <- function (data, normal = FALSE,
+MaST <- function (data, normal = TRUE,
                   na.data = c("pairwise","listwise","fiml","none"),
                   depend = FALSE)
 {

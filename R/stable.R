@@ -24,7 +24,8 @@
 #' @return A matrix containing the within-community centrality value for each node
 #' 
 #' @examples
-#' A<-TMFG(neoOpen)$A
+#' # Pearson's correlation only for CRAN checks
+#' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
 #' stabilizing <- stable(A, comm = "walktrap")
 #' 

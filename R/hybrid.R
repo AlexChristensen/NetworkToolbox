@@ -14,7 +14,8 @@
 #' (higher values are more central, lower values are more peripheral)
 #' 
 #' @examples
-#' A <- TMFG(neoOpen)$A
+#' # Pearson's correlation only for CRAN checks
+#' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
 #' HC <- hybrid(A)
 #' @references 

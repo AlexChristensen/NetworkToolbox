@@ -10,7 +10,8 @@
 #' @return A distance matrix of the network
 #' 
 #' @examples
-#' A <- TMFG(neoOpen)$A
+#' # Pearson's correlation only for CRAN checks
+#' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
 #' #Unweighted
 #' Du <- distance(A)

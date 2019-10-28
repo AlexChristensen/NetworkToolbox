@@ -18,7 +18,7 @@
 #' 
 #' @examples
 #' \dontrun{
-#' neuralarray<-convertConnBrainMat()
+#' neuralarray <- convertConnBrainMat()
 #' 
 #' #Import correlation connectivity array from Matlab
 #' library(R.matlab)

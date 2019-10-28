@@ -20,8 +20,8 @@
 #' Negative values indicate more incoming strength relative to outgoing strength}
 #' 
 #' @examples
-#' #Undirected network
-#' A <- TMFG(neoOpen)$A
+#' # Pearson's correlation only for CRAN checks
+#' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
 #' str <- strength(A)
 #' 

@@ -10,7 +10,8 @@
 #' @return A vector of eigenvector centrality values for each node in the network
 #' 
 #' @examples
-#' A <- TMFG(neoOpen)$A
+#' # Pearson's correlation only for CRAN checks
+#' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
 #' #Weighted
 #' EC <- eigenvector(A)

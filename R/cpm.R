@@ -89,7 +89,7 @@
 #' 
 #' @param cores Number of computer processing cores to use when performing covariate analyses.
 #' Defaults to \emph{n} - 1 total number of cores.
-#' Set to any number between 1 and maxmimum amount of cores on your computer
+#' Set to any number between 1 and maximum amount of cores on your computer
 #' 
 #' @param progBar Should progress bar be displayed?
 #' Defaults to \code{TRUE}.

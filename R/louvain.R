@@ -16,7 +16,8 @@
 #' \item{Q}{Modularity statistic. A measure of how well the communities are comparmentalized}
 #' 
 #' @examples
-#' A <- TMFG(neoOpen)$A
+#' # Pearson's correlation only for CRAN checks
+#' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
 #' modularity <- louvain(A)
 #' 

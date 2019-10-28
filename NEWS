@@ -1,34 +1,43 @@
+Changes in version 1.3.2
+
+o updated Description file
+
+o updated citation
+
+
 Changes in version 1.3.1
 
-o 'TMFG' bug fix
+o `TMFG` bug fix
+
 
 Changes in version 1.3.0
 
-o converged all Connectome Predictive Modeling into one documentation see '?cpm'
+o converged all Connectome Predictive Modeling into one documentation see `?cpm`
 
-o migrated 'net.scores' and 'net.loads' to 'EGAnet' package
+o migrated `net.scores` and `net.loads` to 'EGAnet' package
 
 o added several new functions to implement the latest state-of-the-art Information Filtering Network method: Maximally Filtered Clique Forest (MFCF; thanks Guido!)
 
 o added Guido Previde Massara as a contributor
 
-o changed name of function 'strength.dim' to 'lnet.loads' and updated documentation
+o changed name of function `strength.dim` to `lnet.loads` and updated documentation
 
 o added information about 'NetworkToolbox' on package load
 
-o changed name of function 'nams' to 'lnet.score', optimized function to be more efficient with large datasets, and updated documentation
+o changed name of function `nams` to `lnet.score`, optimized function to be more efficient with large datasets, and updated documentation
 
-o added function 'item.overlap' to detect redundant nodes in a network
+o added function `item.overlap` to detect redundant nodes in a network
 
-o added function 'strength.dim' to identify within and between dimension node strength
+o added function `strength.dim` to identify within and between dimension node strength
 
-o added 'absolute' argument for 'strength' and 'stable' functions (extension for EGA package)
+o added `absolute` argument for `strength` and `stable` functions (extension for EGA package)
 
 o additional updates to documentation
 
 o bug fix for one dimension in comcat function
 
-o made 'rspbc' output a vector
+o made `rspbc` output a vector
+
 
 Changes in version 1.2.3
 

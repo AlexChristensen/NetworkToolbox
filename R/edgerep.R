@@ -31,9 +31,11 @@
 #' \item{density}{The density of the network}
 #' 
 #' @examples
-#' tmfg <- TMFG(neoOpen)$A
+#' # normal set to FALSE for CRAN tests
+#' tmfg <- TMFG(neoOpen, normal = FALSE)$A
 #' 
-#' mast <- MaST(neoOpen)
+#' # normal set to FALSE for CRAN tests
+#' mast <- MaST(neoOpen, normal = FALSE)
 #' 
 #' edges <- edgerep(tmfg, mast)
 #' 

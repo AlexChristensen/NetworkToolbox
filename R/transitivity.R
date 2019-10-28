@@ -10,7 +10,8 @@
 #' @return Returns a value of transitivity
 #' 
 #' @examples
-#' A <- TMFG(neoOpen)$A
+#' # Pearson's correlation only for CRAN checks
+#' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
 #' trans <- transitivity(A, weighted=TRUE)
 #' @references 

@@ -20,7 +20,8 @@
 #' \item{D}{Diameter of the network (i.e., the maximum of eccentricity)}
 #' 
 #' @examples
-#' A<-TMFG(neoOpen)$A
+#' # Pearson's correlation only for CRAN checks
+#' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
 #' #Unweighted
 #' PL <- pathlengths(A)

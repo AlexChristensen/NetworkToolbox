@@ -6,7 +6,8 @@
 #' @return Returns an adjacency matrix of 1's and 0's
 #' 
 #' @examples
-#' A <- TMFG(neoOpen)$A
+#' # Pearson's correlation only for CRAN checks
+#' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
 #' neoB <- binarize(A)
 #' 

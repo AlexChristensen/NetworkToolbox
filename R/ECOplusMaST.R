@@ -7,7 +7,8 @@
 #' @return A sparse association matrix
 #' 
 #' @examples
-#' ECOplusMaST.net <- ECOplusMaST(neoOpen)
+#' # half the variables for CRAN checks
+#' ECOplusMaST.net <- ECOplusMaST(neoOpen[,c(1:24)])
 #' 
 #' @references 
 #' Fallani, F. D. V., Latora, V., & Chavez, M. (2017).

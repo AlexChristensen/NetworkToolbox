@@ -17,7 +17,8 @@
 #' 
 #' @examples
 #' #Undirected network
-#' A <- TMFG(neoOpen)$A
+#' ## Pearson's correlation only for CRAN checks
+#' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
 #' deg <- degree(A)
 #' 
