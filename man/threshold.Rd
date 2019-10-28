@@ -32,8 +32,8 @@ Set to TRUE if data should be transformed to be normal
 
 \item{na.data}{How should missing data be handled?
 For \code{"listwise"} deletion the \code{\link{na.omit}} function is applied.
-Set to \code{"fiml"} for Full Information Maxmimum Likelihood (\code{\link[psych]{corFiml}}).
-Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
+Set to \code{"fiml"} for Full Information Maximum Likelihood (\code{\link[psych]{corFiml}}).
+Full Information Maximum Likelihood is \strong{recommended} but time consuming}
 
 \item{...}{Additional arguments for \code{\link[fdrtool]{fdrtool}} and \code{\link[NetworkToolbox]{adapt.a}}}
 }

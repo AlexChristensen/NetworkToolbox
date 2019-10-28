@@ -1,19 +1,17 @@
 citHeader("To cite NetworkToolbox in publications use:")
 
-citEntry(
-	entry = "Manual",
-	title = "{NetworkToolbox}: Methods and Measures for Brain, Cognitive, and Psychometric Network Analysis in R",
-	author = personList(as.person("Alexander P. Christensen")),
+bibentry(
+	bibtype = "article",
+	key	= "christensen2018networktoolbox",
+	title	= "{NetworkToolbox}: Methods and measures for brain, cognitive, and psychometric network analysis in {R}",
+	author	= c(person("Christensen,", "P", "Alexander")),
 	journal = "The R Journal",
-        pages = "422--439",
-	year = "2018",
-	doi = "10.32614/RJ-2018-065",
+        pages	= "422--439",
+	year	= "2018",
+	doi 	= "10.32614/RJ-2018-065",
 
   textVersion  =
-  paste(
-	"Christensen, A. P. (2018).",
-        "NetworkToolbox: Methods and measures for brain, cognitive, and psychometric network analysis in R.",
-	"The R Journal, 10, 422-439.",
-	"https://doi.org/10.32614/RJ-2018-065"
-	)
+  paste0("Christensen, A. P. (2018). ",
+        "NetworkToolbox: Methods and measures for brain, cognitive, and psychometric network analysis in R. ",
+	"The R Journal, 10, 422-439. https://doi.org/10.32614/RJ-2018-065")
 )

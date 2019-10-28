@@ -20,7 +20,8 @@ network changes with that node removed of each node in a network
 (\strong{Please see and cite Kenett et al., 2011})
 }
 \examples{
-A <- TMFG(neoOpen)$A
+# normal set to FALSE for CRAN tests
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 nodeimpact <- impact(A)
 

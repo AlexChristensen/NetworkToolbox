@@ -35,10 +35,11 @@ Values closer to 1 suggest greater between-community connectivity and
 values closer to 0 suggest greater within-community connectivity
 }
 \examples{
-A <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 #theoretical communities
-comm <- c(rep(1,8), rep(2,8), rep(3,8), rep(4,8), rep(5,8), rep(6,8))
+comm <- rep(1:8, each = 6)
 
 gdiv <- diversity(A, comm = comm)
 

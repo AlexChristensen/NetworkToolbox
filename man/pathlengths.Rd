@@ -30,7 +30,8 @@ local average shortest path length, eccentricity,
 and diameter of a network
 }
 \examples{
-A<-TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 #Unweighted
 PL <- pathlengths(A)

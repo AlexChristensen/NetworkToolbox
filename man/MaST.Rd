@@ -4,22 +4,22 @@
 \alias{MaST}
 \title{Maximum Spanning Tree}
 \usage{
-MaST(data, normal = FALSE, na.data = c("pairwise", "listwise", "fiml",
+MaST(data, normal = TRUE, na.data = c("pairwise", "listwise", "fiml",
   "none"), depend = FALSE)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
 
 \item{normal}{Should data be transformed to a normal distribution?
-Defaults to \code{FALSE}.
-Data is not transformed to be normal.
-Set to \code{TRUE} if data should be transformed to be normal
-(computes correlations using the \code{\link[qgraph]{cor_auto}} function)}
+Input must be a dataset.
+Defaults to \code{TRUE}.
+Computes correlations using the \code{\link[qgraph]{cor_auto}} function.
+Set to \code{FALSE} for Pearson's correlation}
 
 \item{na.data}{How should missing data be handled?
 For \code{"listwise"} deletion the \code{\link{na.omit}} function is applied.
-Set to \code{"fiml"} for Full Information Maxmimum Likelihood (\code{\link[psych]{corFiml}}).
-Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
+Set to \code{"fiml"} for Full Information Maximum Likelihood (\code{\link[psych]{corFiml}}).
+Full Information Maximum Likelihood is \strong{recommended} but time consuming}
 
 \item{depend}{Is network a dependency (or directed) network?
 Defaults to \code{FALSE}.
@@ -33,7 +33,8 @@ A sparse association matrix
 Applies the Maximum Spanning Tree (MaST) filtering method
 }
 \examples{
-MaST.net <- MaST(neoOpen)
+# Pearson's correlation only for CRAN checks
+MaST.net <- MaST(neoOpen, normal = FALSE)
 
 }
 \references{

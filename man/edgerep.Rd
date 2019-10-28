@@ -41,9 +41,11 @@ Lists for each network contain:
 Computes the number of edges that replicate between two cross-sectional networks
 }
 \examples{
-tmfg <- TMFG(neoOpen)$A
+# normal set to FALSE for CRAN tests
+tmfg <- TMFG(neoOpen, normal = FALSE)$A
 
-mast <- MaST(neoOpen)
+# normal set to FALSE for CRAN tests
+mast <- MaST(neoOpen, normal = FALSE)
 
 edges <- edgerep(tmfg, mast)
 

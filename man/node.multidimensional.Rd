@@ -23,8 +23,8 @@ Computes \code{\link[NetworkToolbox]{rspbc}} for connections
 between dimensions in a network. Multidimensional nodes can be detected
 }
 \examples{
-# Uses Pearson's correlation 
-tmfg <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 \dontrun{
 # Better to use polychoric correlations with this dataset

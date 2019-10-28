@@ -36,7 +36,8 @@ A matrix containing the within-community centrality value for each node
 Computes the within-community centrality for each node in the network
 }
 \examples{
-A<-TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 stabilizing <- stable(A, comm = "walktrap")
 

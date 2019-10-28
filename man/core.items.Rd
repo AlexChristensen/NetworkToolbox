@@ -31,7 +31,8 @@ The entire network or within-community gradations can be determined. Based on th
 }
 \examples{
 #network
-A <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 #core items by network
 coreBYnetwork <- core.items(A, by = "network")

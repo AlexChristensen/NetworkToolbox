@@ -30,9 +30,10 @@ This measure can be used to identify the effectiveness of a subset of nodes'
 coverage of the network space
 }
 \examples{
-A <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
-nodes <- c(1,3,5,7,11,13,17,19,23,29,31,37,41,43,47)
+nodes <- seq(1,48,2)
 
 result <- net.coverage(A, nodes)
 

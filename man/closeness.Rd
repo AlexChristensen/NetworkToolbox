@@ -20,7 +20,8 @@ A vector of closeness centrality values for each node in the network
 Computes closeness centrality of each node in a network
 }
 \examples{
-A <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 #Weighted LC
 LC <- closeness(A)

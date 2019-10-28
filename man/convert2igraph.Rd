@@ -23,7 +23,8 @@ convert to \code{\link{igraph}}'s format
 Converts single or multiple networks into \code{\link{igraph}}'s format for network analysis
 }
 \examples{
-A <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 igraphNetwork <- convert2igraph(A)
 

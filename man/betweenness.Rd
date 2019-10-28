@@ -11,7 +11,7 @@ betweenness(A, weighted = TRUE)
 
 \item{weighted}{Is the network weighted?
 Defaults to \code{TRUE}.
-Set to \code{FALSE} for unweighted measure of betwenness centrality}
+Set to \code{FALSE} for unweighted measure of betweenness centrality}
 }
 \value{
 A vector of betweenness centrality values for each node in the network
@@ -20,7 +20,8 @@ A vector of betweenness centrality values for each node in the network
 Computes betweenness centrality of each node in a network
 }
 \examples{
-A <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 #Weighted BC
 BCw <- betweenness(A)

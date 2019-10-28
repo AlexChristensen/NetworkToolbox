@@ -41,7 +41,8 @@ For \code{"TJHBL"}, values near 0 indicate a small-world network,
 while < 0 indicates a more regular network and > 0 indicates a more random network
 }
 \examples{
-A<-TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 swmHG <- smallworldness(A, method="HG")
 

@@ -26,7 +26,8 @@ Returns a list containing:
 Computes a vector of communities (community) and a global modularity measure (Q)
 }
 \examples{
-A <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 modularity <- louvain(A)
 

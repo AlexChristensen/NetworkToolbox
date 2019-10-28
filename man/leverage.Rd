@@ -21,7 +21,8 @@ Computes leverage centrality of each node in a network
 (the degree of connected neighbors; \strong{Please see and cite Joyce et al., 2010})
 }
 \examples{
-A <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 #Weighted
 levW <- leverage(A)

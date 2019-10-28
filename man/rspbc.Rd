@@ -30,7 +30,8 @@ of each node in a network
 (\strong{Please see and cite Kivimaki et al., 2016})
 }
 \examples{
-A <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 rspbc <- rspbc(A, beta=0.01)
 

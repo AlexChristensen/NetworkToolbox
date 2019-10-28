@@ -16,7 +16,8 @@ Returns an adjacency matrix of 1's and 0's
 Converts weighted adjacency matrix to a binarized adjacency matrix
 }
 \examples{
-A <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 neoB <- binarize(A)
 

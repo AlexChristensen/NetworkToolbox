@@ -26,7 +26,8 @@ Computes the community closeness centrality measure of each
 community in a network
 }
 \examples{
-A <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 comm <- igraph::walktrap.community(convert2igraph(abs(A)))$membership
 

@@ -22,8 +22,8 @@ Set to \code{FALSE} for Pearson's correlations}
 
 \item{na.data}{How should missing data be handled?
 For \code{"listwise"} deletion the \code{\link{na.omit}} function is applied.
-Set to \code{"fiml"} for Full Information Maxmimum Likelihood (\code{\link[psych]{corFiml}}).
-Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
+Set to \code{"fiml"} for Full Information Maximum Likelihood (\code{\link[psych]{corFiml}}).
+Full Information Maximum Likelihood is \strong{recommended} but time consuming}
 
 \item{partial}{Should the output network's connections be the partial correlation between two nodes given all other nodes?
 Defaults to \code{TRUE}, which returns a partial correlation matrix.
@@ -44,9 +44,8 @@ convert clique and separator structure from
 and precision matrices
 }
 \examples{
-\dontrun{
-LoGonet <- LoGo(neoOpen, partial = TRUE)
-}
+# normal set to FALSE for CRAN tests
+LoGonet <- LoGo(neoOpen, normal = FALSE, partial = TRUE)
 
 }
 \references{

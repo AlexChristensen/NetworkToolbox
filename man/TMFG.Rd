@@ -4,7 +4,7 @@
 \alias{TMFG}
 \title{Triangulated Maximally Filtered Graph}
 \usage{
-TMFG(data, normal = FALSE, na.data = c("pairwise", "listwise", "fiml",
+TMFG(data, normal = TRUE, na.data = c("pairwise", "listwise", "fiml",
   "none"), depend = FALSE)
 }
 \arguments{
@@ -12,15 +12,14 @@ TMFG(data, normal = FALSE, na.data = c("pairwise", "listwise", "fiml",
 
 \item{normal}{Should data be transformed to a normal distribution?
 Input must be a dataset.
-Defaults to \code{FALSE}.
-Data is not transformed to be normal.
-Set to \code{TRUE} if data should be transformed to be normal
-(computes correlations using the \code{\link[qgraph]{cor_auto}} function)}
+Defaults to \code{TRUE}.
+Computes correlations using the \code{\link[qgraph]{cor_auto}} function.
+Set to \code{FALSE} for Pearson's correlation}
 
 \item{na.data}{How should missing data be handled?
 For \code{"listwise"} deletion the \code{\link{na.omit}} function is applied.
-Set to \code{"fiml"} for Full Information Maxmimum Likelihood (\code{\link[psych]{corFiml}}).
-Full Information Maxmimum Likelihood is \strong{recommended} but time consuming}
+Set to \code{"fiml"} for Full Information Maximum Likelihood (\code{\link[psych]{corFiml}}).
+Full Information Maximum Likelihood is \strong{recommended} but time consuming}
 
 \item{depend}{Is network a dependency (or directed) network?
 Defaults to \code{FALSE}.
@@ -72,7 +71,8 @@ drawn on a sphere with no edges crossing (often, however, the networks are depic
 with edges crossing; Tumminello, Aste, Di Matteo, & Mantegna, 2005).
 }
 \examples{
-TMFG.net <- TMFG(neoOpen)
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 }
 \references{

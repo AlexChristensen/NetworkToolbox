@@ -9,7 +9,8 @@ node.redundant(A, sig, type = c("wTO", "pcor"), method = c("alpha",
 }
 \arguments{
 \item{A}{Matrix or data frame.
-An adjacency matrix of network data}
+An adjacency matrix of network data (if \code{type = "wTO"}).
+Dataset (if \code{type = "pcor"})}
 
 \item{sig}{Numeric.
 \emph{p}-value for significance of overlap (defaults to \code{.05}).
@@ -40,10 +41,14 @@ overlap is implemented using the method from Nowick et al. (2009; see references
 and the function \link[wTO]{wTO} from the wTO package.
 }
 \examples{
-
+# normal set to FALSE for CRAN tests
 net <- TMFG(neoOpen, normal = FALSE)$A
 
-result <- node.redundant(A = net, method = "adapt")
+# weighted topological overlap
+result <- node.redundant(A = net, method = "adapt", type = "wTO")
+
+# partial correlation
+result <- node.redundant(A = neoOpen, method = "adapt", type = "pcor")
 
 }
 \references{

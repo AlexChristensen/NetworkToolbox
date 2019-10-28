@@ -27,7 +27,8 @@ community in the network. The values are equivalent to the community's
 eigenvector centrality
 }
 \examples{
-A <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 comm <- igraph::walktrap.community(convert2igraph(abs(A)))$membership
 

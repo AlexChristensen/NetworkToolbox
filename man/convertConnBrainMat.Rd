@@ -28,7 +28,7 @@ If you would like to simply import a connectivity array from Matlab, then see th
 }
 \examples{
 \dontrun{
-neuralarray<-convertConnBrainMat()
+neuralarray <- convertConnBrainMat()
 
 #Import correlation connectivity array from Matlab
 library(R.matlab)

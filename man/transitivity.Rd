@@ -20,7 +20,8 @@ Returns a value of transitivity
 Computes transitivity of a network
 }
 \examples{
-A <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 trans <- transitivity(A, weighted=TRUE)
 }

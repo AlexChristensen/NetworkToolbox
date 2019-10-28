@@ -24,7 +24,8 @@ Returns a list containing:
 Computes global clustering coefficient (CC) and local clustering coefficient (CCi)
 }
 \examples{
-A <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 #Unweighted CC
 CCu <- clustcoeff(A)

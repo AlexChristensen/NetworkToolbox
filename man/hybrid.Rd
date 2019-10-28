@@ -24,7 +24,8 @@ A vector of hybrid centrality values for each node in the network
 Computes hybrid centrality of each node in a network
 }
 \examples{
-A <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 HC <- hybrid(A)
 }
