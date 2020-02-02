@@ -21,12 +21,10 @@
 #' Beaty, R. E., Chen, Q., Christensen, A. P., Qiu, J., Silvia, P. J., & Schacter, D. L. (2018).
 #' Brain networks of the imaginative mind: Dynamic functional connectivity of default and cognitive control networks relates to Openness to Experience.
 #' \emph{Human Brain Mapping}, \emph{39}, 811-821.
-#' doi: \href{https://doi.org/10.1002/hbm.23884}{10.1002/hbm.23884}
 #' 
 #' Beaty, R. E., Kenett, Y. N., Christensen, A. P., Rosenberg, M. D., Benedek, M., Chen, Q., ... & Silvia, P. J. (2018).
 #' Robust prediction of individual creative ability from brain functional connectivity.
 #' \emph{Proceedings of the National Academy of Sciences}, 201713532.
-#' doi: \href{https://doi.org/10.1073/pnas.1713532115}{10.1073/pnas.1713532115}
 #' 
 #' @examples 
 #' data("behavOpen")

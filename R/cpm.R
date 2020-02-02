@@ -156,26 +156,21 @@
 #' Fink, A., Qiu, J., Kwapil, T. R., Kane, M. J., & Silvia, P. J. (2018).
 #' Robust prediction of individual creative ability from brain functional connectivity.
 #' \emph{Proceedings of the National Academy of Sciences}, \emph{115}, 1087-1092.
-#' doi:\href{https://doi.org/10.1073/pnas.1713532115}{10.1073/pnas.1713532115}
 #' 
 #' Finn, E. S., Shen, X., Scheinost, D., Rosenberg, M. D., Huang, J., Chun, M. M., Papademetris, X., Constable, R. T. (2015).
 #' Functional connectome fingerprinting: Identifying individuals using patterns of brain connectivity.
 #' \emph{Nature Neuroscience}, \emph{18}, 1664-1671.
-#' doi: \href{https://doi.org/10.1038/nn.4135}{10.1038/nn.4135}
 #' 
 #' Rosenberg, M. D., Finn, E. S., Scheinost, D., Papademetris, X., Shen, X., Constable, R. T., Chun, M. M. (2016).
 #' A neuromarker of sustained attention from whole-brain functional connectivity.
 #' \emph{Nature Neuroscience}, \emph{19}, 165-171.
-#' doi: \href{https://doi.org/10.1038/nn.4179}{10.1038/nn.4179}
 #'
 #' Shen, X. Finn, E. S., Scheinost, D., Rosenberg, M. D., Chun, M. M., Papademetris, X., Constable, R. T. (2017).
 #' Using connectome-based predictive modeling to predict individual behavior from brain connectivity.
 #' \emph{Nature Protocols}, \emph{12}, 506-518.
-#' doi: \href{https://doi.org/10.1038/nprot.2016.178}{10.1038/nprot.2016.178}
 #' 
 #' Wei, T. & Simko, V.(2017).
 #' R package "corrplot": Visualization of a correlation matrix (Version 0.84).
-#' Available from \url{https://github.com/taiyun/corrplot}
 #' 
 #' @examples 
 #' # Load data

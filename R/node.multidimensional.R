@@ -17,12 +17,11 @@
 #' # Pearson's correlation only for CRAN checks
 #' A <- TMFG(neoOpen, normal = FALSE)$A
 #' 
+#' # Obtain communities via walktrap algorithm
+#' comm <- igraph::walktrap.community(convert2igraph(abs(A)))$membership
+#' 
 #' \dontrun{
-#' # Better to use polychoric correlations with this dataset
-#' ega.glasso <- EGAnet::EGA(neoOpen)
-#' 
-#' result <- node.multidimensional(A = ega.glasso$network, comm = ega.glasso$wc, plot = FALSE)
-#' 
+#' result <- node.multidimensional(A = A, comm = comm$wc, plot = FALSE)
 #' }
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>

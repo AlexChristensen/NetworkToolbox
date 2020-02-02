@@ -22,7 +22,7 @@
 #' 
 #' \item{positive}{Gateway coefficient with only positive sign}
 #' 
-#' \item{negative}{Gateway coefficient wih only negative sign}
+#' \item{negative}{Gateway coefficient with only negative sign}
 #' 
 #' @examples
 #' #theoretical communities
@@ -40,12 +40,10 @@
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
 #' \emph{Neuroimage}, \emph{52}, 1059-1069.
-#' doi: \href{https://doi.org/10.1016/j.neuroimage.2009.10.003}{10.1016/j.neuroimage.2009.10.003}
 #' 
 #' Vargas, E. R., & Wahl, L. M. (2014).
 #' The gateway coefficient: A novel metric for identifying critical connections in modular networks.
 #' \emph{The European Physical Journal B}, \emph{87}, 1-10.
-#' doi: \href{https://doi.org/10.1140/epjb/e2014-40800-7}{10.1140/epjb/e2014-40800-7}
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 

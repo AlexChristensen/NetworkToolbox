@@ -24,7 +24,6 @@
 #' Joyce, K. E., Laurienti, P. J., Burdette, J. H., & Hayasaka, S. (2010).
 #' A new measure of centrality for brain networks. 
 #' \emph{PLoS One}, \emph{5} e12200.
-#' doi: \href{https://doi.org/10.1371/journal.pone.0012200}{10.1371/journal.pone.0012200}
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 

@@ -57,7 +57,6 @@
 #' Csardi, G., & Nepusz, T. (2006).
 #' The \emph{igraph} software package for complex network research.
 #' \emph{InterJournal, Complex Systems}, \emph{1695}, 1-9.
-#' Retrieved from \href{https://pdfs.semanticscholar.org/1d27/44b83519657f5f2610698a8ddd177ced4f5c.pdf}{here}
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 

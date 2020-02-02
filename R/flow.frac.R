@@ -21,7 +21,6 @@
 #' Giscard, P. L., & Wilson, R. C. (2018).
 #' A centrality measure for cycles and subgraphs II.
 #' \emph{Applied Network Science}, \emph{3}, 9.
-#' doi: \href{https://doi.org/10.1007/s41109-018-0064-5}{10.1007/s41109-018-0064-5}
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 

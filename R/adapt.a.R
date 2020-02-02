@@ -74,12 +74,10 @@
 #' Cohen, J. (1992).
 #' A power primer.
 #' \emph{Psychological Bulletin}, \emph{112}, 155-159.
-#' doi:\href{https://psycnet.apa.org/doiLanding?doi=10.1037\%2F0033-2909.112.1.155}{10.1037/0033-2909.112.1.155}
 #' 
 #' Perez, M. E., & Pericchi, L. R. (2014).
 #' Changing statistical significance with the amount of information: The adaptive \emph{a} significance level.
 #' \emph{Statistics & Probability Letters}, \emph{85}, 20-24.
-#' doi: \href{https://doi.org/10.1016/j.spl.2013.10.018}{10.1016/j.spl.2013.10.018}
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 

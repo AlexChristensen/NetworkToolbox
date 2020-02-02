@@ -29,7 +29,6 @@
 #' Kivimaki, I., Lebichot, B., Saramaki, J., & Saerens, M. (2016).
 #' Two betweenness centrality measures based on Randomized Shortest Paths.
 #' \emph{Scientific Reports}, \emph{6}, 19668.
-#' doi: \href{https://doi.org/10.1038/srep19668}{10.1038/srep19668}
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 

@@ -43,12 +43,10 @@
 #' Humphries, M. D., & Gurney, K. (2008).
 #' Network 'small-world-ness': A quantitative method for determining canonical network equivalence.
 #' \emph{PLoS one}, \emph{3}, e0002051.
-#' doi: \href{https://doi.org/10.1371/journal.pone.0002051}{10.1371/journal.pone.0002051}
 #' 
 #' Telesford, Q. K., Joyce, K. E., Hayasaka, S., Burdette, J. H., & Laurienti, P. J. (2011).
 #' The ubiquity of small-world networks.
 #' \emph{Brain Connectivity}, \emph{1}(5), 367-375.
-#' doi: \href{https://doi.org/10.1089/brain.2011.0038}{10.1089/brain.2011.0038}
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 

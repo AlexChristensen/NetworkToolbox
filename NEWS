@@ -1,3 +1,19 @@
+Changes in version 1.3.4
+
+o fixed bug where `comcat` and `stable` treats `NA` community membership as actual membership -- corrects `EGAnet::net.loads` outputs
+
+o bug fixed in `comcat` and `stable` for EGAnet
+
+
+Changes in version 1.3.3
+
+o `node.redundant` function migrated to the 'EGAnet' pacakge
+
+o added the function `network.permutation` to compute permutation tests for network measures
+
+o changed name of `net.coverage` to `network.coverage`
+
+
 Changes in version 1.3.2
 
 o updated Description file

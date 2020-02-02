@@ -33,7 +33,6 @@
 #' Blanken, T. F., Deserno, M. K., Dalege, J., Borsboom, D., Blanken, P., Kerkhof, G. A., & Cramer, A. O. (2018).
 #' The role of stabilizing and communicating symptoms given overlapping communities in psychopathology networks.
 #' \emph{Scientific Reports}, \emph{8}, 5854.
-#' doi: \href{https://doi.org/10.1038/s41598-018-24224-2}{10.1038/s41598-018-24224-2}
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 
@@ -51,6 +50,11 @@ stable <- function (A, comm = c("walktrap","louvain"),
     if(missing(diagonal))
     {diagonal <- 0
     }else{diagonal <- diagonal}
+    
+    diag(A) <- diagonal
+    
+    if(absolute)
+    {A <- abs(A)}
     
     if(missing(cent))
     {cent<-"strength"
@@ -85,7 +89,7 @@ stable <- function (A, comm = c("walktrap","louvain"),
         }else if(cent=="closeness")
         {stab<-closeness(Ah)
         }else if(cent=="strength")
-        {stab<-strength(Ah,absolute)
+        {stab<-colSums(Ah)
         }else if(cent=="degree")
         {stab<-degree(Ah)}
         
@@ -95,6 +99,10 @@ stable <- function (A, comm = c("walktrap","louvain"),
     stabil<-unlist(fact)
     
     bind <- suppressWarnings(cbind(ord,stabil))
+    
+    # check for NAs
+    if(any(is.na(bind[,2])))
+    {bind[which(is.na(bind[,2])),3] <- 0}
     
     stabord <- bind[order(bind[,1]),]
     

@@ -25,9 +25,6 @@
 #' # Pearson's correlation only for CRAN checks
 #' MaST.net <- MaST(neoOpen, normal = FALSE)
 #' 
-#' @references 
-#' Adapted from: \url{https://www.mathworks.com/matlabcentral/fileexchange/23276-maximum-weight-spanning-tree--undirected}
-#' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 
 #' @export

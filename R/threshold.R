@@ -50,7 +50,6 @@
 #' Strimmer, K. (2008).
 #' fdrtool: A versatile R package for estimating local and tail area-based false discovery rates.
 #' \emph{Bioinformatics}, \emph{24}, 1461-1462.
-#' doi: \href{https://doi.org/10.1093/bioinformatics/btn209}{10.1093/bioinformatics/btn209}
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 

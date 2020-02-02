@@ -13,7 +13,7 @@
 #' 
 #' \item{community}{A community vector corresponding to each node's community}
 #' 
-#' \item{Q}{Modularity statistic. A measure of how well the communities are comparmentalized}
+#' \item{Q}{Modularity statistic. A measure of how well the communities are compartmentalized}
 #' 
 #' @examples
 #' # Pearson's correlation only for CRAN checks
@@ -25,12 +25,10 @@
 #' Blondel, V. D., Guillaume, J. L., Lambiotte, R., & Lefebvre, E. (2008).
 #' Fast unfolding of communities in large networks. 
 #' \emph{Journal of Statistical Mechanics: Theory and Experiment}, \emph{2008}, P10008.
-#' doi: \href{https://doi.org/10.1088/1742-5468/2008/10/P10008}{10.1088/1742-5468/2008/10/P10008}
 #'  
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
 #' \emph{Neuroimage}, \emph{52}, 1059-1069.
-#' doi: \href{https://doi.org/10.1016/j.neuroimage.2009.10.003}{10.1016/j.neuroimage.2009.10.003}
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 
