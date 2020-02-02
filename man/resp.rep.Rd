@@ -4,8 +4,7 @@
 \alias{resp.rep}
 \title{Repeated Responses Check}
 \usage{
-resp.rep(data, scale.lens = NULL, max.val, reverse = NULL,
-  freq.prop = 0.8)
+resp.rep(data, scale.lens = NULL, max.val, reverse = NULL, freq.prop = 0.8)
 }
 \arguments{
 \item{data}{A dataset}

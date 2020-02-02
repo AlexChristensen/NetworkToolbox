@@ -4,10 +4,19 @@
 \alias{MFCF}
 \title{Maximally Filtered Clique Forest}
 \usage{
-MFCF(data, cases = NULL, na.data = c("pairwise", "listwise", "fiml",
-  "none"), time.series = FALSE, gain.fxn = c("logLik", "logLik.val",
-  "rSquared.val"), min_size = 0, max_size = 8, pval = 0.05,
-  pen = 0, drop_sep = FALSE, use_returns = FALSE)
+MFCF(
+  data,
+  cases = NULL,
+  na.data = c("pairwise", "listwise", "fiml", "none"),
+  time.series = FALSE,
+  gain.fxn = c("logLik", "logLik.val", "rSquared.val"),
+  min_size = 0,
+  max_size = 8,
+  pval = 0.05,
+  pen = 0,
+  drop_sep = FALSE,
+  use_returns = FALSE
+)
 }
 \arguments{
 \item{data}{Matrix (n \code{x} n or p \code{x} n) or data frame.
@@ -105,7 +114,7 @@ MFCF.net <- MFCF(qgraph::cor_auto(data), cases = nrow(neoOpen))$A
 \references{
 Massara, G. P. & Aste, T. (2019).
 Learning clique forests.
-\href{https://arxiv.org/abs/1905.02266}{https://arxiv.org/abs/1905.02266}
+\emph{ArXiv}.
 }
 \author{
 Guido Previde Massara <gprevide@gmail.com> and Alexander Christensen <alexpaulchristensen@gmail.com>

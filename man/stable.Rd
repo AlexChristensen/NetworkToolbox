@@ -4,9 +4,14 @@
 \alias{stable}
 \title{Stabilizing Nodes}
 \usage{
-stable(A, comm = c("walktrap", "louvain"), cent = c("betweenness",
-  "rspbc", "closeness", "strength", "degree", "hybrid"), absolute = TRUE,
-  diagonal = 0, ...)
+stable(
+  A,
+  comm = c("walktrap", "louvain"),
+  cent = c("betweenness", "rspbc", "closeness", "strength", "degree", "hybrid"),
+  absolute = TRUE,
+  diagonal = 0,
+  ...
+)
 }
 \arguments{
 \item{A}{An adjacency matrix of network data}
@@ -46,7 +51,6 @@ stabilizing <- stable(A, comm = "walktrap")
 Blanken, T. F., Deserno, M. K., Dalege, J., Borsboom, D., Blanken, P., Kerkhof, G. A., & Cramer, A. O. (2018).
 The role of stabilizing and communicating symptoms given overlapping communities in psychopathology networks.
 \emph{Scientific Reports}, \emph{8}, 5854.
-doi: \href{https://doi.org/10.1038/s41598-018-24224-2}{10.1038/s41598-018-24224-2}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

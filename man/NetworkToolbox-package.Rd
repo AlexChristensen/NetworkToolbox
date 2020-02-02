@@ -19,8 +19,7 @@ reproducibility of network analysis.
 \references{
 Christensen, A. P. (in press).
 NetworkToolbox: Methods and measures for brain, cognitive, and psychometric network analysis in R.
-\emph{The R Journal}, 1-18.
-doi: \href{https://doi.org/10.31234/osf.io/6kmav}{10.31234/osf.io/6kmav}
+\emph{The R Journal}, \emph{10}, 422-439.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

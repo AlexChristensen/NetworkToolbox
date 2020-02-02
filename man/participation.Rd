@@ -21,7 +21,7 @@ Returns a list containing:
 
 \item{positive}{Participation coefficient with only positive sign}
 
-\item{negative}{Participation coefficient wih only negative sign}
+\item{negative}{Participation coefficient with only negative sign}
 }
 \description{
 Computes the participation coefficient for each node. The participation
@@ -36,11 +36,12 @@ values closer to 0 suggest greater between-community connectivity
 #theoretical factors
 comm <- rep(1:8, each = 6)
 
-A <- TMFG(neoOpen)$A
+# Pearson's correlation only for CRAN checks
+A <- TMFG(neoOpen, normal = FALSE)$A
 
 pc <- participation(A, comm = comm)
 
-#walktrap factors
+# Walktrap factors
 wpc <- participation(A, comm = "walktrap")
 
 }
@@ -48,12 +49,10 @@ wpc <- participation(A, comm = "walktrap")
 Guimera, R., & Amaral, L. A. N. (2005).
 Functional cartography of complex metabolic networks.
 \emph{Nature}, \emph{433}, 895-900.
-doi: \href{https://doi.org/10.1038/nature03288}{10.1038/nature03288}
 
 Rubinov, M., & Sporns, O. (2010). 
 Complex network measures of brain connectivity: Uses and interpretations. 
 \emph{Neuroimage}, \emph{52}, 1059-1069.
-doi: \href{https://doi.org/10.1016/j.neuroimage.2009.10.003}{10.1016/j.neuroimage.2009.10.003}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

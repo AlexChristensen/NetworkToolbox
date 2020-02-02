@@ -4,8 +4,15 @@
 \alias{sim.chordal}
 \title{Simulate Chordal Network}
 \usage{
-sim.chordal(nodes, inverse = c("cases", "matrix"), n = NULL,
-  ordinal = FALSE, ordLevels = NULL, idio = NULL, eps = NULL)
+sim.chordal(
+  nodes,
+  inverse = c("cases", "matrix"),
+  n = NULL,
+  ordinal = FALSE,
+  ordLevels = NULL,
+  idio = NULL,
+  eps = NULL
+)
 }
 \arguments{
 \item{nodes}{Numeric.
@@ -78,7 +85,7 @@ sim.Binary <- sim.chordal(nodes = 20, inverse = "cases", n = 1000, ordinal = TRU
 \references{
 Massara, G. P. & Aste, T. (2019).
 Learning clique forests.
-\href{https://arxiv.org/abs/1905.02266}{https://arxiv.org/abs/1905.02266}
+\emph{ArXiv}.
 }
 \author{
 Guido Previde Massara <gprevide@gmail.com>

@@ -4,8 +4,15 @@
 \alias{LoGo}
 \title{Local/Global Inversion Method}
 \usage{
-LoGo(data, cliques, separators, normal = TRUE, na.data = c("pairwise",
-  "listwise", "fiml", "none"), partial = TRUE, ...)
+LoGo(
+  data,
+  cliques,
+  separators,
+  normal = TRUE,
+  na.data = c("pairwise", "listwise", "fiml", "none"),
+  partial = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{Must be a dataset}
@@ -52,7 +59,6 @@ LoGonet <- LoGo(neoOpen, normal = FALSE, partial = TRUE)
 Barfuss, W., Massara, G. P., Di Matteo, T., & Aste, T. (2016).
 Parsimonious modeling with information filtering networks.
 \emph{Physical Review E}, \emph{94}, 062306.
-doi: \href{https://doi.org/10.1103/PhysRevE.94.062306}{10.1103/PhysRevE.94.062306}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

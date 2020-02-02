@@ -41,12 +41,7 @@ result <- comm.close(A, comm, weighted = FALSE)
 \references{
 Christensen, A. P. (in press).
 NetworkToolbox: Methods and measures for brain, cognitive, and psychometric network analysis in R.
-\emph{The R Journal}, 1-18. doi: 10.31234/osf.io/6kmav
-
-Christensen, A. P., Cotter, K. N., Silvia, P. J., & Benedek, M. (2018)
-Scale development via network analysis: A comprehensive and concise measure of Openness to Experience
-\emph{PsyArXiv}, 1-40.
-doi: \href{https://doi.org/10.31234/osf.io/3raxt}{10.31234/osf.io/3raxt}
+\emph{The R Journal}, \emph{10}, 422-439.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

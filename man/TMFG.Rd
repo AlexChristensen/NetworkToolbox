@@ -4,8 +4,12 @@
 \alias{TMFG}
 \title{Triangulated Maximally Filtered Graph}
 \usage{
-TMFG(data, normal = TRUE, na.data = c("pairwise", "listwise", "fiml",
-  "none"), depend = FALSE)
+TMFG(
+  data,
+  normal = TRUE,
+  na.data = c("pairwise", "listwise", "fiml", "none"),
+  depend = FALSE
+)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
@@ -76,25 +80,13 @@ A <- TMFG(neoOpen, normal = FALSE)$A
 
 }
 \references{
-Barfuss, W., Massara, G. P., Di Matteo, T., & Aste, T. (2016).
-Parsimonious modeling with information filtering networks.
-\emph{Physical Review E}, \emph{94}, 062306.
-doi: \href{https://doi.org/10.1103/PhysRevE.94.062306}{10.1103/PhysRevE.94.062306}
-
 Christensen, A. P., Kenett, Y. N., Aste, T., Silvia, P. J., & Kwapil, T. R. (2018).
 Network structure of the Wisconsin Schizotypy Scales-Short Forms: Examining psychometric network filtering approaches.
-\emph{Behavior Research Methods}, 1-20.
-doi: \href{https://doi.org/10.3758/s13428-018-1032-9}{10.3758/s13428-018-1032-9}
+\emph{Behavior Research Methods}, \emph{50}, 2531-2550.
 
 Massara, G. P., Di Matteo, T., & Aste, T. (2016).
 Network filtering for big data: Triangulated maximally filtered graph.
 \emph{Journal of Complex Networks}, \emph{5}, 161-178.
-doi: \href{https://doi.org/10.1093/comnet/cnw015}{10.1093/comnet/cnw015}
-
-Tumminello, M., Aste, T., Di Matteo, T., & Mantegna, R. N. (2005).
-A tool for filtering information in complex systems.
-\emph{Proceedings of the National Academy of Sciences}, \emph{102}, 10421-10426.
-doi: \href{https://doi.org/10.1073/pnas.0500298102}{10.1073/pnas.0500298102}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

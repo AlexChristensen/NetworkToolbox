@@ -25,7 +25,6 @@ ECOplusMaST.net <- ECOplusMaST(neoOpen[,c(1:24)])
 Fallani, F. D. V., Latora, V., & Chavez, M. (2017).
 A topological criterion for filtering information in complex brain networks.
 \emph{PLoS Computational Biology}, \emph{13}, e1005305.
-doi: \href{https://doi.org/10.1371/journal.pcbi.1005305}{10.1371/journal.pcbi.1005305}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

@@ -4,8 +4,11 @@
 \alias{reg}
 \title{Regression Matrix}
 \usage{
-reg(data, family = c("binomial", "gaussian", "Gamma", "poisson"),
-  symmetric = TRUE)
+reg(
+  data,
+  family = c("binomial", "gaussian", "Gamma", "poisson"),
+  symmetric = TRUE
+)
 }
 \arguments{
 \item{data}{A dataset}

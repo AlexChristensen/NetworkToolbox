@@ -100,7 +100,7 @@ variables and \code{n} observations).}
 \references{
 Massara, G. P. & Aste, T. (2019).
 Learning clique forests.
-\href{https://arxiv.org/abs/1905.02266}{https://arxiv.org/abs/1905.02266}
+\emph{ArXiv}.
 }
 \author{
 Guido Previde Massara <gprevide@gmail.com> and Alexander Christensen <alexpaulchristensen@gmail.com>

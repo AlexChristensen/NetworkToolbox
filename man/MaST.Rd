@@ -4,8 +4,12 @@
 \alias{MaST}
 \title{Maximum Spanning Tree}
 \usage{
-MaST(data, normal = TRUE, na.data = c("pairwise", "listwise", "fiml",
-  "none"), depend = FALSE)
+MaST(
+  data,
+  normal = TRUE,
+  na.data = c("pairwise", "listwise", "fiml", "none"),
+  depend = FALSE
+)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
@@ -36,9 +40,6 @@ Applies the Maximum Spanning Tree (MaST) filtering method
 # Pearson's correlation only for CRAN checks
 MaST.net <- MaST(neoOpen, normal = FALSE)
 
-}
-\references{
-Adapted from: \url{https://www.mathworks.com/matlabcentral/fileexchange/23276-maximum-weight-spanning-tree--undirected}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

@@ -4,9 +4,15 @@
 \alias{comcat}
 \title{Communicating Nodes}
 \usage{
-comcat(A, comm = c("walktrap", "louvain"), cent = c("strength",
-  "degree"), absolute = TRUE, metric = c("across", "each"),
-  diagonal = 0, ...)
+comcat(
+  A,
+  comm = c("walktrap", "louvain"),
+  cent = c("strength", "degree"),
+  absolute = TRUE,
+  metric = c("across", "each"),
+  diagonal = 0,
+  ...
+)
 }
 \arguments{
 \item{A}{An adjacency matrix of network data}
@@ -51,7 +57,6 @@ communicating <- comcat(A, comm = "walktrap", cent = "strength", metric = "acros
 Blanken, T. F., Deserno, M. K., Dalege, J., Borsboom, D., Blanken, P., Kerkhof, G. A., & Cramer, A. O. (2018).
 The role of stabilizing and communicating symptoms given overlapping communities in psychopathology networks.
 \emph{Scientific Reports}, \emph{8}, 5854.
-doi: \href{https://doi.org/10.1038/s41598-018-24224-2}{10.1038/s41598-018-24224-2}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

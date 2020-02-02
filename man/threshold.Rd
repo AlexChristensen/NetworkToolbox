@@ -4,9 +4,14 @@
 \alias{threshold}
 \title{Threshold Network Estimation Methods}
 \usage{
-threshold(data, a, thresh = c("alpha", "adaptive", "bonferroni", "FDR",
-  "proportional"), normal = FALSE, na.data = c("pairwise", "listwise",
-  "fiml", "none"), ...)
+threshold(
+  data,
+  a,
+  thresh = c("alpha", "adaptive", "bonferroni", "FDR", "proportional"),
+  normal = FALSE,
+  na.data = c("pairwise", "listwise", "fiml", "none"),
+  ...
+)
 }
 \arguments{
 \item{data}{Can be a dataset or a correlation matrix}
@@ -63,7 +68,6 @@ propnet<-threshold(neoOpen, thresh = "proportional", a = .15)
 Strimmer, K. (2008).
 fdrtool: A versatile R package for estimating local and tail area-based false discovery rates.
 \emph{Bioinformatics}, \emph{24}, 1461-1462.
-doi: \href{https://doi.org/10.1093/bioinformatics/btn209}{10.1093/bioinformatics/btn209}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>

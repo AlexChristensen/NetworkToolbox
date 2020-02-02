@@ -33,13 +33,11 @@ HC <- hybrid(A)
 Christensen, A. P., Kenett, Y. N., Aste, T., Silvia, P. J., & Kwapil, T. R. (2018).
 Network structure of the Wisconsin Schizotypy Scales-Short Forms:
 Examining psychometric network filtering approaches.
-\emph{Behavior Research Methods}, 1-20.
-doi: \href{https://doi.org/10.3758/s13428-018-1032-9}{10.3758/s13428-018-1032-9}
+\emph{Behavior Research Methods}, \emph{50}, 2531-2550.
 
 Pozzi, F., Di Matteo, T., & Aste, T. (2013).
 Spread of risk across financial markets: Better to invest in the peripheries. 
 \emph{Scientific Reports}, \emph{3}, 1655.
-doi: \href{https://doi.org/10.1038/srep01665}{10.1038/srep01665}
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>
