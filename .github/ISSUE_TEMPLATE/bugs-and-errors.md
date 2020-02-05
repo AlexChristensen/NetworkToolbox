@@ -1,20 +1,14 @@
----
-name: Bugs and errors
-about: Create a report to help us improve
-title: ''
-labels: bug
-assignees: AlexChristensen
-
----
-
 **Summary**
-A clear and concise description of what the bug is.
+[A clear and concise description of what the error is.]
 
 **Reproduce**
-Provide code, data, and examples to reproduce bug.
+[Provide code, data, and examples to reproduce error.]
 
 **NetworkToolbox Version**
-Version of NetworkToolbox you are using.
+NetworkToolbox [version number]
+
+**Computer Specifications**
+Operating system: [Windows, Mac, Linux]
 
 **Additional context**
-Add any other context about the problem here.
+[Add any other context about the problem here.]
