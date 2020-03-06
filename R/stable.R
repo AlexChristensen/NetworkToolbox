@@ -38,80 +38,88 @@
 #' 
 #' @export
 #Stabilizing----
+#Updated 06.03.2020
 stable <- function (A, comm = c("walktrap","louvain"),
                     cent = c("betweenness","rspbc","closeness",
                              "strength","degree","hybrid"), 
                     absolute = TRUE, diagonal = 0, ...)
 {
-    #nodes
-    n <- ncol(A)
+    ###########################
+    #### MISSING ARGUMENTS ####
+    ###########################
     
-    #change diagonal values if necessary
+    if(missing(comm))
+    {comm <- "walktrap"
+    }else{comm <- comm}
+    
     if(missing(diagonal))
     {diagonal <- 0
     }else{diagonal <- diagonal}
     
+    if(missing(cent))
+    {cent <- "strength"
+    }else{cent <- match.arg(cent)}
+    
+    #######################
+    #### MAIN FUNCTION ####
+    #######################
+    
+    # Set diagonal
     diag(A) <- diagonal
     
+    # Make weights absolute
     if(absolute)
     {A <- abs(A)}
     
-    if(missing(cent))
-    {cent<-"strength"
-    }else{cent<-match.arg(cent)}
-    
-    #set communities
-    if(missing(comm))
-    {comm<-"walktrap"
-    }else{comm<-comm}
-    
-    if(!is.numeric(comm))
+    # Convert to communities
+    if(any(eval(formals(NetworkToolbox::stable)$comm) %in% comm))
     {
-        if(comm=="walktrap")
-        {facts<-igraph::walktrap.community(convert2igraph(A),...)$membership
-        }else if(comm=="louvain")
-        {facts<-louvain(A,...)$community}
-    }else{facts<-comm}
+        facts <- switch(comm,
+                        walktrap = igraph::cluster_walktrap(NetworkToolbox::convert2igraph(A), ...)$membership,
+                        louvain = igraph::cluster_louvain(NetworkToolbox::convert2igraph(A), ...)$membership
+        )
+    }else{facts <- comm}
     
-    keepord<-cbind(rep(1:ncol(A)),facts)
-    ord<-keepord[order(keepord[,2]),]
+    # Check for names of nodes
+    if(is.null(colnames(A)))
+    {colnames(A) <- paste("V", 1:ncol(A), sep = "")}
     
-    fact<-list()
+    names(facts) <- colnames(A)
     
-    for(i in 1:max(facts, na.rm = TRUE))
+    # Unique communities
+    uniq <- unique(facts)
+    
+    # Initialize community list
+    fact <- list()
+    
+    # Loop through computing within-community centrality
+    for(i in 1:length(uniq))
     {
-        Ah<-A[which(facts==i),which(facts==i)]
+        # Nodes only in community 'i'
+        Ah <- A[which(facts == uniq[i]), which(facts == uniq[i])]
         
-        if(cent=="betweenness")
-        {stab<-betweenness(Ah)
-        }else if(cent=="rspbc")
-        {stab<-rspbc(Ah)
-        }else if(cent=="closeness")
-        {stab<-closeness(Ah)
-        }else if(cent=="strength")
-        {stab<-colSums(Ah)
-        }else if(cent=="degree")
-        {stab<-degree(Ah)}
+        # Centrality measure
+        stab <- switch(cent,
+                       betweenness = NetworkToolbox::betweenness(Ah),
+                       rspbc = NetworkToolbox::rspbc(Ah),
+                       closeness = NetworkToolbox::closeness(Ah),
+                       strength = colSums(Ah),
+                       degree = colSums(NetworkToolbox::binarize(Ah))
+                       )
         
+        # Input into list
         fact[[i]]<-stab
     }
     
-    stabil<-unlist(fact)
+    # Unlist for vector
+    stabil <- unlist(fact)
     
-    bind <- suppressWarnings(cbind(ord,stabil))
+    # Reorder to be consist with labels
+    stabil <- stabil[names(facts)]
     
-    # check for NAs
-    if(any(is.na(bind[,2])))
-    {bind[which(is.na(bind[,2])),3] <- 0}
+    # Check for missing values (change to 0)
+    stabil <- ifelse(is.na(stabil),0,stabil)
     
-    stabord <- bind[order(bind[,1]),]
-    
-    stabmat<-matrix(stabord[,3],nrow=nrow(stabord),ncol=1)
-    
-    stabmat <- as.vector(stabmat)
-    
-    names(stabmat)<-colnames(A)
-    
-    return(stabmat)
+    return(stabil)
 }
 #----

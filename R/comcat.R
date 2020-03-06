@@ -43,123 +43,146 @@
 #' 
 #' @export
 #Communicating----
+#Updated 06.03.2020
 comcat <- function (A, comm = c("walktrap","louvain"),
                     cent = c("strength","degree"),
                     absolute = TRUE,
                     metric = c("across","each"),
                     diagonal = 0, ...)
 {
-    #nodes
-    n <- ncol(A)
+    ###########################
+    #### MISSING ARGUMENTS ####
+    ###########################
     
-    #change diagonal values if necessary
+    if(missing(comm))
+    {comm <- "walktrap"
+    }else{comm <- comm}
+    
+    if(missing(cent))
+    {cent <- "strength"
+    }else{cent <- match.arg(cent)}
+    
+    
+    if(missing(metric))
+    {metric <- "each"
+    }else{metric <- match.arg(metric)}
+    
     if(missing(diagonal))
     {diagonal <- 0
     }else{diagonal <- diagonal}
     
+    #######################
+    #### MAIN FUNCTION ####
+    #######################
+    
+    # Set diagonal
     diag(A) <- diagonal
     
+    # Change edges to absolute
     if(absolute)
     {A <- abs(A)}
     
-    if(missing(cent))
-    {cent<-"strength"
-    }else{cent<-match.arg(cent)}
-    
-    #set communities
-    if(missing(comm))
-    {comm<-"walktrap"
-    }else{comm<-comm}
-    
-    if(missing(metric))
-    {metric <- "across"
-    }else{metric <- match.arg(metric)}
-    
-    if(!is.numeric(comm))
+    # Convert to communities
+    if(any(eval(formals(NetworkToolbox::stable)$comm) %in% comm))
     {
-        if(comm=="walktrap")
-        {facts<-igraph::walktrap.community(convert2igraph(A), ...)$membership
-        }else if(comm=="louvain")
-        {facts<-louvain(A,...)$community}
-    }else{facts<-comm}
+        facts <- switch(comm,
+                        walktrap = igraph::cluster_walktrap(NetworkToolbox::convert2igraph(A), ...)$membership,
+                        louvain = igraph::cluster_louvain(NetworkToolbox::convert2igraph(A), ...)$membership
+                        )
+    }else{facts <- comm}
     
-    keepord<-cbind(rep(1:ncol(A)),facts)
-    ord<-keepord[order(keepord[,2]),]
+    # Check for names of nodes
+    if(is.null(colnames(A)))
+    {colnames(A) <- paste("V", 1:ncol(A), sep = "")}
     
-    fact<-list()
+    names(facts) <- colnames(A)
     
-    if(length(na.omit(unique(comm)))!=1)
+    # Unique communities
+    uniq <- unique(facts)
+    
+    # Initialize list
+    fact <- list()
+    
+    # Check for unidimensionality
+    if(length(na.omit(uniq)) != 1)
     {
-        if(metric=="across")
+        if(metric=="across") # All communities
         {
             
-            for(i in 1:max(facts, na.rm = TRUE))
+            # Loop over all communities not in target community
+            for(i in 1:length(uniq))
             {
-                Ah <- A[which(facts!=i),which(facts==i)]
+                # Connections outside of target community
+                Ah <- A[which(facts != uniq[i]), which(facts == uniq[i])]
                 
-                if(cent=="degree")
-                {com<-colSums(binarize(Ah))
-                }else if(cent=="strength")
-                {com<-colSums(Ah)}
+                # Centrality
+                com <- switch(cent,
+                              degree = colSums(NetworkToolbox::binarize(Ah)),
+                              strength = colSums(Ah)
+                              )
                 
-                fact[[i]]<-com
+                # Input into list
+                fact[[i]] <- com
             }
             
-            commn<-unlist(fact)
+            # Unlist to vector
+            commn <- unlist(fact)
             
-            bind<-cbind(ord,commn)
+            # Reorder to be consist with labels
+            commat <- commn[names(facts)]
             
-            commord<-bind[order(bind[,1]),]
+            # Label vector
+            names(commat) <- colnames(A)
             
-            commmat<-matrix(commord[,3],nrow=nrow(commord),ncol=1)
-            
-            commmat <- as.vector(commmat)
-            
-            names(commmat) <- colnames(A)
-            
-            return(commmat)
-        }else if(metric=="each")
+        }else if(metric=="each") # Individual communities
         {
-            
-            uniq <- unique(facts)
-            
+            # Initialize item list
             item <- list()
             
-            commat <- matrix(NA,nrow=nrow(A),ncol=length(uniq))
+            # Initialize matrix
+            commat <- matrix(NA, nrow = nrow(A), ncol = length(uniq))
             
+            # Add column names
             colnames(commat) <- paste(uniq)
             
+            # Loop through each node
             for(i in 1:ncol(A))
             {
+                # Connections for node 'i'
                 Ah <- A[,i]
                 
+                # Communities outside of target community
                 uniq.no <- uniq[which(uniq!=facts[i])]
                 
+                # Loop through each community
                 for(j in 1:length(uniq.no))
                 {
+                    # Edges in target outside community
                     Aha <- Ah[which(facts==uniq.no[j])]
                     
-                    if(cent=="degree")
-                    {com<-sum(ifelse(Aha!=0,1,0))
-                    }else if(cent=="strength")
-                    {com<-sum(Aha)}
+                    # Centrality
+                    com <- switch(cent,
+                                  degree = sum(ifelse(Aha!=0,1,0)),
+                                  strength = sum(Aha)
+                                  )
                     
+                    # Input into matrix
                     commat[i,paste(uniq.no[j])] <- com
                 }
             }
             
-            commat[,paste(uniq[order(uniq)])]
+            # Order and label matrix
+            colnames(commat) <- uniq
             row.names(commat) <- colnames(A)
-            
-            commat <- commat[,order(colnames(commat))]
-            
-            return(commat)
         }
     }else{
-        commat <- as.matrix(rep(0,ncol(A)),ncol=1)
+        # Initialize matrix
+        commat <- as.matrix(rep(0,ncol(A)), ncol = 1)
+        # Label matrix
         colnames(commat) <- paste(unique(comm))
-        
-        return(commat)
+        row.names(commat) <- colnames(A)
     }
+    
+    return(commat)
 }
 #----
