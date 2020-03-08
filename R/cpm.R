@@ -50,10 +50,10 @@
 #' }
 #' 
 #' @usage
-#' cpmIV(neuralarray, bstat, covar, thresh = .01, groups = NULL, nfolds = NULL,
+#' cpmIV(neuralarray, bstat, covar, thresh = .01, groups = NULL,
 #'       method = c("mean", "sum"), model = c("linear","quadratic","cubic"),
-#'       corr = c("pearson","spearman"),
-#'       nEdges, cores, progBar = TRUE)
+#'       corr = c("pearson","spearman"), nEdges, 
+#'       standardize = FALSE, cores, progBar = TRUE)
 #'       
 #' cpmEV(train_na, train_b, valid_na, valid_b, thresh = .01,
 #'       overlap = FALSE, progBar = TRUE)
@@ -73,10 +73,6 @@
 #' 
 #' @param thresh Sets an \eqn{\alpha} threshold for edge weights to be retained.
 #' Defaults to \code{.01}
-#' 
-#' @param nfolds Numeric.
-#' Performs \emph{k}-fold validation.
-#' Defaults to \code{NULL}, which will perform leave-one-out validation
 #' 
 #' @param groups Allows grouping variables to be used for plotting points.
 #' \strong{Must} be a vector.
@@ -208,7 +204,7 @@
 #'
 #' @importFrom foreach %dopar%
 #' @importFrom stats cor.test coef cov2cor lm na.omit
-#' @importFrom graphics par abline hist plot text
+#' @importFrom graphics par abline hist plot text legend
 #' @importFrom grDevices colorRampPalette dev.new
 #' @importFrom MASS psi.bisquare
 #' 
@@ -216,7 +212,7 @@
 #CPM Functions----
 #CPM Internal Validation----
 cpmIV <- function (neuralarray, bstat, covar, thresh = .01,
-                   nfolds = NULL, groups = NULL, method = c("mean", "sum"),
+                   groups = NULL, method = c("mean", "sum"),
                    model = c("linear","quadratic","cubic"),
                    corr = c("pearson","spearman"), nEdges, 
                    standardize = FALSE, cores, progBar = TRUE)
@@ -236,9 +232,6 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01,
     if(missing(corr))
     {corr<-"pearson"
     }else{corr<-match.arg(corr)}
-    
-    if(is.array(neuralarray))
-    {neuralarray <- lapply(seq(dim(neuralarray)[3]), function(x) neuralarray[,,x])}
     
     if(missing(nEdges))
     {nEdges<-length(bstat)*.10
@@ -267,9 +260,9 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01,
     {bstat<-scale(bstat)}
     
     #number of subjects
-    no_sub<-length(neuralarray)
+    no_sub<-dim(neuralarray)[3]
     #number of nodes
-    no_node<-ncol(neuralarray[[1]])
+    no_node<-ncol(neuralarray)
     
     #initialize positive and negative behavior stats
     behav_pred_pos<-matrix(0,nrow=no_sub,ncol=1)

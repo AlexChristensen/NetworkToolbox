@@ -39,7 +39,7 @@
 #' @references
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' \emph{Neuroimage}, \emph{52}, 1059-1069.
+#' \emph{NeuroImage}, \emph{52}, 1059-1069.
 #' 
 #' Vargas, E. R., & Wahl, L. M. (2014).
 #' The gateway coefficient: A novel metric for identifying critical connections in modular networks.

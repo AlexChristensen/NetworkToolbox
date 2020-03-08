@@ -39,7 +39,7 @@
 #' @references
 #' Rubinov, M., & Sporns, O. (2010). 
 #' Complex network measures of brain connectivity: Uses and interpretations. 
-#' \emph{Neuroimage}, \emph{52}, 1059-1069.
+#' \emph{NeuroImage}, \emph{52}, 1059-1069.
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 

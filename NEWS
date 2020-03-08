@@ -1,6 +1,8 @@
-Changes in version 1.3.4
+Changes in version 1.4.0
 
-o BUG FIX: uses `corpcor::psuedoinverse` rather than `solve` for inversing a matrix
+o NEW FUNCTION: `dCor.parallel` parallelizes the `dCor` function to improve processing speed
+
+o NEW FUNCTION: `dCor` computes the distance correlation for time series data (intended for use with `cpm`)
 
 o BUG FIX: named communities into `comcat` and `stable`
 

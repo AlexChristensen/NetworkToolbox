@@ -118,25 +118,25 @@ LoGo <- function (data, cliques, separators,
         for(i in 1:nrow(cliques))
         {
             v<-cliques[i,]
-            Jlogo[v,v]<-Jlogo[v,v]+corpcor::pseudoinverse(S[v,v])
+            Jlogo[v,v]<-Jlogo[v,v]+solve(S[v,v])
         }
         
         for(i in 1:nrow(separators))
         {
             v<-separators[i,]
-            Jlogo[v,v]<-Jlogo[v,v]-corpcor::pseudoinverse(S[v,v])
+            Jlogo[v,v]<-Jlogo[v,v]-solve(S[v,v])
         }
     }else{
         for(i in 1:length(cliques))
         {
             v<-cliques[[i]]
-            Jlogo[v,v]<-Jlogo[v,v]+corpcor::pseudoinverse(S[v,v])
+            Jlogo[v,v]<-Jlogo[v,v]+solve(S[v,v])
         }
         
         for(i in 1:length(separators))
         {
             v<-separators[[i]]
-            Jlogo[v,v]<-Jlogo[v,v]-corpcor::pseudoinverse(S[v,v])
+            Jlogo[v,v]<-Jlogo[v,v]-solve(S[v,v])
         }
     }
     
