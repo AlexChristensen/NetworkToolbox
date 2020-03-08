@@ -9,10 +9,10 @@
 \alias{cpmPlot}
 \title{Connectome Predictive Modeling}
 \usage{
-cpmIV(neuralarray, bstat, covar, thresh = .01, groups = NULL, nfolds = NULL,
+cpmIV(neuralarray, bstat, covar, thresh = .01, groups = NULL,
       method = c("mean", "sum"), model = c("linear","quadratic","cubic"),
-      corr = c("pearson","spearman"),
-      nEdges, cores, progBar = TRUE)
+      corr = c("pearson","spearman"), nEdges, 
+      standardize = FALSE, cores, progBar = TRUE)
       
 cpmEV(train_na, train_b, valid_na, valid_b, thresh = .01,
       overlap = FALSE, progBar = TRUE)
@@ -33,10 +33,6 @@ cpmPlot(cpm.obj, visual.nets = FALSE)
 
 \item{thresh}{Sets an \eqn{\alpha} threshold for edge weights to be retained.
 Defaults to \code{.01}}
-
-\item{nfolds}{Numeric.
-Performs \emph{k}-fold validation.
-Defaults to \code{NULL}, which will perform leave-one-out validation}
 
 \item{groups}{Allows grouping variables to be used for plotting points.
 \strong{Must} be a vector.
