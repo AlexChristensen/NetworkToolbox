@@ -4,7 +4,9 @@
 \name{behavOpen}
 \alias{behavOpen}
 \title{NEO-PI-3 for Resting-state Data}
-\format{behavOpen (vector, length = 144)}
+\format{
+behavOpen (vector, length = 144)
+}
 \usage{
 data(behavOpen)
 }

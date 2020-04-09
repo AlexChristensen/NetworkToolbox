@@ -4,14 +4,15 @@
 \alias{depna}
 \title{Dependency Neural Networks}
 \usage{
-depna(neuralarray, pB = TRUE, ...)
+depna(neuralarray, cores, ...)
 }
 \arguments{
 \item{neuralarray}{Array from \code{\link{convertConnBrainMat}} function}
 
-\item{pB}{Should progress bar be displayed?
-Defaults to \code{TRUE}.
-Set \code{FALSE} for no progress bar}
+\item{cores}{Numeric.
+Number of cores to use in computing results.
+Set to \code{1} to not use parallel computing.
+Recommended to use maximum number of cores minus one}
 
 \item{...}{Additional arguments from \code{\link{depend}} function}
 }
