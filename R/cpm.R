@@ -492,7 +492,8 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01,
         par(mar=c(5,5,4,2))
         plot(bstat,behav_pred_pos,xlab="Observed Score\n(Z-score)",ylab="Predicted Score\n(Z-score)",
              main="Positive Prediction",xlim=c(lower.bstat,upper.bstat),
-             ylim=c(lower.bstat,upper.bstat),pch=c(16,1),col="darkorange2")
+             ylim=c(lower.bstat,upper.bstat),pch=c(rep(16,length(which(groups == labs_groups[1]))),
+                                                   rep(1,length(which(groups == labs_groups[2])))),col="darkorange2")
         abline(lm(behav_pred_pos~bstat))
         if(R_pos>=0)
         {
@@ -509,7 +510,8 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01,
         par(mar=c(5,5,4,2))
         plot(bstat,behav_pred_neg,xlab="Observed Score\n(Z-score)",ylab="Predicted Score\n(Z-score)",
              main="Negative Prediction",xlim=c(lower.bstat,upper.bstat),
-             ylim=c(lower.bstat,upper.bstat),pch=c(16,1),col="skyblue2")
+             ylim=c(lower.bstat,upper.bstat),pch=c(rep(16,length(which(groups == labs_groups[1]))),
+                                                   rep(1,length(which(groups == labs_groups[2])))),col="skyblue2")
         abline(lm(behav_pred_neg~bstat))
         if(R_neg>=0)
         {
@@ -585,8 +587,14 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01,
     res$results <- results
     res$posMask <- posmask
     res$negMask <- negmask
+    res$posArray <- pos_array
+    res$negArray <- neg_array
+    res$behav <- bstat
+    res$posPred <- behav_pred_pos
+    res$negPred <- behav_pred_neg
+    res$groups <- groups
     
-    class(res) <- "CPM"
+    class(res) <- "cpm"
     
     return(res)
 }

@@ -3,9 +3,10 @@
 #' 
 #' @param neuralarray Array from \code{\link{convertConnBrainMat}} function
 #' 
-#' @param pB Should progress bar be displayed?
-#' Defaults to \code{TRUE}.
-#' Set \code{FALSE} for no progress bar
+#' @param cores Numeric.
+#' Number of cores to use in computing results.
+#' Set to \code{1} to not use parallel computing.
+#' Recommended to use maximum number of cores minus one
 #' 
 #' @param ... Additional arguments from \code{\link{depend}} function
 #' 
@@ -31,24 +32,40 @@
 #' 
 #' @export
 #Dependency Network Analysis----
-depna <- function (neuralarray, pB = TRUE, ...)
+# Updated 09.04.2020
+depna <- function (neuralarray, cores, ...)
 {
-    n<-length(neuralarray)/nrow(neuralarray)/ncol(neuralarray)
+    # Convert to list for parallelization
+    deplist <- list()
     
-    for(i in 1:n)    
-        if(nrow(neuralarray)!=ncol(neuralarray))
-        {stop(paste("Participant ",i,"'s matrix is not symmetric",sep=""))}
+    # Loop through neuralarray
+    for(i in 1:dim(neuralarray)[3])
+    {deplist[[i]] <- neuralarray[,,i]}
     
-    deparray<-neuralarray
+    # Initialize depna array
+    deparray <- neuralarray
     
-    if(pB)
-    {pb <- txtProgressBar(max=n, style = 3)}
+    # Let user know data generation has started
+    message("\nComputing dependency matrices...\n", appendLF = FALSE)
     
-    for(i in 1:n)
-    {deparray[,,i]<-depend(neuralarray[,,i],progBar=FALSE,...)
-    if(pB){setTxtProgressBar(pb, i)}}
+    # Parallel processing
+    cl <- parallel::makeCluster(cores)
     
-    if(pB){close(pb)}
+    # Export variables
+    parallel::clusterExport(cl = cl,
+                            varlist = c("deplist"),
+                            envir=environment())
+    
+    # Compute dependency matrices
+    depnalist <- pbapply::pblapply(X = deplist, cl = cl, FUN = depend,
+                                   na.data = "pairwise", progBar = FALSE)
+    
+    # Stop cluster
+    parallel::stopCluster(cl)
+    
+    # Convert back to array
+    for(i in 1:length(depnalist))
+    {deparray[,,i] <- depnalist[[i]]}
     
     return(deparray)
 }

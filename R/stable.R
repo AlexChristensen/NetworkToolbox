@@ -38,7 +38,7 @@
 #' 
 #' @export
 #Stabilizing----
-#Updated 06.03.2020
+#Updated 18.03.2020
 stable <- function (A, comm = c("walktrap","louvain"),
                     cent = c("betweenness","rspbc","closeness",
                              "strength","degree","hybrid"), 
@@ -80,6 +80,9 @@ stable <- function (A, comm = c("walktrap","louvain"),
         )
     }else{facts <- comm}
     
+    # Convert facts to characters
+    facts <- paste(facts)
+    
     # Check for names of nodes
     if(is.null(colnames(A)))
     {colnames(A) <- paste("V", 1:ncol(A), sep = "")}
@@ -98,17 +101,26 @@ stable <- function (A, comm = c("walktrap","louvain"),
         # Nodes only in community 'i'
         Ah <- A[which(facts == uniq[i]), which(facts == uniq[i])]
         
-        # Centrality measure
-        stab <- switch(cent,
-                       betweenness = NetworkToolbox::betweenness(Ah),
-                       rspbc = NetworkToolbox::rspbc(Ah),
-                       closeness = NetworkToolbox::closeness(Ah),
-                       strength = colSums(Ah),
-                       degree = colSums(NetworkToolbox::binarize(Ah))
-                       )
+        # Check for matrix size
+        if(length(Ah) != 1)
+        {
+            # Centrality measure
+            stab <- switch(cent,
+                           betweenness = NetworkToolbox::betweenness(Ah),
+                           rspbc = NetworkToolbox::rspbc(Ah),
+                           closeness = NetworkToolbox::closeness(Ah),
+                           strength = colSums(Ah),
+                           degree = colSums(NetworkToolbox::binarize(Ah))
+            )
+        }else{
+            # Input zero
+            stab <- 0
+            # Change name
+            names(stab) <- names(which(facts == uniq[i]))
+        }
         
         # Input into list
-        fact[[i]]<-stab
+        fact[[i]] <- stab
     }
     
     # Unlist for vector

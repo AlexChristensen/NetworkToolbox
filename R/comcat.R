@@ -43,7 +43,7 @@
 #' 
 #' @export
 #Communicating----
-#Updated 06.03.2020
+#Updated 18.03.2020
 comcat <- function (A, comm = c("walktrap","louvain"),
                     cent = c("strength","degree"),
                     absolute = TRUE,
@@ -90,6 +90,9 @@ comcat <- function (A, comm = c("walktrap","louvain"),
                         louvain = igraph::cluster_louvain(NetworkToolbox::convert2igraph(A), ...)$membership
                         )
     }else{facts <- comm}
+    
+    # Convert facts to characters
+    facts <- paste(facts)
     
     # Check for names of nodes
     if(is.null(colnames(A)))

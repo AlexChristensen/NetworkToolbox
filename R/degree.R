@@ -45,8 +45,6 @@ degree <- function (A)
     if(nrow(A)!=ncol(A))
     {stop("Input not an adjacency matrix")}
     
-    A <- abs(A)
-    A <- as.matrix(A)
     A <- binarize(A)
     
     if(isSymmetric(A, check.attributes = FALSE))

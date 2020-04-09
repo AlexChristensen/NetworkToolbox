@@ -1,3 +1,8 @@
+Changes in version 1.4.1
+
+o BUG FIX: NA communities throwing bad labels in `stable` and `comcat`
+
+
 Changes in version 1.4.0
 
 o NEW FUNCTION: `dCor.parallel` parallelizes the `dCor` function to improve processing speed
