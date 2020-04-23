@@ -4,18 +4,24 @@
 \alias{randnet}
 \title{Generates a Random Network}
 \usage{
-randnet(nodes, edges)
+randnet(nodes = NULL, edges = NULL, A = NULL)
 }
 \arguments{
-\item{nodes}{Number of nodes in random network}
+\item{nodes}{Numeric.
+Number of nodes in random network}
 
-\item{edges}{Number of edges in random network}
+\item{edges}{Numeric.
+Number of edges in random network}
+
+\item{A}{Matrix or data frame.
+An adjacency matrix (i.e., network) to be used to estimated a random network with
+fixed edges (allows for asymmetric network estimation)}
 }
 \value{
 Returns an adjacency matrix of a random network
 }
 \description{
-Generates a random network
+Generates a random binary network
 }
 \examples{
 rand <- randnet(10, 27)
@@ -25,6 +31,10 @@ rand <- randnet(10, 27)
 Rubinov, M., & Sporns, O. (2010). 
 Complex network measures of brain connectivity: Uses and interpretations. 
 \emph{NeuroImage}, \emph{52}, 1059-1069.
+
+Csardi, G., & Nepusz, T. (2006).
+The \emph{igraph} software package for complex network research.
+\emph{InterJournal, Complex Systems}, 1695.
 }
 \author{
 Alexander Christensen <alexpaulchristensen@gmail.com>
