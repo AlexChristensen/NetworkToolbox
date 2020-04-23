@@ -49,6 +49,9 @@
 #Participation Coefficient----
 participation <- function (A, comm = c("walktrap","louvain"))
 {
+    #make sure its a matrix
+    A <- as.matrix(A)
+    
     #nodes
     n <- ncol(A)
     
@@ -77,7 +80,12 @@ participation <- function (A, comm = c("walktrap","louvain"))
         Kc2 <- vector(mode="numeric",length=n)  
         
         for(i in 1:max(Gc))
-        {Kc2 <- Kc2 + colSums(A*(Gc==i))^2} #strength within communities squared
+        {
+            #strength within communities squared
+            if(is.vector(A*(Gc==i)))
+            {Kc2 <- Kc2 + sum(A*(Gc==i))^2
+            }else{Kc2 <- Kc2 + colSums(A*(Gc==i))^2}
+        } 
         
         ones <- vector(mode="numeric",length=n) + 1
         

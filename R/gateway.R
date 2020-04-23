@@ -52,6 +52,9 @@
 gateway <- function (A, comm = c("walktrap","louvain"),
                      cent = c("strength","betweenness"))
 {
+    #make sure its a matrix
+    A <- as.matrix(A)
+    
     #nodes
     n <- ncol(A)
     

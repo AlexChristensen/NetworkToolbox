@@ -47,6 +47,9 @@
 #Diversity Coefficient----
 diversity <- function (A, comm = c("walktrap","louvain"))
 {
+    #convert to matrix
+    A <- as.matrix(A)
+    
     #nodes
     n <- ncol(A)
     
@@ -76,7 +79,11 @@ diversity <- function (A, comm = c("walktrap","louvain"))
         Snm <- matrix(0,nrow=n,ncol=m)
         
         for(i in 1:m)
-        {Snm[,i] <- rowSums(A[,which(facts==i)])}
+        {
+            if(is.vector(A[,which(facts==i)]))
+            {Snm[,i] <- sum(A[,which(facts==i)])
+            }else{Snm[,i] <- rowSums(A[,which(facts==i)])}
+        }
         
         pnm <- Snm/(S*matrix(1,nrow=n,ncol=m))
         pnm[is.na(pnm)]<-0

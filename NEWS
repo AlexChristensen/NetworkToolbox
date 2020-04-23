@@ -1,19 +1,23 @@
 Changes in version 1.4.1
 
-o BUG FIX: NA communities throwing bad labels in `stable` and `comcat`
+o NEW: `cpmIVperm` allows for permutation of `cpmIV` results
+
+o FIX: NA communities throwing bad labels in `stable` and `comcat`
+
+o FIX: `diversity`, `gateway`, and `participation` bug when communities lengths equal one 
 
 
 Changes in version 1.4.0
 
-o NEW FUNCTION: `dCor.parallel` parallelizes the `dCor` function to improve processing speed
+o NEW: `dCor.parallel` parallelizes the `dCor` function to improve processing speed
 
-o NEW FUNCTION: `dCor` computes the distance correlation for time series data (intended for use with `cpm`)
+o NEW: `dCor` computes the distance correlation for time series data (intended for use with `cpm`)
 
-o BUG FIX: named communities into `comcat` and `stable`
+o FIX: named communities into `comcat` and `stable`
 
-o BUG FIX: where `comcat` and `stable` treats `NA` community membership as actual membership -- corrects `EGAnet::net.loads` outputs
+o FIX: where `comcat` and `stable` treats `NA` community membership as actual membership -- corrects `EGAnet::net.loads` outputs
 
-o BUG FIX: `comcat` and `stable` for *EGAnet*
+o FIX: `comcat` and `stable` for *EGAnet*
 
 
 Changes in version 1.3.3

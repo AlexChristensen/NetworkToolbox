@@ -1,4 +1,4 @@
-#' Connectome Predictive Modeling
+#' @title Connectome-based Predictive Modeling
 #' 
 #' @name cpm
 #'
@@ -7,9 +7,10 @@
 #' cpmFP
 #' cpmFPperm
 #' cpmIV
+#' cpmIVperm
 #' cpmPlot
 #' 
-#' @description Suite of functions for Connectome Predictive Modeling (CPM).
+#' @description Suite of functions for Connectome-based Predictive Modeling (CPM).
 #' \strong{See and cite Finn et al., 2015; Rosenberg et al., 2016; Shen et al., 2017}
 #' 
 #' \itemize{
@@ -24,6 +25,12 @@
 #' used with the linear regression weights to compute their predicted behavioral score. This is repeated
 #' for every participant. The predicted scores are correlated with their observed score. Significant values
 #' suggest that the connectome is related to the behavioral statistic}
+#' 
+#' \item{\code{cpmIVperm}}
+#'
+#' {Performs a permutation test of the results obtained by \code{cpmIV}. The permutation test quantifies
+#' whether the results obtained by the original \code{cpmIV} are significantly different than a random model
+#' (see Shen et al., 2017)}
 #' 
 #' \item{\code{cpmEV}}
 #' 
@@ -53,7 +60,9 @@
 #' cpmIV(neuralarray, bstat, covar, thresh = .01, groups = NULL,
 #'       method = c("mean", "sum"), model = c("linear","quadratic","cubic"),
 #'       corr = c("pearson","spearman"), nEdges, 
-#'       standardize = FALSE, cores, progBar = TRUE)
+#'       standardize = FALSE, cores, progBar = TRUE, plots = TRUE)
+#'       
+#' cpmIVperm(iter = 1000, ...)
 #'       
 #' cpmEV(train_na, train_b, valid_na, valid_b, thresh = .01,
 #'       overlap = FALSE, progBar = TRUE)
@@ -103,6 +112,10 @@
 #' Defaults to \code{TRUE}.
 #' Set to \code{FALSE} for no progress bar
 #' 
+#' @param plots Should plots be plotted?
+#' Defaults to \code{TRUE}.
+#' Set to \code{FALSE} to hide plots
+#' 
 #' @param train_na Training dataset
 #' (an array from \code{\link[NetworkToolbox]{convertConnBrainMat}} function)
 #' 
@@ -134,6 +147,8 @@
 #' Defaults to \code{FALSE}.
 #' Set to \code{TRUE} to visualize the networks
 #' 
+#' @param ... Additional arguments to be passed from a \code{cpm} function
+#' 
 #' @return
 #' 
 #' \code{cpmIV} and \code{cpmEV}:
@@ -148,6 +163,10 @@
 #' 
 #' \item{negMask}{Negative connectivity for input in
 #' \href{https://bioimagesuiteweb.github.io/webapp/connviewer.html}{BioImage Suite Connectivity Viewer}}
+#' 
+#' \code{cpmIVperm}:
+#' 
+#' Returns a matrix containing \emph{p}-values for positive and negative prediction models 
 #' 
 #' \code{cpmFP}:
 #' 
@@ -215,7 +234,8 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01,
                    groups = NULL, method = c("mean", "sum"),
                    model = c("linear","quadratic","cubic"),
                    corr = c("pearson","spearman"), nEdges, 
-                   standardize = FALSE, cores, progBar = TRUE)
+                   standardize = FALSE, cores, progBar = TRUE,
+                   plots = TRUE)
 {
     ####################################
     #### MISSING ARGUMENTS HANDLING ####
@@ -472,82 +492,6 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01,
     P_pos<-ifelse(round(P_pos,3)!=0,round(P_pos,3),noquote("< .001"))
     P_neg<-ifelse(round(P_neg,3)!=0,round(P_neg,3),noquote("< .001"))
     
-    #bstat range
-    lower.bstat <- floor(range(bstat))[1]
-    upper.bstat <- ceiling(range(bstat))[2]
-    text.one <- lower.bstat - (lower.bstat * .20)
-    text.two <- upper.bstat - (upper.bstat * .20)
-    
-    #set up groups
-    if(!is.null(groups))
-    {
-        #group labels
-        labs_groups <- unique(groups)
-        
-        #number of groups
-        n_groups <- length(labs_groups)
-        
-        #plot positive
-        dev.new()
-        par(mar=c(5,5,4,2))
-        plot(bstat,behav_pred_pos,xlab="Observed Score\n(Z-score)",ylab="Predicted Score\n(Z-score)",
-             main="Positive Prediction",xlim=c(lower.bstat,upper.bstat),
-             ylim=c(lower.bstat,upper.bstat),pch=c(rep(16,length(which(groups == labs_groups[1]))),
-                                                   rep(1,length(which(groups == labs_groups[2])))),col="darkorange2")
-        abline(lm(behav_pred_pos~bstat))
-        if(R_pos>=0)
-        {
-            text(x=text.one,y=text.two,labels = paste("r = ",round(R_pos,3),"\np = ",P_pos))
-            legend("bottomright",legend=labs_groups,col="darkorange2",pch=c(16,1))
-        }else if(R_pos<0)
-        {
-            text(x=text.one,y=text.one,labels = paste("r = ",round(R_pos,3),"\np = ",P_pos))
-            legend("topright",legend=labs_groups,col="darkorange2",pch=c(16,1))
-        }
-        
-        #plot negative
-        dev.new()
-        par(mar=c(5,5,4,2))
-        plot(bstat,behav_pred_neg,xlab="Observed Score\n(Z-score)",ylab="Predicted Score\n(Z-score)",
-             main="Negative Prediction",xlim=c(lower.bstat,upper.bstat),
-             ylim=c(lower.bstat,upper.bstat),pch=c(rep(16,length(which(groups == labs_groups[1]))),
-                                                   rep(1,length(which(groups == labs_groups[2])))),col="skyblue2")
-        abline(lm(behav_pred_neg~bstat))
-        if(R_neg>=0)
-        {
-            text(x=text.one,y=text.two,labels = paste("r = ",round(R_neg,3),"\np = ",P_neg))
-            legend("bottomright",legend=labs_groups,col="skyblue2",pch=c(16,1))
-        }else if(R_neg<0)
-        {
-            text(x=text.one,y=text.one,labels = paste("r = ",round(R_neg,3),"\np = ",P_neg))
-            legend("topright",legend=labs_groups,col="skyblue2",pch=c(16,1))
-        }
-    }else{
-        #plot positive
-        dev.new()
-        par(mar=c(5,5,4,2))
-        plot(bstat,behav_pred_pos,xlab="Observed Score\n(Z-score)",ylab="Predicted Score\n(Z-score)",
-             main="Positive Prediction",xlim=c(lower.bstat,upper.bstat),
-             ylim=c(lower.bstat,upper.bstat),pch=16,col="darkorange2")
-        abline(lm(behav_pred_pos~bstat))
-        if(R_pos>=0)
-        {text(x=text.one,y=text.two,labels = paste("r = ",round(R_pos,3),"\np = ",P_pos))
-        }else if(R_pos<0)
-        {text(x=text.one,y=text.one,labels = paste("r = ",round(R_pos,3),"\np = ",P_pos))}
-        
-        #plot negative
-        dev.new()
-        par(mar=c(5,5,4,2))
-        plot(bstat,behav_pred_neg,xlab="Observed Score\n(Z-score)",ylab="Predicted Score\n(Z-score)",
-             main="Negative Prediction",xlim=c(floor(range(bstat))[1],floor(range(bstat))[1]),
-             ylim=c(floor(range(bstat))[1],floor(range(bstat))[1]),pch=16,col="skyblue2")
-        abline(lm(behav_pred_neg~bstat))
-        if(R_neg>=0)
-        {text(x=text.one,y=text.two,labels = paste("r = ",round(R_neg,3),"\np = ",P_neg))
-        }else if(R_neg<0)
-        {text(x=text.one,y=-text.two,labels = paste("r = ",round(R_neg,3),"\np = ",P_neg))}
-    }
-    
     bstat<-as.vector(bstat)
     behav_pred_pos<-as.vector(behav_pred_pos)
     behav_pred_neg<-as.vector(behav_pred_neg)
@@ -587,8 +531,8 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01,
     res$results <- results
     res$posMask <- posmask
     res$negMask <- negmask
-    res$posArray <- pos_array
-    res$negArray <- neg_array
+    res$posArray <- pos_array * neuralarray
+    res$negArray <- neg_array * neuralarray
     res$behav <- bstat
     res$posPred <- behav_pred_pos
     res$negPred <- behav_pred_neg
@@ -596,10 +540,106 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01,
     
     class(res) <- "cpm"
     
+    if(plots)
+    {plot(res)}
+    
     return(res)
 }
 #----
+# CPM Internal Validation (Permutation)----
+#' @export
+cpmIVperm <- function(iter = 1000, ...)
+{
+    # List input for ...
+    input <-  list(...)
+    
+    # Behavioral statistic is necessary
+    bstat <- input$bstat
+    
+    # Check for number of cores
+    if(!"cores" %in% names(input))
+    {input$cores <- parallel::detectCores() / 2}
+    
+    # Adjust progress bar based on covariates
+    if(!"covar" %in% names(input))
+    {input$progBar <- FALSE
+    }else{input$progBar <- TRUE}
+    
+    # Make sure plots are FALSE
+    input$plots <- FALSE
+    
+    # Run original analysis
+    orig <- do.call(cpmIV, input)
+    orig.pos <- orig$results["positive", "r"]
+    orig.neg <- orig$results["negative", "r"]
+    
+    # Shuffle participant scores and insert into list
+    perm.list <- vector("list", length = (iter-1))
+    
+    # Check for covariates (progress bar)
+    if(!"covar" %in% names(input))
+    {pb <- txtProgressBar(min = 0, max = (iter-1), style = 3)}
+    
+    # Initialize i
+    i <- 1
+    
+    # Loop through cpmIV
+    while(i != (iter-1))
+    {
+        # Check for covariates (progress bar)
+        if("covar" %in% names(input))
+        {message(paste(i, "of", iter, "iterations complete."))}
+        
+        # Permutate behavioral statistic
+        input$bstat <- sample(bstat, length(bstat))
+        
+        # Run cpmIV (error catch)
+        perm.list[[i]] <- try(
+            do.call(cpmIV, input)
+        )
+        
+        # Re-run if error; otherwise, proceed
+        i <- ifelse(class(perm.list) == "try-error", i, (i+1))
+        
+        # Check for covariates (progress bar)
+        if(!"covar" %in% names(input))
+        {setTxtProgressBar(pb, i)}
+    }
+    
+    # Check for covariates (progress bar)
+    if(!"covar" %in% names(input))
+    {close(pb)}
+    
+    # Obtain positive correlation values
+    pos <- c(orig.pos,
+             as.numeric(unlist(lapply(perm.list, function(X)
+             {
+                 X$results["positive", "r"]
+             })))
+    )
+    
+    # Obtain negative correlation values
+    neg <- c(orig.neg,
+             as.numeric(unlist(lapply(perm.list, function(X)
+             {
+                 X$results["negative", "r"]
+             })))
+    )
+    
+    # p-value for positive and negative
+    p.pos <- sum(ifelse(pos >= orig.pos, 1, 0)) / iter
+    p.neg <- sum(ifelse(neg >= orig.neg, 1, 0)) / iter
+    
+    # Create p-value matrix
+    ps <- matrix(c(p.pos, p.neg), ncol = 2)
+    row.names(ps) <- "p-value"
+    colnames(ps) <- c("Positive Prediction", "Negative Prediction")
+    
+    return(ps)
+}
+#----
 #CPM External Validation----
+#' @export
 cpmEV <- function (train_na, train_b, valid_na, valid_b,
                    thresh = .01, overlap = FALSE, progBar = TRUE)
 {
@@ -896,6 +936,7 @@ cpmEV <- function (train_na, train_b, valid_na, valid_b,
 }
 #----
 #CPM Fingerprinting----
+#' @export
 cpmFP <- function (session1, session2, progBar = TRUE)
 {
     count1<-0
@@ -964,7 +1005,8 @@ cpmFP <- function (session1, session2, progBar = TRUE)
     return(ident)
 }
 #----
-#CPM Permutation Testing----
+#CPM Fingerprinting (Permutation)----
+#' @export
 cpmFPperm <- function (session1, session2, iter = 1000, progBar = TRUE)
 {
     rate<-matrix(nrow=iter,ncol=4)
@@ -1045,6 +1087,7 @@ cpmFPperm <- function (session1, session2, iter = 1000, progBar = TRUE)
 }
 #----
 #Plots for CPM Results----
+#' @export
 cpmPlot <- function (cpm.obj, visual.nets = FALSE)
 {
     # Check if CPM object
