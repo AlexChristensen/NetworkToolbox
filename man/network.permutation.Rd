@@ -7,6 +7,7 @@
 network.permutation(
   sample1 = NULL,
   sample2 = NULL,
+  paired = FALSE,
   iter,
   network = c("glasso", "ising", "TMFG", "LoGo"),
   measure = c("betweenness", "closeness", "strength", "rspbc", "hybrid", "ASPL", "CC",
@@ -22,6 +23,10 @@ Sample to be compared with \code{sample2}}
 
 \item{sample2}{Matrix or data frame.
 Sample to be compared with \code{sample1}}
+  
+\item{paired}{Boolean.
+Are samples dependent?
+Defaults to \code{FALSE}}
 
 \item{iter}{Numeric.
 Number of iterations to perform.
