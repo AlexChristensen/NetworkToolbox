@@ -9,6 +9,10 @@
 #' @param sample2 Matrix or data frame.
 #' Sample to be compared with \code{sample1}
 #' 
+#' @param paired Boolean.
+#' Are samples dependent?
+#' Defaults to \code{FALSE}
+#' 
 #' @param iter Numeric.
 #' Number of iterations to perform.
 #' Defaults to \code{1000}
@@ -76,12 +80,12 @@
 #' 
 #' @export
 #Network Permutation Test----
-network.permutation <- function(sample1 = NULL, sample2 = NULL, iter,
-                               network = c("glasso", "ising", "TMFG", "LoGo"),
-                               measure = c("betweenness", "closeness", "strength",
-                                           "rspbc", "hybrid", "ASPL", "CC", "S", "Q"),
-                               alternative = c("less", "greater", "two.tailed"),
-                               ncores, prev.perm = NULL)
+network.permutation <- function(sample1 = NULL, sample2 = NULL, paired = FALSE, iter,
+                                network = c("glasso", "ising", "TMFG", "LoGo"),
+                                measure = c("betweenness", "closeness", "strength",
+                                            "rspbc", "hybrid", "ASPL", "CC", "S", "Q"),
+                                alternative = c("less", "greater", "two.tailed"),
+                                ncores, prev.perm = NULL)
 {
   #### Argument check ####
   
@@ -129,7 +133,7 @@ network.permutation <- function(sample1 = NULL, sample2 = NULL, iter,
       ising = IsingFit::IsingFit(data, plot = FALSE)$weiadj,
       TMFG = NetworkToolbox::TMFG(data)$A,
       LoGo = NetworkToolbox::LoGo(data)
-      )
+    )
     
     return(net)
   }
@@ -197,14 +201,34 @@ network.permutation <- function(sample1 = NULL, sample2 = NULL, iter,
     # Generate permutated samples
     for(i in 2:iter)
     {
-      # Randomly draw sample 1
-      k <- sample(1:nrow(comb.sample), nrow(sample1))
-      
-      # New sample 1
-      data.list1[[i]] <- comb.sample[k,]
-      
-      # New sample 2
-      data.list2[[i]] <- comb.sample[-k,]
+      if(paired)
+      {
+        
+        #### FOLLOWS NCT APPROACH ####
+        
+        # Randomly draw sample 1
+        k <- sample(c(1,2), nrow(sample1), replace = TRUE)
+        
+        # New sample 1
+        perm1 <- sample1[k == 1,]
+        data.list1[[i]] <- rbind(perm1, sample2[k == 2,])
+        
+        # New sample 1
+        perm2 <- sample2[k == 1,]
+        data.list2[[i]] <- rbind(perm2, sample1[k == 2,])
+        
+      }else{
+        
+        # Randomly draw sample 1
+        k <- sample(1:nrow(comb.sample), nrow(sample1))
+        
+        # New sample 1
+        data.list1[[i]] <- comb.sample[k,]
+        
+        # New sample 2
+        data.list2[[i]] <- comb.sample[-k,]
+        
+      }
     }
     
     # Message to user
@@ -253,13 +277,13 @@ network.permutation <- function(sample1 = NULL, sample2 = NULL, iter,
   
   #Compute measures
   stat.list1 <- pbapply::pbsapply(net.list1, cl = cl,
-                                 FUN = get_measure,
-                                 measure = measure)
+                                  FUN = get_measure,
+                                  measure = measure)
   
   #Compute measures
   stat.list2 <- pbapply::pbsapply(net.list2, cl = cl,
-                                 FUN = get_measure,
-                                 measure = measure)
+                                  FUN = get_measure,
+                                  measure = measure)
   
   #Stop cluster
   parallel::stopCluster(cl)
