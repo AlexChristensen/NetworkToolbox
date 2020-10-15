@@ -152,7 +152,7 @@ LoGo <- function (data, cliques, separators,
     row.names(Jlogo)<-colnames(data)
     
     if(!isSymmetric(Jlogo))
-    {Jlogo<-as.matrix(Matrix::forceSymmetric(Jlogo))}
+    {Jlogo[lower.tri(Jlogo)] <- Jlogo[upper.tri(Jlogo)]}
     
     return(logo=Jlogo)
 }

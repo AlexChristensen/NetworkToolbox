@@ -17,6 +17,7 @@
 #Binarize function----
 binarize <- function (A)
 {
+    A <- as.matrix(A)
     bin <- ifelse(A!=0,1,0)
     row.names(bin) <- row.names(A)
     colnames(bin) <- colnames(A)

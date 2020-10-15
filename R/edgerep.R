@@ -60,17 +60,17 @@ edgerep <- function (A, B,
     if(!isSymmetric(A, check.attributes = FALSE))
     {
         if(all(rowSums(A)==colSums(A)))
-        {A<-as.matrix(Matrix::forceSymmetric(A))
+        {A[lower.tri(A)] <- A[upper.tri(A)]
         }else{A<-A+t(A)
-        warning(paste("Adjacency matrix",nameA,"was made to be symmetric"))}
+        warning(paste("Adjacency matrix",nameA,"was made to be symmetric using upper triangle"))}
     }
     
     if(!isSymmetric(B, check.attributes = FALSE))
     {
         if(all(rowSums(B)==colSums(B)))
-        {B<-as.matrix(Matrix::forceSymmetric(B))
+        {B[lower.tri(B)] <- B[upper.tri(B)]
         }else{B<-B+t(B)
-        warning(paste("Adjacency matrix",nameB,"was made to be symmetric"))}
+        warning(paste("Adjacency matrix",nameB,"was made to be symmetric using upper triangle"))}
     }
     
     n<-ncol(A)

@@ -192,7 +192,14 @@ MFCF <- function(data, cases = NULL,
           family <- family
           gains <- mapply(gf, C[1,], C[2,])
           K <- matrix(0, nrow = p, ncol = p)
-          K[1:(p-1), ] <- as.matrix(Matrix::sparseMatrix(i = C[1,], j = C[2,], x = gains))
+          
+          C <- cbind(C[1,], C[2,], gains)
+          
+          x <- matrix(0, nrow = ncol(K), ncol = ncol(K))
+          
+          for(q in 1:nrow(C))
+          {x[C[q,1], C[q,2]] <- C[q,3]}
+          K[1:(p-1), ] <- x
           K <- K + t(K) 
           diag(K) <- 1
         }

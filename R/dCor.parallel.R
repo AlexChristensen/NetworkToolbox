@@ -34,7 +34,7 @@
 #' 
 #' @export
 #Parallelization of distance correlation----
-#Updated 07.03.2020
+#Updated 03.05.2020
 dCor.parallel <- function(neurallist, cores)
 {
   ###########################
@@ -44,6 +44,13 @@ dCor.parallel <- function(neurallist, cores)
   if(missing(cores))
   {cores <- parallel::detectCores() - 1
   }else{cores <- cores}
+  
+  # Check data format
+  if(!is.matrix(neurallist[[1]][[1]]))
+  {
+    neurallist <- lapply(neurallist, as.list)
+    neurallist <- lapply(neurallist, function(x){lapply(x, as.matrix)})
+  }
   
   #######################
   #### MAIN FUNCTION ####

@@ -100,11 +100,11 @@ dCor <- function(neurallist, centering = c("U", "double"))
                                   nrow = nrow(eDist),
                                   ncol = nTime,
                                   byrow = FALSE) - matrix(colMeans(eDist),
-                                                   nrow = nrow(eDist),
-                                                   ncol = nTime,
-                                                   byrow = TRUE) + matrix((mean(colMeans(eDist))),
-                                                                          nrow = nTime,
-                                                                          ncol = nTime)
+                                                          nrow = nrow(eDist),
+                                                          ncol = nTime,
+                                                          byrow = TRUE) + matrix((mean(colMeans(eDist))),
+                                                                                 nrow = nTime,
+                                                                                 ncol = nTime)
     }
     
     # Input into array

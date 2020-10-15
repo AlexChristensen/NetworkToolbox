@@ -6,7 +6,7 @@
     temp <- packageDescription("NetworkToolbox")
     msg <- paste("Package: ",temp$Package,": ",temp$Title,"\n",
                "Version: ",temp$Version,"\n",
-               "Created on: ",
+               "Updated on: ",
                temp$Date,"\n", sep="")
     msg <- paste(msg,"Maintainer: Alexander P. Christensen, University of North Carolina at Greensboro\n",sep="")
     msg <- paste(msg,"Contributors: Guido Previde Massara, University College London\n",sep="")

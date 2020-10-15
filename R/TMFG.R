@@ -281,12 +281,19 @@ TMFG <-function (data, normal = TRUE,
         K<-rbind(S,L)
     }
     
-    x<-as.matrix(Matrix::sparseMatrix(i=K[,1],j=K[,2],x=K[,3]))
+    x <- matrix(0, nrow = ncol(cormat), ncol = ncol(cormat))
+    
+    for(i in 1:nrow(K))
+    {
+        x[K[i,1], K[i,2]] <- 1
+        x[K[i,2], K[i,1]] <- 1
+    }
+    
     diag(x)<-1
     
-        for(r in 1:nrow(x))
-            for(z in 1:ncol(x))
-            {if(x[r,z]==1){x[r,z]<-tcormat[r,z]}}
+    for(r in 1:nrow(x))
+        for(z in 1:ncol(x))
+        {if(x[r,z]==1){x[r,z]<-tcormat[r,z]}}
     
     colnames(x)<-colnames(data)
     x <- as.data.frame(x)
