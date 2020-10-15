@@ -930,7 +930,7 @@ cpmEV <- function (train_na, train_b, valid_na, valid_b,
     res$posMask <- pos_mask
     res$negMask <- neg_mask
     
-    class(res) <- "CPM"
+    class(res) <- "cpm"
     
     return(res)
 }
@@ -1091,8 +1091,8 @@ cpmFPperm <- function (session1, session2, iter = 1000, progBar = TRUE)
 cpmPlot <- function (cpm.obj, visual.nets = FALSE)
 {
     # Check if CPM object
-    if(class(cpm.obj) != "CPM")
-    {stop("'cpm.obj' is not a 'CPM' object")}
+    if(class(cpm.obj) != "cpm")
+    {stop("'cpm.obj' is not a 'cpm' object")}
     
     # Masks
     posmask <- cpm.obj$posMask
