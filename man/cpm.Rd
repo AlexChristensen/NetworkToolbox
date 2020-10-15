@@ -10,7 +10,8 @@
 \alias{cpmPlot}
 \title{Connectome-based Predictive Modeling}
 \usage{
-cpmIV(neuralarray, bstat, covar, thresh = .01, groups = NULL,
+cpmIV(neuralarray, bstat, covar, thresh = .01,
+      connections = c("separate", "overall"), groups = NULL,
       method = c("mean", "sum"), model = c("linear","quadratic","cubic"),
       corr = c("pearson","spearman"), nEdges, 
       standardize = FALSE, cores, progBar = TRUE, plots = TRUE)
@@ -36,6 +37,10 @@ cpmPlot(cpm.obj, visual.nets = FALSE)
 
 \item{thresh}{Sets an \eqn{\alpha} threshold for edge weights to be retained.
 Defaults to \code{.01}}
+
+\item{connections}{Character.
+Should positive and negative correlations be separated or used together?
+Defaults to \code{"separate"}}
 
 \item{groups}{Allows grouping variables to be used for plotting points.
 \strong{Must} be a vector.

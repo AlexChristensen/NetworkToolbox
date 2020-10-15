@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{A \code{\link[NetworkToolbox]{cpm}} object}
 
-\item{...}{Additional arguments}
+\item{...}{Additional arguments for \link{plot}}
 }
 \description{
 Plots CPM results
