@@ -547,6 +547,7 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01,
 }
 #----
 # CPM Internal Validation (Permutation)----
+#' @export
 cpmIVperm <- function(iter = 1000, ...)
 {
     # List input for ...
@@ -638,6 +639,7 @@ cpmIVperm <- function(iter = 1000, ...)
 }
 #----
 #CPM External Validation----
+#' @export
 cpmEV <- function (train_na, train_b, valid_na, valid_b,
                    thresh = .01, overlap = FALSE, progBar = TRUE)
 {
@@ -934,6 +936,7 @@ cpmEV <- function (train_na, train_b, valid_na, valid_b,
 }
 #----
 #CPM Fingerprinting----
+#' @export
 cpmFP <- function (session1, session2, progBar = TRUE)
 {
     count1<-0
@@ -1003,6 +1006,7 @@ cpmFP <- function (session1, session2, progBar = TRUE)
 }
 #----
 #CPM Fingerprinting (Permutation)----
+#' @export
 cpmFPperm <- function (session1, session2, iter = 1000, progBar = TRUE)
 {
     rate<-matrix(nrow=iter,ncol=4)
@@ -1083,6 +1087,7 @@ cpmFPperm <- function (session1, session2, iter = 1000, progBar = TRUE)
 }
 #----
 #Plots for CPM Results----
+#' @export
 cpmPlot <- function (cpm.obj, visual.nets = FALSE)
 {
     # Check if CPM object
