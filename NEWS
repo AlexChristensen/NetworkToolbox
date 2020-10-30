@@ -1,5 +1,7 @@
 Changes in version 1.4.1
 
+o ADD: k-folds validation is now implemented in `cpmIV`
+
 o NEW: `cpmIVperm` allows for permutation of `cpmIV` results
 
 o FIX: NA communities throwing bad labels in `stable` and `comcat`

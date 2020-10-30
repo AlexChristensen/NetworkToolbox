@@ -32,6 +32,12 @@ cpmPlot(cpm.obj, visual.nets = FALSE)
 
 \item{bstat}{Behavioral statistic for each participant with neural data (a vector)}
 
+\item{kfolds}{Numeric.
+Number of \emph{k}-fold validation samples.
+Defaults to the number of participants in the sample (i.e., \emph{n}),
+which is also known as leave-one-out validation.
+Recommended folds are \code{5} and \code{10}}
+
 \item{covar}{Covariates to be included in predicting relevant edges (\strong{time consuming}).
 \strong{Must} be input as a \code{list()} (see examples)}
 

@@ -81,6 +81,12 @@
 #' @param covar Covariates to be included in predicting relevant edges (\strong{time consuming}).
 #' \strong{Must} be input as a \code{list()} (see examples)
 #' 
+#' @param kfolds Numeric.
+#' Number of \emph{k}-fold validation samples.
+#' Defaults to the number of participants in the sample (i.e., \emph{n}),
+#' which is also known as leave-one-out validation.
+#' Recommended folds are \code{5} and \code{10}
+#' 
 #' @param thresh Sets an \eqn{\alpha} threshold for edge weights to be retained.
 #' Defaults to \code{.01}
 #' 
@@ -236,7 +242,7 @@
 #CPM Functions----
 #CPM Internal Validation----
 # Updated 10.09.2020
-cpmIV <- function (neuralarray, bstat, covar, thresh = .01,
+cpmIV <- function (neuralarray, bstat, kfolds = dim(neuralarray)[3], covar, thresh = .01,
                    connections = c("separate", "overall"),
                    groups = NULL, method = c("mean", "sum"),
                    model = c("linear","quadratic","cubic"),
@@ -274,12 +280,12 @@ cpmIV <- function (neuralarray, bstat, covar, thresh = .01,
     ####################################
     
     if(connections == "separate")
-    {return(cpmIV.separate(neuralarray, bstat, covar, thresh = thresh,
+    {return(cpmIV.separate(neuralarray, bstat, kfolds = kfolds, covar, thresh = thresh,
                            groups = groups, method = method,
                            model = model, corr = corr, nEdges = nEdges, 
                            standardize = standardize, cores = cores,
                            progBar = progBar, plots = plots))
-    }else{return(cpmIV.overall(neuralarray, bstat, covar, thresh = thresh,
+    }else{return(cpmIV.overall(neuralarray, bstat, kfolds = kfolds, covar, thresh = thresh,
                                 groups = groups, method = method,
                                 model = model, corr = corr, nEdges = nEdges, 
                                 standardize = standardize, cores = cores,

@@ -19,7 +19,7 @@
 #' @noRd
 #' 
 # Critical Correlation Value----
-# Updated 10.09.2020
+# Updated 30.10.2020
 critical.r <- function(n, alpha)
 {
   df <- n - 2
@@ -34,7 +34,7 @@ critical.r <- function(n, alpha)
 #' 
 # cpmIV separate----
 # Updated 10.09.2020
-cpmIV.separate <- function(neuralarray, bstat, covar, thresh = .01,
+cpmIV.separate <- function(neuralarray, bstat, kfolds, covar, thresh = .01,
                            groups = NULL, method = c("mean", "sum"),
                            model = c("linear","quadratic","cubic"),
                            corr = c("pearson","spearman"), nEdges, 
@@ -50,6 +50,10 @@ cpmIV.separate <- function(neuralarray, bstat, covar, thresh = .01,
   #number of nodes
   no_node<-ncol(neuralarray)
   
+  if(missing(kfolds)){
+    kfolds <- no_sub
+  }
+  
   #initialize positive and negative behavior stats
   behav_pred_pos<-matrix(0,nrow=no_sub,ncol=1)
   behav_pred_neg<-matrix(0,nrow=no_sub,ncol=1)
@@ -64,14 +68,35 @@ cpmIV.separate <- function(neuralarray, bstat, covar, thresh = .01,
   neg_array <- array(0,dim=c(nrow=no_node,ncol=no_node,no_sub))
   
   
+  #k-folds
+  ##kfold breaks
+  folds <- cut(1:no_sub, breaks = kfolds, labels = FALSE)
+  ##permutate
+  perm.folds <- sample(folds, no_sub)
+  
+  ##reset no_sub as list
+  no_sub <- vector("list", length = kfolds)
+  
+  for(i in 1:kfolds){
+    no_sub[[i]] <- which(perm.folds == i)
+  }
+  
   #perform leave-out analysis
   if(progBar)
-  {pb <- txtProgressBar(max=no_sub, style = 3)}
+  {pb <- txtProgressBar(max=length(no_sub), style = 3)}
   
-  for(leftout in 1:no_sub)
+  for(k in 1:length(no_sub))
   {
+    #leftout
+    leftout <- no_sub[[k]]
+    
+    #get neuralarray
     train_mats<-neuralarray
     train_mats<-train_mats[,,-leftout]
+    
+    #get parts
+    no_train <- dim(train_mats)[3]
+    
     ##initialize train vectors
     #vector length
     vctrow<-ncol(neuralarray)^2
@@ -85,7 +110,7 @@ cpmIV.separate <- function(neuralarray, bstat, covar, thresh = .01,
     train_behav<-train_behav[-leftout]
     
     #correlate edges with behavior
-    if(nrow(train_vcts)!=(no_sub-1))
+    if(nrow(train_vcts)!=(no_train))
     {train_vcts<-t(train_vcts)}
     
     rmat<-vector(mode="numeric",length=ncol(train_vcts))
@@ -123,7 +148,7 @@ cpmIV.separate <- function(neuralarray, bstat, covar, thresh = .01,
     if(!is.list(covar))
     {
       #critical r-value
-      cvr<-critical.r((no_sub-1),thresh)
+      cvr<-critical.r((no_train),thresh)
       pos_edges<-which(r_mat>=cvr)
       neg_edges<-which(r_mat<=(-cvr))
     }else
@@ -142,8 +167,8 @@ cpmIV.separate <- function(neuralarray, bstat, covar, thresh = .01,
     neg_array[,,leftout] <- neg_mask
     
     #get sum of all edges in TRAIN subs (divide, if symmetric matrices)
-    train_sumpos<-matrix(0,nrow=(no_sub-1),ncol=1)
-    train_sumneg<-matrix(0,nrow=(no_sub-1),ncol=1)
+    train_sumpos<-matrix(0,nrow=(no_train),ncol=1)
+    train_sumneg<-matrix(0,nrow=(no_train),ncol=1)
     
     for(ss in 1:nrow(train_sumpos))
     {
@@ -196,14 +221,44 @@ cpmIV.separate <- function(neuralarray, bstat, covar, thresh = .01,
     
     #run model on TEST sub
     test_mat<-neuralarray[,,leftout]
-    if(method=="sum")
-    {
-      test_sumpos<-sum(test_mat*pos_mask)/2
-      test_sumneg<-sum(test_mat*neg_mask)/2
-    }else if(method=="mean")
-    {
-      test_sumpos<-mean(test_mat*pos_mask)/2
-      test_sumneg<-mean(test_mat*neg_mask)/2
+    
+    if(is.na(dim(test_mat)[3])){
+      
+      if(method=="sum"){
+        
+        test_sumpos<-sum(test_mat*pos_mask)/2
+        test_sumneg<-sum(test_mat*neg_mask)/2
+        
+      }else if(method=="mean"){
+        
+        test_sumpos<-mean(test_mat*pos_mask)/2
+        test_sumneg<-mean(test_mat*neg_mask)/2
+        
+      }
+      
+    }else{
+      
+      if(method=="sum"){
+        
+        test_sumpos <- apply(test_mat, 3, function(x){
+          sum(x * pos_mask) / 2
+        })
+        
+        test_sumneg <- apply(test_mat, 3, function(x){
+          sum(x * neg_mask) / 2
+        })
+        
+      }else if(method=="mean"){
+        
+        test_sumpos <- apply(test_mat, 3, function(x){
+          mean(x * pos_mask) / 2
+        })
+        
+        test_sumneg <- apply(test_mat, 3, function(x){
+          mean(x * neg_mask) / 2
+        })
+      }
+      
     }
     
     if(model=="linear")
@@ -230,7 +285,7 @@ cpmIV.separate <- function(neuralarray, bstat, covar, thresh = .01,
     }
     
     if(progBar)
-    {setTxtProgressBar(pb, leftout)}
+    {setTxtProgressBar(pb, k)}
   }
   if(progBar)
   {close(pb)}
@@ -328,7 +383,7 @@ cpmIV.separate <- function(neuralarray, bstat, covar, thresh = .01,
 #' 
 # cpmIV overall----
 # Updated 10.09.2020
-cpmIV.overall <- function(neuralarray, bstat, covar, thresh = .01,
+cpmIV.overall <- function(neuralarray, bstat, kfolds, covar, thresh = .01,
                            groups = NULL, method = c("mean", "sum"),
                            model = c("linear","quadratic","cubic"),
                            corr = c("pearson","spearman"), nEdges, 
@@ -344,6 +399,10 @@ cpmIV.overall <- function(neuralarray, bstat, covar, thresh = .01,
   #number of nodes
   no_node<-ncol(neuralarray)
   
+  if(missing(kfolds)){
+    kfolds <- no_sub
+  }
+  
   #initialize positive and negative behavior stats
   behav_pred_pos<-matrix(0,nrow=no_sub,ncol=1)
   behav_pred_neg<-matrix(0,nrow=no_sub,ncol=1)
@@ -357,15 +416,35 @@ cpmIV.overall <- function(neuralarray, bstat, covar, thresh = .01,
   pos_array <- array(0,dim=c(nrow=no_node,ncol=no_node,no_sub))
   neg_array <- array(0,dim=c(nrow=no_node,ncol=no_node,no_sub))
   
+  #k-folds
+  ##kfold breaks
+  folds <- cut(1:no_sub, breaks = kfolds, labels = FALSE)
+  ##permutate
+  perm.folds <- sample(folds, no_sub)
+  
+  ##reset no_sub as list
+  no_sub <- vector("list", length = kfolds)
+  
+  for(i in 1:kfolds){
+    no_sub[[i]] <- which(perm.folds == i)
+  }
   
   #perform leave-out analysis
   if(progBar)
-  {pb <- txtProgressBar(max=no_sub, style = 3)}
+  {pb <- txtProgressBar(max=length(no_sub), style = 3)}
   
-  for(leftout in 1:no_sub)
+  for(k in 1:length(no_sub))
   {
+    #leftout
+    leftout <- no_sub[[k]]
+    
+    #get neuralarray
     train_mats<-neuralarray
     train_mats<-train_mats[,,-leftout]
+    
+    #get parts
+    no_train <- dim(train_mats)[3]
+    
     ##initialize train vectors
     #vector length
     vctrow<-ncol(neuralarray)^2
@@ -379,7 +458,7 @@ cpmIV.overall <- function(neuralarray, bstat, covar, thresh = .01,
     train_behav<-train_behav[-leftout]
     
     #correlate edges with behavior
-    if(nrow(train_vcts)!=(no_sub-1))
+    if(nrow(train_vcts)!=(no_train))
     {train_vcts<-t(train_vcts)}
     
     rmat<-vector(mode="numeric",length=ncol(train_vcts))
@@ -417,7 +496,7 @@ cpmIV.overall <- function(neuralarray, bstat, covar, thresh = .01,
     if(!is.list(covar))
     {
       #critical r-value
-      cvr<-critical.r((no_sub-1),thresh)
+      cvr<-critical.r((no_train),thresh)
       pos_edges<-which(r_mat>=cvr)
       neg_edges<-which(r_mat<=(-cvr))
     }else
@@ -436,8 +515,8 @@ cpmIV.overall <- function(neuralarray, bstat, covar, thresh = .01,
     neg_array[,,leftout] <- neg_mask
     
     #get sum of all edges in TRAIN subs (divide, if symmetric matrices)
-    train_sumpos<-matrix(0,nrow=(no_sub-1),ncol=1)
-    train_sumneg<-matrix(0,nrow=(no_sub-1),ncol=1)
+    train_sumpos<-matrix(0,nrow=(no_train),ncol=1)
+    train_sumneg<-matrix(0,nrow=(no_train),ncol=1)
     
     for(ss in 1:nrow(train_sumpos))
     {
@@ -484,14 +563,44 @@ cpmIV.overall <- function(neuralarray, bstat, covar, thresh = .01,
     
     #run model on TEST sub
     test_mat<-neuralarray[,,leftout]
-    if(method=="sum")
-    {
-      test_sumpos<-sum(test_mat*pos_mask)/2
-      test_sumneg<-sum(test_mat*neg_mask)/2
-    }else if(method=="mean")
-    {
-      test_sumpos<-mean(test_mat*pos_mask)/2
-      test_sumneg<-mean(test_mat*neg_mask)/2
+    
+    if(is.na(dim(test_mat)[3])){
+      
+      if(method=="sum"){
+        
+        test_sumpos<-sum(test_mat*pos_mask)/2
+        test_sumneg<-sum(test_mat*neg_mask)/2
+        
+      }else if(method=="mean"){
+        
+        test_sumpos<-mean(test_mat*pos_mask)/2
+        test_sumneg<-mean(test_mat*neg_mask)/2
+        
+      }
+      
+    }else{
+      
+      if(method=="sum"){
+        
+        test_sumpos <- apply(test_mat, 3, function(x){
+          sum(x * pos_mask) / 2
+        })
+        
+        test_sumneg <- apply(test_mat, 3, function(x){
+          sum(x * neg_mask) / 2
+        })
+        
+      }else if(method=="mean"){
+        
+        test_sumpos <- apply(test_mat, 3, function(x){
+          mean(x * pos_mask) / 2
+        })
+        
+        test_sumneg <- apply(test_mat, 3, function(x){
+          mean(x * neg_mask) / 2
+        })
+      }
+      
     }
     
     if(model=="linear")
@@ -514,7 +623,7 @@ cpmIV.overall <- function(neuralarray, bstat, covar, thresh = .01,
     }
     
     if(progBar)
-    {setTxtProgressBar(pb, leftout)}
+    {setTxtProgressBar(pb, k)}
   }
   if(progBar)
   {close(pb)}
