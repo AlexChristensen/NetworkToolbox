@@ -275,6 +275,10 @@ cpmIV <- function (neuralarray, bstat, kfolds = dim(neuralarray)[3], covar, thre
     }else if(!is.list(covar))
     {stop("Covariates vectors must be input as a list: list()")}
     
+    if(missing(connections)){
+        connections <- "separate"
+    }else{connections <- match.arg(connections)}
+    
     ####################################
     #### MISSING ARGUMENTS HANDLING ####
     ####################################
