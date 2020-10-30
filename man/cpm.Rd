@@ -10,7 +10,7 @@
 \alias{cpmPlot}
 \title{Connectome-based Predictive Modeling}
 \usage{
-cpmIV(neuralarray, bstat, covar, thresh = .01,
+cpmIV(neuralarray, bstat, kfolds, covar, thresh = .01,
       connections = c("separate", "overall"), groups = NULL,
       method = c("mean", "sum"), model = c("linear","quadratic","cubic"),
       corr = c("pearson","spearman"), nEdges, 
