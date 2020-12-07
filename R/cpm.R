@@ -216,11 +216,19 @@
 #' 
 #' \dontrun{
 #' 
-#' # Download associated brain data
-#' https://drive.google.com/file/d/1ugwi7nRrlHQYuGPzEB4wYzsizFrIMvKR/view
+#' # Create path to temporary file
+#' temp <- tempfile()
 #' 
-#' # Load brain data
-#' load("restOpen.rda")
+#' # Download to temporary file
+#' googledrive::drive_download(
+#' paste("https://drive.google.com/file/d/",
+#' "1T7_mComB6HPxJxZZwwsLLSYHXsOuvOBt",
+#' "/view?usp=sharing", sep = ""),
+#' path = temp
+#' )
+#' 
+#' # Load resting state brain data
+#' load(temp)
 #' 
 #' # Run cpmIV
 #' res <- cpmIV(neuralarray = restOpen, bstat = behav, cores = 4)

@@ -29,6 +29,7 @@
 #' 
 #' @export
 #Maximum Spanning Tree----
+# Updated 07.12.2020
 MaST <- function (data, normal = TRUE,
                   na.data = c("pairwise","listwise","fiml","none"),
                   depend = FALSE)
@@ -161,8 +162,8 @@ MaST <- function (data, normal = TRUE,
     
     for(i in 1:nrow(K))
     {
-        x[K[i,1], K[i,2]] <- 1
-        x[K[i,2], K[i,1]] <- 1
+        x[K[i,2], K[i,3]] <- 1
+        x[K[i,3], K[i,2]] <- 1
     }
     
     diag(x)<-1
