@@ -1,3 +1,8 @@
+Changes in version 1.4.2
+
+o ADD: full four inventories of openness to experience data from Christensen, Cotter, and Silvia (2019). See `?openness`
+
+
 Changes in version 1.4.1
 
 o ADD: k-folds validation is now implemented in `cpmIV`
