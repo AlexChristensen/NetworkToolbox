@@ -20,6 +20,15 @@ key provides inventory, facet, and item description information
 for the item labels. Note that because of NEO's copyrights the
 items have been shortened and paraphrased
 }
+\examples{
+# Loading data
+data("openness")
+data("openness.key")
+
+# Change item labels
+colnames(openness) <- openness.key$`Item Description`
+
+}
 \references{
 Christensen, A. P., Cotter, K. N., & Silvia, P. J. (2019).
 Reopening openness to experience: A network analysis of four openness to experience inventories.

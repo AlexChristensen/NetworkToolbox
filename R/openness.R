@@ -29,7 +29,7 @@
 #' @examples 
 #' # Loading data
 #' data("openness")
-#' data("openness.key)
+#' data("openness.key")
 #' 
 #' # Change item labels
 #' colnames(openness) <- openness.key$`Item Description`
