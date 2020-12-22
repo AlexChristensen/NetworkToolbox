@@ -17,7 +17,33 @@
 #' @usage data(openness)
 #' @usage data(openness.key)
 #' 
-#' @format A 794 x 138 response matrix (openness) and 138 x 4 matrix (openness.key)
+#' @format A 794 x 138 response matrix (openness) and 138 x 6 matrix (openness.key).
+#' Here are detailed descriptions of the key:
+#' 
+#' \itemize{
+#' 
+#' \item{Inventory}
+#' {The personality inventory the item belongs to}
+#' 
+#' \item{Facet}
+#' {The personality inventory defined facet}
+#' 
+#' \item{JPA Domains}
+#' {The broad domains identified by Christensen, Cotter, and Silvia (2019)}
+#' 
+#' \item{JPA Facets}
+#' {The facets identified by Christensen, Cotter, and Silvia (2019)}
+#' 
+#' \item{Item Label}
+#' {The labels used in Christensen, Cotter, and Silvia (2019)}
+#' 
+#' \item{Item Description}
+#' {Descriptions of each item. Note that the NEO-PI-3 items are protected by 
+#' copyright and therefore have been paraphrased. These item descriptions
+#' do not represent the item as given to the participant}
+#' 
+#' }
+#'  
 #' 
 #' @keywords datasets
 #' 
