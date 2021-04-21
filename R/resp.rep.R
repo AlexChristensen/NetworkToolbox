@@ -143,8 +143,8 @@ resp.rep <- function (data,
     
     check <- function (data, max.val, freq.prop)
     {
-        dat.means <- rowMeans(data)
-        dat.sds <- apply(data,1,sd)
+        dat.means <- rowMeans(data, na.rm = TRUE)
+        dat.sds <- apply(data,1,sd, na.rm = TRUE)
     
         if(any(dat.sds==0))
         {pot.chk <- which(dat.sds==0)
@@ -152,7 +152,7 @@ resp.rep <- function (data,
     
         freq.table <- matrix(0, nrow = nrow(data), ncol = max.val)
     
-        colnames(freq.table) <- c(min(data):max.val)
+        colnames(freq.table) <- c(min(data, na.rm = TRUE):max.val)
     
         for(i in 1:nrow(data))
         {
