@@ -6,30 +6,33 @@
 \alias{openness.key}
 \title{Four Inventories of Openness to Experience}
 \format{
-A 794 x 138 response matrix (openness) and 138 x 6 matrix (openness.key).
+A 794 x 138 response matrix (openness) and 138 x 7 matrix (openness.key).
 Here are detailed descriptions of the key:
 
 \itemize{
 
-\item{Inventory}
+\item{\code{Inventory}}
 {The personality inventory the item belongs to}
 
-\item{Facet}
+\item{\code{Facet}}
 {The personality inventory defined facet}
 
-\item{JPA Domains}
+\item{\code{JPA.Domains}}
 {The broad domains identified by Christensen, Cotter, and Silvia (2019)}
 
-\item{JPA Facets}
+\item{\code{JPA.Facets}}
 {The facets identified by Christensen, Cotter, and Silvia (2019)}
 
-\item{Item Label}
+\item{\code{Item.Label}}
 {The labels used in Christensen, Cotter, and Silvia (2019)}
 
-\item{Item Description}
+\item{\code{Item.Description}}
 {Descriptions of each item. Note that the NEO-PI-3 items are protected by 
 copyright and therefore have been paraphrased. These item descriptions
 do not represent the item as given to the participant}
+
+\item{\code{Reversed}}
+{Whether an item should be reversed or not (\code{openness} is already reversed)}
 
 }
 }
@@ -51,12 +54,13 @@ data("openness")
 data("openness.key")
 
 # Change item labels
-colnames(openness) <- openness.key$`Item Description`
+colnames(openness) <- openness.key$Item.Description
 
 }
 \references{
 Christensen, A. P., Cotter, K. N., & Silvia, P. J. (2019).
 Reopening openness to experience: A network analysis of four openness to experience inventories.
 \emph{Journal of Personality Assessment}, \emph{101}, 574-588.
+doi:\href{https://doi.org/10.1080/00223891.2018.1467428}{10.1080/00223891.2018.1467428}
 }
 \keyword{datasets}
