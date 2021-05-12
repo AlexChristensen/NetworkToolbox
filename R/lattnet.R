@@ -25,24 +25,44 @@ lattnet <- function (nodes, edges)
     dlat<-matrix(0,nrow=nodes,ncol=nodes)
     lat<-matrix(0,nrow=nodes,ncol=nodes)
     
-    for(i in 1:nodes){
+    balance <- sum(lat) - edges
+    
+    count <- 0
+    
+    while(sign(balance) == -1){
         
-        if(i!=nodes){
-            dlat[i,i+1] <- 1
+        if(count == 0){
+            
+            for(i in 1:nodes){
+                
+                if(i != nodes){
+                    dlat[i, (i + 1)] <- 1
+                }
+            }
+            
+        }else{
+            
+            for(i in 1:nodes){
+                
+                if(i < (nodes - count)){
+                    dlat[i, (i + (count + 1))] <- 1
+                }
+                
+            }
+            
         }
         
-        if(i<nodes-1){
-            dlat[i,i+2] <- 1
-        }
+        count <- count + 1
+        
+        balance <- sum(dlat) - edges
+    
     }
     
-    lat <- dlat+t(dlat)
-    
-    over <- sum(lat)-edges
+    over <- sum(dlat) - edges
     
     if(over != 0){
         
-        rp <- sample(which(dlat==1), round(over / 2), replace = FALSE)
+        rp <- sample(which(dlat==1), over, replace = FALSE)
         
         dlat[rp] <- 0
         
