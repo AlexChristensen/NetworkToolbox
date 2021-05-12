@@ -19,25 +19,36 @@
 #' 
 #' @export
 #Lattice Network----
+#Updated 12.05.2021
 lattnet <- function (nodes, edges)
 {
     dlat<-matrix(0,nrow=nodes,ncol=nodes)
     lat<-matrix(0,nrow=nodes,ncol=nodes)
     
-    for(i in 1:nodes)
-    {
-        if(i!=nodes)
-        {dlat[i,i+1]<-1}
-        if(i<nodes-1)
-        {dlat[i,i+2]<-1}
+    for(i in 1:nodes){
+        
+        if(i!=nodes){
+            dlat[i,i+1] <- 1
+        }
+        
+        if(i<nodes-1){
+            dlat[i,i+2] <- 1
+        }
     }
-    lat<-dlat+t(dlat)
     
-    over<-sum(lat)-edges
-    if(over!=0)
-    {rp<-sample(which(dlat==1))
-    for(i in 1:over)
-    {lat[rp[i]]<-0}}
+    lat <- dlat+t(dlat)
+    
+    over <- sum(lat)-edges
+    
+    if(over != 0){
+        
+        rp <- sample(which(dlat==1), round(over / 2), replace = FALSE)
+        
+        dlat[rp] <- 0
+        
+    }
+    
+    lat <- dlat + t(dlat)
     
     return(lat)   
 }
