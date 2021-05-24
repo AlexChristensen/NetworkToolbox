@@ -76,10 +76,12 @@
 #' 
 #' @export
 #Network Permutation Test----
+#Updated 24.05.2021
 network.permutation <- function(sample1 = NULL, sample2 = NULL, iter,
                                network = c("glasso", "ising", "TMFG", "LoGo"),
                                measure = c("betweenness", "closeness", "strength",
-                                           "rspbc", "hybrid", "ASPL", "CC", "S", "Q"),
+                                           "eigenvector", "rspbc", "hybrid", "ASPL",
+                                           "CC", "S", "Q"),
                                alternative = c("less", "greater", "two.tailed"),
                                ncores, prev.perm = NULL)
 {
@@ -145,6 +147,7 @@ network.permutation <- function(sample1 = NULL, sample2 = NULL, iter,
       betweenness = NetworkToolbox::betweenness(net),
       closeness = NetworkToolbox::closeness(net),
       strength = NetworkToolbox::strength(net),
+      eigenvector = NetworkToolbox::eigenvector(net),
       rspbc = NetworkToolbox::rspbc(net),
       hybrid = NetworkToolbox::hybrid(net),
       ASPL = NetworkToolbox::pathlengths(net)$ASPL,
@@ -218,7 +221,8 @@ network.permutation <- function(sample1 = NULL, sample2 = NULL, iter,
     
     # Export data lists
     parallel::clusterExport(cl = cl,
-                            varlist = c("data.list1", "data.list2"),
+                            varlist = c("data.list1", "data.list2",
+                                        "get_network", "network"),
                             envir = environment())
     
     
@@ -247,7 +251,8 @@ network.permutation <- function(sample1 = NULL, sample2 = NULL, iter,
   
   # Export network lists
   parallel::clusterExport(cl = cl,
-                          varlist = c("net.list1", "net.list2"),
+                          varlist = c("net.list1", "net.list2",
+                                      "get_measure", "measure"),
                           envir = environment())
   
   
@@ -267,7 +272,8 @@ network.permutation <- function(sample1 = NULL, sample2 = NULL, iter,
   #### Compute measures ####
   
   # Compute statistic
-  if(measure %in% c("betweenness", "closeness", "strength", "rspbc", "hybrid"))
+  if(measure %in% c("betweenness", "closeness", "strength",
+                    "eigenvector", "rspbc", "hybrid"))
   {
     diff0 <- stat.list1[,1] - stat.list2[,1]
     diff <- stat.list1 - stat.list2
