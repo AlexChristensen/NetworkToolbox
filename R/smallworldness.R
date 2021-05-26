@@ -32,12 +32,13 @@
 #' @examples
 #' # Pearson's correlation only for CRAN checks
 #' A <- TMFG(neoOpen, normal = FALSE)$A
-#'
+#' 
+#' \donttest{
 #' swmHG <- smallworldness(A, method="HG")
 #' 
 #' swmRand <- smallworldness(A, method="rand")
 #' 
-#' swmTJHBL <- smallworldness(A, method="TJHBL")
+#' swmTJHBL <- smallworldness(A, method="TJHBL")}
 #' 
 #' @references 
 #' Humphries, M. D., & Gurney, K. (2008).
@@ -55,7 +56,7 @@
 smallworldness <- function (A, iter = 100, progBar = FALSE, method = c("HG","rand","TJHBL"))
 {
     if(missing(method))
-    {method<-"HG"
+    {method<-"TJHBL"
     }else{method<-match.arg(method)}
     
     mat<-matrix(0,nrow=nrow(A),ncol=ncol(A)) #Initialize bootstrap matrix

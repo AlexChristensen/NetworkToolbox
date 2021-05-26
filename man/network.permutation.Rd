@@ -9,8 +9,8 @@ network.permutation(
   sample2 = NULL,
   iter,
   network = c("glasso", "ising", "TMFG", "LoGo"),
-  measure = c("betweenness", "closeness", "strength", "rspbc", "hybrid", "ASPL", "CC",
-    "S", "Q"),
+  measure = c("betweenness", "closeness", "strength", "eigenvector", "rspbc", "hybrid",
+    "ASPL", "CC", "S", "Q"),
   alternative = c("less", "greater", "two.tailed"),
   ncores,
   prev.perm = NULL
@@ -87,9 +87,7 @@ perm.str$result
 perm.aspl <- network.permutation(prev.perm = perm.str, measure = "ASPL", ncores = 2)
 
 # Check results
-perm.aspl$result
-
-}
+perm.aspl$result}
 
 }
 \author{

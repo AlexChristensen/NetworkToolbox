@@ -48,11 +48,12 @@ while < 0 indicates a more regular network and > 0 indicates a more random netwo
 # Pearson's correlation only for CRAN checks
 A <- TMFG(neoOpen, normal = FALSE)$A
 
+\donttest{
 swmHG <- smallworldness(A, method="HG")
 
 swmRand <- smallworldness(A, method="rand")
 
-swmTJHBL <- smallworldness(A, method="TJHBL")
+swmTJHBL <- smallworldness(A, method="TJHBL")}
 
 }
 \references{

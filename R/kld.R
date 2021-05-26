@@ -24,7 +24,6 @@
 #' Kullback, S., & Leibler, R. A. (1951).
 #' On information and sufficiency.
 #' \emph{The Annals of Mathematical Statistics}, \emph{22}, 79-86.
-#' doi: \href{https://doi.org/10.1214/aoms/1177729694}{10.1214/aoms/1177729694}
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 

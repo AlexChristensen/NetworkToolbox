@@ -1,7 +1,7 @@
 Package: NetworkToolbox
 Title: Methods and Measures for Brain, Cognitive, and Psychometric Network Analysis
 Version: 1.4.2
-Date: 2021-05-12
+Date: 2021-05-26
 Authors@R: c(person("Alexander", "Christensen", email = "alexpaulchristensen@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-9798-7037")), person("Guido", "Previde Massara", role = c("ctb"), comment = c(ORCID = "0000-0003-0502-2789"))) 
 Maintainer: Alexander Christensen <alexpaulchristensen@gmail.com>
 Description: Implements network analysis and graph theory measures used in neuroscience, cognitive science, and psychology. Methods include various filtering methods and approaches such as threshold, dependency (Kenett, Tumminello, Madi, Gur-Gershgoren, Mantegna, & Ben-Jacob, 2010 <doi:10.1371/journal.pone.0015032>), Information Filtering Networks (Barfuss, Massara, Di Matteo, & Aste, 2016 <doi:10.1103/PhysRevE.94.062306>), and Efficiency-Cost Optimization (Fallani, Latora, & Chavez, 2017 <doi:10.1371/journal.pcbi.1005305>). Brain methods include the recently developed Connectome Predictive Modeling (see references in package). Also implements several network measures including local network characteristics (e.g., centrality), community-level network characteristics (e.g., community centrality), global network characteristics (e.g., clustering coefficient), and various other measures associated with the reliability and reproducibility of network analysis. 

@@ -68,9 +68,7 @@
 #' perm.aspl <- network.permutation(prev.perm = perm.str, measure = "ASPL", ncores = 2)
 #' 
 #' # Check results
-#' perm.aspl$result
-#' 
-#' }
+#' perm.aspl$result}
 #' 
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
 #' 

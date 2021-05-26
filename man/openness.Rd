@@ -61,6 +61,5 @@ colnames(openness) <- openness.key$Item.Description
 Christensen, A. P., Cotter, K. N., & Silvia, P. J. (2019).
 Reopening openness to experience: A network analysis of four openness to experience inventories.
 \emph{Journal of Personality Assessment}, \emph{101}, 574-588.
-doi:\href{https://doi.org/10.1080/00223891.2018.1467428}{10.1080/00223891.2018.1467428}
 }
 \keyword{datasets}
