@@ -1,3 +1,5 @@
+### CRAN 1.4.2 | GitHub 1.4.2
+
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)[![Downloads Total](https://cranlogs.r-pkg.org/badges/grand-total/NetworkToolbox?color=brightgreen)](https://cran.r-project.org/package=NetworkToolbox) [![Downloads per month](http://cranlogs.r-pkg.org/badges/NetworkToolbox?color=brightgreen)](https://cran.r-project.org/package=NetworkToolbox) 
 
 # How To Install
