@@ -47,6 +47,7 @@
 #' 
 #' @export
 #Participation Coefficient----
+# Updated 21.08.2021
 participation <- function (A, comm = c("walktrap","louvain"))
 {
     #make sure its a matrix
@@ -109,16 +110,16 @@ participation <- function (A, comm = c("walktrap","louvain"))
         return(P)
     }
     
-    overall <- 1- pcoef(A, facts) #overall participation coefficient
+    overall <- pcoef(A, facts) #overall participation coefficient
     
     #signed participation coefficient
     poswei <- ifelse(A>=0,A,0) #positive weights
     negwei <- ifelse(A<=0,A,0) #negative weights
     
-    pos <- 1 - pcoef(poswei, facts) #positive  participation coefficient
+    pos <- pcoef(poswei, facts) #positive  participation coefficient
     if(all(pos==1))
     {pos<-1-pos}
-    neg <- 1 - pcoef(negwei, facts) #negative participation coefficient
+    neg <- pcoef(negwei, facts) #negative participation coefficient
     if(all(neg==1))
     {neg<-1-neg}
     

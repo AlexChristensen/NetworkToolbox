@@ -1,3 +1,8 @@
+Changes in 1.4.3
+
+o FIX: `participation` coefficient values were in the reverse direction
+
+
 Changes in version 1.4.2
 
 o ADD: full four inventories of openness to experience data from Christensen, Cotter, and Silvia (2019). See `?openness`
