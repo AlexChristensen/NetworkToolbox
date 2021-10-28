@@ -357,7 +357,31 @@ cpmIVperm <- function(iter = 1000, ...)
         )
         
         # Re-run if error; otherwise, proceed
-        i <- ifelse(class(perm.list) == "try-error", i, (i+1))
+        if(class(perm.list) == "try-error"){
+            
+            if(orig$connections == "separate"){
+                
+                cpm.list <- list()
+                results <- matrix(nrow = 2, ncol = 4)
+                colnames(results) <- c("r", "p", "mae", "rmse")
+                row.names(results) <- c("positive", "negative")
+                cpm.list$results <- results
+                perm.list[[i]] <- cpm.list
+                
+            }else if(orig$connections == "overall"){
+                
+                cpm.list <- list()
+                results <- matrix(nrow = 1, ncol = 4)
+                colnames(results) <- c("r", "p", "mae", "rmse")
+                row.names(results) <- c("overall")
+                cpm.list$results <- results
+                perm.list[[i]] <- cpm.list
+                
+            }
+            
+        }
+        
+        perm.list[[i]] <- ifelse(class(perm.list) == "try-error", i, (i+1))
         
         # Check for covariates (progress bar)
         if(!"covar" %in% names(input))
@@ -387,8 +411,8 @@ cpmIVperm <- function(iter = 1000, ...)
         )
         
         # p-value for positive and negative
-        p.pos <- sum(ifelse(pos >= orig.pos, 1, 0)) / iter
-        p.neg <- sum(ifelse(neg >= orig.neg, 1, 0)) / iter
+        p.pos <- mean(ifelse(pos >= orig.pos, 1, 0), na.rm = TRUE)
+        p.neg <- mean(ifelse(neg >= orig.neg, 1, 0), na.rm = TRUE)
         
         # Create p-value matrix
         ps <- matrix(c(p.pos, p.neg), ncol = 2)
@@ -404,7 +428,7 @@ cpmIVperm <- function(iter = 1000, ...)
         )
         
         # p-value for positive and negative
-        p.over <- sum(ifelse(over >= orig.over, 1, 0)) / iter
+        p.over <- mean(ifelse(over >= orig.over, 1, 0), na.rm = TRUE)
         
         # Create p-value matrix
         ps <- matrix(p.over, ncol = 1)
