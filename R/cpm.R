@@ -342,12 +342,8 @@ cpmIVperm <- function(iter = 1000, ...)
     if(!"covar" %in% names(input))
     {pb <- txtProgressBar(min = 0, max = (iter-1), style = 3)}
     
-    # Initialize i
-    i <- 1
-    
     # Loop through cpmIV
-    while(i != (iter-1))
-    {
+    for(i in 1:iter){
         # Check for covariates (progress bar)
         if("covar" %in% names(input))
         {message(paste(i, "of", iter, "iterations complete."))}
@@ -367,7 +363,7 @@ cpmIVperm <- function(iter = 1000, ...)
         if(!"covar" %in% names(input))
         {setTxtProgressBar(pb, i)}
     }
-    
+
     # Check for covariates (progress bar)
     if(!"covar" %in% names(input))
     {close(pb)}
