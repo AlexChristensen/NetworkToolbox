@@ -11,4 +11,4 @@ Encoding: UTF-8
 LazyData: true
 Imports: psych, corrplot, fdrtool, R.matlab, igraph, qgraph, ppcor, parallel, foreach, doParallel, MASS, pwr, IsingFit, pbapply
 Suggests: googledrive
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

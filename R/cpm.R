@@ -345,10 +345,6 @@ cpmIVperm <- function(iter = 1000, ...)
     # Loop through cpmIV
     for(i in 1:(iter-1)){
         
-        # Check for covariates (progress bar)
-        if("covar" %in% names(input))
-        {message(paste(i, "of", iter, "iterations complete."))}
-        
         # Permutate behavioral statistic
         input$bstat <- sample(bstat, length(bstat))
         
@@ -385,6 +381,10 @@ cpmIVperm <- function(iter = 1000, ...)
         # Check for covariates (progress bar)
         if(!"covar" %in% names(input))
         {setTxtProgressBar(pb, i)}
+        
+        # Check for covariates (progress bar)
+        if("covar" %in% names(input))
+        {message(paste(i+1, "of", iter, "iterations complete."))}
         
     }
 
