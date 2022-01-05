@@ -66,8 +66,6 @@ smallworldness <- function (A, iter = 100, progBar = FALSE, method = c("HG","ran
     {pb <- txtProgressBar(max=iter, style = 3)}
     for(i in 1:iter) #Generate array of bootstrapped samples
     {
-        f<-round(runif(i,min=1,max=1000000),0)
-        set.seed(f[round(runif(i,min=1,max=length(f)),0)])
         rand<-randnet(A = A)
         if(method=="TJHBL")
         {latt<-lattnet(ncol(A),sum(ifelse(A!=0,1,0))/2)}
