@@ -123,7 +123,7 @@ network.permutation <- function(sample1 = NULL, sample2 = NULL, iter,
   
   #### Network function ####
   
-  get_network <- function(data, network)
+  get_network <- function(data, network, ...)
   {
     net <- switch(
       network,
@@ -229,12 +229,14 @@ network.permutation <- function(sample1 = NULL, sample2 = NULL, iter,
     # Compute networks
     net.list1 <- pbapply::pblapply(data.list1, cl = cl,
                                    FUN = get_network,
-                                   network = network)
+                                   network = network,
+                                   ...)
     
     # Compute networks
     net.list2 <- pbapply::pblapply(data.list2, cl = cl,
                                    FUN = get_network,
-                                   network = network)
+                                   network = network,
+                                   ...)
     
     # Stop cluster
     parallel::stopCluster(cl)
