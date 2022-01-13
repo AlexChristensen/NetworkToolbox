@@ -33,7 +33,7 @@ eigenvector <- function (A, weighted = TRUE)
     if(nrow(A)!=ncol(A))
     {stop("Input not an adjacency matrix")}
     
-    A <- abs(A)
+    # A <- abs(A)
     A <- as.matrix(A)
     
     if(!weighted)
