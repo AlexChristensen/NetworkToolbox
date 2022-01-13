@@ -13,7 +13,8 @@ network.permutation(
     "ASPL", "CC", "S", "Q"),
   alternative = c("less", "greater", "two.tailed"),
   ncores,
-  prev.perm = NULL
+  prev.perm = NULL,
+  ...
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ An object of previously performed permutation test. The
 networks generated in the previous permutation will be
 used to compute other network measures. This saves time
 when computing multiple permutation tests}
+
+\item{...}{Additional arguments for \code{\link[qgraph]{EBICglasso}}}
 }
 \value{
 Returns a list containing two objects:
