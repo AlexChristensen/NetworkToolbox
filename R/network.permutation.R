@@ -36,6 +36,8 @@
 #' used to compute other network measures. This saves time
 #' when computing multiple permutation tests
 #' 
+#' @param ... Additional arguments for \code{\link[qgraph]{EBICglasso}}
+#' 
 #' @return Returns a list containing two objects:
 #' 
 #' \item{result}{The results of the permutation test. For centrality measures,
@@ -81,7 +83,7 @@ network.permutation <- function(sample1 = NULL, sample2 = NULL, iter,
                                            "eigenvector", "rspbc", "hybrid", "ASPL",
                                            "CC", "S", "Q"),
                                alternative = c("less", "greater", "two.tailed"),
-                               ncores, prev.perm = NULL)
+                               ncores, prev.perm = NULL, ...)
 {
   #### Argument check ####
   
@@ -125,7 +127,7 @@ network.permutation <- function(sample1 = NULL, sample2 = NULL, iter,
   {
     net <- switch(
       network,
-      glasso = qgraph::EBICglasso(qgraph::cor_auto(data), n = nrow(data)),
+      glasso = qgraph::EBICglasso(qgraph::cor_auto(data), n = nrow(data), ...),
       ising = IsingFit::IsingFit(data, plot = FALSE)$weiadj,
       TMFG = NetworkToolbox::TMFG(data)$A,
       LoGo = NetworkToolbox::LoGo(data)
