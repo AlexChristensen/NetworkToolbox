@@ -2,9 +2,9 @@ citHeader("To cite NetworkToolbox in publications use:")
 
 bibentry(
 	bibtype = "article",
-	key	= "christensen2018networktoolbox",
+	key	= "NetworkToolbox",
 	title	= "{NetworkToolbox}: Methods and measures for brain, cognitive, and psychometric network analysis in {R}",
-	author	= c(person("Christensen,", "P", "Alexander")),
+	author	= c(person("Christensen,", "Alexander P")),
 	journal = "The R Journal",
         pages	= "422--439",
 	year	= "2018",
