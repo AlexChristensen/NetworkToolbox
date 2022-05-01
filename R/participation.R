@@ -47,7 +47,7 @@
 #' 
 #' @export
 #Participation Coefficient----
-# Updated 21.08.2021
+# Updated 01.05.2022
 participation <- function (A, comm = c("walktrap","louvain"))
 {
     #make sure its a matrix
@@ -65,8 +65,8 @@ participation <- function (A, comm = c("walktrap","louvain"))
     }else{comm<-comm}
     
     #check if comm is character
-    if(is.character(comm))
-    {
+    if(is.character(comm)){
+      
         if(length(comm) == 1)
         {
             facts <- switch(comm,
@@ -86,15 +86,18 @@ participation <- function (A, comm = c("walktrap","louvain"))
         
     }else{facts <- comm}
     
+    #ensure communities are numeric
+    facts <- as.numeric(facts)
+    
     #participation coefficient
-    pcoef <- function (A, facts)
-    {
+    pcoef <- function (A, facts){
+      
         k <- colSums(A) #strength
         Gc <- facts #communities
         Kc2 <- vector(mode="numeric",length=n)  
         
-        for(i in 1:max(Gc))
-        {
+        for(i in 1:max(Gc)){
+          
             #strength within communities squared
             if(is.vector(A*(Gc==i)))
             {Kc2 <- Kc2 + sum(A*(Gc==i))^2

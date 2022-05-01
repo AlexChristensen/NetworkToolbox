@@ -49,6 +49,7 @@
 #' 
 #' @export
 #Gateway Coefficient----
+# Updated 01.05.2022
 gateway <- function (A, comm = c("walktrap","louvain"),
                      cent = c("strength","betweenness"))
 {
@@ -87,6 +88,9 @@ gateway <- function (A, comm = c("walktrap","louvain"),
         }
         
     }else{facts <- comm}
+    
+    # Ensure communities are numeric
+    facts <- as.numeric(facts)
     
     if(missing(cent))
     {cent<-"strength"

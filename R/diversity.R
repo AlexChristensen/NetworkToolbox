@@ -45,6 +45,7 @@
 #' 
 #' @export
 #Diversity Coefficient----
+# Updated 01.05.2022
 diversity <- function (A, comm = c("walktrap","louvain"))
 {
     #convert to matrix
@@ -83,6 +84,9 @@ diversity <- function (A, comm = c("walktrap","louvain"))
         }
         
     }else{facts <- comm}
+    
+    #ensure communities are numeric
+    facts <- as.numeric(facts)
     
     #number of communities
     m <- max(facts)
