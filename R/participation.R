@@ -19,8 +19,8 @@
 #' \item{negative}{Participation coefficient with only negative sign}
 #' 
 #' @details 
-#' Values closer to 1 suggest greater within-community connectivity and 
-#' values closer to 0 suggest greater between-community connectivity
+#' Values closer to 0 suggest greater within-community connectivity and 
+#' values closer to 1 suggest greater between-community connectivity
 #' 
 #' @examples
 #' #theoretical factors
@@ -47,7 +47,7 @@
 #' 
 #' @export
 #Participation Coefficient----
-# Updated 01.05.2022
+# Updated 19.06.2022
 participation <- function (A, comm = c("walktrap","louvain"))
 {
     #make sure its a matrix

@@ -29,8 +29,8 @@ coefficient measures the strength of a node's connections within its community. 
 and negative signed weights for participation coefficients are computed separately.
 }
 \details{
-Values closer to 1 suggest greater within-community connectivity and 
-values closer to 0 suggest greater between-community connectivity
+Values closer to 0 suggest greater within-community connectivity and 
+values closer to 1 suggest greater between-community connectivity
 }
 \examples{
 #theoretical factors
