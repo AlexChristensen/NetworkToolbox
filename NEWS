@@ -2,6 +2,8 @@ Changes in 1.4.3
 
 o FIX: `participation` coefficient values were in the reverse direction
 
+o FIX: `depend` diagonal fixed to 0 instead of 1
+
 
 Changes in version 1.4.2
 

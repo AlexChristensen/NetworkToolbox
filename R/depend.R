@@ -49,6 +49,7 @@
 #' 
 #' @export
 #Dependency----
+# Updated 21.09.2022
 depend <- function (data, normal = FALSE,
                     na.data = c("pairwise","listwise","fiml", "none"),
                     index = FALSE, fisher = FALSE, progBar = TRUE)
@@ -174,7 +175,7 @@ depend <- function (data, normal = FALSE,
     }
     
     for(h in 1:j)
-        diag(parmat[,,h])<-1
+        diag(parmat[,,h])<-0
     
     depmat<-matrix(0,nrow=nrow(parmat),ncol=ncol(parmat))
     for(i in 1:ncol(parmat))
