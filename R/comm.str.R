@@ -50,6 +50,7 @@
 #' 
 #' @export
 #Community Strength/Degree Centrality
+# Updated 26.11.2022
 comm.str <- function (A, comm, weighted = TRUE,
                       measure = c("within","between"))
 {
@@ -79,13 +80,13 @@ comm.str <- function (A, comm, weighted = TRUE,
             if(measure == "within")
             {
                 if(weighted)
-                {remove[j,] <- sum(colSums(A[,rem]))
-                }else{remove[j,] <- sum(colSums(binarize(A)[,rem]))}
+                {remove[j,] <- sum(colSums(A[rem,rem]))
+                }else{remove[j,] <- sum(colSums(binarize(A)[rem,rem]))}
             }else if(measure == "between")
             {
                 if(weighted)
-                {remove[j,] <- sum(colSums(A[,-rem]))
-                }else{remove[j,] <- sum(colSums(binarize(A)[,-rem]))}
+                {remove[j,] <- sum(colSums(A[-rem,rem]))
+                }else{remove[j,] <- sum(colSums(binarize(A)[-rem,rem]))}
             }
             
             
