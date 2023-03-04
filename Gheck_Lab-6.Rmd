@@ -1,0 +1,323 @@
+---
+title: "Lab 6: Logistic Regression"
+author: "Check"
+output: html_document
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+---
+
+# Default Problem
+
+The `Default` data set is a simulated data set containing 10,000 observations and 4 variables:
+
++   `default`:
+
+    +   `Yes` = customer defaulted on their debt
+    +   `No` = customer did not default
+    
++   `student`:
+
+    +   `Yes` = is student
+    +   `No` = is not student
+    
++   `balance`: average balance that the customer has remaining on their credit card after making their monthly payment
+
++   `income`: income of the customer
+
+The purpose is to find a model that predicts the probability that the customer `default`s based on the other 3 variables.
+
+1. Import the data.
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+Default <- read.csv("Default.csv")
+```
+
+2. Make box plots of `balance` by `default` and `income` by `default`. Can you make an assumption based on the plots?
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE, fig.align = "center", fig.height = 4, fig.width = 4}
+boxplot(balance~default,Default,xlab="default (Yes/No)", 
+        main = 'Balance vs. Default')
+boxplot(income~default,Default,xlab="default (Yes/No)", 
+        main = 'Income vs. Default')
+```
+
+> Answer:
+It seems that customers with higher balance on credit card are more likely to default. But the income of customer does not seem to be a strong indicator of whether a customer defaults.
+
+3. Compare the categorical values of whether the customer is a `student` and whether the customer `default`s (use `table`).
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+table(Default = Default$default, Student = Default$student)
+```
+
+> Answer: Are there more students or non-students? What percentage defaults for each group?
+
+4. Transform the `default` variable to be an indicator (or dummy) variable. With `1` being default and `0` being no default.
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+Default$default_indicator = 1*(Default$default == "Yes")
+```
+
+5. Fit a logistic regression model to the data using a single predictor `balance` for `default`.
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+lr_fit=glm(default_indicator~balance,family=binomial, data=Default)
+summary(lr_fit)
+```
+
+6. Test the significance of the coefficient $\beta_{balance}$ using the logistic regression model. Use $\alpha = 0.05$.
+
+Null            $H_0: \beta_1 = 0$
+Alternative     $H_1: \beta_1 \neq 0$
+
+Null suggests that there's no  significant relationship between the predictor variable x and response variable y.
+Alternative suggests that there's a significant relationship between predictor variable x and response variable y.
+According to the result, we find that p value is smaller than 0.05 so we reject the null hypothesis. This means that the variable balance has an effect on log odds customer default 
+
+7. Convert the log of the odds ratios from the model to odds ratios using the `coef` and `exp` functions.
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+coefficients <- coef(lr_fit)
+odds_ratios <- exp(coefficients)
+```
+
+> Answer: Interpret the odds ratio
+The odds ratios are 2.37^-5 and 1.01
+
+8. What is the estimated model for the probability of `default` for a customer given the customer's `balance` on their credit card (use the logistic regression equation)?
+
+> Answer: Estimated model = (e^{-10.65 + .005499*balance})/(1 + e^{-10.65 + .005499*{balance})
+
+9. Plot the fitted values to see how the model fits the data. Make x-axis the actual `balance`, and y-axis be the fitted value. Also, add points based on the actual `balance` and `default` variables.
+
+Note: The logistic function always produces an S-shaped curve as well as satisfies the property that $0 \le \hat{y} \le 1$ for all values of the independent variables.
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+plot(Default$balance,lr_fit$fitted.values,col="Blue",
+     xlab = "Balance",ylab = "Estimated Probability of Default", main = "Estimated Probability of Default vs. Balance")
+points(Default$balance,Default$default_indicator,col="Red")
+```
+
+10. Prediction! Use your model to `predict()` the probability of default for four different customers with the following balances: `500`, `1000`, `1500`, and `2000`. 
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+new_customers = data.frame(balance = (c(500, 1000, 1500, 2000)))
+preds = predict(lr_fit, new_customers)
+cbind(new_customers$balance, preds)
+```
+
+Note: In the above prediction, you may get some weird numbers, those are not the probabilities, instead, they are the log of the odds ratio. When using the R function to predict a logistic regression model, the prediction gives the $\log(OR)$ or the **logit** (log of the odds ratio). In summary, the logistic regression model uses $\log(OR)$ as the dependent variable and models the $\log(OR)$ as a linear function of the predictors.
+
+To get the probabilities, in your prediction, use the option `type = 'response'`
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+prob_preds = predict(lr_fit, new_customers, type = "response")
+cbind(new_customers$balance, prob_preds)
+```
+
+10. Now, consider all three predictor variables: `balance`, `student`, and `income`. Find the logistic regression model using these 3 variables.
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+lr_fit_3=glm(default_indicator~balance+student+income,family=binomial, data=Default)
+summary(lr_fit_3)
+```
+
+11. What is the estimated model (write out the equation)?
+$$
+P(Y = 1|X) = \frac 
+{e^ {-10.870 + 0.006(balance)-0.065(student)+0.000(income)}} 
+{1 + e^{-10.870 + 0.006(balance)-0.065(student)+0.000(income)}}
+$$
+12. Test the significance of the coefficients $\beta$ in (`balance`, `student`, `income`)
+
+> Answer:  Interpret the significance of the predictors
+beta balance has pvalue less than 0.05 so we reject the null hypothesis. Balance is helping to explaining the log odds for default.
+beta student has pvalue less than 0.05 so we reject the null hypothesis. Student is helping to explaining the log odds for default.
+beta income has pvalue greater than 0.05 so we fail to reject the null hypothesis. Income does not help explaining the log odds for default.
+
+
+13. Drop the insignificant variable from the model and re-fit the model to find the parsimonious logistic regression model.
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+lr_fit_2=glm(default_indicator~balance+student,family=binomial, data=Default)
+summary(lr_fit_2)
+```
+
+14. Convert the log of the odds ratios from the model to odds ratios using the `coef` and `exp` functions.
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+coefficients <- coef(lr_fit_2)
+odds_ratios <- exp(coefficients)
+```
+
+> Answer: Interpret the odds ratios for the model (be sure to say what's being controlled for)
+
+# Breast Cancer Problem
+
+The variable `diagnosis` classifies the biopsied tumor in the following way: `M` = malignant tumor and `B` = benign tumor. `texture_mean`, `radius_mean`, and `area_mean` are used to classify the diagnosis.
+
+1. Import the data.
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+tumor <- read.csv('breast_cancer.csv')
+```
+
+2. Create the `Malignant` dummy variable: `Malignant = 1` if the tumor is malignant.
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+tumor$Malignant = ifelse(tumor$diagnosis == 'M', 1, 0)
+```
+
+3. Graph three box plots and comment on the relationship between each feature of the tumor and whether tumors are classified as malignant.
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE, fig.align = "center", fig.height = 6, fig.width = 4}
+boxplot(tumor$texture_mean~tumor$Malignant)
+boxplot(tumor$radius_mean ~tumor$Malignant)
+boxplot(tumor$area_mean ~ tumor$Malignant)
+```
+
+> Answer: Comment on whether there are differences based on malignancy
+We see that on average maligant tumors have greater texture mean, radius mean, and area mean.
+
+4. Fit a logistic regression model to classify the tumor. Use the variable `Malignant` as your response variable.
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+fit = glm(Malignant ~ texture_mean + radius_mean + area_mean, data = tumor,family = binomial)
+summary(fit)
+```
+
+5. What is the probability of the tumor being malignant (`y = 1`) given the features of the tumor (`x`; write the equation)?
+
+> Answer: 
+
+$$
+P(Y = 1|X) = \frac 
+{e^ {−6.27428+0.18130(texturemean) − 0.67585(radiusmean) + 0.01855(area mean)}} 
+{1 + e^{−6.27428+0.18130(texture mean)−0.67585(radius mean)+0.01855(areamean)}}
+$$
+
+6. Use $\alpha = 0.05$ and find the parsimonious model (remove non-significant variables one-by-one, re-estimating each time).
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+fit2 = glm(Malignant ~ texture_mean + area_mean, data = tumor, family = binomial)
+summary(fit2)
+```
+
+7. Use the model to determine the *probability* that the following tumor is malignant: `texture_mean` = `25.2`, `radius_mean` = `18.4`, and `area_mean` = `910.5`
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+new_tumor = data.frame(texture_mean = 25.2, radius_mean = 18.4, area_mean = 910.5)
+predict(fit2, new_tumor, type = 'response') 
+```
+
+> Answer: Interpret the probability
+
+# Penguins Problem
+
+1. Load in the `penguins` data set from {palmerpenguins}. Remove missing observations (i.e., `NA`s)
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+library(palmerpenguins)
+penguins <- penguins
+penguins <- na.omit(penguins)
+```
+
+
+2. Observe the data, what is this data about? How many dimensions (i.e., rows and columns) does it have? What does each row represent?
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+dim(penguins)
+colnames(penguins)
+head(penguins)
+```
+
+
+3. Create a frequency table of the species of penguins 
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+table(penguins$species)
+```
+
+4. We will be building a multinomial logistic regression on the penguins data set based on two of the species. Create box plots for the the variables `bill_length_mm`, `bill_depth_mm`, `flipper_length_mm`, and `body_mass_g`. However, divide the boxplots into *each* species to determine if there is a difference between any of the species with each variable. 
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE, fig.align = "center", fig.height = 6, fig.width = 6}
+library(ggplot2)
+ggplot(penguins,aes(x = species, y=bill_length_mm, fill = species)) + 
+  geom_boxplot()
+ggplot(penguins,aes(x = species, y=bill_depth_mm, fill = species)) + 
+  geom_boxplot()
+ggplot(penguins,aes(x = species, y=flipper_length_mm, fill = species)) + 
+  geom_boxplot()
+ggplot(penguins,aes(x = species, y=body_mass_g, fill = species)) + 
+  geom_boxplot()
+```
+
+5. Let's just use the `Adelie` and `Gentoo` penguin species to build our logistic regression. Filter out the data set to accomplish this. 
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+library(dplyr)
+penguins_filtered <- penguins %>% filter(species %in% c("Adelie", "Gentoo"))
+
+```
+
+
+6. Make a *factor* vector indicating `species_indicator` that takes on a value of `1` for `Adelie` and a value of `0` for `Gentoo`. Make sure this binded to the data frame.
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+penguins_filtered$species_indicator <- ifelse(penguins_filtered$species == "Adelie", 1,0)
+```
+
+
+7. From our box plots, it seems like we can use a combination of `flipper_length_mm` and `body_mass_g` to build a model to determine the species of the penguin. Build the model and store it in `log_penguins`.
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+library(glmnet)
+log_peng <- glm(species_indicator ~ flipper_length_mm + body_mass_g, family = 'binomial', 
+                data = penguins_filtered)
+```
+
+
+8. Take a look at the output of the model. Please list the log of the odds ratio coefficient for each variable, and using `exp()` function on the `coef`ficients (converting the log of the odds ratio to odds ratio), explain the coefficients within the context of the problem. 
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+summary(log_peng)
+coef(log_peng)
+exp(coef(log_peng))
+```
+ 
+> Answer: Interpret the odds ratios (make sure to use appropriate units)
+
+9. Obtain probabilities of the predicted values from the model (use `predict` on the model).
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+log_peng$fitted.values
+```
+
+10. Obtain predicted species indicator using `0.50` as the cut-off for the probabilities (ensure it's a factor).
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+predicted <- ifelse(log_peng$fitted.values>=.5, 1, 0)
+```
+
+
+11. Create a confusion matrix with the actual and the predicted (use {caret}). Make sure positive = `1`.
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+table(predicted, penguins_filtered$species_indicator)
+```
+
+
+12. What is the accuracy, sensitivity, and specificity of this model? 
+
+> Answer: 
+Accuracy is roughly around 98%
+
+13. Build a mosaic plot. 
+
+```{r, echo = TRUE, eval = TRUE, comment = NA, warning = FALSE, message = FALSE}
+mosaicplot(table(predicted, penguins_filtered$species), main = "Mosaic Plot",
+           subtitle = "Accuracy" ,xlab = "Actual Values",ylab = "Predicted Values",color = "RED",border = "BLUE")
+```
+
+
+
+
