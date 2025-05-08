@@ -1,113 +1,108 @@
 #' Maximally Filtered Clique Forest
-#' 
+#'
 #' @description Applies the Maximally Filtered Clique Forest (MFCF) filtering method
 #' (\strong{Please see and cite Massara & Aste}).
-#' 
+#'
 #' @param data Matrix (n \code{x} n or p \code{x} n) or data frame.
 #' Can be a dataset or a correlation matrix
-#' 
+#'
 #' @param cases Numeric. If \code{data} is a (partial) correlation
 #' matrix, then number of cases must be input.
 #' Defaults to \code{NULL}
-#' 
+#'
 #' @param na.data Character.
 #' How should missing data be handled?
-#' 
+#'
 #' \itemize{
-#' 
-#' \item{\code{"listwise"}}
-#' {Removes case if \strong{any} missing data exists.
-#' Applies \code{\link{na.omit}}}
-#' 
-#' \item{\code{"pairwise"}}
-#' {Estimates correlations using the available data
-#' for each variable}
-#' 
-#' \item{\code{"fiml"}}
-#' {Estimates correlations using the Full Information
-#' Maximum Likelihood. Recommended and most robust but time consuming}
-#' 
-#' \item{\code{"none"}}
-#' {Default. No missing data or missing data has been
-#' handled by the user}
-#' 
+#'
+#' \item \code{"listwise"} --- Removes case if \strong{any} missing data exists. Applies \code{\link{na.omit}}
+#'
+#' \item \code{"pairwise"} --- Estimates correlations using the available data
+#' for each variable
+#'
+#' \item \code{"fiml"} --- Estimates correlations using the Full Information
+#' Maximum Likelihood. Recommended and most robust but time consuming
+#'
+#' \item \code{"none"} --- Default. No missing data or missing data has been
+#' handled by the user
+#'
 #' }
-#' 
+#'
 #' @param time.series Boolean.
 #' Is \code{data} a time-series dataset?
 #' Defaults to \code{FALSE}.
 #' Set to \code{TRUE} to handle time-series data (n \code{x} p)
-#' 
+#'
 #' @param gain.fxn Character.
 #' Gain function to be used for inclusion of nodes in cliques.
 #' There are several options available
 #' (see \code{\link[NetworkToolbox]{gain.functions}} for more details):
 #' \code{"logLik"}, \code{"logLik.val"}, \code{"rSquared.val"}.
 #' Defaults to \code{"rSquared.val"}
-#' 
+#'
 #' @param min_size Numeric. Minimum number of nodes allowed per
 #' clique. Defaults to \code{0}
-#' 
+#'
 #' @param max_size Numeric. Maximum number of nodes allowed per
 #' clique. Defaults to \code{8}
-#' 
+#'
 #' @param pval Numeric. \emph{p}-value used to determine cut-offs for nodes
 #' to include in a clique
-#' 
-#' @param pen Numeric. Multiplies the number of edges added to penalise 
+#'
+#' @param pen Numeric. Multiplies the number of edges added to penalise
 #' complex models. Similar to the penalty term in AIC
-#' 
+#'
 #' @param drop_sep Boolean. This parameter influences the MFCF only.
 #' Defaults to \code{FALSE}.
 #' If \code{TRUE}, then any separator can be used only once (similar
 #' to the \code{\link[NetworkToolbox]{TMFG}})
-#' 
+#'
 #' @param use_returns Boolean. Only used in \code{"gain.fxn = rSquared.val"}.
-#' If set to \code{TRUE} the regression is 
+#' If set to \code{TRUE} the regression is
 #' performed on log-returns.
 #' Defaults to \code{FALSE}
-#' 
+#'
 #' @return Returns a list containing:
-#' 
+#'
 #' \item{A}{MFCF filtered partial correlation network (adjacency matrix)}
-#' 
+#'
 #' \item{J}{MFCF filtered inverse covariance matrix (precision matrix)}
-#' 
+#'
 #' \item{cliques}{Cliques in the network
 #' (output for \code{\link[NetworkToolbox]{LoGo}})}
-#' 
+#'
 #' \item{separators}{Separators in the network
 #' (output for \code{\link[NetworkToolbox]{LoGo}})}
-#' 
+#'
 #' @examples
 #' # Load data
 #' data <- neoOpen
-#' 
-#' \dontrun{ 
+#'
+#' \dontrun{
 #' # Use polychoric correlations and R-squared method
 #' MFCF.net <- MFCF(qgraph::cor_auto(data), cases = nrow(neoOpen))$A
-#' 
+#'
 #' }
-#' 
+#'
 #' @references
 #' Massara, G. P. & Aste, T. (2019).
 #' Learning clique forests.
 #' \emph{ArXiv}.
-#' 
+#'
 #' @author Guido Previde Massara <gprevide@gmail.com> and Alexander Christensen <alexpaulchristensen@gmail.com>
-#' 
+#'
 #' @importFrom utils combn
-#' 
+#'
 #' @export
 #MFCF Filtering Method----
 MFCF <- function(data, cases = NULL,
                  na.data = c("pairwise","listwise","fiml","none"),
                  time.series = FALSE,
                  gain.fxn = c("logLik","logLik.val","rSquared.val"),
-                 min_size = 0,    
-                 max_size = 8,    
-                 pval = .05,      
-                 pen = 0.0,       
+                 min_size = 0,
+                 max_size = 8,
+                 pval = .05,
+                 pen = 0.0,
                  drop_sep = FALSE,
                  use_returns = FALSE
                  )
@@ -116,7 +111,7 @@ MFCF <- function(data, cases = NULL,
     if(missing(gain.fxn))
     {gain.fun <- "rSquared.val"
     }else{gain.fun <- match.arg(gain.fxn)}
-    
+
     if(!time.series)
     {
         #missing data handling
@@ -124,7 +119,7 @@ MFCF <- function(data, cases = NULL,
         {
             #number of cases (n)
             cases <- nrow(data)
-            
+
             if(any(is.na(data)))
             {
                 if(missing(na.data))
@@ -137,32 +132,32 @@ MFCF <- function(data, cases = NULL,
             {stop("Number of cases (cases) must be input")}
         }
     }else{cases <- nrow(data)}
-    
+
     #number of cases (n) variables (p)
     n <- nrow(data)
     p <- ncol(data)
-  
+
     #initialize the clique-tree control structure from arguments, keeps everything packed together
     ctreeControl = list(n = cases,
-                        min_size = min_size,    
-                        max_size = max_size,     
-                        pval = pval,       
-                        pen = pen,      
+                        min_size = min_size,
+                        max_size = max_size,
+                        pval = pval,
+                        pen = pen,
                         drop_sep = drop_sep,
                         use_returns = use_returns
                         )
-    
+
     #nodes yet to be included (excluded nodes)
     outstanding_nodes <- 1:p
-    
+
     #initialize lists for cliques and separators
     the_cliques <- list()
     the_separators <- list()
-    
+
     #initialize number of cliques and separators
     clique_no <- 0
     sep_no <- 0
-    
+
     #initialize gain function
     if(gain.fun == "logLik")
     {gain.fun <- match.fun(gfcnv_logdet)
@@ -170,7 +165,7 @@ MFCF <- function(data, cases = NULL,
     {gain.fun <- match.fun(gfcnv_logdet_val)
     }else if(gain.fun == "rSquared.val")
     {gain.fun <- match.fun(gdcnv_lmfit)}
-    
+
     #insert first clique
     if(n == p)
     {sums <- rowSums(data * (data > rowMeans(data)))
@@ -192,34 +187,34 @@ MFCF <- function(data, cases = NULL,
           family <- family
           gains <- mapply(gf, C[1,], C[2,])
           K <- matrix(0, nrow = p, ncol = p)
-          
+
           C <- cbind(C[1,], C[2,], gains)
-          
+
           x <- matrix(0, nrow = ncol(K), ncol = ncol(K))
-          
+
           for(q in 1:nrow(C))
           {x[C[q,1], C[q,2]] <- C[q,3]}
           K[1:(p-1), ] <- x
-          K <- K + t(K) 
+          K <- K + t(K)
           diag(K) <- 1
         }
-        
+
         K <- make_kernel(data,gain.fun,ctreeControl)
-        
+
         sums <- rowSums(K * (K > rowMeans(K)))
-        
+
         K <- NULL
     }
-    
+
     #updated cliques with first clique
     first_clique <- order(sums, decreasing = TRUE)[1:max(2,ctreeControl$min_size)]
     clique_no <- 1
     the_cliques[[clique_no]] <- first_clique
     outstanding_nodes <- setdiff(outstanding_nodes, the_cliques[[clique_no]])
-    
+
     #initialize gain table
     gain_table <- gain.fun(data,clique_no,the_cliques[[clique_no]],outstanding_nodes,ctreeControl)
-    
+
     #MCMF algorithm
     while(length(outstanding_nodes)>0){
         # get most favourable entry in gain table
@@ -251,7 +246,7 @@ MFCF <- function(data, cases = NULL,
             the_sep <- max_rec$separator
         }
         outstanding_nodes <- outstanding_nodes[outstanding_nodes != the_node]
-        
+
         #case new clique
         if (length(new_clique) <= length(parent_clique)){
             clique_no <- clique_no + 1
@@ -274,29 +269,29 @@ MFCF <- function(data, cases = NULL,
             the_sep_key <- paste0(sort(the_sep[[1]]), collapse = ",")
             gain_table <- gain_table[gain_table$separator_key != the_sep_key,]
         }
-        gain_table <- rbind(gain_table, 
+        gain_table <- rbind(gain_table,
                             gain.fun(data, clique_to_update, new_clique, outstanding_nodes, ctreeControl))
         # df <- gain_func_p(clique_to_update, new_clique, outstanding_nodes)
         # gain_table <- rbind(gain_table, df)
         #cat(length(outstanding_nodes), "\n")
     }
-    
-    
+
+
     # remove cliques with no nodes
     if(any(is.na(the_cliques)))
     {the_cliques[[which(is.na(the_cliques))]] <- NULL}
-    
+
     # remove separators with no nodes
     if(any(is.na(the_separators)))
     {the_separators[[which(is.na(the_separators))]] <- NULL}
-    
-    
+
+
     #results list
     res <- list()
     res$cliques <- the_cliques
     res$separators <- the_separators
     res$A <- LoGo(data, cliques = the_cliques, separators = the_separators, partial = TRUE)
     res$J <- LoGo(data, cliques = the_cliques, separators = the_separators, partial = FALSE)
-    
+
     return(res)
 }

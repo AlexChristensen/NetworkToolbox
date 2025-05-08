@@ -7,17 +7,18 @@
 #' Also implements several network measures including local network characteristics
 #' (e.g., centrality), global network characteristics (e.g., clustering coefficient),
 #' and various other measures associated with the reliability and
-#' reproducibility of network analysis. 
-#' 
+#' reproducibility of network analysis.
+#'
 #' @references
 #' Christensen, A. P. (in press).
 #' NetworkToolbox: Methods and measures for brain, cognitive, and psychometric network analysis in R.
 #' \emph{The R Journal}, \emph{10}, 422-439.
-#' 
+#'
 #' @author Alexander Christensen <alexpaulchristensen@gmail.com>
-#' 
+#'
 #' @importFrom utils packageDescription
-#' 
+#' @importFrom methods is
+#'
 "_PACKAGE"
 #> [1] "_PACKAGE"
 #NetworkToolbox----

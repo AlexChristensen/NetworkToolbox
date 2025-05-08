@@ -13,14 +13,14 @@
 cpmIV(neuralarray, bstat, kfolds, covar, thresh = .01,
       connections = c("separate", "overall"), groups = NULL,
       method = c("mean", "sum"), model = c("linear","quadratic","cubic"),
-      corr = c("pearson","spearman"), nEdges, 
+      corr = c("pearson","spearman"), nEdges,
       standardize = FALSE, cores, progBar = TRUE, plots = TRUE)
-      
+
 cpmIVperm(iter = 1000, ...)
-      
+
 cpmEV(train_na, train_b, valid_na, valid_b, thresh = .01,
       overlap = FALSE, progBar = TRUE)
-      
+
 cpmFP(session1, session2, progBar = TRUE)
 
 cpmFPperm(session1, session2, iter = 1000, progBar = TRUE)
@@ -130,7 +130,7 @@ mean absolute error (\code{mae}), root mean square error (\code{rmse})}
 
 \code{cpmIVperm}:
 
-Returns a matrix containing \emph{p}-values for positive and negative prediction models 
+Returns a matrix containing \emph{p}-values for positive and negative prediction models
 
 \code{cpmFP}:
 
@@ -148,44 +148,32 @@ Suite of functions for Connectome-based Predictive Modeling (CPM).
 
 \itemize{
 
-\item{\code{cpmIV}}
-
-{Internal Validation method (Rosenberg et al., 2016; Shen et al., 2017). Using a leave-one-out approach,
+\item \code{cpmIV} --- Internal Validation method (Rosenberg et al., 2016; Shen et al., 2017). Using a leave-one-out approach,
 this method correlates a behavioral statistic \code{bstat} with each edge of a whole-brain network across
 participants. Using the significant edges in the network \code{thresh}, a connectome model
 is built (without the participant's network). A linear regression model is fit, with the behavioral
 statistic being regressed on the connectome model. The left out participants connectome model is then
 used with the linear regression weights to compute their predicted behavioral score. This is repeated
 for every participant. The predicted scores are correlated with their observed score. Significant values
-suggest that the connectome is related to the behavioral statistic}
+suggest that the connectome is related to the behavioral statistic
 
-\item{\code{cpmIVperm}}
-
-{Performs a permutation test of the results obtained by \code{cpmIV}. The permutation test quantifies
+\item \code{cpmIVperm} --- Performs a permutation test of the results obtained by \code{cpmIV}. The permutation test quantifies
 whether the results obtained by the original \code{cpmIV} are significantly different than a random model
-(see Shen et al., 2017)}
+(see Shen et al., 2017)
 
-\item{\code{cpmEV}}
+\item \code{cpmEV} ---
 
-{UNDER DEVELOPMENT. External Validation method (Beaty et al., 2018). Performs similar function as \code{cpmIV} but uses data
+UNDER DEVELOPMENT. External Validation method (Beaty et al., 2018). Performs similar function as \code{cpmIV} but uses data
 to train \code{train_na} the connectome model using a behavioral statistic \code{train_b}.
 This training connectome model is then used to predict another dataset \code{valid_na},
 using the same behavioral statistic \code{valid_b}. The full training dataset \code{FALSE} or
-the leave-one-out \code{overlap = TRUE} approach can be used}
+the leave-one-out \code{overlap = TRUE} approach can be used
 
-\item{\code{cpmFP}}
+\item \code{cpmFP} --- Fingerprinting method (Finn et al., 2015). Uses CPM approach to identify participants across two sessions
 
-{Fingerprinting method (Finn et al., 2015). Uses CPM approach to identify participants across two
-sessions}
+\item \code{cpmFPperm} --- Fingerprinting method (Finn et al., 2015). Uses permutation method to estimate the significance of the \code{cpmFP} results
 
-\item{\code{cpmFPperm}}
-
-{Fingerprinting method (Finn et al., 2015). Uses permutation method to estimate the significance of
-of the \code{cpmFP} results}
-
-\item{\code{cpmPlot}}
-
-{Plots the CPM results}
+\item \code{cpmPlot} --- Plots the CPM results
 
 }
 }

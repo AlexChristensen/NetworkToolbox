@@ -14,11 +14,10 @@ A time series list from \code{\link[NetworkToolbox]{convertConnBrainMat}} functi
 Options for centering the Euclidean distances.
 
 \itemize{
-\item{\code{"U"}}
-{Uses number of time points minus 2 in the computation of the mean}
+\item \code{"U"} --- Uses number of time points minus 2 in the computation of the mean
 
-\item{\code{"double"}}
-{Uses the mean}
+\item \code{"double"} --- Uses the mean
+
 }}
 }
 \value{
@@ -26,7 +25,7 @@ Returns a \emph{m} x \emph{m} matrix corresponding to distance correlations
 between ROIs
 }
 \description{
-Computes the distance correlation (Yoo et al., 2019) for 
+Computes the distance correlation (Yoo et al., 2019) for
 ROI time series data. This function is mainly a subroutine for the
 \code{\link[NetworkToolbox]{dCor.parallel}} function
 }

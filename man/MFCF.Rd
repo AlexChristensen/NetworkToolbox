@@ -31,21 +31,16 @@ How should missing data be handled?
 
 \itemize{
 
-\item{\code{"listwise"}}
-{Removes case if \strong{any} missing data exists.
-Applies \code{\link{na.omit}}}
+\item \code{"listwise"} --- Removes case if \strong{any} missing data exists. Applies \code{\link{na.omit}}
 
-\item{\code{"pairwise"}}
-{Estimates correlations using the available data
-for each variable}
+\item \code{"pairwise"} --- Estimates correlations using the available data
+for each variable
 
-\item{\code{"fiml"}}
-{Estimates correlations using the Full Information
-Maximum Likelihood. Recommended and most robust but time consuming}
+\item \code{"fiml"} --- Estimates correlations using the Full Information
+Maximum Likelihood. Recommended and most robust but time consuming
 
-\item{\code{"none"}}
-{Default. No missing data or missing data has been
-handled by the user}
+\item \code{"none"} --- Default. No missing data or missing data has been
+handled by the user
 
 }}
 
@@ -70,7 +65,7 @@ clique. Defaults to \code{8}}
 \item{pval}{Numeric. \emph{p}-value used to determine cut-offs for nodes
 to include in a clique}
 
-\item{pen}{Numeric. Multiplies the number of edges added to penalise 
+\item{pen}{Numeric. Multiplies the number of edges added to penalise
 complex models. Similar to the penalty term in AIC}
 
 \item{drop_sep}{Boolean. This parameter influences the MFCF only.
@@ -79,7 +74,7 @@ If \code{TRUE}, then any separator can be used only once (similar
 to the \code{\link[NetworkToolbox]{TMFG}})}
 
 \item{use_returns}{Boolean. Only used in \code{"gain.fxn = rSquared.val"}.
-If set to \code{TRUE} the regression is 
+If set to \code{TRUE} the regression is
 performed on log-returns.
 Defaults to \code{FALSE}}
 }
@@ -104,7 +99,7 @@ Applies the Maximally Filtered Clique Forest (MFCF) filtering method
 # Load data
 data <- neoOpen
 
-\dontrun{ 
+\dontrun{
 # Use polychoric correlations and R-squared method
 MFCF.net <- MFCF(qgraph::cor_auto(data), cases = nrow(neoOpen))$A
 

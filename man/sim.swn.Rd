@@ -51,14 +51,14 @@ Defaults to NULL.
 Set to desired number of intervals (defaults to 5)}
 }
 \value{
-Returns a list containing: 
+Returns a list containing:
 
 \item{simNetwork}{Adjacency matrix of the simulated network}
 
-\item{simData}{Simulated data from sim.correlation in the \code{\link{psych}} package
+\item{simData}{Simulated data from sim.correlation in the \code{psych} package
 based on the simulated network}
 
-\item{simRho}{Simulated correlation from sim.correlation in the \code{\link{psych}} package}
+\item{simRho}{Simulated correlation from sim.correlation in the \code{psych} package}
 }
 \description{
 Simulates a small-world network based on specified topological properties.

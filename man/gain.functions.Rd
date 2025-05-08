@@ -36,29 +36,23 @@ the clique tree sizes:
 
 \itemize{
 
-\item{\code{min_size}}
-{Numeric. Minimum number of nodes allowed per
-clique. Defaults to \code{1}}
+\item \code{min_size} --- Numeric. Minimum number of nodes allowed per
+clique. Defaults to \code{1}
 
-\item{\code{max_size}}
-{Numeric. Maximum number of nodes allowed per
-clique. Defaults to \code{8}}
+\item \code{max_size} --- Numeric. Maximum number of nodes allowed per
+clique. Defaults to \code{8}
 
-\item{\code{pval}}
-{Numeric. \emph{p}-value used to determine cut-offs for nodes
-to include in a clique. Defaults to \code{.05}}
+\item \code{pval} --- Numeric. \emph{p}-value used to determine cut-offs for nodes
+to include in a clique. Defaults to \code{.05}
 
-\item{\code{pen}}
-{Numeric. Multiplies the number of edges added to penalize 
-complex models. Similar to the penalty term in AIC}
+\item \code{pen} --- Numeric. Multiplies the number of edges added to penalize
+complex models. Similar to the penalty term in AIC
 
-\item{\code{drop_sep}}
-{Boolean. This parameter influences the MFCF only. If TRUE any
-separator can be used only once, as in the TMFG.}
+\item \code{drop_sep} --- Boolean. This parameter influences the MFCF only. If TRUE any
+separator can be used only once, as in the TMFG.
 
-\item{\code{use_returns}}
-{Boolean. Only used in rSquared.val. If set to TRUE the regression is 
-performed on log-returns. Defaults to \code{FALSE}}
+\item \code{use_returns} --- Boolean. Only used in rSquared.val. If set to TRUE the regression is
+performed on log-returns. Defaults to \code{FALSE}
 
 }}
 }
@@ -74,26 +68,20 @@ scoring function.
 
 \itemize{
 
-\item{\code{"logLik"}}
-
-{The log determinant of the matrix restricted to 
+\item \code{"logLik"} --- The log determinant of the matrix restricted to
 the separator minus the log determinant of the matrix restricted
-to the clique.}
+to the clique.
 
-\item{\code{"logLik.val"}}
-
-{\code{"logLik"} with a further validation based on
+\item\code{"logLik.val"} --- \code{"logLik"} with a further validation based on
 the likelihood ratio. If the increase in gain is not significant
-the routine stops adding nodes to the separator.}
+the routine stops adding nodes to the separator.
 
-\item{\code{"rSquared.val"}}
-
-{The R squared from the regression of the node against the clique. Only
+\item \code{"rSquared.val"} --- The R squared from the regression of the node against the clique. Only
 the clique nodes with a regression coefficient significantly different
-from zero are added to the separator / new clique. The gain is different from 
-zero only if the F-values is significant, It assumed that the \code{data} 
+from zero are added to the separator / new clique. The gain is different from
+zero only if the F-values is significant, It assumed that the \code{data}
 matrix is a dataset of realizations (i.e., \code{p}
-variables and \code{n} observations).} 
+variables and \code{n} observations).
 
 }
 }

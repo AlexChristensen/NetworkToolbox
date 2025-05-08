@@ -34,8 +34,9 @@ Computes regression such that one variable is regressed over all other variables
 #binarize responses
 psyb <- ifelse(neoOpen>=4, 1, 0)
 
+\dontrun{
 #perform logistic regression
-mat <- reg(psyb)
+mat <- reg(psyb)}
 
 }
 \author{

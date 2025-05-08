@@ -15,12 +15,12 @@ Defaults to \code{FALSE}.
 Set to \code{TRUE} to convert each brain connectivity matrix}
 }
 \value{
-Returns a network matrix in \code{\link{igraph}}'s format or
+Returns a network matrix in \code{igraph}'s format or
 returns a list of brain connectivity matrices each of which have been
-convert to \code{\link{igraph}}'s format
+convert to \code{igraph}'s format
 }
 \description{
-Converts single or multiple networks into \code{\link{igraph}}'s format for network analysis
+Converts single or multiple networks into \code{igraph}'s format for network analysis
 }
 \examples{
 # Pearson's correlation only for CRAN checks
@@ -28,7 +28,7 @@ A <- TMFG(neoOpen, normal = FALSE)$A
 
 igraphNetwork <- convert2igraph(A)
 
-\dontrun{ 
+\dontrun{
 neuralarray <- convertConnBrainMat()
 
 igraphNeuralList <- convert2igraph(neuralarray, neural = TRUE)

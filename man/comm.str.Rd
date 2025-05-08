@@ -20,13 +20,9 @@ Set to \code{FALSE} for weighted measures}
 
 \itemize{
 
-\item{\code{"within"}}
-{Computes the community strength or degree of nodes within
-its own community}
+\item \code{"within"} --- Computes the community strength or degree of nodes within its own community
 
-\item{\code{"between"}}
-{Computes the community strength or degree of nodes outside
-of its own community}
+\item \code{"between"} --- Computes the community strength or degree of nodes outside of its own community
 
 }}
 }
@@ -38,7 +34,7 @@ community in the network
 \description{
 Computes the community
 \code{\link[NetworkToolbox]{strength}}/\code{\link[NetworkToolbox]{degree}}
-centrality measure of each community in a network \code{} or computes the
+centrality measure of each community in a network or computes the
 \code{\link[NetworkToolbox]{strength}}/\code{\link[NetworkToolbox]{degree}}
 centrality measure of each community's connections to the other communities
 }

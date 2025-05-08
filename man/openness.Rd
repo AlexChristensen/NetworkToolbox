@@ -11,28 +11,21 @@ Here are detailed descriptions of the key:
 
 \itemize{
 
-\item{\code{Inventory}}
-{The personality inventory the item belongs to}
+\item \code{Inventory} --- The personality inventory the item belongs to
 
-\item{\code{Facet}}
-{The personality inventory defined facet}
+\item \code{Facet} --- The personality inventory defined facet
 
-\item{\code{JPA.Domains}}
-{The broad domains identified by Christensen, Cotter, and Silvia (2019)}
+\item \code{JPA.Domains} --- The broad domains identified by Christensen, Cotter, and Silvia (2019)
 
-\item{\code{JPA.Facets}}
-{The facets identified by Christensen, Cotter, and Silvia (2019)}
+\item \code{JPA.Facets} --- The facets identified by Christensen, Cotter, and Silvia (2019)
 
-\item{\code{Item.Label}}
-{The labels used in Christensen, Cotter, and Silvia (2019)}
+\item \code{Item.Label} --- The labels used in Christensen, Cotter, and Silvia (2019)
 
-\item{\code{Item.Description}}
-{Descriptions of each item. Note that the NEO-PI-3 items are protected by 
+\item \code{Item.Description} --- Descriptions of each item. Note that the NEO-PI-3 items are protected by
 copyright and therefore have been paraphrased. These item descriptions
-do not represent the item as given to the participant}
+do not represent the item as given to the participant
 
-\item{\code{Reversed}}
-{Whether an item should be reversed or not (\code{openness} is already reversed)}
+\item \code{Reversed} --- Whether an item should be reversed or not (\code{openness} is already reversed)
 
 }
 }

@@ -23,14 +23,14 @@ Method to produce inverse covariance matrix.
 
 \itemize{
 
-\item{\code{"cases"}}{Estimates inverse covariance matrix
+\item \code{"cases"} --- Estimates inverse covariance matrix
 based on \code{n} number of cases and \code{nodes} number of
 variables, which are drawn from a random normal distribution
-\code{\link{rnorm}}. Data generated will be continuous unless
-\code{ordinal} is set to \code{TRUE}}
+\code{rnorm}. Data generated will be continuous unless
+\code{ordinal} is set to \code{TRUE}
 
-\item{\code{"matrix"}Estimates inverse covariance matrix
-based on ??eps??}
+\item \code{"matrix"} --- Estimates inverse covariance matrix
+based on sigma
 
 }}
 
@@ -56,7 +56,7 @@ DESCRIPTION.
 Defaults to \code{2}}
 }
 \value{
-Returns a list containing: 
+Returns a list containing:
 
 \item{cliques}{The cliques in the network}
 
@@ -64,7 +64,7 @@ Returns a list containing:
 
 \item{inverse}{Simulated inverse covariance matrix of the network}
 
-\item{data}{Simulated data from sim.correlation in the \code{\link{psych}}
+\item{data}{Simulated data from sim.correlation in the \code{psych}
 package based on the simulated network}
 }
 \description{
