@@ -1,7 +1,7 @@
 Package: NetworkToolbox
 Title: Methods and Measures for Brain, Cognitive, and Psychometric Network Analysis
-Version: 1.4.4
-Date: 2026-10-22
+Version: 1.5.0
+Date: 2026-10-27
 Authors@R: c(person("Alexander", "Christensen", email = "alexpaulchristensen@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-9798-7037")), person("Guido", "Previde Massara", role = c("ctb"), comment = c(ORCID = "0000-0003-0502-2789")),
   person("BCT Contributors", role = "cph", comment = "Copyright holder of the Brain Connectivity Toolbox (BSD 3-clause license)"),
   person("Mika", "Rubinov", role = c("cph", "ctb"), comment = "Original MATLAB implementations in the Brain Connectivity Toolbox (betweenness, distance, clustering, transitivity, participation, diversity, and Louvain)"),

@@ -1,4 +1,4 @@
-## Changes in version 1.4.4
+## Changes in version 1.5.0
 
 +	DOC: added `inst/COPYRIGHTS` and `DESCRIPTION` acknowledgements for code translated from the Brain Connectivity Toolbox (Rubinov & Sporns, 2010), plus provenance notes in the help pages
 
