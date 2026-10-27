@@ -2,10 +2,7 @@
 #'
 #' @name gain.functions
 #'
-#' @aliases
-#' gfcnv_logdet
-#' gfcnv_logdet_val
-#' gdcnv_lmfit
+#' @aliases gfcnv_logdet gfcnv_logdet_val gdcnv_lmfit
 #'
 #' @description These functions maximize a gain criterion
 #' for adding a node to a clique (and the larger network).

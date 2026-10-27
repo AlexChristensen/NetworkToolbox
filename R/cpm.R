@@ -2,13 +2,7 @@
 #'
 #' @name cpm
 #'
-#' @aliases
-#' cpmEV
-#' cpmFP
-#' cpmFPperm
-#' cpmIV
-#' cpmIVperm
-#' cpmPlot
+#' @aliases cpmEV cpmFP cpmFPperm cpmIV cpmIVperm cpmPlot
 #'
 #' @description Suite of functions for Connectome-based Predictive Modeling (CPM).
 #' \strong{See and cite Finn et al., 2015; Rosenberg et al., 2016; Shen et al., 2017}
