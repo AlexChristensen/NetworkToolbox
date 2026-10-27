@@ -116,7 +116,7 @@ comcat <- function (A, comm = c("walktrap","louvain"),
             for(i in 1:length(uniq))
             {
                 # Connections outside of target community
-                Ah <- A[which(facts != uniq[i]), which(facts == uniq[i])]
+                Ah <- A[which(facts != uniq[i]), which(facts == uniq[i]), drop = FALSE]
                 
                 # Centrality
                 com <- switch(cent,
@@ -182,7 +182,7 @@ comcat <- function (A, comm = c("walktrap","louvain"),
         # Initialize matrix
         commat <- as.matrix(rep(0,ncol(A)), ncol = 1)
         # Label matrix
-        colnames(commat) <- paste(unique(comm))
+        colnames(commat) <- paste(uniq)
         row.names(commat) <- colnames(A)
     }
     

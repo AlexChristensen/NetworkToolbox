@@ -7,6 +7,10 @@
 #' 
 #' @return Returns an adjacency matrix of a lattice network
 #' 
+#' @details
+#' Translated from the MATLAB function \code{makelatticeCIJ.m} (Olaf Sporns) in
+#' the Brain Connectivity Toolbox (Rubinov & Sporns, 2010).
+#' 
 #' @examples
 #' latt <- lattnet(10, 27)
 #' 
@@ -24,6 +28,9 @@ lattnet <- function (nodes, edges)
 {
     dlat<-matrix(0,nrow=nodes,ncol=nodes)
     lat<-matrix(0,nrow=nodes,ncol=nodes)
+    
+    if(edges > (nodes * (nodes - 1) / 2))
+    {stop("'edges' cannot exceed the number of possible edges: nodes * (nodes - 1) / 2")}
     
     balance <- sum(lat) - edges
     
@@ -62,7 +69,10 @@ lattnet <- function (nodes, edges)
     
     if(over != 0){
         
-        rp <- sample(which(dlat==1), over, replace = FALSE)
+        # only remove edges from the last band that was added
+        last <- which(dlat == 1 & (col(dlat) - row(dlat)) == count)
+        
+        rp <- last[sample.int(length(last), over)]
         
         dlat[rp] <- 0
         

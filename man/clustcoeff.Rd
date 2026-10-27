@@ -23,6 +23,11 @@ Returns a list containing:
 \description{
 Computes global clustering coefficient (CC) and local clustering coefficient (CCi)
 }
+\details{
+Translated from the MATLAB functions \code{clustering_coef_bu.m} and
+\code{clustering_coef_wu.m} (Mika Rubinov) in the Brain Connectivity Toolbox
+(Rubinov & Sporns, 2010).
+}
 \examples{
 # Pearson's correlation only for CRAN checks
 A <- TMFG(neoOpen, normal = FALSE)$A

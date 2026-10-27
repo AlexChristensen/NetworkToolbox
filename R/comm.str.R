@@ -67,33 +67,33 @@ comm.str <- function (A, comm, weighted = TRUE,
 
     remove <- matrix(0,nrow=len,ncol=1)
 
+    if(!weighted)
+    {A <- binarize(A)}
+
     for(j in 1:len)
     {
         rem <- which(comm==uniq[j])
 
-        if(length(rem)!=1)
+        if(measure == "within")
         {
-            if(measure == "within")
-            {
-                if(weighted)
-                {remove[j,] <- sum(colSums(A[rem,rem]))
-                }else{remove[j,] <- sum(colSums(binarize(A)[rem,rem]))}
-            }else if(measure == "between")
-            {
-                if(weighted)
-                {remove[j,] <- sum(colSums(A[-rem,rem]))
-                }else{remove[j,] <- sum(colSums(binarize(A)[-rem,rem]))}
-            }
-
-
-        }else{remove[j,] <- 0}
+            # a single node has no within-community connections
+            if(length(rem)!=1)
+            {remove[j,] <- sum(A[rem,rem,drop=FALSE])
+            }else{remove[j,] <- 0}
+        }else if(measure == "between")
+        {remove[j,] <- sum(A[-rem,rem,drop=FALSE])}
     }
 
     norm <- as.vector(round(remove,3))
 
     names(norm) <- uniq
 
-    res <- norm[sort(names(norm))]
+    # order labels numerically when possible
+    num <- suppressWarnings(as.numeric(names(norm)))
+
+    if(!anyNA(num))
+    {res <- norm[order(num)]
+    }else{res <- norm[sort(names(norm))]}
 
     return(res)
 }

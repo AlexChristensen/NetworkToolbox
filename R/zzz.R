@@ -1,6 +1,3 @@
-.onload <- function(libname, pkgname)
-{library.dynam("NetworkToolbox",package=pkgname,lib.loc=libname)}
-
 .onAttach <- function(libname, pkgname)
 {
     temp <- packageDescription("NetworkToolbox")

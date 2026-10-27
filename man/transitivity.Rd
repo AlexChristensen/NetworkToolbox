@@ -19,6 +19,11 @@ Returns a value of transitivity
 \description{
 Computes transitivity of a network
 }
+\details{
+Translated from the MATLAB functions \code{transitivity_bu.m} (Alexandros
+Goulas) and \code{transitivity_wu.m} (Mika Rubinov) in the Brain Connectivity
+Toolbox (Rubinov & Sporns, 2010).
+}
 \examples{
 # Pearson's correlation only for CRAN checks
 A <- TMFG(neoOpen, normal = FALSE)$A

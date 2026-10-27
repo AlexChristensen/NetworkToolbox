@@ -80,7 +80,7 @@ degree <- function (A)
         recipDeg <- colSums(A, na.rm = TRUE)
         names(recipDeg) <- colnames(A)
     
-    if(all(relinf<.001))
+    if(all(relinf<.001, na.rm = TRUE))
     {Deg <- as.vector(inDeg)
     names(Deg) <- colnames(A)
     return(Deg)

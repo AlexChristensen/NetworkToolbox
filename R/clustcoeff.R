@@ -12,6 +12,11 @@
 #' 
 #' \item{CCi}{Local clustering coefficient. The clustering coefficient for each node in the network}
 #' 
+#' @details
+#' Translated from the MATLAB functions \code{clustering_coef_bu.m} and
+#' \code{clustering_coef_wu.m} (Mika Rubinov) in the Brain Connectivity Toolbox
+#' (Rubinov & Sporns, 2010).
+#' 
 #' @examples
 #' # Pearson's correlation only for CRAN checks
 #' A <- TMFG(neoOpen, normal = FALSE)$A

@@ -61,19 +61,19 @@ core.items <- function (A, comm, by = c("network","communities"))
         
         corenum <- floor(left/3)
     
-        cst <- 1:corenum
+        cst <- seq_len(corenum)
     
         left <- left - corenum
     
         internum <- floor(left/2)
     
-        ist <- (corenum+1):(corenum+internum)
+        ist <- corenum + seq_len(internum)
     
         left <- left - internum
     
         perinum <- left
     
-        pst <- (corenum+internum+1):(corenum+internum+perinum)
+        pst <- corenum + internum + seq_len(perinum)
     
         ord <- dat[order(dat,decreasing=TRUE)]
         
@@ -94,19 +94,19 @@ core.items <- function (A, comm, by = c("network","communities"))
             
             corenum <- floor(left/3)
             
-            cst <- 1:corenum
+            cst <- seq_len(corenum)
             
             left <- left - corenum
             
             internum <- floor(left/2)
             
-            ist <- (corenum+1):(corenum+internum)
+            ist <- corenum + seq_len(internum)
             
             left <- left - internum
             
             perinum <- left
             
-            pst <- (corenum+internum+1):(corenum+internum+perinum)
+            pst <- corenum + internum + seq_len(perinum)
             
             items <- which(uniq[i]==comm)
             

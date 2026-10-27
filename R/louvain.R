@@ -15,6 +15,11 @@
 #' 
 #' \item{Q}{Modularity statistic. A measure of how well the communities are compartmentalized}
 #' 
+#' @details
+#' Translated from the MATLAB functions \code{modularity_louvain_und.m} and
+#' \code{community_louvain.m} (Mika Rubinov) in the Brain Connectivity Toolbox
+#' (Rubinov & Sporns, 2010).
+#' 
 #' @examples
 #' # Pearson's correlation only for CRAN checks
 #' A <- TMFG(neoOpen, normal = FALSE)$A
@@ -47,12 +52,27 @@ louvain <- function (A, gamma, M0)
     diag(A) <- 0
     
     n<-ncol(A)
-    s<-sum(A)
-    
+
     if(min(A)<0)
     {warning("Matrix contains negative weights: absolute weights were used")
         A<-abs(A)}
-    
+
+    s<-sum(A)
+
+    # restore the caller's random number generator state on exit
+    # (set.seed(0) below is used to make the algorithm reproducible)
+    if(exists(".Random.seed", envir = globalenv(), inherits = FALSE))
+    {
+        old.seed <- get(".Random.seed", envir = globalenv(), inherits = FALSE)
+        on.exit(assign(".Random.seed", old.seed, envir = globalenv()), add = TRUE)
+    }else{
+        on.exit(
+            if(exists(".Random.seed", envir = globalenv(), inherits = FALSE))
+            {rm(".Random.seed", envir = globalenv())},
+            add = TRUE
+        )
+    }
+
     Mb<-M0
     M<-M0
     

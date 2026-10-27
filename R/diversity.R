@@ -24,6 +24,9 @@
 #' Values closer to 1 suggest greater between-community connectivity and 
 #' values closer to 0 suggest greater within-community connectivity
 #' 
+#' Translated from the MATLAB function \code{diversity_coef_sign.m} (Mika
+#' Rubinov) in the Brain Connectivity Toolbox (Rubinov & Sporns, 2010).
+#' 
 #' @examples
 #' # Pearson's correlation only for CRAN checks
 #' A <- TMFG(neoOpen, normal = FALSE)$A
@@ -74,13 +77,8 @@ diversity <- function (A, comm = c("walktrap","louvain"))
             )
         }else{
             
-            uni <- unique(comm)
-            
-            facts <- comm
-            
-            for(i in 1:length(uni))
-            {facts[which(facts==uni[i])] <- i}
-            
+            facts <- match(comm, unique(comm))
+
         }
         
     }else{facts <- comm}
@@ -97,11 +95,7 @@ diversity <- function (A, comm = c("walktrap","louvain"))
         Snm <- matrix(0,nrow=n,ncol=m)
         
         for(i in 1:m)
-        {
-            if(is.vector(A[,which(facts==i)]))
-            {Snm[,i] <- sum(A[,which(facts==i)])
-            }else{Snm[,i] <- rowSums(A[,which(facts==i)])}
-        }
+        {Snm[,i] <- rowSums(A[,which(facts==i),drop=FALSE])}
         
         pnm <- Snm/(S*matrix(1,nrow=n,ncol=m))
         pnm[is.na(pnm)]<-0

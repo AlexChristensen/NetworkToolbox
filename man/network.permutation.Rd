@@ -80,7 +80,7 @@ split2 <- neoOpen[c(402:802),]
 
 \donttest{
 # Perform permutation test
-perm.str <- network.permutation(split1, split2, iter = 1000, network = "glasso",
+perm.str <- network.permutation(split1, split2, iter = 20, network = "glasso",
 measure = "strength", alternative = "two.tailed", ncores = 2)
 
 # Check results

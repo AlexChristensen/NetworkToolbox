@@ -64,7 +64,7 @@ convertConnBrainMat <- function (MatlabData, progBar = TRUE)
             
             # Check for CSF, grey and white matter
             if(any(c("Grey Matter", "White Matter", "CSF") %in% names(dat)))
-            {dat <- dat[-which(names(dat) == c("Grey Matter", "White Matter", "CSF"))]}
+            {dat <- dat[!(names(dat) %in% c("Grey Matter", "White Matter", "CSF"))]}
             
             return(dat)
             
@@ -101,8 +101,8 @@ convertConnBrainMat <- function (MatlabData, progBar = TRUE)
             }
             if(progBar){close(pb)}
             
-            colnames(dat)<-coln2
-            row.names(dat)<-coln1
+            colnames(dat)<-as.vector(coln2)
+            row.names(dat)<-as.vector(coln1)
             
             return(list(rmat=dat,zmat=mat$Z))
         }

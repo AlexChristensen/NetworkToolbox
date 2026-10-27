@@ -25,6 +25,11 @@ Returns a list containing:
 \description{
 Computes a vector of communities (community) and a global modularity measure (Q)
 }
+\details{
+Translated from the MATLAB functions \code{modularity_louvain_und.m} and
+\code{community_louvain.m} (Mika Rubinov) in the Brain Connectivity Toolbox
+(Rubinov & Sporns, 2010).
+}
 \examples{
 # Pearson's correlation only for CRAN checks
 A <- TMFG(neoOpen, normal = FALSE)$A

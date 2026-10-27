@@ -78,6 +78,9 @@ sim.chordal <- function(nodes, inverse = c("cases","matrix"),
                         n = NULL, ordinal = FALSE, ordLevels = NULL,
                         idio = NULL, eps = NULL)
 {
+    # match inverse method
+    inverse <- match.arg(inverse)
+    
     # initialize cliques and separators list
     clq <- list()
     sep <- list()

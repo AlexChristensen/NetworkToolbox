@@ -12,7 +12,9 @@
 #' \item{sd}{The standard deviation of the edge weights in the network}
 #' 
 #' \item{total}{The sum total of the edge weights in the network}
-#' 
+#'
+#' \item{density}{The proportion of possible edges that are present in the network}
+#'
 #' @examples
 #' # Pearson's correlation only for CRAN checks
 #' A <- TMFG(neoOpen, normal = FALSE)$A

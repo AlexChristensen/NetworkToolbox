@@ -19,6 +19,11 @@ A vector of betweenness centrality values for each node in the network
 \description{
 Computes betweenness centrality of each node in a network
 }
+\details{
+Translated from the MATLAB functions \code{betweenness_bin.m} and
+\code{betweenness_wei.m} (Mika Rubinov) in the Brain Connectivity Toolbox
+(Rubinov & Sporns, 2010).
+}
 \examples{
 # Pearson's correlation only for CRAN checks
 A <- TMFG(neoOpen, normal = FALSE)$A

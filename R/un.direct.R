@@ -38,7 +38,7 @@ un.direct <- function (A, diagonal = 0)
   
   # triangles
   lower <- mat[lower.tri(mat)]
-  upper <- mat[upper.tri(mat)]
+  upper <- t(mat)[lower.tri(mat)]
   
   # initialize symmetricize vector
   sym <- numeric(length(lower))

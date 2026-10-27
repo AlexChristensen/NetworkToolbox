@@ -9,6 +9,11 @@
 #' 
 #' @return A distance matrix of the network
 #' 
+#' @details
+#' Translated from the MATLAB functions \code{distance_bin.m} (Mika Rubinov and
+#' Jonathan Clayden) and \code{distance_wei.m} (Mika Rubinov, Rick Betzel, and
+#' Andrea Avena) in the Brain Connectivity Toolbox (Rubinov & Sporns, 2010).
+#' 
 #' @examples
 #' # Pearson's correlation only for CRAN checks
 #' A <- TMFG(neoOpen, normal = FALSE)$A
@@ -58,7 +63,7 @@ distance<-function (A, weighted = FALSE)
         
         if(any(!G==t(G)))
         {if(max(abs(G-t(G)))<1e-10)
-        {G<-(G+G)/2}}
+        {G<-(G+t(G))/2}}
         
         n<-ncol(G)
         D<-matrix(Inf,nrow=n,ncol=n)

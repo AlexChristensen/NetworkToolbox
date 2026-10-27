@@ -22,12 +22,16 @@ Returns a list containing:
 
 \item{ecc}{Eccentricity (i.e., maximal shortest path length between a node and any other node)}
 
-\item{D}{Diameter of the network (i.e., the maximum of eccentricity)}
+\item{diameter}{Diameter of the network (i.e., the maximum of eccentricity)}
 }
 \description{
 Computes global average shortest path length,
 local average shortest path length, eccentricity,
 and diameter of a network
+}
+\details{
+Based on the MATLAB function \code{charpath.m} (Olaf Sporns and Mika Rubinov)
+in the Brain Connectivity Toolbox (Rubinov & Sporns, 2010).
 }
 \examples{
 # Pearson's correlation only for CRAN checks

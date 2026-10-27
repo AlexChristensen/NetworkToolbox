@@ -43,26 +43,15 @@ desc.all <- function(data)
     # Get number of descriptive variables
     len <- length(desc.list)
     
-    # Initialize descriptive matrix
-    desc.mat <- matrix(NA,nrow=len,ncol=7)
-    # Initialize variable name vector
-    name <- vector("character",length=len)
+    if(len == 0)
+    {stop("No numeric variables were found in 'data'")}
     
-    # Loop for descriptive matrix
-    for(i in 1:len)
-    {
-        # Grab names
-        name[i] <- names(desc.list[i])
-        
-        # Grab descriptives
-        desc.mat[i,] <- t(data.frame(unlist(desc.list[[i]]),stringsAsFactors = FALSE))
-    }
+    # Variable names
+    name <- names(desc.list)
     
-    # Convert descriptive matrix to a data frame
-    desc.df <- as.data.frame(desc.mat)
+    # Combine descriptives (keeps numeric columns numeric)
+    desc.df <- do.call(rbind, unname(desc.list))
     
-    # Change column names to descriptives
-    colnames(desc.df) <- c("n","missing","mean","sd","min","max","normal?")
     # Change row names to variable names
     row.names(desc.df) <- name
     

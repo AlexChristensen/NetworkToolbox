@@ -23,6 +23,11 @@ Returns an adjacency matrix of a random network
 \description{
 Generates a random binary network
 }
+\details{
+When \code{nodes} and \code{edges} are specified, the random network is
+translated from the MATLAB function \code{makerandCIJ_und.m} (Olaf Sporns) in
+the Brain Connectivity Toolbox (Rubinov & Sporns, 2010).
+}
 \examples{
 rand <- randnet(10, 27)
 

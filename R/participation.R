@@ -22,6 +22,10 @@
 #' Values closer to 0 suggest greater within-community connectivity and 
 #' values closer to 1 suggest greater between-community connectivity
 #' 
+#' Translated from the MATLAB functions \code{participation_coef.m} (Mika Rubinov
+#' and Alex Fornito) and \code{participation_coef_sign.m} (Mika Rubinov) in the
+#' Brain Connectivity Toolbox (Rubinov & Sporns, 2010).
+#' 
 #' @examples
 #' #theoretical factors
 #' comm <- rep(1:8, each = 6)
@@ -75,13 +79,8 @@ participation <- function (A, comm = c("walktrap","louvain"))
             )
         }else{
             
-            uni <- unique(comm)
-            
-            facts <- comm
-            
-            for(i in 1:length(uni))
-            {facts[which(facts==uni[i])] <- i}
-            
+            facts <- match(comm, unique(comm))
+
         }
         
     }else{facts <- comm}

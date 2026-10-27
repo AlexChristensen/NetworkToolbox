@@ -9,6 +9,11 @@
 #' 
 #' @return A vector of eigenvector centrality values for each node in the network
 #' 
+#' @details
+#' Based on the MATLAB function \code{eigenvector_centrality_und.m} (Xi-Nian Zuo,
+#' Rick Betzel, and Mika Rubinov) in the Brain Connectivity Toolbox (Rubinov &
+#' Sporns, 2010).
+#' 
 #' @examples
 #' # Pearson's correlation only for CRAN checks
 #' A <- TMFG(neoOpen, normal = FALSE)$A

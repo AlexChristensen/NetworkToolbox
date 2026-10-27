@@ -105,6 +105,7 @@ TMFG <-function (data, normal = TRUE,
                     " rows were removed for missing data\nrow(s): ",
                     paste(na.action(na.omit(data)),collapse = ", "))
             data<-na.omit(data)
+            cormat<-cor(data)
         }
     }else if(na.data=="fiml")
     {
@@ -207,10 +208,10 @@ TMFG <-function (data, normal = TRUE,
     
     #build initial gain table
     gain <- matrix(-Inf,nrow=n,ncol=(2*(n-2)))
-    gain[ou_v,1] <- rowSums(cormat[ou_v,(tri[1,])])
-    gain[ou_v,2] <- rowSums(cormat[ou_v,(tri[2,])])
-    gain[ou_v,3] <- rowSums(cormat[ou_v,(tri[3,])])
-    gain[ou_v,4] <- rowSums(cormat[ou_v,(tri[4,])])
+    gain[ou_v,1] <- rowSums(cormat[ou_v,(tri[1,]),drop=FALSE])
+    gain[ou_v,2] <- rowSums(cormat[ou_v,(tri[2,]),drop=FALSE])
+    gain[ou_v,3] <- rowSums(cormat[ou_v,(tri[3,]),drop=FALSE])
+    gain[ou_v,4] <- rowSums(cormat[ou_v,(tri[4,]),drop=FALSE])
     
     ntri <- 4 #number of triangles
     gij <- matrix(nrow=1,ncol=ncol(gain))
@@ -286,7 +287,8 @@ TMFG <-function (data, normal = TRUE,
     for(i in 1:nrow(K))
     {
         x[K[i,1], K[i,2]] <- 1
-        x[K[i,2], K[i,1]] <- 1
+        if(!depend)
+        {x[K[i,2], K[i,1]] <- 1}
     }
     
     diag(x)<-1

@@ -127,7 +127,7 @@ resp.rep <- function (data,
         #length of reverse variables
         rev.len <- length(rev.vars)
         
-        for(i in 1:rev.len)
+        for(i in seq_len(rev.len))
         {
             #maximum value for variable (plus one)
             rev.val <- max.vec[rev.vars[i]] + 1
@@ -150,19 +150,22 @@ resp.rep <- function (data,
         {pot.chk <- which(dat.sds==0)
         }else{pot.chk <- NULL}
     
-        freq.table <- matrix(0, nrow = nrow(data), ncol = max.val)
+        # response categories (include values below 1, if present)
+        cats <- min(1, min(data, na.rm = TRUE)):max.val
     
-        colnames(freq.table) <- c(min(data, na.rm = TRUE):max.val)
+        freq.table <- matrix(0, nrow = nrow(data), ncol = length(cats))
+    
+        colnames(freq.table) <- cats
     
         for(i in 1:nrow(data))
         {
             vec <- data[i,]
         
-            uniq <- unique(vec)
+            uniq <- unique(vec[!is.na(vec)])
         
             uniq.len <- length(uniq)
         
-            for(j in 1:uniq.len)
+            for(j in seq_len(uniq.len))
             {freq.table[i,paste(uniq[j])] <- length(which(vec==uniq[j]))}
         }
     
@@ -212,7 +215,7 @@ resp.rep <- function (data,
         
         pot <- unique(unlist(lapply(list.check,row.names)))
         
-        list.check[["full"]] <- data[as.numeric(pot),]
+        list.check[["full"]] <- data[as.numeric(pot),,drop=FALSE]
         row.names(list.check[["full"]]) <- pot
         
         return(list.check)

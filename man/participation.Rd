@@ -31,6 +31,10 @@ and negative signed weights for participation coefficients are computed separate
 \details{
 Values closer to 0 suggest greater within-community connectivity and 
 values closer to 1 suggest greater between-community connectivity
+
+Translated from the MATLAB functions \code{participation_coef.m} (Mika Rubinov
+and Alex Fornito) and \code{participation_coef_sign.m} (Mika Rubinov) in the
+Brain Connectivity Toolbox (Rubinov & Sporns, 2010).
 }
 \examples{
 #theoretical factors

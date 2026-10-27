@@ -33,6 +33,9 @@ for diversity coefficients are computed separately.
 \details{
 Values closer to 1 suggest greater between-community connectivity and 
 values closer to 0 suggest greater within-community connectivity
+
+Translated from the MATLAB function \code{diversity_coef_sign.m} (Mika
+Rubinov) in the Brain Connectivity Toolbox (Rubinov & Sporns, 2010).
 }
 \examples{
 # Pearson's correlation only for CRAN checks

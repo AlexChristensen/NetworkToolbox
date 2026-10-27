@@ -1,0 +1,200 @@
+Files: R/betweenness.R
+Copyright: 2018-2026 Alexander P. Christensen
+           2019 BCT Contributors (Brain Connectivity Toolbox)
+           Mika Rubinov (betweenness_bin.m and betweenness_wei.m, Brain
+           Connectivity Toolbox)
+License: BSD-3-clause (original BCT code); GPL (>= 3) (R translation and modifications)
+Comment: The betweenness function is an R translation of the betweenness_bin.m and
+ betweenness_wei.m MATLAB functions (Mika Rubinov) in the Brain Connectivity
+ Toolbox (BCT; Rubinov & Sporns, 2010, NeuroImage, 52, 1059-1069;
+ <https://sites.google.com/site/bctnet/>). The original BCT code is released
+ under the BSD 3-clause license (Copyright (c) 2019, BCT Contributors),
+ reproduced in full at the end of this file; the BSD 3-clause license is GPL-
+ compatible. The R translation is modified by Alexander P. Christensen and
+ distributed under GPL (>= 3).
+
+Files: R/distance.R
+Copyright: 2018-2026 Alexander P. Christensen
+           2019 BCT Contributors (Brain Connectivity Toolbox)
+           Mika Rubinov and Jonathan Clayden (distance_bin.m, Brain
+           Connectivity Toolbox)
+           Mika Rubinov, Rick Betzel, and Andrea Avena (distance_wei.m, Brain
+           Connectivity Toolbox)
+License: BSD-3-clause (original BCT code); GPL (>= 3) (R translation and modifications)
+Comment: The distance function is an R translation of the distance_bin.m and
+ distance_wei.m MATLAB functions in the Brain Connectivity Toolbox (BCT;
+ Rubinov & Sporns, 2010, NeuroImage, 52, 1059-1069;
+ <https://sites.google.com/site/bctnet/>). The original BCT code is released
+ under the BSD 3-clause license (Copyright (c) 2019, BCT Contributors),
+ reproduced in full at the end of this file; the BSD 3-clause license is GPL-
+ compatible. The R translation is modified by Alexander P. Christensen and
+ distributed under GPL (>= 3).
+
+Files: R/clustcoeff.R
+Copyright: 2018-2026 Alexander P. Christensen
+           2019 BCT Contributors (Brain Connectivity Toolbox)
+           Mika Rubinov (clustering_coef_bu.m and clustering_coef_wu.m, Brain
+           Connectivity Toolbox)
+License: BSD-3-clause (original BCT code); GPL (>= 3) (R translation and modifications)
+Comment: The clustcoeff function is an R translation of the clustering_coef_bu.m and
+ clustering_coef_wu.m MATLAB functions (Mika Rubinov) in the Brain
+ Connectivity Toolbox (BCT; Rubinov & Sporns, 2010, NeuroImage, 52, 1059-1069;
+ <https://sites.google.com/site/bctnet/>). The original BCT code is released
+ under the BSD 3-clause license (Copyright (c) 2019, BCT Contributors),
+ reproduced in full at the end of this file; the BSD 3-clause license is GPL-
+ compatible. The R translation is modified by Alexander P. Christensen and
+ distributed under GPL (>= 3).
+
+Files: R/transitivity.R
+Copyright: 2018-2026 Alexander P. Christensen
+           2019 BCT Contributors (Brain Connectivity Toolbox)
+           Alexandros Goulas (transitivity_bu.m, Brain Connectivity Toolbox)
+           Mika Rubinov (transitivity_wu.m, Brain Connectivity Toolbox)
+License: BSD-3-clause (original BCT code); GPL (>= 3) (R translation and modifications)
+Comment: The transitivity function is an R translation of the transitivity_bu.m and
+ transitivity_wu.m MATLAB functions in the Brain Connectivity Toolbox (BCT;
+ Rubinov & Sporns, 2010, NeuroImage, 52, 1059-1069;
+ <https://sites.google.com/site/bctnet/>). The original BCT code is released
+ under the BSD 3-clause license (Copyright (c) 2019, BCT Contributors),
+ reproduced in full at the end of this file; the BSD 3-clause license is GPL-
+ compatible. The R translation is modified by Alexander P. Christensen and
+ distributed under GPL (>= 3).
+
+Files: R/participation.R
+Copyright: 2018-2026 Alexander P. Christensen
+           2019 BCT Contributors (Brain Connectivity Toolbox)
+           Mika Rubinov and Alex Fornito (participation_coef.m, Brain
+           Connectivity Toolbox)
+           Mika Rubinov (participation_coef_sign.m, Brain Connectivity Toolbox)
+License: BSD-3-clause (original BCT code); GPL (>= 3) (R translation and modifications)
+Comment: The participation function is an R translation of the participation_coef.m
+ and participation_coef_sign.m MATLAB functions in the Brain Connectivity
+ Toolbox (BCT; Rubinov & Sporns, 2010, NeuroImage, 52, 1059-1069;
+ <https://sites.google.com/site/bctnet/>). The original BCT code is released
+ under the BSD 3-clause license (Copyright (c) 2019, BCT Contributors),
+ reproduced in full at the end of this file; the BSD 3-clause license is GPL-
+ compatible. The R translation is modified by Alexander P. Christensen and
+ distributed under GPL (>= 3).
+
+Files: R/diversity.R
+Copyright: 2018-2026 Alexander P. Christensen
+           2019 BCT Contributors (Brain Connectivity Toolbox)
+           Mika Rubinov (diversity_coef_sign.m, Brain Connectivity Toolbox)
+License: BSD-3-clause (original BCT code); GPL (>= 3) (R translation and modifications)
+Comment: The diversity function is an R translation of the diversity_coef_sign.m
+ MATLAB function (Mika Rubinov) in the Brain Connectivity Toolbox (BCT;
+ Rubinov & Sporns, 2010, NeuroImage, 52, 1059-1069;
+ <https://sites.google.com/site/bctnet/>). The original BCT code is released
+ under the BSD 3-clause license (Copyright (c) 2019, BCT Contributors),
+ reproduced in full at the end of this file; the BSD 3-clause license is GPL-
+ compatible. The R translation is modified by Alexander P. Christensen and
+ distributed under GPL (>= 3).
+
+Files: R/gateway.R
+Copyright: 2018-2026 Alexander P. Christensen
+           2019 BCT Contributors (Brain Connectivity Toolbox)
+           Jeff Spielberg (gateway_coef_sign.m, Brain Connectivity Toolbox)
+License: BSD-3-clause (original BCT code); GPL (>= 3) (R translation and modifications)
+Comment: The gateway function is an R translation of the gateway_coef_sign.m MATLAB
+ function (Jeff Spielberg) in the Brain Connectivity Toolbox (BCT; Rubinov &
+ Sporns, 2010, NeuroImage, 52, 1059-1069;
+ <https://sites.google.com/site/bctnet/>). The original BCT code is released
+ under the BSD 3-clause license (Copyright (c) 2019, BCT Contributors),
+ reproduced in full at the end of this file; the BSD 3-clause license is GPL-
+ compatible. The R translation is modified by Alexander P. Christensen and
+ distributed under GPL (>= 3).
+
+Files: R/louvain.R
+Copyright: 2018-2026 Alexander P. Christensen
+           2019 BCT Contributors (Brain Connectivity Toolbox)
+           Mika Rubinov (modularity_louvain_und.m and community_louvain.m,
+           Brain Connectivity Toolbox)
+License: BSD-3-clause (original BCT code); GPL (>= 3) (R translation and modifications)
+Comment: The louvain function is an R translation of the modularity_louvain_und.m
+ MATLAB function (an earlier BCT release; superseded by community_louvain.m,
+ Mika Rubinov) in the Brain Connectivity Toolbox (BCT; Rubinov & Sporns, 2010,
+ NeuroImage, 52, 1059-1069; <https://sites.google.com/site/bctnet/>). The
+ original BCT code is released under the BSD 3-clause license (Copyright (c)
+ 2019, BCT Contributors), reproduced in full at the end of this file; the BSD
+ 3-clause license is GPL-compatible. The R translation is modified by
+ Alexander P. Christensen and distributed under GPL (>= 3).
+
+Files: R/randnet.R
+Copyright: 2018-2026 Alexander P. Christensen
+           2019 BCT Contributors (Brain Connectivity Toolbox)
+           Olaf Sporns (makerandCIJ_und.m, Brain Connectivity Toolbox)
+License: BSD-3-clause (original BCT code); GPL (>= 3) (R translation and modifications)
+Comment: The branch of the randnet function that generates a random network from a
+ number of nodes and edges is an R translation of the makerandCIJ_und.m MATLAB
+ function (Olaf Sporns) in the Brain Connectivity Toolbox (BCT; Rubinov &
+ Sporns, 2010, NeuroImage, 52, 1059-1069;
+ <https://sites.google.com/site/bctnet/>). The degree-preserving branch (input
+ matrix) uses the igraph package and is not derived from BCT. The original BCT
+ code is released under the BSD 3-clause license (Copyright (c) 2019, BCT
+ Contributors), reproduced in full at the end of this file; the BSD 3-clause
+ license is GPL-compatible. The R translation is modified by Alexander P.
+ Christensen and distributed under GPL (>= 3).
+
+Files: R/lattnet.R
+Copyright: 2018-2026 Alexander P. Christensen
+           2019 BCT Contributors (Brain Connectivity Toolbox)
+           Olaf Sporns (makelatticeCIJ.m, Brain Connectivity Toolbox)
+License: BSD-3-clause (original BCT code); GPL (>= 3) (R translation and modifications)
+Comment: The lattnet function is an R translation of the makelatticeCIJ.m MATLAB
+ function (Olaf Sporns) in the Brain Connectivity Toolbox (BCT; Rubinov &
+ Sporns, 2010, NeuroImage, 52, 1059-1069;
+ <https://sites.google.com/site/bctnet/>). The original BCT code is released
+ under the BSD 3-clause license (Copyright (c) 2019, BCT Contributors),
+ reproduced in full at the end of this file; the BSD 3-clause license is GPL-
+ compatible. The R translation is modified by Alexander P. Christensen and
+ distributed under GPL (>= 3).
+
+Files: R/pathlengths.R
+Copyright: 2018-2026 Alexander P. Christensen
+License: GPL (>= 3)
+Comment: The pathlengths function (average shortest path length, eccentricity,
+ and diameter) follows the definitions in the charpath.m MATLAB function (Olaf
+ Sporns and Mika Rubinov) in the Brain Connectivity Toolbox (BCT; Rubinov &
+ Sporns, 2010, NeuroImage, 52, 1059-1069;
+ <https://sites.google.com/site/bctnet/>). The R implementation is independent.
+
+Files: R/eigenvector.R
+Copyright: 2018-2026 Alexander P. Christensen
+License: GPL (>= 3)
+Comment: The eigenvector function is based on the approach of the
+ eigenvector_centrality_und.m MATLAB function (Xi-Nian Zuo, Rick Betzel, and
+ Mika Rubinov) in the Brain Connectivity Toolbox (BCT; Rubinov & Sporns, 2010,
+ NeuroImage, 52, 1059-1069; <https://sites.google.com/site/bctnet/>). The R
+ implementation uses base R's eigen function.
+
+Files: R/betweenness.R R/distance.R R/clustcoeff.R R/transitivity.R R/participation.R
+ R/diversity.R R/gateway.R R/louvain.R R/randnet.R R/lattnet.R
+License: BSD-3-clause
+Comment: Full text of the Brain Connectivity Toolbox license (BSD 3-clause) that
+ applies to the original BCT code from which the files above were translated:
+ .
+ Copyright (c) 2019, BCT Contributors
+ All rights reserved.
+ .
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ .
+ * Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+ .
+ * Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution
+ * Neither the name of  nor the names of its
+   contributors may be used to endorse or promote products derived from this
+   software without specific prior written permission.
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

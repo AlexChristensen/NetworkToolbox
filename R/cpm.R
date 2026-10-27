@@ -275,6 +275,9 @@ cpmIV <- function (neuralarray, bstat, kfolds = dim(neuralarray)[3], covar, thre
         connections <- "separate"
     }else{connections <- match.arg(connections)}
 
+    if(missing(cores))
+    {cores <- max(1, parallel::detectCores() - 1)}
+
     ####################################
     #### MISSING ARGUMENTS HANDLING ####
     ####################################
@@ -300,12 +303,15 @@ cpmIVperm <- function(iter = 1000, ...)
     # List input for ...
     input <-  list(...)
 
+    if(iter < 2)
+    {stop("'iter' must be at least 2")}
+
     # Behavioral statistic is necessary
     bstat <- input$bstat
 
     # Check for number of cores
     if(!"cores" %in% names(input))
-    {input$cores <- parallel::detectCores() / 2}
+    {input$cores <- max(1, floor(parallel::detectCores() / 2))}
 
     # Adjust progress bar based on covariates
     if(!"covar" %in% names(input))
@@ -319,9 +325,9 @@ cpmIVperm <- function(iter = 1000, ...)
     orig <- do.call(cpmIV, input)
     if(orig$connections == "separate")
     {
-        orig.pos <- orig$results["positive", "r"]
-        orig.neg <- orig$results["negative", "r"]
-    }else{orig.over <- orig$results["overall", "r"]}
+        orig.pos <- as.numeric(orig$results["positive", "r"])
+        orig.neg <- as.numeric(orig$results["negative", "r"])
+    }else{orig.over <- as.numeric(orig$results["overall", "r"])}
 
     # Shuffle participant scores and insert into list
     perm.list <- vector("list", length = (iter-1))
@@ -331,7 +337,7 @@ cpmIVperm <- function(iter = 1000, ...)
     {pb <- txtProgressBar(min = 0, max = (iter-1), style = 3)}
 
     # Loop through cpmIV
-    for(i in 1:(iter-1)){
+    for(i in seq_len(iter-1)){
 
         # Permutate behavioral statistic
         input$bstat <- sample(bstat, length(bstat))
@@ -341,8 +347,8 @@ cpmIVperm <- function(iter = 1000, ...)
             do.call(cpmIV, input)
         )
 
-        # Re-run if error; otherwise, proceed
-        if(!is(perm.list, "try-error")){
+        # Insert missing results if error; otherwise, proceed
+        if(is(perm.list[[i]], "try-error")){
 
             if(orig$connections == "separate"){
 
@@ -497,7 +503,7 @@ cpmEV <- function (train_na, train_b, valid_na, valid_b,
             pos_edge<-matrix(0,nrow=1,ncol=n_edge)
             neg_edge<-matrix(0,nrow=1,ncol=n_edge)
 
-            cvr<-critical.r((n_sub-1),.01)
+            cvr<-critical.r((n_sub-1),thresh)
 
             cp_pos<-which(cr>=cvr)
             cp_neg<-which(cr<=(-cvr))
@@ -541,6 +547,10 @@ cpmEV <- function (train_na, train_b, valid_na, valid_b,
         if(progBar)
         {pb <- txtProgressBar(max=n_edge, style = 3)}
 
+        #use the full training set
+        train_mats_tmp<-train_na
+        train_behav<-train_b
+
         #create n_train_sub x n_edge matrix
         vctrow<-ncol(train_na)^2
         vctcol<-length(train_mats_tmp)/nrow(train_mats_tmp)/ncol(train_mats_tmp)
@@ -557,7 +567,7 @@ cpmEV <- function (train_na, train_b, valid_na, valid_b,
         {
             j<-summary(MASS::rlm(train_behav~upp_vect[,ii],psi = psi.bisquare))
             b<-j[4]$coefficients[1:2]
-            cr[ii]<-sign(j[4]$coefficients[6])*sqrt(((j[4]$coefficients[6]^2)/(n_train_sub-2))/(1+(j[4]$coefficients[6]^2)/(n_train_sub-2)))
+            cr[ii]<-sign(j[4]$coefficients[6])*sqrt(((j[4]$coefficients[6]^2)/(n_sub-2))/(1+(j[4]$coefficients[6]^2)/(n_sub-2)))
 
             if(progBar)
             {setTxtProgressBar(pb, ii)}
@@ -570,7 +580,7 @@ cpmEV <- function (train_na, train_b, valid_na, valid_b,
         pos_edge<-matrix(0,nrow=1,ncol=n_edge)
         neg_edge<-matrix(0,nrow=1,ncol=n_edge)
 
-        cvr<-critical.r((n_sub-1),.01)
+        cvr<-critical.r(n_sub,thresh)
 
         cp_pos<-which(cr>=cvr)
         cp_neg<-which(cr<=(-cvr))
@@ -626,26 +636,19 @@ cpmEV <- function (train_na, train_b, valid_na, valid_b,
         pred_glm[vs]<-robGLM_fitc[1]+(robGLM_fitc[2]*validation_pos_sum[vs])+(robGLM_fitc[3]*validation_neg_sum[vs])
     }
 
-    perror <- vector(mode="numeric",length = length(valid_b))
-    nerror <- vector(mode="numeric",length = length(valid_b))
-    glmerr <- vector(mode="numeric",length = length(valid_b))
+    perror <- as.vector(pred_pos)-as.vector(valid_b)
+    nerror <- as.vector(pred_neg)-as.vector(valid_b)
+    glmerr <- as.vector(pred_glm)-as.vector(valid_b)
 
-    for(i in 1:length(valid_b))
-    {
-        perror <- pred_pos[i]-valid_b[i]
-        nerror <- pred_neg[i]-valid_b[i]
-        glmerr <- pred_glm[i]-valid_b[i]
+    #mae
+    mae_pos<-mean(abs(perror))
+    mae_neg<-mean(abs(nerror))
+    mae_glm<-mean(abs(glmerr))
 
-        #mae
-        mae_pos<-mean(abs(perror))
-        mae_neg<-mean(abs(nerror))
-        mae_glm<-mean(abs(glmerr))
-
-        #rmse
-        rmse_pos<-sqrt(mean(perror^2))
-        rmse_neg<-sqrt(mean(nerror^2))
-        rmse_glm<-sqrt(mean(glmerr^2))
-    }
+    #rmse
+    rmse_pos<-sqrt(mean(perror^2))
+    rmse_neg<-sqrt(mean(nerror^2))
+    rmse_glm<-sqrt(mean(glmerr^2))
 
     r_pos<-cor(valid_b,pred_pos)
     p_pos<-cor.test(valid_b,pred_pos)$p.value
@@ -671,7 +674,7 @@ cpmEV <- function (train_na, train_b, valid_na, valid_b,
     results[3,1]<-round(r_glm,3)
     results[3,2]<-p_glm
     results[3,3]<-round(mae_glm,3)
-    results[3,4]<-round(rmse_pos,3)
+    results[3,4]<-round(rmse_glm,3)
 
     colnames(results)<-c("r","p-value","mae","rmse")
     row.names(results)<-c("positive","negative","full")
@@ -716,8 +719,9 @@ cpmEV <- function (train_na, train_b, valid_na, valid_b,
     #Results list
     res <- list()
     res$results <- results
-    res$posMask <- pos_mask
-    res$negMask <- neg_mask
+    res$posMask <- pos_overlap
+    res$negMask <- neg_overlap
+    res$connections <- "separate"
 
     class(res) <- "cpm"
 
@@ -742,10 +746,8 @@ cpmFP <- function (session1, session2, progBar = TRUE)
 
     no_sub<-n
 
-    if(isSymmetric(session1[,,1]))
-    {sesh1<-matrix(as.vector(session1),nrow=m,ncol=n)}
-    if(isSymmetric(session2[,,1]))
-    {sesh2<-matrix(as.vector(session2),nrow=m,ncol=n)}
+    sesh1<-matrix(as.vector(session1),nrow=m,ncol=n)
+    sesh2<-matrix(as.vector(session2),nrow=m,ncol=n)
 
     tt_cor<-matrix(0,nrow=nrow(sesh1),ncol=1)
 
@@ -811,10 +813,8 @@ cpmFPperm <- function (session1, session2, iter = 1000, progBar = TRUE)
     m<-nrow(session1)*ncol(session1)
     n<-length(session1)/m
 
-    if(isSymmetric(session1[,,1]))
-    {sesh1<-matrix(as.vector(session1),nrow=m,ncol=n)}
-    if(isSymmetric(session2[,,1]))
-    {sesh2<-matrix(as.vector(session2),nrow=m,ncol=n)}
+    sesh1<-matrix(as.vector(session1),nrow=m,ncol=n)
+    sesh2<-matrix(as.vector(session2),nrow=m,ncol=n)
 
     if(progBar)
     {pb <- txtProgressBar(max=iter*no_sub, style = 3)}
@@ -834,7 +834,7 @@ cpmFPperm <- function (session1, session2, iter = 1000, progBar = TRUE)
         for(i in 1:no_sub)
         {
             #session 1
-            tt_cor<-sesh2[,i]
+            tt_cor<-all_se2[,i]
 
             tt_to_all<-cor(tt_cor,all_se1)
 
@@ -847,7 +847,7 @@ cpmFPperm <- function (session1, session2, iter = 1000, progBar = TRUE)
             #session 2
             tt_cor<-sesh1[,i]
 
-            tt_to_all<-cor(tt_cor,sesh2)
+            tt_to_all<-cor(tt_cor,all_se2)
 
             va<-max(tt_to_all)
             va_id<-which.max(tt_to_all)
@@ -897,7 +897,8 @@ cpmPlot <- function (cpm.obj, visual.nets = FALSE)
     if(n == 268)
     {atlas <- "Shen"
     }else if(n == 300)
-    {atlas <- "Schaefer"}
+    {atlas <- "Schaefer"
+    }else{stop("Number of nodes does not match a supported atlas: Shen (268) or Schaefer (300)")}
 
     # Shen plots----
     if(atlas == "Shen")

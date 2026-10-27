@@ -9,6 +9,11 @@
 #' 
 #' @return A vector of betweenness centrality values for each node in the network
 #' 
+#' @details
+#' Translated from the MATLAB functions \code{betweenness_bin.m} and
+#' \code{betweenness_wei.m} (Mika Rubinov) in the Brain Connectivity Toolbox
+#' (Rubinov & Sporns, 2010).
+#' 
 #' @examples
 #' # Pearson's correlation only for CRAN checks
 #' A <- TMFG(neoOpen, normal = FALSE)$A
@@ -63,10 +68,13 @@ betweenness <- function (A, weighted = TRUE)
     DP<-matrix(0,nrow=nrow(B),ncol=ncol(B))
     diam<-d-1
     
-    for(d in diam:2)
+    if(diam >= 2)
     {
-        DPd1<- (as.matrix(((L==d)*(1+DP)/NSP))%*%as.matrix(Bt))*((L==(d-1))*NSP)
-        DP<-DP+DPd1
+        for(d in diam:2)
+        {
+            DPd1<- (as.matrix(((L==d)*(1+DP)/NSP))%*%as.matrix(Bt))*((L==(d-1))*NSP)
+            DP<-DP+DPd1
+        }
     }
     BC<-round(as.matrix(colSums(DP),ncol=ncol(A)),0)
     }else{
@@ -77,7 +85,7 @@ betweenness <- function (A, weighted = TRUE)
         
         if(any(!G==t(G)))
         {
-            if(max(abs(G-t(G)))<1e-10){G<-(G+G)/2}
+            if(max(abs(G-t(G)))<1e-10){G<-(G+t(G))/2}
         }
         
         n<-ncol(G)

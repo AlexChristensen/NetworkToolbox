@@ -66,7 +66,7 @@ depend <- function (data, normal = FALSE,
     {
         if(normal)
         {cormat<-qgraph::cor_auto(data,missing=na.data)
-        }else{cormat<-psych::cor2(data,use=na.data)}
+        }else{cormat<-cor(data,use="pairwise.complete.obs")}
     }else if(na.data=="listwise")
     {
         if(normal)
@@ -77,6 +77,7 @@ depend <- function (data, normal = FALSE,
                     " rows were removed for missing data\nrow(s): ",
                     paste(na.action(na.omit(data)),collapse = ", "))
             data<-na.omit(data)
+            cormat<-cor(data)
         }
     }else if(na.data=="fiml")
     {
@@ -90,6 +91,9 @@ depend <- function (data, normal = FALSE,
         }else{cormat<-cor(data)}
     }
     
+    # Fisher's Z-test is only applicable with the index
+    fisher <- fisher && index
+
     inter<-((ncol(cormat)*(ncol(cormat)-1)*(ncol(cormat)-2)))
     
     if(index)
@@ -114,12 +118,13 @@ depend <- function (data, normal = FALSE,
                         " rows were removed for missing data\nrow(s): ",
                         paste(na.action(na.omit(dat)),collapse = ", "))
                 dat<-na.omit(dat)
+                cordat<-cor(dat)
             }
         }else if(na.data=="fiml")
         {
             if(normal)
             {cordat<-qgraph::cor_auto(dat,missing=na.data)
-            }else{cormat<-psych::corFiml(dat)}
+            }else{cordat<-psych::corFiml(dat)}
         }else if(na.data=="none")
         {
             if(nrow(dat)==ncol(dat)){cordat<-dat
@@ -130,8 +135,8 @@ depend <- function (data, normal = FALSE,
         indpartial <- function (data,i,k,m=ncol(cordat))
         {(data[i,k]-(data[i,m]*data[k,m]))/sqrt((1-(data[i,m]^2))*(1-(data[k,m]^2)))}
         indmat<-matrix(0,nrow=nrow(cordat)-1,ncol=ncol(cordat)-1)
-        for(i in 1:ncol(cordat)-1)
-            for(k in 1:ncol(cordat)-1)
+        for(i in seq_len(ncol(cordat)-1))
+            for(k in seq_len(ncol(cordat)-1))
                 if(i!=k)
                 {indmat[i,k]<-cordat[i,k]-indpartial(cordat,i,k)}
         

@@ -77,6 +77,7 @@ LoGo <- function (data, cliques, separators,
                     " rows were removed for missing data\nrow(s): ",
                     paste(na.action(na.omit(data)),collapse = ", "))
             data<-na.omit(data)
+            cormat<-cor(data)
         }
     }else if(na.data=="fiml")
     {
@@ -127,13 +128,13 @@ LoGo <- function (data, cliques, separators,
             Jlogo[v,v]<-Jlogo[v,v]-solve(S[v,v])
         }
     }else{
-        for(i in 1:length(cliques))
+        for(i in seq_along(cliques))
         {
             v<-cliques[[i]]
             Jlogo[v,v]<-Jlogo[v,v]+solve(S[v,v])
         }
         
-        for(i in 1:length(separators))
+        for(i in seq_along(separators))
         {
             v<-separators[[i]]
             Jlogo[v,v]<-Jlogo[v,v]-solve(S[v,v])
@@ -152,7 +153,7 @@ LoGo <- function (data, cliques, separators,
     row.names(Jlogo)<-colnames(data)
     
     if(!isSymmetric(Jlogo))
-    {Jlogo[lower.tri(Jlogo)] <- Jlogo[upper.tri(Jlogo)]}
+    {Jlogo[lower.tri(Jlogo)] <- t(Jlogo)[lower.tri(Jlogo)]}
     
     return(logo=Jlogo)
 }

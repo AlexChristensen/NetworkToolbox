@@ -1,241 +1,337 @@
-Changes in 1.4.3
+## Changes in version 1.4.4
 
-o FIX: `participation` coefficient values were in the reverse direction
++	DOC: added `inst/COPYRIGHTS` and `DESCRIPTION` acknowledgements for code translated from the Brain Connectivity Toolbox (Rubinov & Sporns, 2010), plus provenance notes in the help pages
 
-o FIX: `depend` diagonal fixed to 0 instead of 1
++	FIX: `un.direct` paired the lower and upper triangles incorrectly for networks with four or more nodes
 
++	FIX: unweighted `betweenness` for complete networks (diameter of one)
 
-Changes in version 1.4.2
++	FIX: `betweenness` and `distance` symmetrized weighted networks with `(G + G) / 2` instead of `(G + t(G)) / 2`
 
-o ADD: full four inventories of openness to experience data from Christensen, Cotter, and Silvia (2019). See `?openness`
++	FIX: `diversity`, `participation`, `gateway`, `comm.str`, `comcat`, and `rspbc` for communities with a single node (or with all but one node)
 
-o FIX: `lattnet` for larger networks
++	FIX: character community labels that look like numbers (e.g., `"1"`, `"2"`) were overwritten in `diversity`, `participation`, and `gateway`
 
++	FIX: `comcat` labeled the column of a single community with the community detection method instead of the community
 
-Changes in version 1.4.1
++	FIX: `comm.str` ordered community labels as text (e.g., `"10"` before `"2"`)
 
-o ADD: k-folds validation is now implemented in `cpmIV`
++	FIX: `stable` accepted `cent = "hybrid"` but did not compute it
 
-o NEW: `cpmIVperm` allows for permutation of `cpmIV` results
++	FIX: `louvain` computed modularity (`Q`) with signed weights after taking absolute values and overwrote the user's random number generator state
 
-o FIX: NA communities throwing bad labels in `stable` and `comcat`
++	FIX: `transitivity` now ignores the diagonal and checks that the input is square (values could exceed one)
 
-o FIX: `diversity`, `gateway`, and `participation` bug when communities lengths equal one 
++	FIX: `strength` and `degree` errored for directed networks with an isolated node
 
++	FIX: `TMFG`, `LoGo`, and `depend` with `na.data = "listwise"` and `normal = FALSE` (correlation matrix was never computed)
 
-Changes in version 1.4.0
++	FIX: `MaST` and `threshold` overwrote the correlation matrix computed for `na.data = "pairwise"`, `"listwise"`, and `"fiml"`
 
-o NEW: `dCor.parallel` parallelizes the `dCor` function to improve processing speed
++	FIX: `threshold` with `thresh = "adaptive"` (arguments passed to `adapt.a` incorrectly), `"bonferroni"` (operator precedence in the number of comparisons), and `"FDR"` (critical value could be negative)
 
-o NEW: `dCor` computes the distance correlation for time series data (intended for use with `cpm`)
++	FIX: `MaST` and `TMFG` with `depend = TRUE` returned symmetric networks; `MaST` returned absolute values instead of signed values; `MaST` errored for networks with disconnected components
 
-o FIX: named communities into `comcat` and `stable`
++	FIX: `ECO` with `directed = TRUE` only returned the diagonal
 
-o FIX: where `comcat` and `stable` treats `NA` community membership as actual membership -- corrects `EGAnet::net.loads` outputs
++	FIX: `ECOplusMaST` doubled the weight of shared positive edges and cancelled shared negative edges
 
-o FIX: `comcat` and `stable` for *EGAnet*
++	FIX: `MFCF` default settings and `time.series = TRUE` errored; `LoGo` errored when there were no separators
 
++	FIX: symmetrization of networks in `LoGo`, `sim.swn`, and `edgerep` mixed up edge weights
 
-Changes in version 1.3.3
++	FIX: `sim.swn` simulated network did not correspond to the partial correlations of the simulated data
 
-o `node.redundant` function migrated to the *EGAnet* pacakge
++	FIX: `sim.chordal` errored with the default `inverse` argument
 
-o added the function `network.permutation` to compute permutation tests for network measures
++	FIX: `network.permutation` errored when using `prev.perm` from a global network measure
 
-o changed name of `net.coverage` to `network.coverage`
++	FIX: `core.items` placed items in more than one tier for communities with one or two items
 
++	FIX: `lattnet` removed edges from every band (not only the last band) and never finished when `edges` exceeded the number of possible edges
 
-Changes in version 1.3.2
++	FIX: `randnet` created an edge when `edges = 0` and errored for directed networks
 
-o updated Description file
++	FIX: `edgerep` duplicated or dropped edges with tied weights, errored with fewer than two replicated edges, and overestimated `sdDiff`
 
-o updated citation
++	FIX: `resp.rep` errored when no items were reverse coded, when responses had missing values, or when the minimum response was not one
 
++	FIX: `depend` printed to the console and errored for matrices when `normal = FALSE` and `na.data = "pairwise"`; `fisher = TRUE` errored when `index = FALSE`
 
-Changes in version 1.3.1
++	FIX: `depna` now passes `...` to `depend`, defaults `cores`, and uses the connectivity matrices as input
 
-o `TMFG` bug fix
++	FIX: `desc` and `desc.all` errored when `shapiro.test` could not be computed (missing values or more than 5000 cases) and when no variables were numeric
 
++	FIX: `convertConnBrainMat` removed the wrong entries when dropping grey matter, white matter, and CSF, and stored `Z` dimension names as matrices
 
-Changes in version 1.3.0
++	FIX: `cpmIVperm` p-values were always one because permuted results were discarded and correlations were compared as text
 
-o converged all Connectome Predictive Modeling into one documentation see `?cpm`
++	FIX: `cpmFPperm` did not permute the sessions
 
-o migrated `net.scores` and `net.loads` to 'EGAnet' package
++	FIX: `cpmEV` ignored `thresh`, used the wrong degrees of freedom, errored with `overlap = FALSE`, reported MAE and RMSE for the last participant only, reported the positive RMSE for the full model, and returned the wrong masks
 
-o added several new functions to implement the latest state-of-the-art Information Filtering Network method: Maximally Filtered Clique Forest (MFCF; thanks Guido!)
++	FIX: `cpmFP` and `cpmFPperm` errored when the networks were not symmetric
 
-o added Guido Previde Massara as a contributor
++	FIX: `cpmIV` errored with `covar` when `cores` was not provided
 
-o changed name of function `strength.dim` to `lnet.loads` and updated documentation
++	FIX: `cpmIV` with `connections = "overall"` and `model = "cubic"` errored (copy-paste errors in variable names) and the vectorization of training networks was fragile
 
-o added information about 'NetworkToolbox' on package load
++	FIX: `cpmPlot` now gives an informative error when the number of nodes does not match a supported atlas
 
-o changed name of function `nams` to `lnet.score`, optimized function to be more efficient with large datasets, and updated documentation
++	FIX: `plot.cpm` did not draw negative predictions, used positive predictions for the negative panel with missing values, used the wrong x-axis limits, assigned group colors in sorted rather than data order, and placed labels outside of the plot for positive scores
 
-o added function `item.overlap` to detect redundant nodes in a network
++	UPDATE: `cpmIV` `method = "mean"` now averages the selected edges (previously it was proportional to the sum, so predictions are unchanged)
 
-o added function `strength.dim` to identify within and between dimension node strength
++	UPDATE: `cpmIVperm` now requires `iter` to be at least two
 
-o added `absolute` argument for `strength` and `stable` functions (extension for EGA package)
++	UPDATE: `desc` and `desc.all` now return numeric columns (previously all columns were character)
 
-o additional updates to documentation
++	UPDATE: `louvain` restores the random number generator state of the user on exit
 
-o bug fix for one dimension in comcat function
++	UPDATE: `lattnet` and `randnet` now error when `edges` exceeds the number of possible edges
 
-o made `rspbc` output a vector
++	UPDATE: documentation for `pathlengths` (`diameter`) and `conn` (`density`) now matches their outputs
 
++	REMOVE: `methods.R` (duplicate of `plot.cpm.R`) and unused `.onload` function
 
-Changes in version 1.2.3
 
-o removed isSym function
+## Changes in version 1.4.3
 
-o fixed bugs in degree, strength, hybrid, and edgerep functions (symmetric matrix check is fixed)
++	FIX: `participation` coefficient values were in the reverse direction
 
-o naming order bug fix in comcat
++	FIX: `depend` diagonal fixed to 0 instead of 1
 
-o removed bootgen and bootgen.plot functions (experimental funcitons that may return later)
 
-o updated several functions' documentation
+## Changes in version 1.4.2
 
++	ADD: full four inventories of openness to experience data from Christensen, Cotter, and Silvia (2019). See `?openness`
 
-Changes in version 1.2.2
++	FIX: `lattnet` for larger networks
 
-o comcat: added functionality to compute connectivity across communities or for each community
 
-o stable: added closeness centrality
+## Changes in version 1.4.1
 
-o desc: descriptive statistics function for a single variable
++	ADD: k-folds validation is now implemented in `cpmIV`
 
-o desc.all: descriptive statistics function for a dataset
++	ADD: `cpmIVperm` allows for permutation of `cpmIV` results
 
++	FIX: NA communities throwing bad labels in `stable` and `comcat`
 
-Changes in version 1.2.1
++	FIX: `diversity`, `gateway`, and `participation` bug when communities lengths equal one
 
-o updated comm.close algorithm: takes the reciprocal of the mean ASPL of each community
 
-o LoGo: removed some arguments, added "..." for deprecated arguments (e.g., standardize)
+## Changes in version 1.4.0
 
-o rep.resp: function to detect repetitive responding
++	ADD: `dCor.parallel` parallelizes the `dCor` function to improve processing speed
 
++	ADD: `dCor` computes the distance correlation for time series data (intended for use with `cpm`)
 
++	FIX: named communities into `comcat` and `stable`
 
-Changes in version 1.2.0
++	FIX: where `comcat` and `stable` treats `NA` community membership as actual membership -- corrects `EGAnet::net.loads` outputs
 
-o net.coverage: a function to examine the coverage of a subset of nodes in the network
++	FIX: `comcat` and `stable` for *EGAnet*
 
-o comm.close: a function to estimate the closeness centrality of communities in the network
 
-o comm.eigen: a function to estimate the eigenvector centrality of communities in the network (based on the flow.frac function)
+## Changes in version 1.3.3
 
-o comm.str: a function to estimate the strength/degree centrality of communities in the network
++	REMOVE: `node.redundant` function migrated to the *EGAnet* package
 
-o flow.frac: a function to estimate the eigenvector centrality of a subset of nodes in the network
++	ADD: `network.permutation` to compute permutation tests for network measures
 
-o core.items: a function to automatically determine core, intermediate, and peripheral items in the network
++	CHANGE: `net.coverage` renamed to `network.coverage`
 
-o commboot: removed
 
-o removed splitsamp functions (will be brought back in a future update)
+## Changes in version 1.3.2
 
-o removed options for weighted argument in network construction functions
++	UPDATE: Description file
 
-o bootgenPlot changed to bootgen.plot
++	UPDATE: citation
 
-o significantly improved documentation and descriptions of all functions
 
-o improved functionality of several functions
+## Changes in version 1.3.1
 
-o updated citation
++	FIX: `TMFG` bug
 
 
-Changes in version 1.1.3
+## Changes in version 1.3.0
 
-o nams: facet means are now adjusted relative to the overall score--improves estimate and makes adjusted means/sums equivalent to overall adjusted score
++	UPDATE: converged all Connectome Predictive Modeling into one documentation see `?cpm`
 
-o edgerep: node label bug fixed
++	REMOVE: `net.scores` and `net.loads` migrated to the 'EGAnet' package
 
-o bootstrapped functions: na.data argument bug fixed
++	ADD: several new functions to implement the latest state-of-the-art Information Filtering Network method: Maximally Filtered Clique Forest (MFCF; thanks Guido!)
 
-o commboot: unweighted network option added
++	ADD: Guido Previde Massara as a contributor
 
-o updated citation
++	CHANGE: `strength.dim` changed to `lnet.loads` and updated documentation
 
-o semnetboot: removed and moved to package SemNetToolbox
++	ADD: information about 'NetworkToolbox' on package load
 
-o semnetmeas: removed and moved to package SemNetToolbox
++	CHANGE: `nams` changed to `lnet.score`, function optimized to be more efficient with large datasets, and updated documentation
 
-o na.data bugs fixed throughout package
++	ADD: `item.overlap` to detect redundant nodes in a network
 
++	ADD: `strength.dim` to identify within and between dimension node strength
 
-Changes in version 1.1.2
++	ADD: `absolute` argument for `strength` and `stable` functions (extension for EGA package)
 
-o bootgen: ensures graphical model for method = "LoGo"
++	UPDATE: additional updates to documentation
 
-o nams: adjusted algorithm
++	FIX: bug for one dimension in `comcat`
 
-o sim.swn: added a function to simulate small-world networks and data
++	CHANGE: `rspbc` output is now a vector
 
-o PMFG: removed function due to inefficiency
 
-o diversity: added a function to compute the diversity coefficient of nodes in the network
+## Changes in version 1.2.3
 
-o gateway: added a function to compute the gateway coefficient of nodes in the network
++	REMOVE: `isSym` function
 
-o participation: added a function to compute the participation coefficient of nodes in the network
++	FIX: bugs in `degree`, `strength`, `hybrid`, and `edgerep` functions (symmetric matrix check is fixed)
 
-o edgerep: fixed bug in plot to display the strength of the replicated edges only and will display diagonal if diagonals are equivalent between the two matrices
++	FIX: naming order bug in `comcat`
 
-o nams: added output for an overall network adjusted mean/sum score
++	REMOVE: `bootgen` and `bootgen.plot` functions (experimental functions that may return later)
 
-o improved documentation
++	UPDATE: documentation for several functions
 
-o added EBICglasso and Isingfit to bootgen and commboot function
 
-o added back the kld and rmse function
+## Changes in version 1.2.2
 
-o added network visualization of canonical and macro-scale region connectivity to cpmIV function
++	ADD: `comcat` functionality to compute connectivity across communities or for each community
 
-o LoGo: no longer outputs a list (only a matrix) and added a standardize argument for inverse correlation matrix as output (does not change partial correlation output)
++	ADD: `stable` closeness centrality
 
++	ADD: `desc` descriptive statistics function for a single variable
 
-Changes in Version 1.1.1
++	ADD: `desc.all` descriptive statistics function for a dataset
 
-o LoGo: reversed sign bug fixed; cov.shrink no longer used for covariance matrix estimation
 
-o is.graphical: updated with more efficient (inverse) covariance check
+## Changes in version 1.2.1
 
-o bootgen: uses partial correlation significance for method = "LoGo"
++	UPDATE: `comm.close` algorithm: takes the reciprocal of the mean ASPL of each community
 
++	UPDATE: `LoGo` removed some arguments, added `...` for deprecated arguments (e.g., `standardize`)
 
-Changes in Version 1.1.0
++	ADD: `rep.resp` function to detect repetitive responding
 
-o new data files: NEO-PI-3 data for psychometric network analysis, verbal fluency files for semantic network analysis, behavioral NEO-PI-3 and an associated brain connectivity array for brain network analysis
 
-o bootgen: no longer produces plots; added is.graphical function to automatically check if network is graphical when method = "LoGo"
+## Changes in version 1.2.0
 
-o bootgenPlot: output from the bootgen function can now be input into a separate function to obtain plots. Contains an argument to also plot the bootstrapped network generalization method
++	ADD: `net.coverage` to examine the coverage of a subset of nodes in the network
 
-o bootstrapping functions all include a seeds argument, which can be used to replicate the previous analysis using the Seeds output
++	ADD: `comm.close` to estimate the closeness centrality of communities in the network
 
-o PMFG: now outputs a list to be used in Cytoscape visualization software (sparseList)
++	ADD: `comm.eigen` to estimate the eigenvector centrality of communities in the network (based on the `flow.frac` function)
 
-o reg: a function to perform regression for a dataset. An argument can set the type of regression and for the matrix to be symmetric
++	ADD: `comm.str` to estimate the strength/degree centrality of communities in the network
 
-o nams: a function to calculate network adjusted mean or sum for data (based on the hybrid centrality)
++	ADD: `flow.frac` to estimate the eigenvector centrality of a subset of nodes in the network
 
-o hybrid: added an option for "standard", "random", or "average" betweenness centrality to be used
++	ADD: `core.items` to automatically determine core, intermediate, and peripheral items in the network
 
-o cpmIV: parallel processing now available for covariate estimation (defaults to max(cores) - 1)
++	REMOVE: `commboot`
 
-o LoGo: corpcor's cov.shrink is now used for covariance estimation when argument normal = TRUE; added argument to check if network is graphical
++	REMOVE: `splitsamp` functions (will be brought back in a future update)
 
-o edgerep: includes a list of the replicated edges and their respective weights in each network. A plot for this information is also available (defaults to FALSE). Also includes an argument "corr" which allows the researcher to select different correlations for examining replicated edge weight relations
++	REMOVE: options for `weighted` argument in network construction functions
 
-o is.graphical: function to check whether the network is graphical
++	CHANGE: `bootgenPlot` changed to `bootgen.plot`
 
-o cor2cov: function to convert correlation matrix into a covariance matrix
++	UPDATE: significantly improved documentation and descriptions of all functions
 
-o depend: fixed Fisher's z significance test
++	UPDATE: improved functionality of several functions
 
-o kld: removed function
++	UPDATE: citation
+
+
+## Changes in version 1.1.3
+
++	UPDATE: `nams` facet means are now adjusted relative to the overall score -- improves estimate and makes adjusted means/sums equivalent to overall adjusted score
+
++	FIX: `edgerep` node label bug
+
++	FIX: bootstrapped functions `na.data` argument bug
+
++	ADD: `commboot` unweighted network option
+
++	UPDATE: citation
+
++	REMOVE: `semnetboot` moved to package SemNetToolbox
+
++	REMOVE: `semnetmeas` moved to package SemNetToolbox
+
++	FIX: `na.data` bugs throughout package
+
+
+## Changes in version 1.1.2
+
++	UPDATE: `bootgen` ensures graphical model for `method = "LoGo"`
+
++	UPDATE: `nams` algorithm adjusted
+
++	ADD: `sim.swn` to simulate small-world networks and data
+
++	REMOVE: `PMFG` due to inefficiency
+
++	ADD: `diversity` to compute the diversity coefficient of nodes in the network
+
++	ADD: `gateway` to compute the gateway coefficient of nodes in the network
+
++	ADD: `participation` to compute the participation coefficient of nodes in the network
+
++	FIX: `edgerep` plot to display the strength of the replicated edges only and will display diagonal if diagonals are equivalent between the two matrices
+
++	ADD: `nams` output for an overall network adjusted mean/sum score
+
++	UPDATE: improved documentation
+
++	ADD: EBICglasso and Isingfit to `bootgen` and `commboot` functions
+
++	ADD: `kld` and `rmse` functions back
+
++	ADD: network visualization of canonical and macro-scale region connectivity to `cpmIV`
+
++	CHANGE: `LoGo` no longer outputs a list (only a matrix) and added a `standardize` argument for inverse correlation matrix as output (does not change partial correlation output)
+
+
+## Changes in version 1.1.1
+
++	FIX: `LoGo` reversed sign bug; `cov.shrink` no longer used for covariance matrix estimation
+
++	UPDATE: `is.graphical` updated with more efficient (inverse) covariance check
+
++	UPDATE: `bootgen` uses partial correlation significance for `method = "LoGo"`
+
+
+## Changes in version 1.1.0
+
++	ADD: new data files: NEO-PI-3 data for psychometric network analysis, verbal fluency files for semantic network analysis, behavioral NEO-PI-3 and an associated brain connectivity array for brain network analysis
+
++	UPDATE: `bootgen` no longer produces plots; added `is.graphical` to automatically check if network is graphical when `method = "LoGo"`
+
++	ADD: `bootgenPlot` output from the `bootgen` function can now be input into a separate function to obtain plots. Contains an argument to also plot the bootstrapped network generalization method
+
++	ADD: `seeds` argument in all bootstrapping functions, which can be used to replicate the previous analysis using the `Seeds` output
+
++	UPDATE: `PMFG` now outputs a list to be used in Cytoscape visualization software (`sparseList`)
+
++	ADD: `reg` to perform regression for a dataset. An argument can set the type of regression and for the matrix to be symmetric
+
++	ADD: `nams` to calculate network adjusted mean or sum for data (based on the hybrid centrality)
+
++	ADD: `hybrid` option for "standard", "random", or "average" betweenness centrality to be used
+
++	ADD: `cpmIV` parallel processing for covariate estimation (defaults to max(cores) - 1)
+
++	UPDATE: `LoGo` uses corpcor's `cov.shrink` for covariance estimation when argument `normal = TRUE`; added argument to check if network is graphical
+
++	UPDATE: `edgerep` includes a list of the replicated edges and their respective weights in each network. A plot for this information is also available (defaults to `FALSE`). Also includes an argument `corr` which allows the researcher to select different correlations for examining replicated edge weight relations
+
++	ADD: `is.graphical` to check whether the network is graphical
+
++	ADD: `cor2cov` to convert correlation matrix into a covariance matrix
+
++	FIX: `depend` Fisher's z significance test
+
++	REMOVE: `kld`

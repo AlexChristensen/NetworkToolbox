@@ -60,17 +60,17 @@ edgerep <- function (A, B,
     if(!isSymmetric(A, check.attributes = FALSE))
     {
         if(all(rowSums(A)==colSums(A)))
-        {A[lower.tri(A)] <- A[upper.tri(A)]
+        {A[lower.tri(A)] <- t(A)[lower.tri(A)]
         }else{A<-A+t(A)
-        warning(paste("Adjacency matrix",nameA,"was made to be symmetric using upper triangle"))}
+        warning(paste("Adjacency matrix",nameA,"was made to be symmetric by adding its transpose"))}
     }
     
     if(!isSymmetric(B, check.attributes = FALSE))
     {
         if(all(rowSums(B)==colSums(B)))
-        {B[lower.tri(B)] <- B[upper.tri(B)]
+        {B[lower.tri(B)] <- t(B)[lower.tri(B)]
         }else{B<-B+t(B)
-        warning(paste("Adjacency matrix",nameB,"was made to be symmetric using upper triangle"))}
+        warning(paste("Adjacency matrix",nameB,"was made to be symmetric by adding its transpose"))}
     }
     
     n<-ncol(A)
@@ -86,16 +86,15 @@ edgerep <- function (A, B,
     repmat[lower.tri(repmat)]<-A[lower.tri(A)]*repmat[lower.tri(repmat)]
     repmat[upper.tri(repmat)]<-B[upper.tri(B)]*repmat[upper.tri(repmat)]
     
-    i<-sort(c(rep(1:n,n)))
-    j<-c(rep(1:n,n))
-    lt<-as.vector(A)
-    ut<-as.vector(B)
+    # replicated edges (upper triangle; each edge is counted once)
+    rep.idx<-which(upper.tri(A) & A!=0 & B!=0, arr.ind = TRUE)
+    rep.idx<-rep.idx[order(rep.idx[,1],rep.idx[,2]),,drop=FALSE]
     
-    replist<-cbind(i,j,lt,ut)
-    replist<-replist[which(replist[,3]&replist[,4]!=0),]
-    ord<-replist[order(replist[,3]),]
-    sinlist<-ord[seq(1,nrow(ord),2),]
-    sinlist<-sinlist[order(sinlist[,1],sinlist[,2]),]
+    wveca<-A[rep.idx]
+    wvecb<-B[rep.idx]
+    
+    sinlist<-data.frame(nodeTo = rep.idx[,1], nodeFrom = rep.idx[,2],
+                        wA = wveca, wB = wvecb)
     
     colnames(sinlist)<-c("nodeTo","nodeFrom",paste("weight in",nameA),paste("weight in",nameB))
     
@@ -103,16 +102,10 @@ edgerep <- function (A, B,
     {
         if(!is.null(colnames(B)))
         {
-            for(i in 1:nrow(sinlist))
-                for(j in 1:length(colnames(A)))
-                {
-                    if(sinlist[i,1]==j)
-                    {sinlist[i,1]<-colnames(A)[j]}
-                    if(sinlist[i,2]==j)
-                    {sinlist[i,2]<-colnames(A)[j]}
-                }
-            sinlist[,c(1,2)]<-as.character(sinlist[,c(1,2)])
-            sinlist[,c(3,4)]<-round(as.numeric(sinlist[,c(3,4)]),3)
+            sinlist[,1]<-colnames(A)[rep.idx[,1]]
+            sinlist[,2]<-colnames(A)[rep.idx[,2]]
+            sinlist[,3]<-round(wveca,3)
+            sinlist[,4]<-round(wvecb,3)
         }
     }
     
@@ -129,32 +122,21 @@ edgerep <- function (A, B,
     densityA<-possibleA/((ncol(A)^2-ncol(A))/2)
     densityB<-possibleB/((ncol(B)^2-ncol(B))/2)
     
-    mat<-matrix(0,nrow=nrow(A),ncol=ncol(A))
-    wc<-0
-    wveca<-0
-    wvecb<-0
-    for(i in 1:ncol(A))
-        for(j in 1:nrow(A))
-            if(A[i,j]&&B[i,j]!=0)
-            {
-                mat[i,j]<-abs(A[i,j]-B[i,j])
-                wc<-wc+1
-                wveca[wc]<-A[i,j]
-                wvecb[wc]<-B[i,j]
-            }
+    if(length(wveca) > 1)
+    {corr<-cor(wveca,wvecb,method=corr)
+    }else{corr<-NA}
     
-    corr<-cor(wveca,wvecb,method=corr)
+    # differences between replicated edges
+    vec<-abs(wveca-wvecb)
     
-    m<-0
-    vec<-0
-    for(i in 1:nrow(A))
-        for(j in 1:ncol(A))
-            if(mat[i,j]!=0)
-            {m<-m+1
-            vec[m]<-mat[i,j]
-            mvec<-mean(vec)
-            svec<-sd(vec)}else if(all(mat==0)){mvec<-0
-            svec<-0}
+    if(length(vec) > 0)
+    {
+        mvec<-mean(vec)
+        svec<-sd(vec)
+    }else{
+        mvec<-0
+        svec<-0
+    }
     
     res <- list()
     

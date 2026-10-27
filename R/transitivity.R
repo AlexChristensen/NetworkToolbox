@@ -9,6 +9,11 @@
 #' 
 #' @return Returns a value of transitivity
 #' 
+#' @details
+#' Translated from the MATLAB functions \code{transitivity_bu.m} (Alexandros
+#' Goulas) and \code{transitivity_wu.m} (Mika Rubinov) in the Brain Connectivity
+#' Toolbox (Rubinov & Sporns, 2010).
+#' 
 #' @examples
 #' # Pearson's correlation only for CRAN checks
 #' A <- TMFG(neoOpen, normal = FALSE)$A
@@ -25,6 +30,14 @@
 #Transitivity----
 transitivity <- function (A, weighted = FALSE)
 {
+    A <- as.matrix(A)
+
+    if(nrow(A)!=ncol(A))
+    {stop("Input not an adjacency matrix")}
+
+    # self-loops do not form triangles
+    diag(A) <- 0
+
     if(!weighted)
     {
         A<-ifelse(A!=0,1,0)

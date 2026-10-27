@@ -110,7 +110,8 @@ stable <- function (A, comm = c("walktrap","louvain"),
                            rspbc = NetworkToolbox::rspbc(Ah),
                            closeness = NetworkToolbox::closeness(Ah),
                            strength = colSums(Ah),
-                           degree = colSums(NetworkToolbox::binarize(Ah))
+                           degree = colSums(NetworkToolbox::binarize(Ah)),
+                           hybrid = NetworkToolbox::hybrid(Ah)
             )
         }else{
             # Input zero

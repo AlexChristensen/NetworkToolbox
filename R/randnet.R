@@ -14,6 +14,11 @@
 #' 
 #' @return Returns an adjacency matrix of a random network
 #' 
+#' @details
+#' When \code{nodes} and \code{edges} are specified, the random network is
+#' translated from the MATLAB function \code{makerandCIJ_und.m} (Olaf Sporns) in
+#' the Brain Connectivity Toolbox (Rubinov & Sporns, 2010).
+#' 
 #' @examples
 #' rand <- randnet(10, 27)
 #' 
@@ -54,7 +59,10 @@ randnet <- function (nodes = NULL, edges = NULL, A = NULL)
         rand <- matrix(0, nrow = nodes, ncol = nodes)
         
         # Insert edges
-        rand[irp[1:edges]] <- 1
+        if(edges > length(irp))
+        {stop("'edges' cannot exceed the number of possible edges: nodes * (nodes - 1) / 2")}
+        
+        rand[irp[seq_len(edges)]] <- 1
         
         # Make symmetric
         rand <- rand + t(rand)
@@ -70,8 +78,8 @@ randnet <- function (nodes = NULL, edges = NULL, A = NULL)
         # Get degrees based on directed or undirected
         # Use igraph
         if(is.list(degrees))
-        {rand <- as.matrix(igraph::as_adj(igraph::sample_degseq(out.deg = degrees$outDegree, in.deg = degrees$inDegree, method = "vl")))
-        }else{rand <- as.matrix(igraph::as_adj(igraph::sample_degseq(out.deg = degrees, method = "vl")))}
+        {rand <- as.matrix(igraph::as_adjacency_matrix(igraph::sample_degseq(out.deg = degrees$outDegree, in.deg = degrees$inDegree, method = "fast.heur.simple")))
+        }else{rand <- as.matrix(igraph::as_adjacency_matrix(igraph::sample_degseq(out.deg = degrees, method = "vl")))}
     }
     
     return(rand)

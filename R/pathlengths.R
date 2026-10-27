@@ -17,7 +17,11 @@
 #' 
 #' \item{ecc}{Eccentricity (i.e., maximal shortest path length between a node and any other node)}
 #' 
-#' \item{D}{Diameter of the network (i.e., the maximum of eccentricity)}
+#' \item{diameter}{Diameter of the network (i.e., the maximum of eccentricity)}
+#' 
+#' @details
+#' Based on the MATLAB function \code{charpath.m} (Olaf Sporns and Mika Rubinov)
+#' in the Brain Connectivity Toolbox (Rubinov & Sporns, 2010).
 #' 
 #' @examples
 #' # Pearson's correlation only for CRAN checks

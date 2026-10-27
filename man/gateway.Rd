@@ -38,6 +38,10 @@ Nodes that are solely responsible for inter-community connectivity will
 have higher gateway coefficient values. Positive and negative signed weights
 for gateway coefficients are computed separately.
 }
+\details{
+Translated from the MATLAB function \code{gateway_coef_sign.m} (Jeff
+Spielberg) in the Brain Connectivity Toolbox (Rubinov & Sporns, 2010).
+}
 \examples{
 #theoretical communities
 comm <- rep(1:8, each = 6)

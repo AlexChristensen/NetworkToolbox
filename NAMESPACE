@@ -69,40 +69,48 @@ export(transitivity)
 export(un.direct)
 importFrom(MASS,psi.bisquare)
 importFrom(foreach,"%dopar%")
-importFrom(grDevices,colorRampPalette)
-importFrom(grDevices,dev.new)
-importFrom(graphics,abline)
-importFrom(graphics,hist)
-importFrom(graphics,legend)
-importFrom(graphics,par)
-importFrom(graphics,plot)
-importFrom(graphics,text)
+importFrom(grDevices,
+  colorRampPalette,
+  dev.new
+)
+importFrom(graphics,
+  abline,
+  hist,
+  legend,
+  par,
+  plot,
+  text
+)
 importFrom(methods,is)
 importFrom(psych,corFiml)
-importFrom(stats,coef)
-importFrom(stats,complete.cases)
-importFrom(stats,cor)
-importFrom(stats,cor.test)
-importFrom(stats,cov)
-importFrom(stats,cov2cor)
-importFrom(stats,dist)
-importFrom(stats,glm)
-importFrom(stats,lm)
-importFrom(stats,lm.fit)
-importFrom(stats,na.action)
-importFrom(stats,na.omit)
-importFrom(stats,pchisq)
-importFrom(stats,pf)
-importFrom(stats,pt)
-importFrom(stats,qchisq)
-importFrom(stats,qf)
-importFrom(stats,qt)
-importFrom(stats,rnorm)
-importFrom(stats,runif)
-importFrom(stats,sd)
-importFrom(stats,shapiro.test)
-importFrom(utils,capture.output)
-importFrom(utils,combn)
-importFrom(utils,packageDescription)
-importFrom(utils,setTxtProgressBar)
-importFrom(utils,txtProgressBar)
+importFrom(stats,
+  coef,
+  complete.cases,
+  cor,
+  cor.test,
+  cov,
+  cov2cor,
+  dist,
+  glm,
+  lm,
+  lm.fit,
+  na.action,
+  na.omit,
+  pchisq,
+  pf,
+  pt,
+  qchisq,
+  qf,
+  qt,
+  rnorm,
+  runif,
+  sd,
+  shapiro.test
+)
+importFrom(utils,
+  capture.output,
+  combn,
+  packageDescription,
+  setTxtProgressBar,
+  txtProgressBar
+)

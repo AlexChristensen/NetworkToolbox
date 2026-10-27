@@ -25,13 +25,13 @@ ECOplusMaST <- function (data)
     if(nrow(data)==ncol(data)){cormat<-data
     }else{cormat<-cor(data)}
     
-        a<-MaST(data)
-        b<-ECO(data)
-        k<-matrix(NA,nrow=nrow(a),ncol=ncol(a))
-        for(i in 1:nrow(a))
-            for(j in 1:ncol(a))
-                if(a[i,j]==b[i,j]){k[i,j]<-a[i,j]}else k[i,j]<-a[i,j]+b[i,j]
-        
+    # both filters use the same correlation matrix
+    a<-MaST(cormat)
+    b<-ECO(cormat)
+    
+    # union of the two networks (edges are signed correlations)
+    k<-ifelse(a!=0,a,b)
+    
     k<-as.data.frame(k)
     colnames(k)<-colnames(data)
     row.names(k)<-colnames(data)

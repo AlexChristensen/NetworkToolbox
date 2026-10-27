@@ -60,7 +60,7 @@
 #'
 #' \donttest{
 #' # Perform permutation test
-#' perm.str <- network.permutation(split1, split2, iter = 1000, network = "glasso",
+#' perm.str <- network.permutation(split1, split2, iter = 20, network = "glasso",
 #' measure = "strength", alternative = "two.tailed", ncores = 2)
 #'
 #' # Check results
@@ -175,8 +175,12 @@ network.permutation <- function(sample1 = NULL, sample2 = NULL, iter,
     net.list2 <- prev.perm$networks$network2
 
     # Obtain names of samples
-    sample1.name <- colnames(prev.perm$result)[1]
-    sample2.name <- colnames(prev.perm$result)[2]
+    # (global measures are stored as a named vector; centralities as a matrix)
+    prev.names <- if(is.matrix(prev.perm$result)){
+      colnames(prev.perm$result)
+    }else{names(prev.perm$result)}
+    sample1.name <- prev.names[1]
+    sample2.name <- prev.names[2]
 
   }else{
 

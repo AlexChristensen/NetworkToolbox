@@ -19,6 +19,11 @@ A distance matrix of the network
 \description{
 Computes distance matrix of the network
 }
+\details{
+Translated from the MATLAB functions \code{distance_bin.m} (Mika Rubinov and
+Jonathan Clayden) and \code{distance_wei.m} (Mika Rubinov, Rick Betzel, and
+Andrea Avena) in the Brain Connectivity Toolbox (Rubinov & Sporns, 2010).
+}
 \examples{
 # Pearson's correlation only for CRAN checks
 A <- TMFG(neoOpen, normal = FALSE)$A

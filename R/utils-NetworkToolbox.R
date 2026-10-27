@@ -28,6 +28,30 @@ critical.r <- function(n, alpha)
   return(cvr)
 }
 
+#' Sum or mean of the selected edges
+#' 
+#' @description Strength of the edges in \code{mask}. \code{"sum"} divides
+#' by 2 because the connectivity matrices are symmetric (each edge is counted
+#' twice). \code{"mean"} is the average weight of the selected edges
+#' 
+#' @noRd
+#' 
+# Edge strength of a connectome----
+cpm.edge.stat <- function(x, mask, method)
+{
+  total <- sum(x * mask)
+  
+  if(method == "sum")
+  {return(total / 2)}
+  
+  n.edges <- sum(mask)
+  
+  if(n.edges == 0)
+  {return(0)}
+  
+  return(total / n.edges)
+}
+
 #' cpmIV separate
 #' 
 #' @noRd
@@ -110,8 +134,7 @@ cpmIV.separate <- function(neuralarray, bstat, kfolds, covar, thresh = .01,
     train_behav<-train_behav[-leftout]
     
     #correlate edges with behavior
-    if(nrow(train_vcts)!=(no_train))
-    {train_vcts<-t(train_vcts)}
+    train_vcts<-t(train_vcts)
     
     rmat<-vector(mode="numeric",length=ncol(train_vcts))
     pmat<-vector(mode="numeric",length=ncol(train_vcts))
@@ -172,15 +195,8 @@ cpmIV.separate <- function(neuralarray, bstat, kfolds, covar, thresh = .01,
     
     for(ss in 1:nrow(train_sumpos))
     {
-      if(method=="sum")
-      {
-        train_sumpos[ss]<-sum(train_mats[,,ss]*pos_mask)/2
-        train_sumneg[ss]<-sum(train_mats[,,ss]*neg_mask)/2
-      }else if(method=="mean")
-      {
-        train_sumpos[ss]<-mean(train_mats[,,ss]*pos_mask)/2
-        train_sumneg[ss]<-mean(train_mats[,,ss]*neg_mask)/2
-      }
+      train_sumpos[ss]<-cpm.edge.stat(train_mats[,,ss], pos_mask, method)
+      train_sumneg[ss]<-cpm.edge.stat(train_mats[,,ss], neg_mask, method)
     }
     
     #generate regression formula with covariates
@@ -224,40 +240,13 @@ cpmIV.separate <- function(neuralarray, bstat, kfolds, covar, thresh = .01,
     
     if(is.na(dim(test_mat)[3])){
       
-      if(method=="sum"){
-        
-        test_sumpos<-sum(test_mat*pos_mask)/2
-        test_sumneg<-sum(test_mat*neg_mask)/2
-        
-      }else if(method=="mean"){
-        
-        test_sumpos<-mean(test_mat*pos_mask)/2
-        test_sumneg<-mean(test_mat*neg_mask)/2
-        
-      }
+      test_sumpos<-cpm.edge.stat(test_mat, pos_mask, method)
+      test_sumneg<-cpm.edge.stat(test_mat, neg_mask, method)
       
     }else{
       
-      if(method=="sum"){
-        
-        test_sumpos <- apply(test_mat, 3, function(x){
-          sum(x * pos_mask) / 2
-        })
-        
-        test_sumneg <- apply(test_mat, 3, function(x){
-          sum(x * neg_mask) / 2
-        })
-        
-      }else if(method=="mean"){
-        
-        test_sumpos <- apply(test_mat, 3, function(x){
-          mean(x * pos_mask) / 2
-        })
-        
-        test_sumneg <- apply(test_mat, 3, function(x){
-          mean(x * neg_mask) / 2
-        })
-      }
+      test_sumpos <- apply(test_mat, 3, cpm.edge.stat, mask = pos_mask, method = method)
+      test_sumneg <- apply(test_mat, 3, cpm.edge.stat, mask = neg_mask, method = method)
       
     }
     
@@ -458,8 +447,7 @@ cpmIV.overall <- function(neuralarray, bstat, kfolds, covar, thresh = .01,
     train_behav<-train_behav[-leftout]
     
     #correlate edges with behavior
-    if(nrow(train_vcts)!=(no_train))
-    {train_vcts<-t(train_vcts)}
+    train_vcts<-t(train_vcts)
     
     rmat<-vector(mode="numeric",length=ncol(train_vcts))
     pmat<-vector(mode="numeric",length=ncol(train_vcts))
@@ -520,15 +508,8 @@ cpmIV.overall <- function(neuralarray, bstat, kfolds, covar, thresh = .01,
     
     for(ss in 1:nrow(train_sumpos))
     {
-      if(method=="sum")
-      {
-        train_sumpos[ss]<-sum(train_mats[,,ss]*pos_mask)/2
-        train_sumneg[ss]<-sum(train_mats[,,ss]*neg_mask)/2
-      }else if(method=="mean")
-      {
-        train_sumpos[ss]<-mean(train_mats[,,ss]*pos_mask)/2
-        train_sumneg[ss]<-mean(train_mats[,,ss]*neg_mask)/2
-      }
+      train_sumpos[ss]<-cpm.edge.stat(train_mats[,,ss], pos_mask, method)
+      train_sumneg[ss]<-cpm.edge.stat(train_mats[,,ss], neg_mask, method)
     }
     
     #generate regression formula with covariates
@@ -550,10 +531,10 @@ cpmIV.overall <- function(neuralarray, bstat, kfolds, covar, thresh = .01,
     }else if(model=="cubic")
     {
       cube_pos<-train_sumpos^3
-      cube_pos<-train_sumneg^3
+      cube_neg<-train_sumneg^3
       
       quad_pos<-train_sumpos^2
-      quad_pos<-train_sumneg^2
+      quad_neg<-train_sumneg^2
       
       fit_pos<-coef(lm(train_behav~train_sumpos+quad_pos+cube_pos+train_sumneg+quad_neg+cube_neg))
     }
@@ -566,40 +547,13 @@ cpmIV.overall <- function(neuralarray, bstat, kfolds, covar, thresh = .01,
     
     if(is.na(dim(test_mat)[3])){
       
-      if(method=="sum"){
-        
-        test_sumpos<-sum(test_mat*pos_mask)/2
-        test_sumneg<-sum(test_mat*neg_mask)/2
-        
-      }else if(method=="mean"){
-        
-        test_sumpos<-mean(test_mat*pos_mask)/2
-        test_sumneg<-mean(test_mat*neg_mask)/2
-        
-      }
+      test_sumpos<-cpm.edge.stat(test_mat, pos_mask, method)
+      test_sumneg<-cpm.edge.stat(test_mat, neg_mask, method)
       
     }else{
       
-      if(method=="sum"){
-        
-        test_sumpos <- apply(test_mat, 3, function(x){
-          sum(x * pos_mask) / 2
-        })
-        
-        test_sumneg <- apply(test_mat, 3, function(x){
-          sum(x * neg_mask) / 2
-        })
-        
-      }else if(method=="mean"){
-        
-        test_sumpos <- apply(test_mat, 3, function(x){
-          mean(x * pos_mask) / 2
-        })
-        
-        test_sumneg <- apply(test_mat, 3, function(x){
-          mean(x * neg_mask) / 2
-        })
-      }
+      test_sumpos <- apply(test_mat, 3, cpm.edge.stat, mask = pos_mask, method = method)
+      test_sumneg <- apply(test_mat, 3, cpm.edge.stat, mask = neg_mask, method = method)
       
     }
     
@@ -616,7 +570,7 @@ cpmIV.overall <- function(neuralarray, bstat, kfolds, covar, thresh = .01,
       cube_post<-test_sumpos^3
       cube_negt<-test_sumneg^3
       
-      quad_negt<-test_sumpos^2
+      quad_post<-test_sumpos^2
       quad_negt<-test_sumneg^2
       
       behav_pred_pos[leftout]<-fit_pos[7]*cube_negt+fit_pos[6]*quad_negt+fit_pos[5]*test_sumneg+fit_pos[4]*cube_post+fit_pos[3]*quad_post+fit_pos[2]*test_sumpos+fit_pos[1]

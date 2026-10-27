@@ -184,9 +184,7 @@ MFCF <- function(data, cases = NULL,
           ct_control$use_returns <- ctreeControl$use_returns
           p <- ncol(X)
           C <- combn(p,2)
-          family <- family
           gains <- mapply(gf, C[1,], C[2,])
-          K <- matrix(0, nrow = p, ncol = p)
 
           C <- cbind(C[1,], C[2,], gains)
 
@@ -194,9 +192,9 @@ MFCF <- function(data, cases = NULL,
 
           for(q in 1:nrow(C))
           {x[C[q,1], C[q,2]] <- C[q,3]}
-          K[1:(p-1), ] <- x
-          K <- K + t(K)
+          K <- x + t(x)
           diag(K) <- 1
+          return(K)
         }
 
         K <- make_kernel(data,gain.fun,ctreeControl)
@@ -279,11 +277,11 @@ MFCF <- function(data, cases = NULL,
 
     # remove cliques with no nodes
     if(any(is.na(the_cliques)))
-    {the_cliques[[which(is.na(the_cliques))]] <- NULL}
+    {the_cliques <- the_cliques[!vapply(the_cliques, function(x){length(x) == 1 && is.na(x)}, logical(1))]}
 
     # remove separators with no nodes
     if(any(is.na(the_separators)))
-    {the_separators[[which(is.na(the_separators))]] <- NULL}
+    {the_separators <- the_separators[!vapply(the_separators, function(x){length(x) == 1 && is.na(x)}, logical(1))]}
 
 
     #results list

@@ -1,14 +1,24 @@
 Package: NetworkToolbox
 Title: Methods and Measures for Brain, Cognitive, and Psychometric Network Analysis
 Version: 1.4.4
-Date: 2025-05-08
-Authors@R: c(person("Alexander", "Christensen", email = "alexpaulchristensen@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-9798-7037")), person("Guido", "Previde Massara", role = c("ctb"), comment = c(ORCID = "0000-0003-0502-2789"))) 
+Date: 2026-10-22
+Authors@R: c(person("Alexander", "Christensen", email = "alexpaulchristensen@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-9798-7037")), person("Guido", "Previde Massara", role = c("ctb"), comment = c(ORCID = "0000-0003-0502-2789")),
+  person("BCT Contributors", role = "cph", comment = "Copyright holder of the Brain Connectivity Toolbox (BSD 3-clause license)"),
+  person("Mika", "Rubinov", role = c("cph", "ctb"), comment = "Original MATLAB implementations in the Brain Connectivity Toolbox (betweenness, distance, clustering, transitivity, participation, diversity, and Louvain)"),
+  person("Olaf", "Sporns", role = c("cph", "ctb"), comment = "Original MATLAB implementations in the Brain Connectivity Toolbox (random and lattice networks)"),
+  person("Alex", "Fornito", role = c("cph", "ctb"), comment = "Original MATLAB participation coefficient in the Brain Connectivity Toolbox"),
+  person("Jeff", "Spielberg", role = c("cph", "ctb"), comment = "Original MATLAB gateway coefficient in the Brain Connectivity Toolbox"),
+  person("Jonathan", "Clayden", role = c("cph", "ctb"), comment = "Original MATLAB binary distance in the Brain Connectivity Toolbox"),
+  person("Rick", "Betzel", role = c("cph", "ctb"), comment = "Original MATLAB weighted distance in the Brain Connectivity Toolbox"),
+  person("Andrea", "Avena", role = c("cph", "ctb"), comment = "Original MATLAB weighted distance in the Brain Connectivity Toolbox"),
+  person("Alexandros", "Goulas", role = c("cph", "ctb"), comment = "Original MATLAB binary transitivity in the Brain Connectivity Toolbox")) 
 Maintainer: Alexander Christensen <alexpaulchristensen@gmail.com>
-Description: Implements network analysis and graph theory measures used in neuroscience, cognitive science, and psychology. Methods include various filtering methods and approaches such as threshold, dependency (Kenett, Tumminello, Madi, Gur-Gershgoren, Mantegna, & Ben-Jacob, 2010 <doi:10.1371/journal.pone.0015032>), Information Filtering Networks (Barfuss, Massara, Di Matteo, & Aste, 2016 <doi:10.1103/PhysRevE.94.062306>), and Efficiency-Cost Optimization (Fallani, Latora, & Chavez, 2017 <doi:10.1371/journal.pcbi.1005305>). Brain methods include the recently developed Connectome Predictive Modeling (see references in package). Also implements several network measures including local network characteristics (e.g., centrality), community-level network characteristics (e.g., community centrality), global network characteristics (e.g., clustering coefficient), and various other measures associated with the reliability and reproducibility of network analysis. 
+Description: Implements network analysis and graph theory measures used in neuroscience, cognitive science, and psychology. Methods include various filtering methods and approaches such as threshold, dependency (Kenett, Tumminello, Madi, Gur-Gershgoren, Mantegna, & Ben-Jacob, 2010 <doi:10.1371/journal.pone.0015032>), Information Filtering Networks (Barfuss, Massara, Di Matteo, & Aste, 2016 <doi:10.1103/PhysRevE.94.062306>), and Efficiency-Cost Optimization (Fallani, Latora, & Chavez, 2017 <doi:10.1371/journal.pcbi.1005305>). Several network measures are translated from the Brain Connectivity Toolbox (Rubinov & Sporns, 2010 <doi:10.1016/j.neuroimage.2009.10.003>). Brain methods include the recently developed Connectome Predictive Modeling (see references in package). Also implements several network measures including local network characteristics (e.g., centrality), community-level network characteristics (e.g., community centrality), global network characteristics (e.g., clustering coefficient), and various other measures associated with the reliability and reproducibility of network analysis. 
 Depends: R (>= 3.6.0)
 License: GPL (>= 3.0)
+Copyright: See inst/COPYRIGHTS for details
 Encoding: UTF-8
 LazyData: true
 Imports: corrplot, doParallel, fdrtool, foreach, igraph, IsingFit, MASS, methods, parallel, pbapply, ppcor, psych, pwr, R.matlab, qgraph
 Suggests: googledrive
-RoxygenNote: 7.3.2
+Config/roxygen2/version: 8.1.1

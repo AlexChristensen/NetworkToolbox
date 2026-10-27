@@ -37,7 +37,9 @@ plot.cpm <- function(x, ...)
   
   if(!"col" %in% names(plot.args))
   {
-    cols <- ifelse(is.null(groups), c("darkorange2", "skyblue2"), c("darkorange2", "darkorange2", "skyblue2", "skyblue2"))
+    if(is.null(groups))
+    {cols <- c("darkorange2", "skyblue2")
+    }else{cols <- c("darkorange2", "darkorange2", "skyblue2", "skyblue2")}
     
   }else{
     
@@ -49,7 +51,9 @@ plot.cpm <- function(x, ...)
   
   if(!"pch"%in% names(plot.args))
   {
-    pchs <- ifelse(is.null(groups), c(16,16), c(16,1,16,1))
+    if(is.null(groups))
+    {pchs <- c(16,16)
+    }else{pchs <- c(16,1,16,1)}
     
   }else{
     
@@ -77,10 +81,21 @@ plot.cpm <- function(x, ...)
     {
       neg.na <- which(is.na(x$negPred))
       bstat_neg <- x$behav[-neg.na]
-      behav_pred_neg <- x$posPred[-neg.na]
+      behav_pred_neg <- x$negPred[-neg.na]
     }else{
       bstat_neg <- x$behav
       behav_pred_neg <- x$negPred
+    }
+    
+    # groups (match missing predictions removed above)
+    groups_pos <- groups
+    groups_neg <- groups
+    if(!is.null(groups))
+    {
+      if(any(is.na(x$posPred)))
+      {groups_pos <- groups[-pos.na]}
+      if(any(is.na(x$negPred)))
+      {groups_neg <- groups[-neg.na]}
     }
     
     R_pos<-cor(behav_pred_pos,bstat_pos,use="pairwise.complete.obs")
@@ -101,8 +116,8 @@ plot.cpm <- function(x, ...)
     lower.neg.pred <- floor(range(behav_pred_neg))[1]
     upper.neg.pred <- ceiling(range(behav_pred_neg))[2]
     
-    text.one_pos <- lower.bstat_pos - (lower.bstat_pos * .20)
-    text.one_neg <- lower.bstat_neg - (lower.bstat_neg * .20)
+    text.one_pos <- lower.bstat_pos + (abs(lower.bstat_pos) * .20)
+    text.one_neg <- lower.bstat_neg + (abs(lower.bstat_neg) * .20)
     
     #set up groups
     if(!is.null(groups))
@@ -114,12 +129,10 @@ plot.cpm <- function(x, ...)
       n_groups <- length(labs_groups)
       
       #set up colors
-      plot.args$col <- c(rep(cols[1],length(which(groups == labs_groups[1]))),
-                         rep(cols[2],length(which(groups == labs_groups[2]))))
+      plot.args$col <- ifelse(groups_pos == labs_groups[1], cols[1], cols[2])
       
       #set up points
-      plot.args$pch <- c(rep(pchs[1],length(which(groups == labs_groups[1]))),
-                         rep(pchs[2],length(which(groups == labs_groups[2]))))
+      plot.args$pch <- ifelse(groups_pos == labs_groups[1], pchs[1], pchs[2])
       
       #set up x
       plot.args$x <- bstat_pos
@@ -145,7 +158,7 @@ plot.cpm <- function(x, ...)
       
       if(R_pos>=0)
       {
-        text.two <- upper.pos.pred - (upper.pos.pred * .20)
+        text.two <- upper.pos.pred - (abs(upper.pos.pred) * .20)
         
         text(x = text.one_pos, y = text.two, labels = paste("r = ", round(R_pos,3), "\np = ", P_pos))
         
@@ -153,7 +166,7 @@ plot.cpm <- function(x, ...)
         
       }else if(R_pos<0)
       {
-        text.two <- lower.pos.pred - (lower.pos.pred * .20)
+        text.two <- lower.pos.pred + (abs(lower.pos.pred) * .20)
         
         text(x = text.one_pos, y = text.two, labels = paste("r = ", round(R_pos,3), "\np = ", P_pos))
         
@@ -161,12 +174,10 @@ plot.cpm <- function(x, ...)
       }
       
       #set up colors
-      plot.args$col <- c(rep(cols[3],length(which(groups == labs_groups[1]))),
-                         rep(cols[4],length(which(groups == labs_groups[2]))))
+      plot.args$col <- ifelse(groups_neg == labs_groups[1], cols[3], cols[4])
       
       #set up points
-      plot.args$pch <- c(rep(pchs[3],length(which(groups == labs_groups[1]))),
-                         rep(pchs[4],length(which(groups == labs_groups[2]))))
+      plot.args$pch <- ifelse(groups_neg == labs_groups[1], pchs[3], pchs[4])
       
       #set up x
       plot.args$x <- bstat_neg
@@ -192,7 +203,7 @@ plot.cpm <- function(x, ...)
       
       if(R_neg>=0)
       {
-        text.two <- upper.neg.pred - (upper.neg.pred * .20)
+        text.two <- upper.neg.pred - (abs(upper.neg.pred) * .20)
         
         text(x = text.one_neg, y = text.two, labels = paste("r = ", round(R_neg,3), "\np = ", P_neg))
         
@@ -200,7 +211,7 @@ plot.cpm <- function(x, ...)
         
       }else if(R_neg<0)
       {
-        text.two <- lower.neg.pred - (lower.neg.pred * .20)
+        text.two <- lower.neg.pred + (abs(lower.neg.pred) * .20)
         
         text(x = text.one_neg, y = text.two, labels = paste("r = ", round(R_neg,3), "\np = ", P_neg))
         
@@ -240,13 +251,13 @@ plot.cpm <- function(x, ...)
       
       if(R_pos>=0)
       {
-        text.two <- upper.pos.pred - (upper.pos.pred * .20)
+        text.two <- upper.pos.pred - (abs(upper.pos.pred) * .20)
         
         text(x = text.one_pos, y = text.two, labels = paste("r = ", round(R_pos,3), "\np = ", P_pos))
         
       }else if(R_pos<0)
       {
-        text.two <- lower.pos.pred - (lower.pos.pred * .20)
+        text.two <- lower.pos.pred + (abs(lower.pos.pred) * .20)
         
         text(x = text.one_pos, y = text.two, labels = paste("r = ", round(R_pos,3), "\np = ", P_pos))
       }
@@ -267,7 +278,7 @@ plot.cpm <- function(x, ...)
       plot.args$ylim <- c(lower.neg.pred, upper.neg.pred)
       
       #set up xlim
-      plot.args$xlim <- c(lower.pos.pred, upper.pos.pred)
+      plot.args$xlim <- c(lower.bstat_neg, upper.bstat_neg)
       
       #set up main
       plot.args$main <- mains[2]
@@ -281,13 +292,13 @@ plot.cpm <- function(x, ...)
       
       if(R_neg>=0)
       {
-        text.two <- upper.neg.pred - (upper.neg.pred * .20)
+        text.two <- upper.neg.pred - (abs(upper.neg.pred) * .20)
         
         text(x = text.one_neg, y = text.two, labels = paste("r = ", round(R_neg,3), "\np = ", P_neg))
         
       }else if(R_neg<0)
       {
-        text.two <- lower.neg.pred - (lower.neg.pred * .20)
+        text.two <- lower.neg.pred + (abs(lower.neg.pred) * .20)
         
         text(x = text.one_neg, y= text.two, labels = paste("r = ", round(R_neg,3), "\np = ", P_neg))
       }
@@ -304,6 +315,11 @@ plot.cpm <- function(x, ...)
       behav_pred_pos <- x$Pred
     }
     
+    # groups (match missing predictions removed above)
+    groups_pos <- groups
+    if(!is.null(groups) && any(is.na(x$Pred)))
+    {groups_pos <- groups[-pos.na]}
+    
     R_pos<-cor(behav_pred_pos,bstat_pos,use="pairwise.complete.obs")
     P_pos<-cor.test(behav_pred_pos,bstat_pos)$p.value
     
@@ -315,7 +331,7 @@ plot.cpm <- function(x, ...)
     lower.pos.pred <- floor(range(behav_pred_pos))[1]
     upper.pos.pred <- ceiling(range(behav_pred_pos))[2]
     
-    text.one_pos <- lower.bstat_pos - (lower.bstat_pos * .20)
+    text.one_pos <- lower.bstat_pos + (abs(lower.bstat_pos) * .20)
     
     #set up groups
     if(!is.null(groups))
@@ -327,12 +343,10 @@ plot.cpm <- function(x, ...)
       n_groups <- length(labs_groups)
       
       #set up colors
-      plot.args$col <- c(rep(cols[1],length(which(groups == labs_groups[1]))),
-                         rep(cols[2],length(which(groups == labs_groups[2]))))
+      plot.args$col <- ifelse(groups_pos == labs_groups[1], cols[1], cols[2])
       
       #set up points
-      plot.args$pch <- c(rep(pchs[1],length(which(groups == labs_groups[1]))),
-                         rep(pchs[2],length(which(groups == labs_groups[2]))))
+      plot.args$pch <- ifelse(groups_pos == labs_groups[1], pchs[1], pchs[2])
       
       #set up x
       plot.args$x <- bstat_pos
@@ -358,7 +372,7 @@ plot.cpm <- function(x, ...)
       
       if(R_pos>=0)
       {
-        text.two <- upper.pos.pred - (upper.pos.pred * .20)
+        text.two <- upper.pos.pred - (abs(upper.pos.pred) * .20)
         
         text(x = text.one_pos, y = text.two, labels = paste("r = ", round(R_pos,3), "\np = ", P_pos))
         
@@ -366,7 +380,7 @@ plot.cpm <- function(x, ...)
         
       }else if(R_pos<0)
       {
-        text.two <- lower.pos.pred - (lower.pos.pred * .20)
+        text.two <- lower.pos.pred + (abs(lower.pos.pred) * .20)
         
         text(x = text.one_pos, y = text.two, labels = paste("r = ", round(R_pos,3), "\np = ", P_pos))
         
@@ -405,13 +419,13 @@ plot.cpm <- function(x, ...)
       
       if(R_pos>=0)
       {
-        text.two <- upper.pos.pred - (upper.pos.pred * .20)
+        text.two <- upper.pos.pred - (abs(upper.pos.pred) * .20)
         
         text(x = text.one_pos, y = text.two, labels = paste("r = ", round(R_pos,3), "\np = ", P_pos))
         
       }else if(R_pos<0)
       {
-        text.two <- lower.pos.pred - (lower.pos.pred * .20)
+        text.two <- lower.pos.pred + (abs(lower.pos.pred) * .20)
         
         text(x = text.one_pos, y = text.two, labels = paste("r = ", round(R_pos,3), "\np = ", P_pos))
       }

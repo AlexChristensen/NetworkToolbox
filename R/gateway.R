@@ -24,6 +24,10 @@
 #' 
 #' \item{negative}{Gateway coefficient with only negative sign}
 #' 
+#' @details
+#' Translated from the MATLAB function \code{gateway_coef_sign.m} (Jeff
+#' Spielberg) in the Brain Connectivity Toolbox (Rubinov & Sporns, 2010).
+#' 
 #' @examples
 #' #theoretical communities
 #' comm <- rep(1:8, each = 6)
@@ -78,13 +82,8 @@ gateway <- function (A, comm = c("walktrap","louvain"),
             )
         }else{
             
-            uni <- unique(comm)
-            
-            facts <- comm
-            
-            for(i in 1:length(uni))
-            {facts[which(facts==uni[i])] <- i}
-            
+            facts <- match(comm, unique(comm))
+
         }
         
     }else{facts <- comm}

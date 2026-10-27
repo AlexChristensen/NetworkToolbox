@@ -58,18 +58,20 @@ MaST <- function (data, normal = TRUE,
                     " rows were removed for missing data\nrow(s): ",
                     paste(na.action(na.omit(data)),collapse = ", "))
             data<-na.omit(data)
+            cormat<-cor(data)
         }
     }else if(na.data=="fiml")
     {
         if(normal)
         {cormat<-qgraph::cor_auto(data,missing=na.data)
         }else{cormat<-psych::corFiml(data)}
+    }else if(na.data=="none")
+    {
+        #corrlation matrix
+        if(nrow(data)==ncol(data)){cormat<-data
+        }else if(normal){cormat<-qgraph::cor_auto(data)
+        }else{cormat<-cor(data)}
     }
-    
-    #corrlation matrix
-    if(nrow(data)==ncol(data)){cormat<-data
-    }else if(normal){cormat<-qgraph::cor_auto(data)
-    }else{cormat<-cor(data)}
     
     FIND_PathCompression <- function (temproot)
     {
@@ -107,7 +109,7 @@ MaST <- function (data, normal = TRUE,
     MSTcounter<-0
     i<-e
     
-    while((MSTcounter<(n-1))&&(e>=1))
+    while((MSTcounter<(n-1))&&(i>=1))
     {
         #Find roots of the tree that the selected edge's two
         #vertices belong to. Also perform path compression.
@@ -133,7 +135,7 @@ MaST <- function (data, normal = TRUE,
         }
         i<-i-1
     }
-    S<-MSTreeEdges
+    S<-MSTreeEdges[seq_len(MSTcounter),,drop=FALSE]
     if(depend)
     {
         for(i in 1:nrow(S))
@@ -144,8 +146,9 @@ MaST <- function (data, normal = TRUE,
             }else if(cormat[S[i,2],S[i,3]]<cormat[S[i,3],S[i,2]])
             {
                 S[i,1]<-cormat[S[i,3],S[i,2]]
+                tmp<-S[i,2]
                 S[i,2]<-S[i,3]
-                S[i,3]<-S[i,2] 
+                S[i,3]<-tmp
             }
     }
     L<-S
@@ -163,14 +166,15 @@ MaST <- function (data, normal = TRUE,
     for(i in 1:nrow(K))
     {
         x[K[i,2], K[i,3]] <- 1
-        x[K[i,3], K[i,2]] <- 1
+        if(!depend)
+        {x[K[i,3], K[i,2]] <- 1}
     }
     
     diag(x)<-1
     
     for(r in 1:nrow(x))
         for(z in 1:ncol(x))
-        {if(x[r,z]==1){x[r,z]<-corma[r,z]}}
+        {if(x[r,z]==1){x[r,z]<-cormat[r,z]}}
     
     colnames(x)<-colnames(data)
     x <- as.data.frame(x)
@@ -178,4 +182,4 @@ MaST <- function (data, normal = TRUE,
     x <- as.matrix(x)
     return(x)
 }
-#----
+#----

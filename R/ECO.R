@@ -34,7 +34,8 @@ ECO <- function (data, directed = FALSE)
     if(directed)
     {
         numcon<-3*n
-        ind<-which(C!=0)
+        C<-C!=0
+        ind<-which(C)
     }else{C<-upper.tri(C,diag=TRUE)
     numcon<-1.5*n
     ind<-which(upper.tri(C,diag=TRUE)!=0)}
@@ -60,7 +61,9 @@ ECO <- function (data, directed = FALSE)
     if(directed)
     {W<-C}else{W<-C+t(C)
     diag(W)<-1}
-    J<-G+t(G)
+    if(directed)
+    {J<-G
+    }else{J<-G+t(G)}
     diag(J)<-1
     W<-ifelse(W!=0,J,0)
     W<-as.data.frame(W)

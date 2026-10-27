@@ -17,6 +17,10 @@ Returns an adjacency matrix of a lattice network
 \description{
 Generates a lattice network
 }
+\details{
+Translated from the MATLAB function \code{makelatticeCIJ.m} (Olaf Sporns) in
+the Brain Connectivity Toolbox (Rubinov & Sporns, 2010).
+}
 \examples{
 latt <- lattnet(10, 27)
 

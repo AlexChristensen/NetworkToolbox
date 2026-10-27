@@ -74,7 +74,7 @@ sim.swn <- function (nodes, n, pos = .80, ran = c(.3,.7),
             sample(c(-1,1),sum(upper.tri(net)),TRUE,prob=c(pos,1-pos)) *
             runif(sum(upper.tri(net)), min(ran),max(ran))
 
-        net[lower.tri(net)]<-net[upper.tri(net)]*net[lower.tri(net)]
+        net[lower.tri(net)]<-t(net)[lower.tri(net)]
 
         diag(net) <- rowSums(abs(net)) * 1
         diag(net) <- ifelse(diag(net)==0,1,diag(net))
@@ -95,10 +95,7 @@ sim.swn <- function (nodes, n, pos = .80, ran = c(.3,.7),
 
     #compute covariance matrix
     I<-diag(1, dim(graph)[1])
-    covmat<-solve(I-graph)%*%t(solve(I-graph))
-
-    #from bootnet
-    #covmat<-solve(diag(nodes) - ngraph)
+    covmat<-solve(I-graph)
 
     #compute correlation matrix
     rho<-cov2cor(covmat)
@@ -107,16 +104,13 @@ sim.swn <- function (nodes, n, pos = .80, ran = c(.3,.7),
     {
         adj<-igraph::as_adj(igraph::sample_smallworld(1,nodes,nei=nei,p=p),sparse=FALSE)
 
-        net<-adj+t(adj)
+        net<-adj
 
         graph<-posdefnet(net,pos,ran)
 
         #compute covariance matrix
         I<-diag(1, dim(graph)[1])
-        covmat<-solve(I-graph)%*%t(solve(I-graph))
-
-        #from bootnet
-        #covmat<-solve(diag(nodes) - ngraph)
+        covmat<-solve(I-graph)
 
         #compute correlation matrix
         rho<-cov2cor(covmat)

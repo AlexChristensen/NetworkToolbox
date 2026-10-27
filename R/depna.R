@@ -48,8 +48,13 @@ depna <- function (neuralarray, cores, ...)
     # Let user know data generation has started
     message("\nComputing dependency matrices...\n", appendLF = FALSE)
     
+    # Default number of cores
+    if(missing(cores))
+    {cores <- max(1, parallel::detectCores() - 1)}
+
     # Parallel processing
     cl <- parallel::makeCluster(cores)
+    on.exit(try(parallel::stopCluster(cl), silent = TRUE), add = TRUE)
     
     # Export variables
     parallel::clusterExport(cl = cl,
@@ -57,11 +62,13 @@ depna <- function (neuralarray, cores, ...)
                             envir=environment())
     
     # Compute dependency matrices
+    # (slices are connectivity matrices, so they are used as is)
     depnalist <- pbapply::pblapply(X = deplist, cl = cl, FUN = depend,
-                                   na.data = "pairwise", progBar = FALSE)
-    
+                                   na.data = "none", progBar = FALSE, ...)
+
     # Stop cluster
     parallel::stopCluster(cl)
+    on.exit()
     
     # Convert back to array
     for(i in 1:length(depnalist))

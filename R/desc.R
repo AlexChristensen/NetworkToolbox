@@ -39,18 +39,23 @@ desc <- function(data, column, histplot = TRUE)
     
     nas <- ifelse(len==0,0,len)
     
-    desc.tab <- matrix(NA,nrow=1,ncol=7)
+    # shapiro.test requires between 3 and 5000 (non-missing) values
+    n.valid <- length(vec) - nas
     
-    desc.tab[1,1] <- length(vec) - nas
-    desc.tab[1,2] <- nas
-    desc.tab[1,3] <- round(mean(vec,na.rm=TRUE),3)
-    desc.tab[1,4] <- round(sd(vec,na.rm=TRUE),3)
-    desc.tab[1,c(5:6)] <- round(range(vec,na.rm=TRUE),3)
-    desc.tab[1,7] <- ifelse(sd(vec,na.rm=TRUE)!=0,
-                            ifelse(shapiro.test(vec)$p.value<.05,"no","yes"),
-                            "uniform")
+    if(sd(vec,na.rm=TRUE)==0)
+    {normal <- "uniform"
+    }else if(n.valid >= 3 && n.valid <= 5000)
+    {normal <- ifelse(shapiro.test(vec[!is.na(vec)])$p.value<.05,"no","yes")
+    }else{normal <- NA_character_}
     
-    desc.tab <- as.data.frame(desc.tab)
+    desc.tab <- data.frame(n = n.valid,
+                           missing = nas,
+                           mean = round(mean(vec,na.rm=TRUE),3),
+                           sd = round(sd(vec,na.rm=TRUE),3),
+                           min = round(min(vec,na.rm=TRUE),3),
+                           max = round(max(vec,na.rm=TRUE),3),
+                           normal = normal,
+                           stringsAsFactors = FALSE)
     
     colnames(desc.tab) <- c("n","missing","mean","sd","min","max","normal?")
     row.names(desc.tab) <- column

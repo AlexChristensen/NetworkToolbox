@@ -72,10 +72,15 @@ rspbc <- function (A, beta = 0.01, comm = NULL)
     {
         for(i in 1:length(unique(comm)))
         {
-            combos <- t(combn(which(comm==unique(comm)[i]),2))
-            
-            for(j in 1:nrow(combos))
-            {W[c(combos[j,]),c(combos[j,])] <- 0}
+            members <- which(comm==unique(comm)[i])
+
+            if(length(members) > 1)
+            {
+                combos <- t(combn(members,2))
+
+                for(j in 1:nrow(combos))
+                {W[c(combos[j,]),c(combos[j,])] <- 0}
+            }
         }
     }
     
