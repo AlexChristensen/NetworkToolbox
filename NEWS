@@ -8,6 +8,18 @@
 
 +	FIX: `betweenness` and `distance` symmetrized weighted networks with `(G + G) / 2` instead of `(G + t(G)) / 2`
 
++	FIX: `betweenness` rounded values to whole numbers, which distorted fractional values (e.g., unweighted networks or tied shortest paths); values are now rounded to three decimals
+
++	FIX: `participation`, `diversity`, and `gateway` returned values outside of their range for the `overall` (sign-ignored) coefficient of signed networks; absolute weights are now used
+
++	FIX: `depend` averaged over the node itself (a zero) in addition to the other nodes, deflating dependencies by (n - 2) / (n - 1); the average is now over all other nodes (Kenett et al., 2010)
+
++	FIX: `ECO` counted the diagonal toward the number of edges kept, so only n / 2 (undirected) or 2n (directed) edges were retained instead of 1.5n or 3n; this also affects `ECOplusMaST`
+
++	FIX: `is.graphical` always returned `TRUE` for invertible networks because it checked the positive semi-definiteness of a matrix that is positive semi-definite by construction; it now checks the standardized inverse covariance matrix (`I - A`)
+
++	FIX: `threshold` with `thresh = "FDR"` included the diagonal and both triangles in the false discovery rate estimation; each pair of variables is now tested once
+
 +	FIX: `diversity`, `participation`, `gateway`, `comm.str`, `comcat`, and `rspbc` for communities with a single node (or with all but one node)
 
 +	FIX: character community labels that look like numbers (e.g., `"1"`, `"2"`) were overwritten in `diversity`, `participation`, and `gateway`
@@ -93,6 +105,10 @@
 +	UPDATE: documentation for `pathlengths` (`diameter`) and `conn` (`density`) now matches their outputs
 
 +	REMOVE: `methods.R` (duplicate of `plot.cpm.R`) and unused `.onload` function
+
++	UPDATE: package startup message no longer lists the maintainer's affiliation and contributors (see `DESCRIPTION`)
+
++	DOC: `@aliases` in the `cpm` and `gain.functions` help pages are now on a single line
 
 
 ## Changes in version 1.4.3

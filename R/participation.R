@@ -112,7 +112,7 @@ participation <- function (A, comm = c("walktrap","louvain"))
         return(P)
     }
     
-    overall <- pcoef(A, facts) #overall participation coefficient
+    overall <- pcoef(abs(A), facts) #overall participation coefficient (signs ignored)
     
     #signed participation coefficient
     poswei <- ifelse(A>=0,A,0) #positive weights

@@ -20,35 +20,30 @@
 #Is network graphical?----
 is.graphical <- function (A)
 {
-    #make diagonal 1
-    diag(A)<-1
+    A <- as.matrix(A)
     
-    #covert partial correlations to covariance
+    #partial correlations must be symmetric
+    if(!isSymmetric(A, check.attributes = FALSE))
+    {return(FALSE)}
+    
+    #make diagonal 0
+    diag(A)<-0
+    
+    #convert partial correlations to standardized inverse covariance
     I<-diag(1, dim(A)[1])
-    
-    #compute covariance matrix
-    error<-try(solve(I-A)%*%t(solve(I-A)),silent=TRUE)
-    if(is.character(error))
-    {ret<-FALSE
-    }else{covmat<-solve(I-A)%*%t(solve(I-A))}
-    
-    #covert to inverse covariance
-    error<-try(solve(covmat),silent=TRUE)
-    if(is.character(error))
-    {ret<-FALSE
-    }else{inv<-solve(covmat)
+    inv<-I-A
     
     #reduce small values to 0
     check<-zapsmall(inv)
     
-    
-    error<-try(any(eigen(check)$values<0),silent=TRUE)
-    if(is.character(error))
+    #inverse covariance matrix must be positive (semi-)definite
+    values<-try(eigen(check, symmetric = TRUE, only.values = TRUE)$values,silent=TRUE)
+    if(is.character(values))
     {ret<-FALSE
-    }else if(any(eigen(check)$values<0))
+    }else if(any(values<0))
     {ret<-FALSE
     }else{ret<-TRUE}
-    }
+    
     return(ret)
 }
 #----

@@ -108,7 +108,7 @@ diversity <- function (A, comm = c("walktrap","louvain"))
     
     Hpos <- ent(ifelse(A>0,A,0),facts)
     Hneg <- ent(ifelse(A<0,A,0),facts)
-    Hov <- ent(A,facts)
+    Hov <- ent(abs(A),facts)
     
     return(list(overall=Hov,positive=Hpos,negative=Hneg))
 }

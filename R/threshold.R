@@ -136,17 +136,14 @@ threshold <- function (data, a,
         if(missing(a))
         {a<-.10}
         
-        corsig<-cormat
-        for(i in 1:ncol(data))
-            for(j in 1:ncol(data))
-                corsig[i,j]<-cor.test(data[,i],data[,j])$p.value
+        # each pair of variables is tested once (the diagonal is not a test)
+        corsig<-matrix(0,nrow=ncol(cormat),ncol=ncol(cormat))
+        pairs<-which(lower.tri(corsig),arr.ind=TRUE)
+        pvec<-apply(pairs,1,function(ij){cor.test(data[,ij[1]],data[,ij[2]])$p.value})
         
-        fdrmat<-matrix(0,nrow=((ncol(cormat)^2)-(ncol(cormat))),ncol=3)
-        fdrvec<-as.vector(corsig)
-        
-        fdrvec<-fdrtool::fdrtool(fdrvec,plot=FALSE,verbose=FALSE,statistic = "pvalue",...)$qval
-        fdrvec<-ifelse(fdrvec<=a,fdrvec,0)
-        corsig<-matrix(fdrvec,nrow=nrow(cormat),ncol(cormat))
+        qvec<-fdrtool::fdrtool(pvec,plot=FALSE,verbose=FALSE,statistic = "pvalue",...)$qval
+        corsig[pairs]<-qvec<=a
+        corsig<-corsig+t(corsig)
         cormat<-ifelse(corsig!=0,cormat,0)
         thr<-min(abs(cormat[cormat!=0 & row(cormat)!=col(cormat)]))
     }else if(thresh=="proportional")

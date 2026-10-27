@@ -76,7 +76,7 @@ betweenness <- function (A, weighted = TRUE)
             DP<-DP+DPd1
         }
     }
-    BC<-round(as.matrix(colSums(DP),ncol=ncol(A)),0)
+    BC<-round(as.matrix(colSums(DP),ncol=ncol(A)),3)
     }else{
         G<-ifelse(1/A==Inf,0,1/A)
         
@@ -148,7 +148,7 @@ betweenness <- function (A, weighted = TRUE)
                 DP[v]<-(DP[v]+(1+DP[w]))*NP[v]/NP[w]}
             
         }
-        BC<-round(as.matrix(BC,ncol=ncol(A)),0)
+        BC<-round(as.matrix(BC,ncol=ncol(A)),3)
     }
     BC<-as.vector(BC)
     

@@ -185,7 +185,7 @@ depend <- function (data, normal = FALSE,
     depmat<-matrix(0,nrow=nrow(parmat),ncol=ncol(parmat))
     for(i in 1:ncol(parmat))
         for(j in 1:ncol(parmat))
-        {depmat[j,i]<-mean(parmat[i,-j,j])}
+        {depmat[j,i]<-ifelse(i==j,0,mean(parmat[i,-c(i,j),j]))}
     
     if(fisher)
     {

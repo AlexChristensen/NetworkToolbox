@@ -132,7 +132,7 @@ gateway <- function (A, comm = c("walktrap","louvain"),
     
     GWpos <- gate(W=ifelse(A>0,A,0),t=cent)
     GWneg <- gate(W=ifelse(A<0,A,0),t=cent)
-    GW <- gate(W=A,t=cent)
+    GW <- gate(W=abs(A),t=cent)
     
     return(list(overall=GW,positive=GWpos,negative=GWneg))
 }
